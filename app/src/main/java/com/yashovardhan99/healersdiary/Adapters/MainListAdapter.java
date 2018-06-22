@@ -1,6 +1,7 @@
 package com.yashovardhan99.healersdiary.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,6 +11,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.yashovardhan99.healersdiary.Activities.MainActivity;
+import com.yashovardhan99.healersdiary.Activities.PatientView;
 import com.yashovardhan99.healersdiary.R;
 
 /**
@@ -24,11 +27,14 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.ViewHo
         public TextView mTextView;
         public ViewHolder(RelativeLayout v){
             super(v);
+            context = v.getContext();
             mTextView = v.findViewById(R.id.patientName);
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(context,("TEST"+getAdapterPosition()),Toast.LENGTH_LONG).show();
+                    Intent detail = new Intent(context, PatientView.class);
+                    context.startActivity(detail);
                 }
             });
         }
