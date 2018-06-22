@@ -11,6 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity android:name=".Activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -18,9 +19,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.NewPatient"
+
+        <activity
+            android:name=".Activities.NewPatient"
+            android:parentActivityName=".Activities.MainActivity" />
+
+        <activity android:name=".Activities.Login" />
+
+        <activity android:name=".Activities.PatientView"
             android:parentActivityName=".Activities.MainActivity"/>
-        <activity android:name=".Activities.Login"></activity>
     </application>
 
 </manifest>

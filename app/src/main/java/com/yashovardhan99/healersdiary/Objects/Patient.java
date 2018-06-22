@@ -25,8 +25,8 @@ public class Patient {
         amountDue=0;
         startDate=new Date();
         lastPaid=new Date();
-        remarks = new ArrayList<>(healings);
-        healingDates = new ArrayList<>(healings);
+        remarks = new ArrayList<>();
+        healingDates = new ArrayList<>();
     }
     Patient(String nm, int r){
         this();
