@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Healer\'s Diary</string>
+    <string name="patient_name">Patient Name</string>
+    <string name="browse">Browse</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="disease">Disease</string>
+    <string name="rate">Rate per healing</string>
+</resources>
