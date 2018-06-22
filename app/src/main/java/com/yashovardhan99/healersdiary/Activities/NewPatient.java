@@ -13,6 +13,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -26,10 +27,17 @@ public class NewPatient extends AppCompatActivity {
     final int CONTACT_PICKER_REQUEST_CODE = 2;
     TextInputEditText patientNameEditText;
     TextInputEditText contactNumberEditText;
+
+    Toolbar newPatientToolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_patient);
+
+        newPatientToolbar = findViewById(R.id.newPatientToolbar);
+        setSupportActionBar(newPatientToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
          patientNameEditText = findViewById(R.id.patientName);
         contactNumberEditText = findViewById(R.id.phoneNumber);

@@ -6,12 +6,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Activities.MainActivity">
-
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:id="@+id/mainActivityToolbar"
+        app:title="@string/app_name"
+        app:titleTextColor="#FFFFFF"/>
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/recycler_main"
-        android:scrollbars="vertical" />
+        android:scrollbars="vertical"
+        android:layout_below="@id/mainActivityToolbar"/>
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/new_fab"
         android:layout_width="wrap_content"
@@ -19,7 +26,6 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_margin="16dp"
-        android:src="@drawable/ic_add_black_24dp"
-        />
+        android:src="@drawable/ic_add_black_24dp" />
 
 </RelativeLayout>

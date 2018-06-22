@@ -5,4 +5,5 @@
     <string name="phone_number">Phone Number</string>
     <string name="disease">Disease</string>
     <string name="rate">Rate per healing</string>
+    <string name="signing_in">Signing In</string>
 </resources>
