@@ -6,4 +6,6 @@
     <string name="disease">Disease</string>
     <string name="rate">Rate per healing</string>
     <string name="signing_in">Signing In</string>
+    <string name="save">Save</string>
+    <string name="payment_due">Payment Due</string>
 </resources>

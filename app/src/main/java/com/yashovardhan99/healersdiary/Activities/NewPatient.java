@@ -1,25 +1,35 @@
 package com.yashovardhan99.healersdiary.Activities;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.yashovardhan99.healersdiary.R;
+
+import java.text.NumberFormat;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class NewPatient extends AppCompatActivity {
 
@@ -27,7 +37,7 @@ public class NewPatient extends AppCompatActivity {
     final int CONTACT_PICKER_REQUEST_CODE = 2;
     TextInputEditText patientNameEditText;
     TextInputEditText contactNumberEditText;
-
+    TextInputEditText due;
     Toolbar newPatientToolbar;
 
     @Override
@@ -60,6 +70,83 @@ public class NewPatient extends AppCompatActivity {
                     Log.d("CONTACT PERMISSION","GRANTED ALREADY");
                     launchContactPicker();
                 }
+            }
+        });
+
+        final TextInputEditText rate = findViewById(R.id.rate);
+        rate.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(!s.toString().isEmpty() && !(s.toString().startsWith(NumberFormat.getCurrencyInstance().getCurrency().getSymbol()))) {
+                    String amount = NumberFormat.getCurrencyInstance().getCurrency().getSymbol() + s.toString();
+                    rate.setText(amount);
+                    rate.setSelection(amount.length());
+                }
+            }
+        });
+
+        due = findViewById(R.id.EnterPaymentDue);
+        due.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(!s.toString().isEmpty() && !(s.toString().startsWith(NumberFormat.getCurrencyInstance().getCurrency().getSymbol()))) {
+                    String amount = NumberFormat.getCurrencyInstance().getCurrency().getSymbol() + s.toString();
+                    due.setText(amount);
+                    due.setSelection(amount.length());
+                }
+            }
+        });
+
+        Button save = findViewById(R.id.saveNewPatient);
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                Map<String,Object> patient = new HashMap<>();
+                patient.put("Name",patientNameEditText.getText().toString());
+                patient.put("Phone",contactNumberEditText.getText().toString());
+                patient.put("Disease",((TextInputEditText)(findViewById(R.id.patientDisease))).getText().toString());
+                if(!rate.getText().toString().isEmpty())
+                    patient.put("Rate",Double.parseDouble(rate.getText().toString().substring(1)));
+                if(!due.getText().toString().isEmpty())
+                    patient.put("Due",Double.parseDouble(due.getText().toString().substring(1)));
+                patient.put("Date", Calendar.getInstance().getTime());
+                db.collection("users")
+                        .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                        .collection("patients")
+                        .document().set(patient)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()){
+                                    Toast.makeText(NewPatient.this,"Patient Record Added successfully",Toast.LENGTH_LONG).show();
+                                    Log.d("FIRESTORE","Created new patient");
+                                }
+                                else {
+                                    Log.d("FIRESTORE","Error : "+task.getException().getMessage());
+                                }
+                            }
+                        });
             }
         });
     }

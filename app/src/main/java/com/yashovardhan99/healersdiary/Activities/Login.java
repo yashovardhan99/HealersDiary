@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -20,7 +21,11 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.yashovardhan99.healersdiary.R;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Login extends AppCompatActivity {
 
@@ -96,6 +101,31 @@ public class Login extends AppCompatActivity {
         signInProgress.setVisibility(View.GONE);
         Intent done = new Intent(this,MainActivity.class);
         done.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        Map<String,Object> user = new HashMap<>();
+        user.put("uUd",mAuth.getCurrentUser().getUid());
+        user.put("Name",mAuth.getCurrentUser().getDisplayName());
+        user.put("Email",mAuth.getCurrentUser().getEmail());
+        user.put("Phone",mAuth.getCurrentUser().getPhoneNumber());
+
+        db.collection("users").document(mAuth.getUid())
+                .set(user)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task){
+                        if(task.isSuccessful()){
+                            Toast.makeText(Login.this,"Welcome "+mAuth.getCurrentUser().getDisplayName()+". Tap the + button to get started!",Toast.LENGTH_LONG).show();
+                            Log.d("FIRESTORE","Added user document");
+                        }
+                        else {
+                            Log.d("FIRESTORE",task.getResult().toString()+" : "+task.getException().toString());
+                            Toast.makeText(Login.this,"Some problem Occured. You have been logged in but some features may not work properly",Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+
         startActivity(done);
     }
 }

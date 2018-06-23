@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:layout_gravity="center_horizontal"
-                android:text="INR"
+                android:text="@string/payment_due"
                 android:id="@+id/bill"/>
         </LinearLayout>
 
@@ -101,6 +101,23 @@
             android:text="View Patient Feedback"
             android:enabled="false"
             android:hint="Coming soon"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:elevation="4dp"
+            android:backgroundTint="#FFF"
+            android:layout_gravity="center_horizontal"
+            android:text="Add Payment Detail" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:elevation="4dp"
+            android:backgroundTint="#FFF"
+            android:layout_gravity="center_horizontal"
+            android:text="View Payment logs"
+            android:enabled="false"/>
 
     </LinearLayout>
     </ScrollView>
