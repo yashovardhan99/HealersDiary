@@ -19,4 +19,4 @@ An upcoming app for professional healers to keep track of their patients and hel
 
 ## Support
 * Support the development by cloning this repo and helping me fix any issues
-* [Pay me on PayPal!](paypal.me/yashovardhan99) to help fund my project's API, google play fees and other fees and expenses.
+* [Pay me on PayPal!](https://paypal.me/yashovardhan99) to help fund my project's API, google play fees and other fees and expenses.
