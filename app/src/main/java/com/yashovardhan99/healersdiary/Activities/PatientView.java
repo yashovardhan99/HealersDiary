@@ -83,6 +83,7 @@ public class PatientView extends AppCompatActivity {
             });
         }
 
+        //new healing button - to add new healing
         Button newHealing = findViewById(R.id.newHealingButton);
         newHealing.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,6 +91,17 @@ public class PatientView extends AppCompatActivity {
                 Intent newHealingIntent = new Intent(PatientView.this,NewHealingRecord.class);
                 newHealingIntent.putExtra("PATIENT_UID",Uid);
                 startActivity(newHealingIntent);
+            }
+        });
+
+        //go to healing logs
+        Button healingLogs = findViewById(R.id.healingLogsButton);
+        healingLogs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent logs = new Intent(PatientView.this, HealingLogs.class);
+                logs.putExtra("PATIENT_UID",Uid);
+                startActivity(logs);
             }
         });
     }

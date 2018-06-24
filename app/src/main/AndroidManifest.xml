@@ -25,9 +25,12 @@
         <activity
             android:name=".Activities.PatientView"
             android:parentActivityName=".Activities.MainActivity" />
-        <activity android:name=".Activities.NewHealingRecord"
-            android:theme="@style/AppTheme.Dialog"
-            android:excludeFromRecents="true"/>
+        <activity
+            android:name=".Activities.NewHealingRecord"
+            android:excludeFromRecents="true"
+            android:theme="@style/AppTheme.Dialog" />
+        <activity android:name=".Activities.HealingLogs"
+            android:parentActivityName=".Activities.PatientView"/>
     </application>
 
 </manifest>

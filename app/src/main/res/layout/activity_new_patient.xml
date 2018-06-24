@@ -36,7 +36,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/patient_name"
-                        android:inputType="textPersonName"
+                        android:inputType="textPersonName|textCapWords"
                         android:id="@+id/patientName"/>
                 </android.support.design.widget.TextInputLayout>
                 <Button
@@ -68,7 +68,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/disease"
                     android:id="@+id/patientDisease"
-                    android:inputType="textAutoCorrect" />
+                    android:inputType="textAutoCorrect|textCapWords" />
             </android.support.design.widget.TextInputLayout>
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -97,7 +97,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/save"
-                android:id="@+id/saveNewPatient"/>
+                android:id="@+id/saveNewPatient"
+                android:elevation="4dp"/>
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>
