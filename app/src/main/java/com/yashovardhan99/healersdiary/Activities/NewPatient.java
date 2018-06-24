@@ -222,6 +222,7 @@ public class NewPatient extends AppCompatActivity {
                             String phNo = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                             Log.d("CONTACT PICKED",phNo);
                             contactNumberEditText.setText(phNo.trim());
+                            c.close();
                         }
                     }
                 }
