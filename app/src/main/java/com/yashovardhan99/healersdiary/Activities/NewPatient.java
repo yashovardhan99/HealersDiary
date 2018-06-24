@@ -18,7 +18,6 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -49,6 +48,7 @@ public class NewPatient extends AppCompatActivity {
         newPatientToolbar = findViewById(R.id.newPatientToolbar);
         setSupportActionBar(newPatientToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //toolbar setup
 
          patientNameEditText = findViewById(R.id.patientName);
         contactNumberEditText = findViewById(R.id.phoneNumber);
@@ -74,6 +74,8 @@ public class NewPatient extends AppCompatActivity {
             }
         });
 
+        //add the currency symbol to the rate field
+
         final TextInputEditText rate = findViewById(R.id.rate);
         rate.addTextChangedListener(new TextWatcher() {
             @Override
@@ -96,6 +98,7 @@ public class NewPatient extends AppCompatActivity {
             }
         });
 
+        //add the currency symbol to the due field
         due = findViewById(R.id.EnterPaymentDue);
         due.addTextChangedListener(new TextWatcher() {
             @Override
@@ -118,6 +121,7 @@ public class NewPatient extends AppCompatActivity {
             }
         });
 
+        //now saving
         Button save = findViewById(R.id.saveNewPatient);
         save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -153,7 +157,6 @@ public class NewPatient extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful()){
-                                    Toast.makeText(NewPatient.this,"Patient Record Added successfully on the cloud",Toast.LENGTH_LONG).show();
                                     Log.d("FIRESTORE","Created new patient");
                                 }
                                 else {
@@ -161,10 +164,11 @@ public class NewPatient extends AppCompatActivity {
                                 }
                             }
                         });
+                //finally opening the relevant patient detail view
                 Intent openPatientDetail = new Intent(NewPatient.this, PatientView.class);
                 openPatientDetail.putExtra("PATIENT_UID",documentReference.getId());
                 Log.d("PATIENT UID",documentReference.getId());
-                openPatientDetail.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                openPatientDetail.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(openPatientDetail);
             }
         });
@@ -196,6 +200,7 @@ public class NewPatient extends AppCompatActivity {
         switch (requestCode){
             case CONTACT_PICKER_REQUEST_CODE:
                 if (resultCode==RESULT_OK){
+                    //when we get the contact. to get the contact name and number
                     Log.d("CONTACT PICKED","RESULT OK");
                     //result successful
                     Uri ContactData = data.getData();

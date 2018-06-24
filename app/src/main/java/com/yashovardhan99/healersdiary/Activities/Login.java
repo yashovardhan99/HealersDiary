@@ -49,6 +49,7 @@ public class Login extends AppCompatActivity {
          mGoogleSignInClient = GoogleSignIn.getClient(this,gso);
          mAuth = FirebaseAuth.getInstance();
 
+         //when the Google sign in button is clicked
         SignInButton gsb = findViewById(R.id.GoogleSignInButton);
         gsb.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,6 +65,7 @@ public class Login extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         signInProgress.setVisibility(View.VISIBLE);
+        //adds the progress bar to not keep users waiting
         switch(requestCode){
             case GOOGLE_SIGN_IN_RC:
                 try{
@@ -82,6 +84,7 @@ public class Login extends AppCompatActivity {
         }
     }
     void FirebaseAuthWithGoogle(GoogleSignInAccount account){
+        //authenticate the google sign in with firebase
         Log.d("GOOGLE","FirebaseAuth ID = "+account.getId());
 
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(),null);
@@ -98,12 +101,9 @@ public class Login extends AppCompatActivity {
     }
     void signedIn()
     {
-        signInProgress.setVisibility(View.GONE);
-        Intent done = new Intent(this,MainActivity.class);
-        done.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
+        //now the user is signed in
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-
+        //create a user document in firestore
         Map<String,Object> user = new HashMap<>();
         user.put("uUd",mAuth.getCurrentUser().getUid());
         user.put("Name",mAuth.getCurrentUser().getDisplayName());
@@ -126,6 +126,10 @@ public class Login extends AppCompatActivity {
                     }
                 });
 
+        //now we can remove the sign in progress bar and start main activity
+        Intent done = new Intent(this,MainActivity.class);
+        done.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        signInProgress.setVisibility(View.GONE);
         startActivity(done);
     }
 }

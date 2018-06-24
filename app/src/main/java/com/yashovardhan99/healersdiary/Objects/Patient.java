@@ -1,40 +1,21 @@
 package com.yashovardhan99.healersdiary.Objects;
 
-import java.util.ArrayList;
-import java.util.Date;
-
 /**
  * Created by Yashovardhan99 on 23-05-2018 as a part of HealersDiary.
- * This is a class meant for creating patient objects.
+ * This is a class meant for creating patient objects. To be modified as needed.
  */
 public class Patient {
-    String name,disease,phone,address,uid;
-    int rate, healings, unpaidHealings, amountDue;
-    Date startDate, lastPaid;
-    ArrayList<String> remarks;
-    ArrayList<Date> healingDates;
-    Patient(){
-        uid="0";
-        name="";
-        disease="";
-        phone="";
-        address="";
-        rate=0;
-        healings=0;
-        unpaidHealings=0;
-        amountDue=0;
-        startDate=new Date();
-        lastPaid=new Date();
-        remarks = new ArrayList<>();
-        healingDates = new ArrayList<>();
+    public String name,uid;
+    public Patient() {
+        uid = "";
+        name = "";
     }
-    Patient(String nm, int r){
-        this();
-        name = nm;
-        rate = r;
+    //default constructor
+    public String getName() {
+        return name;
     }
-    int getAmountDue(){
-        amountDue = rate*unpaidHealings;
-        return amountDue;
+
+    public String getUid() {
+        return uid;
     }
 }

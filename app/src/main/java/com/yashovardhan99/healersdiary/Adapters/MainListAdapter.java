@@ -1,5 +1,6 @@
 package com.yashovardhan99.healersdiary.Adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -9,43 +10,47 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.yashovardhan99.healersdiary.Activities.MainActivity;
 import com.yashovardhan99.healersdiary.Activities.PatientView;
+import com.yashovardhan99.healersdiary.Objects.Patient;
 import com.yashovardhan99.healersdiary.R;
+
+import java.util.ArrayList;
 
 /**
  * Created by Yashovardhan99 on 22-05-2018 as a part of HealersDiary.
  */
 public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.ViewHolder> {
 
-    private String[] patientList;
-    static Context context;
+    private static ArrayList<Patient> patientList;
+    //patient array list
+    @SuppressLint("StaticFieldLeak")
+    private static Context context;
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView mTextView;
-        public ViewHolder(RelativeLayout v){
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView mTextView;
+        ViewHolder(RelativeLayout v){
             super(v);
-            context = v.getContext();
             mTextView = v.findViewById(R.id.patientName);
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(context,("TEST"+getAdapterPosition()),Toast.LENGTH_LONG).show();
+                    //start patient detail
                     Intent detail = new Intent(context, PatientView.class);
+                    detail.putExtra("PATIENT_UID",patientList.get(getAdapterPosition()).getUid());
                     context.startActivity(detail);
                 }
             });
         }
     }
 
-    public MainListAdapter(String[] mPatientList) {
+    public MainListAdapter(ArrayList<Patient> mPatientList) {
         patientList = mPatientList;
     }
 
+    @NonNull
     @Override
-    public MainListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MainListAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         RelativeLayout v = (RelativeLayout) (LayoutInflater.from(parent.getContext())
         .inflate(R.layout.main_recycler_view,parent,false));
         ViewHolder vh = new ViewHolder(v);
@@ -55,11 +60,15 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.mTextView.setText(patientList[position]);
+        holder.mTextView.setText(patientList.get(position).getName());
     }
 
     @Override
     public int getItemCount() {
-        return patientList.length;
+        //keep this like this. It needs to be done for the initial launch
+        if (patientList!=null)
+            return patientList.size();
+        else
+            return 0;
     }
 }
