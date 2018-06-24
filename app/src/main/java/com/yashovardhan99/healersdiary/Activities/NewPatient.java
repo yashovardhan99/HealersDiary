@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.yashovardhan99.healersdiary.R;
 
@@ -121,7 +122,15 @@ public class NewPatient extends AppCompatActivity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                //error checking data
+                if(patientNameEditText.getText().toString().isEmpty()){
+                    patientNameEditText.setError("Name cannot be blank");
+                    return;
+                }
+                //firestore
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
+                //creaating map of all data
                 Map<String,Object> patient = new HashMap<>();
                 patient.put("Name",patientNameEditText.getText().toString());
                 patient.put("Phone",contactNumberEditText.getText().toString());
@@ -131,15 +140,20 @@ public class NewPatient extends AppCompatActivity {
                 if(!due.getText().toString().isEmpty())
                     patient.put("Due",Double.parseDouble(due.getText().toString().substring(1)));
                 patient.put("Date", Calendar.getInstance().getTime());
-                db.collection("users")
+
+                //creating docref for new patient record
+                DocumentReference documentReference = db.collection("users")
                         .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
                         .collection("patients")
-                        .document().set(patient)
+                        .document();
+
+                //adding data to document
+                documentReference.set(patient)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful()){
-                                    Toast.makeText(NewPatient.this,"Patient Record Added successfully",Toast.LENGTH_LONG).show();
+                                    Toast.makeText(NewPatient.this,"Patient Record Added successfully on the cloud",Toast.LENGTH_LONG).show();
                                     Log.d("FIRESTORE","Created new patient");
                                 }
                                 else {
@@ -147,6 +161,11 @@ public class NewPatient extends AppCompatActivity {
                                 }
                             }
                         });
+                Intent openPatientDetail = new Intent(NewPatient.this, PatientView.class);
+                openPatientDetail.putExtra("PATIENT_UID",documentReference.getId());
+                Log.d("PATIENT UID",documentReference.getId());
+                openPatientDetail.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(openPatientDetail);
             }
         });
     }
