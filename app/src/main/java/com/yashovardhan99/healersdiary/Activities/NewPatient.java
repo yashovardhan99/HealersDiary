@@ -149,7 +149,7 @@ public class NewPatient extends AppCompatActivity {
                 DocumentReference documentReference = db.collection("users")
                         .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
                         .collection("patients")
-                        .document();
+                        .document(String.valueOf(Calendar.getInstance().getTimeInMillis()));
 
                 //adding data to document
                 documentReference.set(patient)
