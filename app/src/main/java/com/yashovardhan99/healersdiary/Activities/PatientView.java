@@ -104,6 +104,16 @@ public class PatientView extends AppCompatActivity {
                 startActivity(logs);
             }
         });
+
+        Button addPayment = findViewById(R.id.enterNewPPayment);
+        addPayment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent pay = new Intent(PatientView.this,PatientAddPaymentDialog.class);
+                pay.putExtra("PATIENT_UID", Uid);
+                startActivity(pay);
+            }
+        });
     }
 
     @Override

@@ -8,4 +8,5 @@
     <string name="signing_in">Signing In</string>
     <string name="save">Save</string>
     <string name="payment_due">Payment Due</string>
+    <string name="enter_payment_received">Enter Payment Received</string>
 </resources>

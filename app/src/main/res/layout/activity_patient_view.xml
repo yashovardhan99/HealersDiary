@@ -112,7 +112,7 @@
             android:backgroundTint="#FFF"
             android:layout_gravity="center_horizontal"
             android:text="Add Payment Detail"
-            android:enabled="false"/>
+            android:id="@+id/enterNewPPayment"/>
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

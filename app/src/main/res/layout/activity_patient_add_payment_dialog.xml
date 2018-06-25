@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:context=".Activities.PatientAddPaymentDialog"
+    android:orientation="vertical">
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:layout_gravity="center_horizontal">
+        <android.support.design.widget.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/enter_payment_received"
+            android:id="@+id/paymentReceived"
+            android:inputType="numberDecimal" />
+    </android.support.design.widget.TextInputLayout>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#FFF"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/save"
+        android:id="@+id/saveNewPayment"
+        android:elevation="4dp"
+        android:padding="16dp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textAlignment="center"
+        android:padding="16dp"
+        android:text="Payment will be credited to the patient's account with the current date and time"/>
+</LinearLayout>
