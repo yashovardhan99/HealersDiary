@@ -114,6 +114,16 @@ public class PatientView extends AppCompatActivity {
                 startActivity(pay);
             }
         });
+
+        Button paymentLogs = findViewById(R.id.viewPatientPaymentLogs);
+        paymentLogs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent logs = new Intent(PatientView.this, PatientPaymentLogs.class);
+                logs.putExtra("PATIENT_UID",Uid);
+                startActivity(logs);
+            }
+        });
     }
 
     @Override

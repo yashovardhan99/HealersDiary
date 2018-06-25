@@ -121,7 +121,7 @@
             android:backgroundTint="#FFF"
             android:layout_gravity="center_horizontal"
             android:text="View Payment logs"
-            android:enabled="false"/>
+            android:id="@+id/viewPatientPaymentLogs"/>
         </LinearLayout>
 
     </LinearLayout>
