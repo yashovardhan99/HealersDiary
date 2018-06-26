@@ -31,8 +31,9 @@ public class PatientView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_view);
 
-        setSupportActionBar((Toolbar) findViewById(R.id.patientViewToolbar));
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Patient Detail");
         //toolbar setup
 
         Uid = getIntent().getStringExtra("PATIENT_UID");

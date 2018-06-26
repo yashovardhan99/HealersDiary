@@ -45,9 +45,10 @@ public class NewPatient extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_patient);
 
-        newPatientToolbar = findViewById(R.id.newPatientToolbar);
+        newPatientToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(newPatientToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Add New Patient");
         //toolbar setup
 
          patientNameEditText = findViewById(R.id.patientName);

@@ -1,27 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Activities.PatientPaymentLogs">
-    <android.support.v7.widget.Toolbar
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/patientPaymentLogsToolbar"
-        android:background="@color/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:title="Payment Logs" />
-    <android.support.design.widget.CoordinatorLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/patientPaymentLogsToolbar">
+    <include
+        layout="@layout/app_bar_layout"
+        android:id="@+id/patientPaymentLogsToolbar"/>
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/patientPaymentLogsRecycler"
-            android:scrollbars="vertical"/>
-        </android.support.design.widget.CoordinatorLayout>
-</RelativeLayout>
+            app:layout_anchor="@id/patientPaymentLogsToolbar"
+            app:layout_anchorGravity="bottom"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:scrollbars="vertical" />
+</android.support.design.widget.CoordinatorLayout>

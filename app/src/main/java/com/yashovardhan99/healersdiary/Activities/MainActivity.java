@@ -42,8 +42,9 @@ public class MainActivity extends AppCompatActivity {
 
         patientList = new ArrayList<>();
 
-        mainActivityToolbar = findViewById(R.id.mainActivityToolbar);
+        mainActivityToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mainActivityToolbar);
+        getSupportActionBar().setTitle(R.string.app_name);
 
         //check login and handle
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
