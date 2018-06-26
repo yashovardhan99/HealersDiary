@@ -1,15 +1,22 @@
 package com.yashovardhan99.healersdiary.Activities;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BaseTransientBottomBar;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -20,13 +27,17 @@ import com.yashovardhan99.healersdiary.R;
 
 import java.text.DateFormat;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 
 public class PatientPaymentLogs extends AppCompatActivity {
 
     private RecyclerView.Adapter mAdapter;
+    final ArrayList<PaymentSnapshot> payments = new ArrayList<>();
+    CollectionReference logs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,10 +48,8 @@ public class PatientPaymentLogs extends AppCompatActivity {
         setSupportActionBar((Toolbar) findViewById(R.id.patientPaymentLogsToolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        final ArrayList<PaymentSnapshot> payments = new ArrayList<>();
-
         //fetching collection of payments
-        CollectionReference logs = FirebaseFirestore.getInstance()
+        logs = FirebaseFirestore.getInstance()
                 .collection("users")
                 .document(FirebaseAuth.getInstance().getUid())
                 .collection("patients")
@@ -62,8 +71,11 @@ public class PatientPaymentLogs extends AppCompatActivity {
                             break;
                         case REMOVED:
                             int pos = payments.indexOf(payment);
+                            if(pos<0)
+                                break;
                             payments.remove(payment);
                             mAdapter.notifyItemRemoved(pos);
+                            break;
                     }
                 }
             }
@@ -74,6 +86,7 @@ public class PatientPaymentLogs extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new PatientPaymentLogsAdapter(payments);
         mRecyclerView.setAdapter(mAdapter);
+
     }
 
     @Override
@@ -84,5 +97,59 @@ public class PatientPaymentLogs extends AppCompatActivity {
                 return true;
             default: return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        switch (item.getTitle().toString()){
+            case "Edit":
+                Snackbar.make(findViewById(R.id.patientPaymentLogsRecycler),"Not yet implemented", BaseTransientBottomBar.LENGTH_LONG).show();
+                Log.d("CONTEXT MENU","EDIT - "+item.getGroupId());
+                return true;
+            case "Delete":
+                Log.d("CONTEXT MENU","DELETE - "+item.getGroupId());
+                deletePayment(item.getGroupId());
+                return true;
+        }
+        return super.onContextItemSelected(item);
+    }
+    void deletePayment(int id){
+        double amount = 0.00;
+        try {
+            amount = NumberFormat.getCurrencyInstance().parse(payments.get(id).getAmount()).doubleValue();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        final double finalAmount = amount;
+        logs.getParent()
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()) {
+                            Map<String,Object> data = task.getResult().getData();
+                            double due = 0.00;
+                            if(task.getResult().contains("Due"))
+                                due = task.getResult().getDouble("Due");
+                            due = due + finalAmount;
+                            logs.getParent().update("Due",due);
+                        }
+                    }
+                });
+        logs.document(payments.get(id).Uid).delete()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("FIRESTORE","Deleted Payment successfully");
+                        }
+                        else
+                        {
+                            Log.d("FIRESTORE","Error - "+task.getException());
+                        }
+                    }
+                });
+        payments.remove(id);
+        mAdapter.notifyItemRemoved(id);
     }
 }

@@ -71,6 +71,7 @@ public class Login extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        findViewById(R.id.GoogleSignInButton).setVisibility(View.GONE);
         signInProgress.setVisibility(View.VISIBLE);
         //adds the progress bar to not keep users waiting
         switch(requestCode){
@@ -85,6 +86,7 @@ public class Login extends AppCompatActivity {
                 }catch (Exception e){
                     Log.d("GOOGLE","SIGN IN FAILED");
                     signInProgress.setVisibility(View.INVISIBLE);
+                    findViewById(R.id.GoogleSignInButton).setVisibility(View.VISIBLE);
                 }
                 break;
         }

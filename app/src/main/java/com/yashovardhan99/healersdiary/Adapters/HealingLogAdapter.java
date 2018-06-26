@@ -2,11 +2,14 @@ package com.yashovardhan99.healersdiary.Adapters;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.yashovardhan99.healersdiary.Objects.Healing;
 import com.yashovardhan99.healersdiary.R;
 
 import java.util.ArrayList;
@@ -16,17 +19,24 @@ import java.util.ArrayList;
  */
 public class HealingLogAdapter extends RecyclerView.Adapter<HealingLogAdapter.ViewHolder> {
 
-    private static ArrayList<String> healingLog;
+    private static ArrayList<Healing> healingLog;
 
-    static class ViewHolder extends RecyclerView.ViewHolder{
+    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
         TextView mTextView;
         public ViewHolder(RelativeLayout v) {
             super(v);
             mTextView = v.findViewById(R.id.healingDetail);
+            v.setOnCreateContextMenuListener(this);
+        }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+            menu.setHeaderTitle(mTextView.getText());
+            menu.add(getAdapterPosition(),0,0,"Delete");
         }
     }
 
-    public HealingLogAdapter(ArrayList<String> mHealingLog){ healingLog = mHealingLog;}
+    public HealingLogAdapter(ArrayList<Healing> mHealingLog){ healingLog = mHealingLog;}
 
     @NonNull
     @Override
@@ -38,7 +48,7 @@ public class HealingLogAdapter extends RecyclerView.Adapter<HealingLogAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.mTextView.setText(healingLog.get(position));
+        holder.mTextView.setText(healingLog.get(position).getDate());
     }
 
     @Override
