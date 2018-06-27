@@ -1,24 +1,33 @@
 package com.yashovardhan99.healersdiary.Activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.yashovardhan99.healersdiary.Adapters.MainListAdapter;
 import com.yashovardhan99.healersdiary.Objects.Patient;
@@ -34,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Patient> patientList;
     Toolbar mainActivityToolbar;
     private FirebaseAnalytics mFirebaseAnalytics;
+    FirebaseFirestore db;
+    FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(R.string.app_name);
 
         //check login and handle
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
         FirebaseUser mUser = mAuth.getCurrentUser();
         if(mUser==null) {//not signed in
 
@@ -58,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //firestore
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db = FirebaseFirestore.getInstance();
         CollectionReference patients = db.collection("users")
                 .document(mUser.getUid())
                 .collection("patients");
@@ -133,5 +144,73 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this,NewPatient.class));
             }
         });
+    }
+
+    @Override
+    public boolean onContextItemSelected(final MenuItem item) {
+        switch (item.getTitle().toString()){
+            case "Edit":
+                Snackbar.make(findViewById(R.id.recycler_main),"Not yet implemented",Snackbar.LENGTH_LONG).show();
+                return true;
+            case "Delete":
+                final AlertDialog.Builder confirmBuilder = new AlertDialog.Builder(MainActivity.this);
+                confirmBuilder.setMessage("This will delete all patient records permanently. This action cannot be undone")
+                        .setTitle("Are you sure?")
+                        .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                DeletePatientRecord(item.getGroupId());
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //action cancelled
+                            }
+                        });
+                AlertDialog confirm = confirmBuilder.create();
+                confirm.show();
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+    void DeletePatientRecord(int id){
+        //now to delete this record, we first delete all healing and payment history of this patient
+        final CollectionReference healings = db.collection("users")
+                .document(mAuth.getUid())
+                .collection("patients")
+                .document(patientList.get(id).getUid())
+                .collection("healings");
+        healings.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for(QueryDocumentSnapshot documentSnapshot:task.getResult()){
+                        documentSnapshot.getReference().delete();
+                    }
+                }
+            }
+        });
+
+        CollectionReference payments = healings.getParent().collection("payments");
+        payments.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for(QueryDocumentSnapshot documentSnapshot:task.getResult()){
+                        documentSnapshot.getReference().delete();
+                    }
+                }
+            }
+        });
+
+        //now deleting patient document
+        DocumentReference patient = db.collection("users")
+                .document(mAuth.getUid())
+                .collection("patients")
+                .document(patientList.get(id).getUid());
+        patient.delete();
+        Snackbar.make(findViewById(R.id.recycler_main),"Record Deleted",Snackbar.LENGTH_LONG).show();
     }
 }

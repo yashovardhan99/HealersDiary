@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +28,7 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.ViewHo
     @SuppressLint("StaticFieldLeak")
     private static Context context;
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
         TextView mTextView;
         ViewHolder(RelativeLayout v){
             super(v);
@@ -41,6 +42,14 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.ViewHo
                     context.startActivity(detail);
                 }
             });
+            v.setOnCreateContextMenuListener(this);
+        }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+            menu.setHeaderTitle(mTextView.getText().toString());
+            menu.add(getAdapterPosition(), 0, 0, "Edit");
+            menu.add(getAdapterPosition(), 1, 0, "Delete");
         }
     }
 
