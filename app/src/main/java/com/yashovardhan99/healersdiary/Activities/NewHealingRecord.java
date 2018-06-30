@@ -21,20 +21,25 @@ import java.util.Map;
 
 public class NewHealingRecord extends AppCompatActivity {
 
+    public static final int NEW_HEALING_ADDED_RESULT = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_healing_record);
+
         findViewById(R.id.saveNewHealing).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 SaveData();
+                setResult(NEW_HEALING_ADDED_RESULT);
                 finish();
             }
         });
     }
     void SaveData(){
-        String Uid = getIntent().getStringExtra("PATIENT_UID");
+        //saves data to firestore
+        String Uid = getIntent().getStringExtra(MainActivity.PATIENT_UID);
         Log.d("PATIENT UID RECEIVED",Uid);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final DocumentReference patient = db.collection("users")

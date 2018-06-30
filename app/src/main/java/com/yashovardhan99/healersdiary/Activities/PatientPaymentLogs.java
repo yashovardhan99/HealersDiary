@@ -2,7 +2,6 @@ package com.yashovardhan99.healersdiary.Activities;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -55,8 +54,10 @@ public class PatientPaymentLogs extends AppCompatActivity {
                 .collection("users")
                 .document(FirebaseAuth.getInstance().getUid())
                 .collection("patients")
-                .document(getIntent().getStringExtra("PATIENT_UID"))
+                .document(getIntent().getStringExtra(MainActivity.PATIENT_UID))
                 .collection("payments");
+
+        //fetching payment records here
         logs.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
@@ -66,11 +67,14 @@ public class PatientPaymentLogs extends AppCompatActivity {
                     payment.date = df.format(dc.getDocument().getDate("Date"));
                     payment.Uid = dc.getDocument().getId();
                     payment.amount = NumberFormat.getCurrencyInstance().format(dc.getDocument().getDouble("Amount"));
+
                     switch (dc.getType()){
+
                         case ADDED:
                             payments.add(0,payment);
                             mAdapter.notifyItemInserted(0);
                             break;
+
                         case REMOVED:
                             int pos = payments.indexOf(payment);
                             if(pos<0)
@@ -108,10 +112,12 @@ public class PatientPaymentLogs extends AppCompatActivity {
     public boolean onContextItemSelected(MenuItem item) {
         switch (item.getTitle().toString()){
             case "Edit":
-                Snackbar.make(findViewById(R.id.patientPaymentLogsRecycler),"Not yet implemented", BaseTransientBottomBar.LENGTH_LONG).show();
+                //edit payment
+                Snackbar.make(findViewById(R.id.patientPaymentLogsRecycler),"Not yet implemented", Snackbar.LENGTH_LONG).show();
                 Log.d("CONTEXT MENU","EDIT - "+item.getGroupId());
                 return true;
             case "Delete":
+                //delete record
                 Log.d("CONTEXT MENU","DELETE - "+item.getGroupId());
                 deletePayment(item.getGroupId());
                 return true;
@@ -119,6 +125,7 @@ public class PatientPaymentLogs extends AppCompatActivity {
         return super.onContextItemSelected(item);
     }
     void deletePayment(int id){
+        //delete the payment record from firestore
         double amount = 0.00;
         try {
             amount = NumberFormat.getCurrencyInstance().parse(payments.get(id).getAmount()).doubleValue();
@@ -154,6 +161,7 @@ public class PatientPaymentLogs extends AppCompatActivity {
                         }
                     }
                 });
+        Snackbar.make(findViewById(R.id.patientPaymentLogsRecycler),"Payment Deleted : "+NumberFormat.getCurrencyInstance().format(finalAmount),Snackbar.LENGTH_LONG).show();
         payments.remove(id);
         mAdapter.notifyItemRemoved(id);
     }

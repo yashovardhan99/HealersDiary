@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -23,7 +24,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.yashovardhan99.healersdiary.R;
 
 import java.text.NumberFormat;
@@ -31,12 +35,16 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 public class NewPatient extends AppCompatActivity {
 
     final int READ_CONTACT_PERMISSION_REQUEST_CODE = 1;
     final int CONTACT_PICKER_REQUEST_CODE = 2;
     TextInputEditText patientNameEditText;
     TextInputEditText contactNumberEditText;
+    TextInputEditText rate;
+    TextInputEditText disease;
     TextInputEditText due;
     Toolbar newPatientToolbar;
 
@@ -53,6 +61,9 @@ public class NewPatient extends AppCompatActivity {
 
          patientNameEditText = findViewById(R.id.patientName);
         contactNumberEditText = findViewById(R.id.phoneNumber);
+        rate = findViewById(R.id.rate);
+        due = findViewById(R.id.EnterPaymentDue);
+        disease = findViewById(R.id.patientDisease);
 
         //Contact Picker Button
         Button contactBrowse = findViewById(R.id.contact_picker_button);
@@ -76,8 +87,6 @@ public class NewPatient extends AppCompatActivity {
         });
 
         //add the currency symbol to the rate field
-
-        final TextInputEditText rate = findViewById(R.id.rate);
         rate.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -100,7 +109,6 @@ public class NewPatient extends AppCompatActivity {
         });
 
         //add the currency symbol to the due field
-        due = findViewById(R.id.EnterPaymentDue);
         due.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -123,7 +131,41 @@ public class NewPatient extends AppCompatActivity {
         });
 
         //now saving
-        Button save = findViewById(R.id.saveNewPatient);
+        final Button save = findViewById(R.id.saveNewPatient);
+
+        Log.d("EDIT", String.valueOf(getIntent().getBooleanExtra("EDIT",false)));
+
+        //load previous content if editing
+        if(getIntent().getBooleanExtra("EDIT",false)) {
+            String id = getIntent().getStringExtra(MainActivity.PATIENT_UID);
+            Log.d("EDIT", getIntent().getStringExtra(MainActivity.PATIENT_UID));
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("users")
+                    .document(FirebaseAuth.getInstance().getUid())
+                    .collection("patients")
+                    .document(getIntent().getStringExtra(MainActivity.PATIENT_UID))
+                    .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                            if(!documentSnapshot.exists()){
+                                Snackbar.make(save,"Something went wrong!",Snackbar.LENGTH_INDEFINITE).show();
+                                return;
+                            }
+                            if (documentSnapshot.contains("Name"))
+                                patientNameEditText.setText(documentSnapshot.get("Name").toString());
+                            if (documentSnapshot.contains("Phone"))
+                                contactNumberEditText.setText(documentSnapshot.get("Phone").toString());
+                            if (documentSnapshot.contains("Disease"))
+                                disease.setText(documentSnapshot.get("Disease").toString());
+                            if (documentSnapshot.contains("Rate"))
+                                rate.setText(documentSnapshot.get("Rate").toString());
+                            if (documentSnapshot.contains("Due"))
+                                due.setText(documentSnapshot.get("Due").toString());
+                            save.setText("Update");
+                        }
+                    });
+        }
+
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -139,18 +181,25 @@ public class NewPatient extends AppCompatActivity {
                 Map<String,Object> patient = new HashMap<>();
                 patient.put("Name",patientNameEditText.getText().toString());
                 patient.put("Phone",contactNumberEditText.getText().toString());
-                patient.put("Disease",((TextInputEditText)(findViewById(R.id.patientDisease))).getText().toString());
+                patient.put("Disease",disease.getText().toString());
                 if(!rate.getText().toString().isEmpty())
                     patient.put("Rate",Double.parseDouble(rate.getText().toString().substring(1)));
                 if(!due.getText().toString().isEmpty())
                     patient.put("Due",Double.parseDouble(due.getText().toString().substring(1)));
                 patient.put("Date", Calendar.getInstance().getTime());
 
-                //creating docref for new patient record
-                DocumentReference documentReference = db.collection("users")
-                        .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                        .collection("patients")
-                        .document(String.valueOf(Calendar.getInstance().getTimeInMillis()));
+                //creating docref for new or edited patient record
+                DocumentReference documentReference;
+                if(getIntent().getBooleanExtra("EDIT",false))
+                    documentReference = db.collection("users")
+                            .document(FirebaseAuth.getInstance().getUid())
+                            .collection("patients")
+                            .document(getIntent().getStringExtra(MainActivity.PATIENT_UID));
+                else
+                    documentReference = db.collection("users")
+                            .document(FirebaseAuth.getInstance().getUid())
+                            .collection("patients")
+                            .document(String.valueOf(Calendar.getInstance().getTimeInMillis()));
 
                 //adding data to document
                 documentReference.set(patient)
@@ -158,7 +207,7 @@ public class NewPatient extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful()){
-                                    Log.d("FIRESTORE","Created new patient");
+                                    Log.d("FIRESTORE","Saved patient data");
                                 }
                                 else {
                                     Log.d("FIRESTORE","Error : "+task.getException().getMessage());
@@ -167,7 +216,7 @@ public class NewPatient extends AppCompatActivity {
                         });
                 //finally opening the relevant patient detail view
                 Intent openPatientDetail = new Intent(NewPatient.this, PatientView.class);
-                openPatientDetail.putExtra("PATIENT_UID",documentReference.getId());
+                openPatientDetail.putExtra(MainActivity.PATIENT_UID,documentReference.getId());
                 Log.d("PATIENT UID",documentReference.getId());
                 openPatientDetail.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(openPatientDetail);

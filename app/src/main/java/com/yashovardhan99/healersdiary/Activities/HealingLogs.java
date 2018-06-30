@@ -54,8 +54,9 @@ public class HealingLogs extends AppCompatActivity {
         logs = db.collection("users")
                 .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .collection("patients")
-                .document(getIntent().getStringExtra("PATIENT_UID"))
+                .document(getIntent().getStringExtra(MainActivity.PATIENT_UID))
                 .collection("healings");
+
         //collection reference to all healing logs for this patient
         logs.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -67,6 +68,7 @@ public class HealingLogs extends AppCompatActivity {
                 }
                 Log.d("FIRESTORE","Logs fetched");
 
+                //fetching changes to this patient's healing collection
                 for(DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()){
 
                     Date date = dc.getDocument().getDate("Date");
@@ -89,6 +91,7 @@ public class HealingLogs extends AppCompatActivity {
                             mAdapter.notifyItemRemoved(pos);
                             break;
                     }
+                    //NOTE - healing data cannot be modified
                 }
             }
         });
@@ -100,6 +103,7 @@ public class HealingLogs extends AppCompatActivity {
         mAdapter = new HealingLogAdapter(healings);
         mRecyclerView.setAdapter(mAdapter);
 
+        //for the divider lines between each record
         DividerItemDecoration itemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),DividerItemDecoration.VERTICAL);
         mRecyclerView.addItemDecoration(itemDecoration);
 
@@ -120,28 +124,22 @@ public class HealingLogs extends AppCompatActivity {
     public boolean onContextItemSelected(MenuItem item) {
         switch (item.getTitle().toString()){
             case "Delete":
-                deleteHealing(item.getGroupId());
-                healings.remove(item.getGroupId());
+                //record to be deleted
+                deleteHealing(item.getGroupId());//deleted from firestore
+                healings.remove(item.getGroupId());//removed from list
                 Snackbar.make(findViewById(R.id.healingLogRecyclerView),"Record Deleted",Snackbar.LENGTH_LONG);
-                mAdapter.notifyItemRemoved(item.getGroupId());
+                mAdapter.notifyItemRemoved(item.getGroupId());//updated adapter
                 return true;
         }
         return super.onContextItemSelected(item);
     }
 
     void deleteHealing(int id){
+        //deletes healing from firestore
         Healing healing = healings.get(id);
         logs.document(healing.getUid())
-                .delete()
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if(task.isSuccessful())
-                            Log.d("FIRESTORE","Healing Deleted");
-                        else
-                            Log.d("FIRESTORE","Error : "+task.getException());
-                    }
-                });
+                .delete();
+        //now changing amount due
         logs.getParent().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -155,9 +153,9 @@ public class HealingLogs extends AppCompatActivity {
                 }
                 else
                     Log.d("FIRESTORE", String.valueOf(task.getException()));
-                logs.getParent().update("Due",due-rate);
+
+                logs.getParent().update("Due",due-rate);//updating amount due
             }
         });
     }
-
 }

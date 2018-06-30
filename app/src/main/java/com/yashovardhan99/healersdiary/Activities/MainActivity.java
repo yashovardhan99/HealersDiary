@@ -39,6 +39,7 @@ import javax.annotation.Nullable;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final String PATIENT_UID = "PATIENT_UID";
     private RecyclerView.Adapter mAdapter;
     private ArrayList<Patient> patientList;
     Toolbar mainActivityToolbar;
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -61,18 +63,19 @@ public class MainActivity extends AppCompatActivity {
         //check login and handle
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser mUser = mAuth.getCurrentUser();
-        if(mUser==null) {//not signed in
-
+        if(mUser==null) {
+            //not signed in
             startActivity(new Intent(this, Login.class)
                     .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
             return;
         }
 
-        //firestore
+        //firestore init
         db = FirebaseFirestore.getInstance();
         CollectionReference patients = db.collection("users")
                 .document(mUser.getUid())
                 .collection("patients");
+
         //to instantly make any changes reflect here
         patients.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -133,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
         mAdapter = new MainListAdapter(patientList);
         mRecyclerView.setAdapter(mAdapter);
 
+        //displays the divider line bw each item
         DividerItemDecoration itemLine = new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL);
         mRecyclerView.addItemDecoration(itemLine);
 
@@ -150,9 +154,14 @@ public class MainActivity extends AppCompatActivity {
     public boolean onContextItemSelected(final MenuItem item) {
         switch (item.getTitle().toString()){
             case "Edit":
-                Snackbar.make(findViewById(R.id.recycler_main),"Not yet implemented",Snackbar.LENGTH_LONG).show();
+                //edit patient data
+                Intent editPatient = new Intent(this,NewPatient.class);
+                editPatient.putExtra("EDIT",true);
+                editPatient.putExtra(PATIENT_UID,patientList.get(item.getGroupId()).getUid());
+                startActivity(editPatient);
                 return true;
             case "Delete":
+                //delete patient data
                 final AlertDialog.Builder confirmBuilder = new AlertDialog.Builder(MainActivity.this);
                 confirmBuilder.setMessage("This will delete all patient records permanently. This action cannot be undone")
                         .setTitle("Are you sure?")
@@ -168,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
                                 //action cancelled
                             }
                         });
+                //to confirm deletion
                 AlertDialog confirm = confirmBuilder.create();
                 confirm.show();
                 return true;

@@ -2,6 +2,8 @@ package com.yashovardhan99.healersdiary.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.BaseTransientBottomBar;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -25,6 +27,8 @@ import javax.annotation.Nullable;
 public class PatientView extends AppCompatActivity {
 
     public String Uid;
+    public final int REQUEST_HEALING_CONFIRMATION = 0;
+    public final int REQUEST_PAYMENT_ADDED = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +40,7 @@ public class PatientView extends AppCompatActivity {
         getSupportActionBar().setTitle("Patient Detail");
         //toolbar setup
 
-        Uid = getIntent().getStringExtra("PATIENT_UID");
+        Uid = getIntent().getStringExtra(MainActivity.PATIENT_UID);
         //patient record UID to fetch records from firestore
         if (Uid != null) {
 
@@ -90,8 +94,8 @@ public class PatientView extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent newHealingIntent = new Intent(PatientView.this,NewHealingRecord.class);
-                newHealingIntent.putExtra("PATIENT_UID",Uid);
-                startActivity(newHealingIntent);
+                newHealingIntent.putExtra(MainActivity.PATIENT_UID,Uid);
+                startActivityForResult(newHealingIntent, REQUEST_HEALING_CONFIRMATION);
             }
         });
 
@@ -101,27 +105,29 @@ public class PatientView extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent logs = new Intent(PatientView.this, HealingLogs.class);
-                logs.putExtra("PATIENT_UID",Uid);
+                logs.putExtra(MainActivity.PATIENT_UID,Uid);
                 startActivity(logs);
             }
         });
 
+        //add new payment
         Button addPayment = findViewById(R.id.enterNewPPayment);
         addPayment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent pay = new Intent(PatientView.this,PatientAddPaymentDialog.class);
-                pay.putExtra("PATIENT_UID", Uid);
-                startActivity(pay);
+                pay.putExtra(MainActivity.PATIENT_UID, Uid);
+                startActivityForResult(pay,REQUEST_PAYMENT_ADDED);
             }
         });
 
+        //go to payment logs
         Button paymentLogs = findViewById(R.id.viewPatientPaymentLogs);
         paymentLogs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent logs = new Intent(PatientView.this, PatientPaymentLogs.class);
-                logs.putExtra("PATIENT_UID",Uid);
+                logs.putExtra(MainActivity.PATIENT_UID,Uid);
                 startActivity(logs);
             }
         });
@@ -132,5 +138,22 @@ public class PatientView extends AppCompatActivity {
         Intent back = new Intent(this,MainActivity.class);
         back.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(back);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode){
+            case REQUEST_HEALING_CONFIRMATION:
+                if(resultCode==NewHealingRecord.NEW_HEALING_ADDED_RESULT)
+                    Snackbar.make(findViewById(R.id.patientNameInDetail),"Added!", BaseTransientBottomBar.LENGTH_SHORT).show();
+                break;
+
+            case REQUEST_PAYMENT_ADDED:
+                if(resultCode==PatientAddPaymentDialog.PAYMENT_ADDED_RESULT)
+                    Snackbar.make(findViewById(R.id.patientNameInDetail),"Payment Added : "+data.getStringExtra("Amount"),Snackbar.LENGTH_LONG).show();
+                break;
+
+            default: super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }
