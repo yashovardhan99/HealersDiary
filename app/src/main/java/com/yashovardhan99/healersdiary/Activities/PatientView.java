@@ -6,6 +6,7 @@ import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -77,8 +78,8 @@ public class PatientView extends AppCompatActivity {
                         TextView due = findViewById(R.id.bill);
                         if (patient.containsKey("Due") && !patient.get("Due").toString().isEmpty()) {
                             Double amt = Double.parseDouble(patient.get("Due").toString());
-                            String famt = "Amount Due : " + NumberFormat.getCurrencyInstance().format(amt);
-                            due.setText(famt);
+                            String famt = getString(R.string.payment_due)+": <b><big>"+NumberFormat.getCurrencyInstance().format(amt)+"</big></b>";
+                            due.setText(Html.fromHtml(famt));
                         }
                         else
                             due.setVisibility(View.GONE);

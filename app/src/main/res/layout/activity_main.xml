@@ -45,15 +45,16 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Welcome, User!"
+                    android:text="@string/welcome_user"
                     android:textAlignment="center"
-                    android:textSize="34sp"
-                    android:padding="8dp" />
+                    android:textSize="24sp"
+                    android:padding="8dp"
+                    android:id="@+id/userWelcome"/>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="# Healings Today"
-                    android:textSize="24sp"
+                    android:textSize="20sp"
                     android:textAlignment="center"
                     android:padding="8dp"/>
                 <TextView
@@ -61,7 +62,7 @@
                     android:layout_height="wrap_content"
                     android:text="# Healings yesterday"
                     android:textAlignment="center"
-                    android:textSize="20sp"
+                    android:textSize="16sp"
                     android:padding="8dp"/>
             </LinearLayout>
 

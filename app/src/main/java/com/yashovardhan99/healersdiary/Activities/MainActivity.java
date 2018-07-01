@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -70,6 +71,10 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+        if(mUser.getDisplayName()!=null)
+            ((TextView)findViewById(R.id.userWelcome)).setText(getString(R.string.welcome_user,mUser.getDisplayName()));
+        else
+            findViewById(R.id.userWelcome).setVisibility(View.GONE);
         //firestore init
         db = FirebaseFirestore.getInstance();
         CollectionReference patients = db.collection("users")
