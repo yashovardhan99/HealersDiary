@@ -10,4 +10,6 @@
     <string name="payment_due">Payment Due</string>
     <string name="enter_payment_received">Enter Payment Received</string>
     <string name="welcome_user">Welcome, %s!</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
 </resources>

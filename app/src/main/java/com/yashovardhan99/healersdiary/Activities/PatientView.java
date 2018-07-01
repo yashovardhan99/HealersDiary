@@ -22,6 +22,7 @@ import com.yashovardhan99.healersdiary.R;
 
 import java.text.NumberFormat;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
 
@@ -37,7 +38,7 @@ public class PatientView extends AppCompatActivity {
         setContentView(R.layout.activity_patient_view);
 
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Patient Detail");
         //toolbar setup
 
@@ -48,7 +49,7 @@ public class PatientView extends AppCompatActivity {
             final FirebaseFirestore db = FirebaseFirestore.getInstance();
             //initialize firestore
             final DocumentReference documentReference = db.collection("users")
-                    .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                    .document(Objects.requireNonNull(FirebaseAuth.getInstance().getUid()))
                     .collection("patients")
                     .document(Uid);
             //create ref to patient document
