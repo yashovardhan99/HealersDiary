@@ -19,4 +19,14 @@
         <item name="windowActionModeOverlay">true</item>
     </style>
 
+    <style name="AppTheme.CollapsingToolbar.ExpandedTitle" parent="AppTheme">
+        <item name="android:textColor">@android:color/transparent</item>
+        <item name="android:textSize">0sp</item>
+    </style>
+
+    <style name="AppTheme.CollapsingToolbarParent" parent="AppTheme">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
 </resources>

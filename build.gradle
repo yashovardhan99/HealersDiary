@@ -30,6 +30,9 @@ allprojects {
             url 'https://maven.google.com/'
         }
     }
+    tasks.withType(JavaCompile){
+        options.deprecation = true
+    }
 }
 
 task clean(type: Delete) {

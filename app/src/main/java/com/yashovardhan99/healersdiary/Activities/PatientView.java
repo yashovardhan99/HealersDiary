@@ -6,6 +6,7 @@ import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +22,7 @@ import com.yashovardhan99.healersdiary.R;
 
 import java.text.NumberFormat;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
 
@@ -36,7 +38,7 @@ public class PatientView extends AppCompatActivity {
         setContentView(R.layout.activity_patient_view);
 
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Patient Detail");
         //toolbar setup
 
@@ -47,7 +49,7 @@ public class PatientView extends AppCompatActivity {
             final FirebaseFirestore db = FirebaseFirestore.getInstance();
             //initialize firestore
             final DocumentReference documentReference = db.collection("users")
-                    .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                    .document(Objects.requireNonNull(FirebaseAuth.getInstance().getUid()))
                     .collection("patients")
                     .document(Uid);
             //create ref to patient document
@@ -77,8 +79,8 @@ public class PatientView extends AppCompatActivity {
                         TextView due = findViewById(R.id.bill);
                         if (patient.containsKey("Due") && !patient.get("Due").toString().isEmpty()) {
                             Double amt = Double.parseDouble(patient.get("Due").toString());
-                            String famt = "Amount Due : " + NumberFormat.getCurrencyInstance().format(amt);
-                            due.setText(famt);
+                            String famt = getString(R.string.payment_due)+": <b><big>"+NumberFormat.getCurrencyInstance().format(amt)+"</big></b>";
+                            due.setText(Html.fromHtml(famt));
                         }
                         else
                             due.setVisibility(View.GONE);

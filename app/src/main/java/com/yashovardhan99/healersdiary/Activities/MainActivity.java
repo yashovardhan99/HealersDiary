@@ -3,6 +3,7 @@ package com.yashovardhan99.healersdiary.Activities;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -12,18 +13,22 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -34,6 +39,9 @@ import com.yashovardhan99.healersdiary.Objects.Patient;
 import com.yashovardhan99.healersdiary.R;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
 
@@ -46,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAnalytics mFirebaseAnalytics;
     FirebaseFirestore db;
     FirebaseAuth mAuth;
+    public static int healingsToday, healingsYesterday;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,12 +72,18 @@ public class MainActivity extends AppCompatActivity {
         //check login and handle
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser mUser = mAuth.getCurrentUser();
-        if(mUser==null) {
+        if (mUser == null) {
             //not signed in
             startActivity(new Intent(this, Login.class)
                     .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
             return;
         }
+
+        //display welcome message
+        if (mUser.getDisplayName() != null)
+            ((TextView) findViewById(R.id.userWelcome)).setText(getString(R.string.welcome_user, mUser.getDisplayName()));
+        else
+            findViewById(R.id.userWelcome).setVisibility(View.GONE);
 
         //firestore init
         db = FirebaseFirestore.getInstance();
@@ -80,16 +95,16 @@ public class MainActivity extends AppCompatActivity {
         patients.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                if(e!=null){
-                    Log.d("FIRESTORE","ERROR : "+e.getMessage());
+                if (e != null) {
+                    Log.d("FIRESTORE", "ERROR : " + e.getMessage());
                     return;
                 }
-                Log.d("FIRESTORE","Data fetced");
-                for(DocumentChange dc:queryDocumentSnapshots.getDocumentChanges()){
+                Log.d("FIRESTORE", "Data fetced");
+                for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
                     //getting changes in documents
-                    Log.d("FIRESTORE",dc.getDocument().getData().toString());
+                    Log.d("FIRESTORE", dc.getDocument().getData().toString());
 
-                    switch (dc.getType()){
+                    switch (dc.getType()) {
 
                         case ADDED:
                             //add new patient to arrayList
@@ -103,8 +118,8 @@ public class MainActivity extends AppCompatActivity {
                         case MODIFIED:
                             //modify patient name
                             String id = dc.getDocument().getId();
-                            for(Patient patient1: patientList){
-                                if(patient1.getUid().equals(id)){
+                            for (Patient patient1 : patientList) {
+                                if (patient1.getUid().equals(id)) {
                                     patient1.name = dc.getDocument().get("Name").toString();
                                     mAdapter.notifyItemChanged(patientList.indexOf(patient1));
                                     break;
@@ -114,8 +129,8 @@ public class MainActivity extends AppCompatActivity {
                         case REMOVED:
                             //remove patient record
                             String id2 = dc.getDocument().getId();
-                            for(Patient patient1: patientList){
-                                if(patient1.getUid().equals(id2)){
+                            for (Patient patient1 : patientList) {
+                                if (patient1.getUid().equals(id2)) {
                                     int pos = patientList.indexOf(patient1);
                                     patientList.remove(patient1);
                                     mAdapter.notifyItemRemoved(pos);
@@ -145,19 +160,24 @@ public class MainActivity extends AppCompatActivity {
         newPatientButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,NewPatient.class));
+                startActivity(new Intent(MainActivity.this, NewPatient.class));
             }
         });
+
+        //initialize healings counter
+        healingsToday = 0;
+        healingsYesterday = 0;
+        countHealings();
     }
 
     @Override
     public boolean onContextItemSelected(final MenuItem item) {
-        switch (item.getTitle().toString()){
+        switch (item.getTitle().toString()) {
             case "Edit":
                 //edit patient data
-                Intent editPatient = new Intent(this,NewPatient.class);
-                editPatient.putExtra("EDIT",true);
-                editPatient.putExtra(PATIENT_UID,patientList.get(item.getGroupId()).getUid());
+                Intent editPatient = new Intent(this, NewPatient.class);
+                editPatient.putExtra("EDIT", true);
+                editPatient.putExtra(PATIENT_UID, patientList.get(item.getGroupId()).getUid());
                 startActivity(editPatient);
                 return true;
             case "Delete":
@@ -185,7 +205,8 @@ public class MainActivity extends AppCompatActivity {
                 return super.onContextItemSelected(item);
         }
     }
-    void DeletePatientRecord(int id){
+
+    void DeletePatientRecord(int id) {
         //now to delete this record, we first delete all healing and payment history of this patient
         final CollectionReference healings = db.collection("users")
                 .document(mAuth.getUid())
@@ -195,8 +216,8 @@ public class MainActivity extends AppCompatActivity {
         healings.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    for(QueryDocumentSnapshot documentSnapshot:task.getResult()){
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                         documentSnapshot.getReference().delete();
                     }
                 }
@@ -207,8 +228,8 @@ public class MainActivity extends AppCompatActivity {
         payments.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    for(QueryDocumentSnapshot documentSnapshot:task.getResult()){
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                         documentSnapshot.getReference().delete();
                     }
                 }
@@ -221,6 +242,54 @@ public class MainActivity extends AppCompatActivity {
                 .collection("patients")
                 .document(patientList.get(id).getUid());
         patient.delete();
-        Snackbar.make(findViewById(R.id.recycler_main),"Record Deleted",Snackbar.LENGTH_LONG).show();
+        Snackbar.make(findViewById(R.id.recycler_main), "Record Deleted", Snackbar.LENGTH_LONG).show();
+    }
+
+    void countHealings() {
+        db.collection("users")
+                .document(Objects.requireNonNull(mAuth.getUid()))
+                .collection("patients")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            List<DocumentSnapshot> documentSnapshots = task.getResult().getDocuments();
+                            for (DocumentSnapshot documentSnapshot : documentSnapshots) {
+                                documentSnapshot.getReference().collection("healings").get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    List<DocumentSnapshot> healingList = task.getResult().getDocuments();
+                                                    for (DocumentSnapshot healing : healingList) {
+                                                        Log.d("Healing data",healing.getData().toString());
+                                                        Date date;
+                                                        Timestamp timestamp = healing.getTimestamp("Date");
+                                                        date = timestamp != null ? timestamp.toDate() : null;
+                                                        if (date == null)
+                                                            continue;
+                                                        if (DateUtils.isToday(date.getTime()))
+                                                            healingsToday++;
+                                                        else if (DateUtils.isToday(date.getTime() + DateUtils.DAY_IN_MILLIS))
+                                                            healingsYesterday++;
+                                                        else
+                                                            break;
+                                                    }
+                                                    updateTextFields();
+                                                }
+                                            }
+                                        });
+                            }
+                        }
+                    }
+                });
+    }
+    void updateTextFields(){
+        TextView today = findViewById(R.id.healingsToday);
+        TextView yesterday = findViewById(R.id.healingsYesterday);
+        Resources res = getResources();
+        today.setText(res.getQuantityString(R.plurals.healing, healingsToday, healingsToday, getString(R.string.today)));
+        yesterday.setText(res.getQuantityString(R.plurals.healing, healingsYesterday, healingsYesterday, getString(R.string.yesterday)));
     }
 }
