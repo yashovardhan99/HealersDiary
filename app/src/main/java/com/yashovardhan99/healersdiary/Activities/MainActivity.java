@@ -28,20 +28,16 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.Source;
 import com.yashovardhan99.healersdiary.Adapters.MainListAdapter;
 import com.yashovardhan99.healersdiary.Objects.Patient;
 import com.yashovardhan99.healersdiary.R;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 import javax.annotation.Nullable;
@@ -85,6 +81,11 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+
+        //initialize healings counter
+        healingsToday = 0;
+        healingsYesterday = 0;
+
         //display welcome message
         if (mUser.getDisplayName() != null)
             ((TextView) findViewById(R.id.userWelcome)).setText(getString(R.string.welcome_user, mUser.getDisplayName()));
@@ -121,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
                             patient.uid = dc.getDocument().getId();
                             patientList.add(patient);
                             mAdapter.notifyItemInserted(patientList.indexOf(patient));
+                            countHealings(patient.getUid());
                             break;
 
                         case MODIFIED:
@@ -178,11 +180,6 @@ public class MainActivity extends AppCompatActivity {
                 mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, newPatient);
             }
         });
-
-        //initialize healings counter
-        healingsToday = 0;
-        healingsYesterday = 0;
-        countHealings();
     }
 
     @Override
@@ -274,44 +271,41 @@ public class MainActivity extends AppCompatActivity {
         delete.putString(FirebaseAnalytics.Param.ITEM_ID,patient.getId());
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, delete);
     }
+    void countHealings(String uid) {
+        Log.d("COUNTING HEALINGS", uid);
 
-    void countHealings() {
         db.collection("users")
                 .document(Objects.requireNonNull(mAuth.getUid()))
                 .collection("patients")
-                .get(Source.CACHE)
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                .document(uid)
+                .collection("healings")
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            List<DocumentSnapshot> documentSnapshots = task.getResult().getDocuments();
-                            for (DocumentSnapshot documentSnapshot : documentSnapshots) {
-                                documentSnapshot.getReference().collection("healings").get(Source.CACHE)
-                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                if (task.isSuccessful()) {
-                                                    List<DocumentSnapshot> healingList = task.getResult().getDocuments();
-                                                    for (DocumentSnapshot healing : healingList) {
-                                                        Log.d("Healing data", Objects.requireNonNull(healing.getData()).toString());
-                                                        Date date;
-                                                        Timestamp timestamp = healing.getTimestamp("Date");
-                                                        date = timestamp != null ? timestamp.toDate() : null;
-                                                        if (date == null)
-                                                            continue;
-                                                        if (DateUtils.isToday(date.getTime()))
-                                                            healingsToday++;
-                                                        else if (DateUtils.isToday(date.getTime() + DateUtils.DAY_IN_MILLIS))
-                                                            healingsYesterday++;
-                                                        else
-                                                            break;
-                                                    }
-                                                    updateTextFields();
-                                                }
-                                            }
-                                        });
+                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                         if(queryDocumentSnapshots == null)
+                             return;
+                        for(DocumentChange dc:queryDocumentSnapshots.getDocumentChanges()){
+                            Timestamp timestamp = dc.getDocument().getTimestamp("Date");
+                            if(timestamp==null)
+                                continue;
+                            Log.d("COUNTING HEALINGS",timestamp.toString());
+                            Long time = timestamp.toDate().getTime();
+                            switch (dc.getType()){
+                                case ADDED:
+                                    if(DateUtils.isToday(time))
+                                        healingsToday++;
+                                    else if(DateUtils.isToday(time+DateUtils.DAY_IN_MILLIS))
+                                        healingsYesterday++;
+                                    break;
+                                case REMOVED:
+                                    if(DateUtils.isToday(time))
+                                        healingsToday--;
+                                    else if(DateUtils.isToday(time+DateUtils.DAY_IN_MILLIS))
+                                        healingsYesterday--;
+                                    break;
                             }
                         }
+                        updateTextFields();
                     }
                 });
     }

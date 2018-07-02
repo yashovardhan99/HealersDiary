@@ -6,7 +6,6 @@ import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +17,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.yashovardhan99.healersdiary.Helpers.HtmlCompat;
 import com.yashovardhan99.healersdiary.R;
 
 import java.text.NumberFormat;
@@ -80,7 +80,7 @@ public class PatientView extends AppCompatActivity {
                         if (patient.containsKey("Due") && !patient.get("Due").toString().isEmpty()) {
                             Double amt = Double.parseDouble(patient.get("Due").toString());
                             String famt = getString(R.string.payment_due)+": <b><big>"+NumberFormat.getCurrencyInstance().format(amt)+"</big></b>";
-                            due.setText(Html.fromHtml(famt));
+                            due.setText(HtmlCompat.fromHtml(famt));
                         }
                         else
                             due.setVisibility(View.GONE);
