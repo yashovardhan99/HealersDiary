@@ -34,6 +34,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Source;
 import com.yashovardhan99.healersdiary.Adapters.MainListAdapter;
 import com.yashovardhan99.healersdiary.Objects.Patient;
 import com.yashovardhan99.healersdiary.R;
@@ -48,6 +49,10 @@ import javax.annotation.Nullable;
 public class MainActivity extends AppCompatActivity {
 
     public static final String PATIENT_UID = "PATIENT_UID";
+    public static final String PATIENT_RECORD = "patient_record";
+    public static final String DELETE_BUTTON = "Delete Button";
+    public static final String EDIT_BUTTON = "Edit Button";
+    public static final String NEW = "New";
     private RecyclerView.Adapter mAdapter;
     private ArrayList<Patient> patientList;
     Toolbar mainActivityToolbar;
@@ -161,6 +166,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, NewPatient.class));
+
+                //log firebase analytics event
+                Bundle newPatient = new Bundle();
+                newPatient.putString(FirebaseAnalytics.Param.LOCATION, MainActivity.class.getName());
+                newPatient.putString(FirebaseAnalytics.Param.CONTENT_TYPE, NEW);
+                newPatient.putString(FirebaseAnalytics.Param.ITEM_CATEGORY,PATIENT_RECORD);
+                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, newPatient);
             }
         });
 
@@ -177,8 +189,18 @@ public class MainActivity extends AppCompatActivity {
                 //edit patient data
                 Intent editPatient = new Intent(this, NewPatient.class);
                 editPatient.putExtra("EDIT", true);
-                editPatient.putExtra(PATIENT_UID, patientList.get(item.getGroupId()).getUid());
+                String id = patientList.get(item.getGroupId()).getUid();
+                editPatient.putExtra(PATIENT_UID, id);
                 startActivity(editPatient);
+
+                //log analytics
+                Bundle edit = new Bundle();
+                edit.putString(FirebaseAnalytics.Param.LOCATION,MainActivity.class.getName());
+                edit.putString(FirebaseAnalytics.Param.CONTENT_TYPE, EDIT_BUTTON);
+                edit.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, PATIENT_RECORD);
+                edit.putString(FirebaseAnalytics.Param.ITEM_ID, id);
+                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, edit);
+
                 return true;
             case "Delete":
                 //delete patient data
@@ -243,20 +265,28 @@ public class MainActivity extends AppCompatActivity {
                 .document(patientList.get(id).getUid());
         patient.delete();
         Snackbar.make(findViewById(R.id.recycler_main), "Record Deleted", Snackbar.LENGTH_LONG).show();
+
+        //logging in analytics
+        Bundle delete = new Bundle();
+        delete.putString(FirebaseAnalytics.Param.CONTENT_TYPE, DELETE_BUTTON);
+        delete.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, PATIENT_RECORD);
+        delete.putString(FirebaseAnalytics.Param.LOCATION,MainActivity.class.getName());
+        delete.putString(FirebaseAnalytics.Param.ITEM_ID,patient.getId());
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, delete);
     }
 
     void countHealings() {
         db.collection("users")
                 .document(Objects.requireNonNull(mAuth.getUid()))
                 .collection("patients")
-                .get()
+                .get(Source.CACHE)
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             List<DocumentSnapshot> documentSnapshots = task.getResult().getDocuments();
                             for (DocumentSnapshot documentSnapshot : documentSnapshots) {
-                                documentSnapshot.getReference().collection("healings").get()
+                                documentSnapshot.getReference().collection("healings").get(Source.CACHE)
                                         .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                             @Override
                                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
