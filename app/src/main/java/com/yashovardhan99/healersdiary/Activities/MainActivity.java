@@ -72,7 +72,8 @@ public class MainActivity extends AppCompatActivity {
 
         mainActivityToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mainActivityToolbar);
-        getSupportActionBar().setTitle(R.string.app_name);
+        if(getSupportActionBar()!=null)
+            getSupportActionBar().setTitle(R.string.app_name);
 
         //check login and handle
         mAuth = FirebaseAuth.getInstance();
@@ -105,6 +106,8 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 Log.d("FIRESTORE", "Data fetced");
+                if(queryDocumentSnapshots==null)
+                    return;
                 for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
                     //getting changes in documents
                     Log.d("FIRESTORE", dc.getDocument().getData().toString());
@@ -114,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
                         case ADDED:
                             //add new patient to arrayList
                             Patient patient = new Patient();
-                            patient.name = dc.getDocument().get("Name").toString();
+                            patient.name = Objects.requireNonNull(dc.getDocument().get("Name")).toString();
                             patient.uid = dc.getDocument().getId();
                             patientList.add(patient);
                             mAdapter.notifyItemInserted(patientList.indexOf(patient));
@@ -125,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
                             String id = dc.getDocument().getId();
                             for (Patient patient1 : patientList) {
                                 if (patient1.getUid().equals(id)) {
-                                    patient1.name = dc.getDocument().get("Name").toString();
+                                    patient1.name = Objects.requireNonNull(dc.getDocument().get("Name")).toString();
                                     mAdapter.notifyItemChanged(patientList.indexOf(patient1));
                                     break;
                                 }
@@ -229,11 +232,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void DeletePatientRecord(int id) {
-        //now to delete this record, we first delete all healing and payment history of this patient
-        final CollectionReference healings = db.collection("users")
-                .document(mAuth.getUid())
+        DocumentReference patient = db.collection("users")
+                .document(Objects.requireNonNull(mAuth.getUid()))
                 .collection("patients")
-                .document(patientList.get(id).getUid())
+                .document(patientList.get(id).getUid());
+        //now to delete this record, we first delete all healing and payment history of this patient
+        final CollectionReference healings = patient
                 .collection("healings");
         healings.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -246,7 +250,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        CollectionReference payments = healings.getParent().collection("payments");
+        CollectionReference payments = patient.collection("payments");
         payments.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -259,10 +263,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //now deleting patient document
-        DocumentReference patient = db.collection("users")
-                .document(mAuth.getUid())
-                .collection("patients")
-                .document(patientList.get(id).getUid());
         patient.delete();
         Snackbar.make(findViewById(R.id.recycler_main), "Record Deleted", Snackbar.LENGTH_LONG).show();
 
@@ -293,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
                                                 if (task.isSuccessful()) {
                                                     List<DocumentSnapshot> healingList = task.getResult().getDocuments();
                                                     for (DocumentSnapshot healing : healingList) {
-                                                        Log.d("Healing data",healing.getData().toString());
+                                                        Log.d("Healing data", Objects.requireNonNull(healing.getData()).toString());
                                                         Date date;
                                                         Timestamp timestamp = healing.getTimestamp("Date");
                                                         date = timestamp != null ? timestamp.toDate() : null;
