@@ -29,6 +29,7 @@ import com.yashovardhan99.healersdiary.R;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class Login extends AppCompatActivity {
 
@@ -101,7 +102,6 @@ public class Login extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-                            Log.d("FIREBASE","Login Succesful. Name = "+ mAuth.getCurrentUser().getDisplayName());
                             params.putString(FirebaseAnalytics.Param.METHOD,"Google");
                             signedIn();
                         }
@@ -114,11 +114,13 @@ public class Login extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         //create a user document in firestore
         Map<String,Object> user = new HashMap<>();
-        user.put("uUd",mAuth.getCurrentUser().getUid());
-        user.put("Name",mAuth.getCurrentUser().getDisplayName());
-        user.put("Email",mAuth.getCurrentUser().getEmail());
-        user.put("Phone",mAuth.getCurrentUser().getPhoneNumber());
-        DocumentReference userDoc = db.collection("users").document(mAuth.getUid());
+        user.put("uUd",mAuth.getUid());
+        if(mAuth.getCurrentUser()!=null) {
+            user.put("Name", mAuth.getCurrentUser().getDisplayName());
+            user.put("Email", mAuth.getCurrentUser().getEmail());
+            user.put("Phone", mAuth.getCurrentUser().getPhoneNumber());
+        }
+        DocumentReference userDoc = db.collection("users").document(Objects.requireNonNull(mAuth.getUid()));
         final boolean signup[] = {true};
         userDoc.get()
         .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -146,7 +148,7 @@ public class Login extends AppCompatActivity {
                                 Toast.makeText(Login.this, "Welcome " + mAuth.getCurrentUser().getDisplayName() + ". Tap the + button to get started!", Toast.LENGTH_LONG).show();
                             Log.d("FIRESTORE", "Added user document");
                         } else {
-                            Log.d("FIRESTORE", task.getResult().toString() + " : " + task.getException().toString());
+                            Log.d("FIRESTORE", task.getResult().toString() + " : " + Objects.requireNonNull(task.getException()).toString());
                             Toast.makeText(Login.this, "Some problem Occured. You have been logged in but some features may not work properly", Toast.LENGTH_LONG).show();
                         }
                     }

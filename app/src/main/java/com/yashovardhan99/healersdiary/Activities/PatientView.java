@@ -107,6 +107,7 @@ public class PatientView extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent logs = new Intent(PatientView.this, HealingLogs.class);
+                logs.putExtra("PATIENT_NAME",((TextView)findViewById(R.id.patientNameInDetail)).getText());
                 logs.putExtra(MainActivity.PATIENT_UID,Uid);
                 startActivity(logs);
             }

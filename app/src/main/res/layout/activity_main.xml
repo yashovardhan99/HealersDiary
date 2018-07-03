@@ -12,7 +12,7 @@
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="false"
+        android:fitsSystemWindows="true"
         android:id="@+id/appBarLayout"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
@@ -22,9 +22,8 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:contentScrim="@android:color/transparent"
             app:statusBarScrim="@android:color/transparent"
-            app:expandedTitleTextAppearance="@style/AppTheme.CollapsingToolbar.ExpandedTitle"
-            android:fitsSystemWindows="false"
-            app:collapsedTitleGravity="bottom">
+            app:expandedTitleTextAppearance="@style/AppTheme.CollapsingToolbar.NoExpandedTitle"
+            android:fitsSystemWindows="true">
 
             <ImageView
                 android:layout_width="match_parent"
@@ -34,6 +33,7 @@
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="0.2"
                 android:fitsSystemWindows="false"
+                android:alpha="0.8"
                 android:contentDescription="@string/graphic_of_a_meditating_girl" />
 
             <LinearLayout

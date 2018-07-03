@@ -31,6 +31,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.yashovardhan99.healersdiary.Adapters.MainListAdapter;
@@ -38,6 +39,8 @@ import com.yashovardhan99.healersdiary.Objects.Patient;
 import com.yashovardhan99.healersdiary.R;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Objects;
 
 import javax.annotation.Nullable;
@@ -274,11 +277,19 @@ public class MainActivity extends AppCompatActivity {
     void countHealings(String uid) {
         Log.d("COUNTING HEALINGS", uid);
 
+        //yesterday's timestamp
+        Calendar yesterday = Calendar.getInstance();
+        yesterday.add(Calendar.DATE, -2);
+        Date yest = yesterday.getTime();
+        Timestamp y = new Timestamp(yest);
+
         db.collection("users")
                 .document(Objects.requireNonNull(mAuth.getUid()))
                 .collection("patients")
                 .document(uid)
                 .collection("healings")
+                .orderBy("Date", Query.Direction.DESCENDING)
+                .whereGreaterThan("Date",y)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {

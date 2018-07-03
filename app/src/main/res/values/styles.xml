@@ -19,9 +19,15 @@
         <item name="windowActionModeOverlay">true</item>
     </style>
 
-    <style name="AppTheme.CollapsingToolbar.ExpandedTitle" parent="AppTheme">
+    <style name="AppTheme.CollapsingToolbar.NoExpandedTitle" parent="AppTheme">
         <item name="android:textColor">@android:color/transparent</item>
         <item name="android:textSize">0sp</item>
+    </style>
+
+    <style name="AppTheme.CollapsingToolbar.ExpandedTitle" parent="AppTheme">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textAllCaps">true</item>
     </style>
 
     <style name="AppTheme.CollapsingToolbarParent" parent="AppTheme">
