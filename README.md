@@ -1,3 +1,5 @@
+<p align="center"><img src="/app/src/main/res/drawable/Logotype.png" alt="HealersDiary" height="100px"></p>
+
 # HealersDiary
 An upcoming app for professional healers to keep track of their patients and help in instant billing. The app is currently in development
 
