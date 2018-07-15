@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.android.billingclient.api.BillingClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
@@ -59,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     FirebaseFirestore db;
     FirebaseAuth mAuth;
     public static int healingsToday, healingsYesterday;
+    public static BillingClient mBillingClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -173,8 +175,8 @@ public class MainActivity extends AppCompatActivity {
         newPatientButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, NewPatient.class));
-
+                Intent newPatinetIntent = new Intent(MainActivity.this, NewPatient.class);
+                startActivity(newPatinetIntent);
                 //log firebase analytics event
                 Bundle newPatient = new Bundle();
                 newPatient.putString(FirebaseAnalytics.Param.LOCATION, MainActivity.class.getName());

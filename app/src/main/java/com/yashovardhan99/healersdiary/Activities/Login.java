@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -66,6 +68,9 @@ public class Login extends AppCompatActivity {
                 startActivityForResult(signInIntent,GOOGLE_SIGN_IN_RC);
             }
         });
+
+        TextView privacy = findViewById(R.id.privacy_policy_login);
+        privacy.setMovementMethod(LinkMovementMethod.getInstance());
 
     }
 

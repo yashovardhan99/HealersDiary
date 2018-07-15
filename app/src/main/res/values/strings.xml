@@ -15,4 +15,14 @@
     <string name="graphic_of_a_meditating_girl">graphic of a meditating girl</string>
     <string name="this_month">this Month</string>
     <string name="last_month">last Month</string>
+    <string name="healers_diary_pro">Healers Diary Pro</string>
+    <string name="all_plans_come_with_a_s_free_trial">All plans come with %s free trial</string>
+    <string name="_3_months">3 Months</string>
+    <string name="price">Price</string>
+    <string name="_1_year">1 year</string>
+    <string name="_6_months">6 Months</string>
+    <string name="close">close</string>
+    <string name="_30_days">30 Days</string>
+    <string name="by_signing_in_you_agree_to_our_s">By Signing in, you agree to our <a href="https://github.com/yashovardhan99/HealersDiary/blob/master/PRIVACY%20POLICY.md">Privacy Policy</a></string>
+
 </resources>

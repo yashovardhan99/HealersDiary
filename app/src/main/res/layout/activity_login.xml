@@ -5,6 +5,12 @@
     android:layout_height="match_parent"
     tools:context=".Activities.Login"
     android:orientation="vertical">
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/logo_type"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="16dp"/>
     <com.google.android.gms.common.SignInButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -12,13 +18,14 @@
         android:layout_centerInParent="true"
         android:padding="16dp"
         android:layout_marginTop="48dp" />
-    <!--Button
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:text="Continue without signing in"
-        android:background="@drawable/common_google_signin_btn_icon_light_normal_background"
-        android:layout_gravity="center_horizontal"/-->
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/privacy_policy_login"
+        android:text="@string/by_signing_in_you_agree_to_our_s"
+        android:linksClickable="true"/>
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

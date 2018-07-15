@@ -7,8 +7,8 @@ android {
         applicationId "com.yashovardhan99.healersdiary"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 60
-        versionName "0.6.0"
+        versionCode 6001
+        versionName "0.6.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -35,5 +35,6 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:15.0.1'
     implementation 'com.android.support:multidex:1.0.3'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.4'
+    implementation 'com.android.billingclient:billing:1.1'
 }
 apply plugin: 'com.google.gms.google-services'
