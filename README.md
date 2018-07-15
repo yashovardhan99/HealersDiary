@@ -1,14 +1,14 @@
-<p align="center"><img src="/app/src/main/res/drawable/Logotype.png" alt="HealersDiary" height="100px"></p>
+<p align="center"><img src="/app/src/main/res/drawable/logo_type.png" alt="Healers Diary" height="100px"></p>
 
-# HealersDiary
-An upcoming app for professional healers to keep track of their patients and help in instant billing. The app is currently in development
+An upcoming android app for professional healers to keep track of their patients and help in instant billing. The app is currently in development
 
 ## Expected features
-* Create, modify and delete patient records
-* Keep track of healings done for each patient with the exact date and time
-* Keep track of payments received and bills due
-* Store a record of your patient feedback
-* Effortlessly sync your data online and access it even if you lose the app with your google account
+- [X] Create, modify and delete patient records
+- [X] Keep track of healings done for each patient with the exact date and time
+- [X] Keep track of payments received and bills due
+- [ ] Store a record of your patient feedback
+- [X] Effortlessly sync your data online and access it even if you lose the app with your google account
+- [ ] View a quick summary of your healings, payments and more to stay on the top of your day
 
 ## Technologies used
 * Native android app
