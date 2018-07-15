@@ -48,8 +48,8 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.ViewHo
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             menu.setHeaderTitle(mTextView.getText().toString());
-            menu.add(getAdapterPosition(), 0, 0, "Edit");
-            menu.add(getAdapterPosition(), 1, 0, "Delete");
+            menu.add(getAdapterPosition(), 0, 0, R.string.edit);
+            menu.add(getAdapterPosition(), 1, 0, R.string.delete);
         }
     }
 

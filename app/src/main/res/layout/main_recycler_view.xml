@@ -9,7 +9,7 @@
         android:layout_height="48dp"
         android:id="@+id/patientName"
         android:textSize="16sp"
-        android:text="NOTHING HERE"
+        android:text="@string/nothing_here"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:paddingTop="8dp" />

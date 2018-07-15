@@ -189,48 +189,49 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onContextItemSelected(final MenuItem item) {
-        switch (item.getTitle().toString()) {
-            case "Edit":
-                //edit patient data
-                Intent editPatient = new Intent(this, NewPatient.class);
-                editPatient.putExtra("EDIT", true);
-                String id = patientList.get(item.getGroupId()).getUid();
-                editPatient.putExtra(PATIENT_UID, id);
-                startActivity(editPatient);
+        String title = item.getTitle().toString();
+        final String EDIT = getString(R.string.edit);
+        final String DELETE = getString(R.string.delete);
+        if (title.equals(EDIT)) {
+            //edit patient data
+            Intent editPatient = new Intent(this, NewPatient.class);
+            editPatient.putExtra("EDIT", true);
+            String id = patientList.get(item.getGroupId()).getUid();
+            editPatient.putExtra(PATIENT_UID, id);
+            startActivity(editPatient);
 
-                //log analytics
-                Bundle edit = new Bundle();
-                edit.putString(FirebaseAnalytics.Param.LOCATION,MainActivity.class.getName());
-                edit.putString(FirebaseAnalytics.Param.CONTENT_TYPE, EDIT_BUTTON);
-                edit.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, PATIENT_RECORD);
-                edit.putString(FirebaseAnalytics.Param.ITEM_ID, id);
-                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, edit);
+            //log analytics
+            Bundle edit = new Bundle();
+            edit.putString(FirebaseAnalytics.Param.LOCATION, MainActivity.class.getName());
+            edit.putString(FirebaseAnalytics.Param.CONTENT_TYPE, EDIT_BUTTON);
+            edit.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, PATIENT_RECORD);
+            edit.putString(FirebaseAnalytics.Param.ITEM_ID, id);
+            mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, edit);
 
-                return true;
-            case "Delete":
-                //delete patient data
-                final AlertDialog.Builder confirmBuilder = new AlertDialog.Builder(MainActivity.this);
-                confirmBuilder.setMessage("This will delete all patient records permanently. This action cannot be undone")
-                        .setTitle("Are you sure?")
-                        .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                DeletePatientRecord(item.getGroupId());
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                //action cancelled
-                            }
-                        });
-                //to confirm deletion
-                AlertDialog confirm = confirmBuilder.create();
-                confirm.show();
-                return true;
-            default:
-                return super.onContextItemSelected(item);
-        }
+            return true;
+        } else if (title.equals(DELETE)) {
+            //delete patient data
+            final AlertDialog.Builder confirmBuilder = new AlertDialog.Builder(MainActivity.this);
+            confirmBuilder.setMessage(R.string.delete_warning_message)
+                    .setTitle(R.string.sure_q)
+                    .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            DeletePatientRecord(item.getGroupId());
+                        }
+                    })
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //action cancelled
+                        }
+                    });
+            //to confirm deletion
+            AlertDialog confirm = confirmBuilder.create();
+            confirm.show();
+            return true;
+        } else
+            return super.onContextItemSelected(item);
     }
 
     void DeletePatientRecord(int id) {
@@ -266,7 +267,7 @@ public class MainActivity extends AppCompatActivity {
 
         //now deleting patient document
         patient.delete();
-        Snackbar.make(findViewById(R.id.recycler_main), "Record Deleted", Snackbar.LENGTH_LONG).show();
+        Snackbar.make(findViewById(R.id.recycler_main), R.string.deleted, Snackbar.LENGTH_LONG).show();
 
         //logging in analytics
         Bundle delete = new Bundle();

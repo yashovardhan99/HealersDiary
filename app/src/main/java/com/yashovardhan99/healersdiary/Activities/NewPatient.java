@@ -56,7 +56,7 @@ public class NewPatient extends AppCompatActivity {
         newPatientToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(newPatientToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Add New Patient");
+        getSupportActionBar().setTitle(R.string.add_new_patient);
         //toolbar setup
 
          patientNameEditText = findViewById(R.id.patientName);
@@ -172,7 +172,7 @@ public class NewPatient extends AppCompatActivity {
 
                 //error checking data
                 if(patientNameEditText.getText().toString().isEmpty()){
-                    patientNameEditText.setError("Name cannot be blank");
+                    patientNameEditText.setError(getString(R.string.name_cannot_be_blank));
                     return;
                 }
                 //firestore

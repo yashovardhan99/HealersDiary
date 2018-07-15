@@ -47,7 +47,7 @@ public class PatientPaymentLogs extends AppCompatActivity {
         //toolbar setup
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Payment Logs");
+        getSupportActionBar().setTitle(R.string.payment_logs);
 
         //fetching collection of payments
         logs = FirebaseFirestore.getInstance()

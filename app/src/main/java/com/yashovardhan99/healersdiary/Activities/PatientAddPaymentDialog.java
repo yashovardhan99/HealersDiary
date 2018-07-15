@@ -48,7 +48,7 @@ public class PatientAddPaymentDialog extends AppCompatActivity {
                 try{
                     amount = Double.parseDouble(amt.getText().toString());
                 }catch (Exception e){
-                    amt.setError("Enter a valid amount");
+                    amt.setError(getString(R.string.enter_valid_amt));
                     return;
                 }
                 patient.get()

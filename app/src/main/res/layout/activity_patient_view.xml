@@ -61,7 +61,7 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="New Healing"
+            android:text="@string/new_healing"
             android:padding="16dp"
             android:layout_gravity="center_horizontal"
             android:backgroundTint="#FFF"
@@ -75,7 +75,7 @@
             android:layout_height="wrap_content"
             android:padding="16dp"
             android:layout_gravity="center_horizontal"
-            android:text="View Healing Logs"
+            android:text="@string/view_healing_logs"
             android:backgroundTint="#FFF"
             android:elevation="4dp"
             android:id="@+id/healingLogsButton"/>
@@ -87,7 +87,7 @@
             android:elevation="4dp"
             android:backgroundTint="#FFF"
             android:layout_gravity="center_horizontal"
-            android:text="Add Patient Feedback"
+            android:text="@string/add_patient_feedback"
             android:enabled="false"
             android:hint="Coming soon"/>
 
@@ -98,7 +98,7 @@
             android:elevation="4dp"
             android:backgroundTint="#FFF"
             android:layout_gravity="center_horizontal"
-            android:text="View Patient Feedback"
+            android:text="@string/view_patient_feedback"
             android:enabled="false"
             android:hint="Coming soon"/>
         <Button
@@ -108,7 +108,7 @@
             android:elevation="4dp"
             android:backgroundTint="#FFF"
             android:layout_gravity="center_horizontal"
-            android:text="Add Payment Detail"
+            android:text="@string/add_payment_detail"
             android:id="@+id/enterNewPPayment"/>
         <Button
             android:layout_width="match_parent"
@@ -117,7 +117,7 @@
             android:elevation="4dp"
             android:backgroundTint="#FFF"
             android:layout_gravity="center_horizontal"
-            android:text="View Payment logs"
+            android:text="@string/view_payment_logs"
             android:id="@+id/viewPatientPaymentLogs"/>
         </LinearLayout>
 

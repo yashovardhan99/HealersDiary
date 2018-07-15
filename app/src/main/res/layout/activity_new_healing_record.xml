@@ -10,7 +10,7 @@
         android:layout_centerHorizontal="true"
         android:drawableLeft="@drawable/ic_add_black_24dp"
         android:drawableTint="@color/colorPrimary"
-        android:text="Confirm New Healing"
+        android:text="@string/confirm_new_healing"
         android:backgroundTint="#FFF"
         android:elevation="4dp"
         android:id="@+id/saveNewHealing"
@@ -19,7 +19,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Client will be charged at your specified rate"
+        android:text="@string/client_will_be_charged_at_your_specified_rate"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/saveNewHealing"
         android:id="@+id/saveNewHealingConfirmationText"

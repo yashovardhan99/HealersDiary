@@ -150,11 +150,11 @@ public class Login extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             if(signup[0])
-                                Toast.makeText(Login.this, "Welcome " + mAuth.getCurrentUser().getDisplayName() + ". Tap the + button to get started!", Toast.LENGTH_LONG).show();
+                                Toast.makeText(Login.this, R.string.tap_plus_to_get_started, Toast.LENGTH_LONG).show();
                             Log.d("FIRESTORE", "Added user document");
                         } else {
                             Log.d("FIRESTORE", task.getResult().toString() + " : " + Objects.requireNonNull(task.getException()).toString());
-                            Toast.makeText(Login.this, "Some problem Occured. You have been logged in but some features may not work properly", Toast.LENGTH_LONG).show();
+                            Toast.makeText(Login.this, R.string.something_went_wrong, Toast.LENGTH_LONG).show();
                         }
                     }
                 });

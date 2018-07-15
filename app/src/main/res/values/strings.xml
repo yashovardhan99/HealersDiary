@@ -2,7 +2,6 @@
     <string name="app_name">Healer\'s Diary</string>
     <string name="patient_name">Patient Name</string>
     <string name="browse">Browse</string>
-    <string name="phone_number">Phone Number</string>
     <string name="disease">Disease</string>
     <string name="rate">Rate per healing</string>
     <string name="signing_in">Signing In</string>
@@ -24,5 +23,30 @@
     <string name="close">close</string>
     <string name="_30_days">30 Days</string>
     <string name="by_signing_in_you_agree_to_our_s">By Signing in, you agree to our <a href="https://github.com/yashovardhan99/HealersDiary/blob/master/PRIVACY%20POLICY.md">Privacy Policy</a></string>
+    <string name="phone_number">Phone Number</string>
+    <string name="client_will_be_charged_at_your_specified_rate">Client will be charged at your specified rate</string>
+    <string name="payment_will_be_credited_to_the_patient_s_account_with_the_current_date_and_time">Payment will be credited to the patient\'s account with the current date and time</string>
+    <string name="confirm_new_healing">Confirm New Healing</string>
+    <string name="new_healing">New Healing</string>
+    <string name="view_healing_logs">View Healing Logs</string>
+    <string name="add_patient_feedback">Add Patient Feedback</string>
+    <string name="view_patient_feedback">View Patient Feedback</string>
+    <string name="add_payment_detail">Add Payment Detail</string>
+    <string name="view_payment_logs">View Payment logs</string>
+    <string name="nothing_here">NOTHING HERE</string>
+    <string name="date">DATE</string>
+    <string name="amount">AMOUNT</string>
+    <string name="tap_plus_to_get_started">Tap the + button to get started!</string>
+    <string name="something_went_wrong">Some problem Occured. You have been logged in but some features may not work properly</string>
+    <string name="delete_warning_message">This will delete all patient records permanently. This action cannot be undone</string>
+    <string name="sure_q">Are you sure?</string>
+    <string name="cancel">Cancel</string>
+    <string name="deleted">Record Deleted</string>
+    <string name="add_new_patient">Add New Patient</string>
+    <string name="name_cannot_be_blank">Name cannot be blank</string>
+    <string name="enter_valid_amt">Enter a valid amount</string>
+    <string name="payment_logs">Payment Logs</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
 
 </resources>

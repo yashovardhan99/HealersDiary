@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">हीलर की डायरी</string>
+    <string name="patient_name">रोगी का नाम</string>
+    <string name="browse">फोन बुक</string>
+    <string name="phone_number">फ़ोन नंबर</string>
+    <string name="disease">बीमारी</string>
+    <string name="rate">मूल्य प्रति उपचार</string>
+    <string name="signing_in">प्रवेश किया</string>
+    <string name="save">सहेजें</string>
+    <string name="payment_due">भुगतान बाकी</string>
+    <string name="enter_payment_received">प्राप्त भुगतान दर्ज करें</string>
+    <string name="welcome_user">स्वागत है %s</string>
+    <string name="today">आज</string>
+    <string name="yesterday">कल</string>
+    <string name="graphic_of_a_meditating_girl">एक ध्यान करने वाली लड़की की तस्वीर</string>
+    <string name="this_month">इस महीने</string>
+    <string name="last_month">पिछले महीने</string>
+    <string name="healers_diary_pro">चिकित्सक डायरी प्रो</string>
+    <string name="all_plans_come_with_a_s_free_trial">सभी योजनाएं %s नि: शुल्क परीक्षण के साथ आती हैं</string>
+    <string name="_3_months">3 महीने</string>
+    <string name="price">मूल्य</string>
+    <string name="_1_year">1 साल</string>
+    <string name="_6_months">6 महीने</string>
+    <string name="close">बंद करे</string>
+    <string name="_30_days">तीस दिन</string>
+    <string name="by_signing_in_you_agree_to_our_s">साइन इन करके, आप हमारी <a href="https://github.com/yashovardhan99/HealersDiary/blob/master/PRIVACY%20POLICY.md">गोपनीयता नीति</a> से सहमत होते हैं</string>
+    <string name="client_will_be_charged_at_your_specified_rate">आपका निर्दिष्ट मूल्य बिल में जोड़ा जाएगा</string>
+    <string name="payment_will_be_credited_to_the_patient_s_account_with_the_current_date_and_time">वर्तमान तारीख और समय के साथ रोगी के खाते में भुगतान जमा किया जाएगा</string>
+    <string name="confirm_new_healing">नई हीलिंग की पुष्टि करें</string>
+    <string name="new_healing">नई हीलिंग</string>
+    <string name="view_healing_logs">उपचार लॉग देखें</string>
+    <string name="add_patient_feedback">रोगी प्रतिक्रिया जोड़ें</string>
+    <string name="view_patient_feedback">रोगी प्रतिक्रिया देखें</string>
+    <string name="add_payment_detail">भुगतान विवरण जोड़ें</string>
+    <string name="view_payment_logs">भुगतान लॉग देखें</string>
+    <string name="nothing_here">यहाँ कुछ भी नहीं है</string>
+    <string name="amount">रकम</string>
+    <string name="date">तारीख</string>
+    <string name="tap_plus_to_get_started">शुरू करने के लिए + बटन टैप करें!</string>
+    <string name="something_went_wrong">कुछ समस्या आई। आप लॉग इन हैं लेकिन कुछ सुविधाएं ठीक से काम नहीं कर सकती हैं</string>
+    <string name="delete_warning_message">यह सभी रोगी रिकॉर्ड्स को स्थायी रूप से हटा देगा। इस क्रिया को पूर्ववत नहीं किया जा सकता है</string>
+    <string name="sure_q">क्या आप निश्चित हैं?</string>
+</resources>

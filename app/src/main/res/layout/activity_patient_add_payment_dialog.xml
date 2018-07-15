@@ -32,5 +32,5 @@
         android:layout_gravity="center_horizontal"
         android:textAlignment="center"
         android:padding="16dp"
-        android:text="Payment will be credited to the patient's account with the current date and time"/>
+        android:text="@string/payment_will_be_credited_to_the_patient_s_account_with_the_current_date_and_time"/>
 </LinearLayout>
