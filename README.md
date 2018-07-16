@@ -1,4 +1,4 @@
-<p align="center"><img src="/app/src/main/res/drawable/logo_type.png" alt="Healers Diary" height="100px"></p>
+<p align="center"><img src="https://github.com/yashovardhan99/HealersDiary/blob/master/app/src/main/res/drawable/logo_type.png" alt="Healers Diary" height="100px"></p>
 
 An android app for professional healers to keep track of their patients and help in instant billing. The app is currently in development
 
