@@ -1,6 +1,6 @@
 <p align="center"><img src="/app/src/main/res/drawable/logo_type.png" alt="Healers Diary" height="100px"></p>
 
-An upcoming android app for professional healers to keep track of their patients and help in instant billing. The app is currently in development
+An android app for professional healers to keep track of their patients and help in instant billing. The app is currently in development
 
 ## Expected features
 - [X] Create, modify and delete patient records
@@ -16,6 +16,7 @@ An upcoming android app for professional healers to keep track of their patients
 * Firestore storage for effortless online sync
 
 ## Expected release
+* Private Alpha - Out now. Register [here](https://goo.gl/forms/U6XDSo3eMADnj6U42)
 * Public Beta - End of July, 2018
 * Public release - End of November, 2018
 
