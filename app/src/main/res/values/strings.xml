@@ -22,7 +22,7 @@
     <string name="_6_months">6 Months</string>
     <string name="close">close</string>
     <string name="_30_days">30 Days</string>
-    <string name="by_signing_in_you_agree_to_our_s">By Signing in, you agree to our <a href="https://github.com/yashovardhan99/HealersDiary/blob/master/PRIVACY%20POLICY.md">Privacy Policy</a></string>
+    <string name="by_signing_in_you_agree_to_our_s">By Signing in, you agree to our <a href="https://github.com/yashovardhan99/HealersDiary/blob/master/PRIVACY%20POLICY.md">Privacy Policy</a> and <a href="https://github.com/yashovardhan99/HealersDiary/blob/master/EULA.md">Terms of Use</a></string>
     <string name="phone_number">Phone Number</string>
     <string name="client_will_be_charged_at_your_specified_rate">Client will be charged at your specified rate</string>
     <string name="payment_will_be_credited_to_the_patient_s_account_with_the_current_date_and_time">Payment will be credited to the patient\'s account with the current date and time</string>
@@ -37,7 +37,7 @@
     <string name="date">DATE</string>
     <string name="amount">AMOUNT</string>
     <string name="tap_plus_to_get_started">Tap the + button to get started!</string>
-    <string name="something_went_wrong">Some problem Occured. You have been logged in but some features may not work properly</string>
+    <string name="something_went_wrong">Some problem Occurred. You have been logged in but some features may not work properly</string>
     <string name="delete_warning_message">This will delete all patient records permanently. This action cannot be undone</string>
     <string name="sure_q">Are you sure?</string>
     <string name="cancel">Cancel</string>

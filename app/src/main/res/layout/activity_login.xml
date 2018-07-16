@@ -25,6 +25,7 @@
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:id="@+id/privacy_policy_login"
+        android:textAlignment="center"
         android:text="@string/by_signing_in_you_agree_to_our_s"
         android:linksClickable="true"/>
     <LinearLayout

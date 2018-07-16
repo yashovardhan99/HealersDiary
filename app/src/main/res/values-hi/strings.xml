@@ -24,7 +24,7 @@
     <string name="_6_months">6 महीने</string>
     <string name="close">बंद करे</string>
     <string name="_30_days">तीस दिन</string>
-    <string name="by_signing_in_you_agree_to_our_s">साइन इन करके, आप हमारी <a href="https://github.com/yashovardhan99/HealersDiary/blob/master/PRIVACY%20POLICY.md">गोपनीयता नीति</a> से सहमत होते हैं</string>
+    <string name="by_signing_in_you_agree_to_our_s">साइन इन करके, आप हमारी <a href="https://github.com/yashovardhan99/HealersDiary/blob/master/PRIVACY%20POLICY.md">गोपनीयता नीति</a> और <a href="https://github.com/yashovardhan99/HealersDiary/blob/master/EULA.md">उपयोग की शर्तें</a> से सहमत होते हैं</string>
     <string name="client_will_be_charged_at_your_specified_rate">आपका निर्दिष्ट मूल्य बिल में जोड़ा जाएगा</string>
     <string name="payment_will_be_credited_to_the_patient_s_account_with_the_current_date_and_time">वर्तमान तारीख और समय के साथ रोगी के खाते में भुगतान जमा किया जाएगा</string>
     <string name="confirm_new_healing">नई हीलिंग की पुष्टि करें</string>
