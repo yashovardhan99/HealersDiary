@@ -1,36 +1,32 @@
-# Temporary Privacy Policy
+# Privacy Policy
 
-Note - this is a temporary privacy policy for testers of this app. This will be updated with a new updated privacy policy before the public release scheduled for end of July, 2018. Till then, this policy is applicable
+## Introduction
+Yashovardhan Dhanania ("I", "Me") along with any other service providers ("We") provides this Privacy policy to explain to you ("User"), user of the app Healers Diary ("app"), what information I may collect from you and how I will use it.
 
-Yashovardhan Dhanania built the Healers Diary app as an Open Source app. This SERVICE is provided by Yashovardhan Dhanania at no cost and is intended for use as is. 
-This page is used to inform website visitors regarding my policies with the collection, use, and disclosure of Personal Information if anyone decided to use my Service. 
-If you choose to use my Service, then you agree to the collection and use of information in relation to this policy. The Personal Information that I collect is used for providing and improving the Service. I will not use or share your information with anyone except as described in this Privacy Policy. 
-The terms used in this Privacy Policy have the same meanings as in our Terms and Conditions, which is accessible at Healers Diary unless otherwise defined in this Privacy Policy. 
-Information Collection and Use
-For a better experience, while using our Service, I may require you to provide us with certain personally identifiable information, including but not limited to Name, Email, Contacts. The information that I request is retained on your device and is not collected by me in any way 
-The app does use third party services that may collect information used to identify you. They are as follows -
-* Google Play Services
-* Firebase Analytics
-* Crashlytics
-* Log Data
-I want to inform you that whenever you use my Service, in a case of an error in the app I collect data and information (through third party products) on your phone called Log Data. This Log Data may include information such as your device Internet Protocol (“IP”) address, device name, operating system version, the configuration of the app when utilizing my Service, the time and date of your use of the Service, and other statistics. 
-Cookies
-Cookies are files with a small amount of data that are commonly used as anonymous unique identifiers. These are sent to your browser from the websites that you visit and are stored on your device's internal memory. 
-This Service does not use these “cookies” explicitly. However, the app may use third party code and libraries that use “cookies” to collect information and improve their services. You have the option to either accept or refuse these cookies and know when a cookie is being sent to your device. If you choose to refuse our cookies, you may not be able to use some portions of this Service. 
-Service Providers
-I may employ third-party companies and individuals due to the following reasons:
-To facilitate our Service;
-To provide the Service on our behalf;
-To perform Service-related services; or
-To assist us in analyzing how our Service is used.
-I want to inform users of this Service that these third parties have access to your Personal Information. The reason is to perform the tasks assigned to them on our behalf. However, they are obligated not to disclose or use the information for any other purpose. 
-Security
-I value your trust in providing us your Personal Information, thus we are striving to use commercially acceptable means of protecting it. But remember that no method of transmission over the internet, or method of electronic storage is 100% secure and reliable, and I cannot guarantee its absolute security. 
-Links to Other Sites
-This Service may contain links to other sites. If you click on a third-party link, you will be directed to that site. Note that these external sites are not operated by me. Therefore, I strongly advise you to review the Privacy Policy of these websites. I have no control over and assume no responsibility for the content, privacy policies, or practices of any third-party sites or services. 
-Children’s Privacy
-These Services do not address anyone under the age of 13. I do not knowingly collect personally identifiable information from children under 13. In the case I discover that a child under 13 has provided me with personal information, I immediately delete this from our servers. If you are a parent or guardian and you are aware that your child has provided us with personal information, please contact me so that I will be able to do necessary actions. 
-Changes to This Privacy Policy
-I may update our Privacy Policy from time to time. Thus, you are advised to review this page periodically for any changes. I will notify you of any changes by posting the new Privacy Policy on this page. These changes are effective immediately after they are posted on this page. 
-Contact Us
-If you have any questions or suggestions about my Privacy Policy, do not hesitate to contact me. 
+By using my app and services, you agree to this privacy policy and other [terms of service](https://github.com/yashovardhan99/HealersDiary/blob/master/EULA.md). If you do not agree to this policy, please uninstall the app and send me an email at yashovardhandhanania@gmail.com requesting deletion of your data. Such requests will be complied with in accordance with this [License Agreement](https://github.com/yashovardhan99/HealersDiary/blob/master/EULA.md).
+
+## What do I collect
+By using this app, you may provide me with the following information:
+- Your Personal Information - By signing in with Google, you provide information such as your email ID and name. This information is used for authenticating your account and is stored in secure servers to help identify your data as yours.
+- Contacts = You may choose to allow this app access to your contacts. The app does not collect contact information unless you choose to browse the contacts and add one as a patient. In such cases, I collect the contact's name and contact number to store it in your records.
+- Patient Data - When you create or modify a patient record, this information is stored in a secure server and on your mobile device. Please do not provide sensitive patient details such as medication or illness which might be protected under certain laws. When you delete a patient record, it is deleted from the server as well.
+- Healing data - When you add a new healing data, the app stores the current date and time to help you keep track of your healings.
+- Payment data - When you enter payment data, the app stores the amount and date to help you keep track of your payments.
+- Feedback - When you add a patient feedback, the app stores the data to help you keep a record of such data.
+- Anonymous data - to help improve the app, I use third party services to collect such data. A description of this is given in the sections below.
+## How do I collect and store
+When the app connects to the internet, the app may sync the data you have stored to a secure server. I use third party cloud server providers and other third party service providers to provide you the best experience throughout your app. Their terms are as follows:
+- Firestore - I use Cloud Firestore by Firebase to securely store your data online. I have added security rules which only allow you to access your data. No other user of this app can access your data under these security rules. Your Google Account is used for identifying you. To give you complete transparency, their data protection and security terms are available [here](https://cloud.google.com/terms/data-processing-terms#top_of_page).
+- Google Analytics for Firebase - I use this service to collect anonymised data about the usage of my app to help improve the app and other services I may provide. Information collected includes, but is not limited to, your device type and model, your operating system version, language, region, app version and other anonymous information. I do not use this information to identify you. Their terms are available [here](https://firebase.google.com/terms/analytics/).
+- Crashlytics - To help prevent crashes, and to improve your experience, I collect logs when the app crashes or encounters an error. Such data is almost always anonymous and is not intended to track you. Their terms are available [here](https://firebase.google.com/terms/fabric-data-processing-terms).
+- Authentication - As outlined earlier, by signing in to the app, you may provide certain personal information to me. However, Firebase may also collect some other data and use it for facilitating  account management and authentication. Details are available [here](https://firebase.google.com/support/privacy/#examples_of_end_user_personal_data_processed_by_firebase).
+## How long is data stored
+As most of the personal data collected is for your end use, it is not deleted directly by me unless requested by you or required by law.
+## Security
+While I use the best security tools available to me and design the app to prevent any unauthorized access to your data, I cannot assure you that your data will remain 100% secured. I also rely on 3rd party services to secure your data as outlined above. They have their own security policies and measures. In case I am made aware of a security breach in my app, I will try my best to fix it as fast as possible and either roll out an update or make a server side change as the case may be. Make sure you keep your app up to date.
+## Law enforcement requests
+Local law enforcement agencies may request your data from me. I will not entertain such requests unless they come through proper legal channels and follow stipulated laws and guidelines. I will follow all laws and regulations and will try my best to protect your data in such cases. Be informed that law enforcement agencies may directly contact the third party agencies listed above for your data. In such cases, their policies are applicable.
+## General Information
+- Any changes to this policy will be updated here and will come in place 14 days from such a change. If you disagree with any chance, please contact me via email at yashovardhandhanania@gmail.com and inform me of the same. Also, immediately stop using the app and other related services. I will delete your data within 30 days from such written requests and disable your account as outlined in my End User License Agreement linked above.
+- This policy is governed by local laws and regulations. Any clause may be void where applicable per local laws.
+- This policy was last updated on 19 July, 2018.
