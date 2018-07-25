@@ -88,8 +88,7 @@
             android:backgroundTint="#FFF"
             android:layout_gravity="center_horizontal"
             android:text="@string/add_patient_feedback"
-            android:enabled="false"
-            android:hint="Coming soon"/>
+            android:id="@+id/newFeedbackButton"/>
 
         <Button
             android:layout_width="match_parent"

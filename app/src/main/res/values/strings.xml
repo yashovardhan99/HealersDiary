@@ -48,5 +48,7 @@
     <string name="payment_logs">Payment Logs</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
+    <string name="enter_patient_feedback">Enter Patient Feedback</string>
+    <string name="start_typing_here">Start typing here</string>
 
 </resources>

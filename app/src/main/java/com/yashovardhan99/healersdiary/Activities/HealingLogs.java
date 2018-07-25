@@ -22,6 +22,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.yashovardhan99.healersdiary.Adapters.HealingLogAdapter;
 import com.yashovardhan99.healersdiary.Objects.Healing;
@@ -70,7 +71,9 @@ public class HealingLogs extends AppCompatActivity {
 
 
         //collection reference to all healing logs for this patient
-        logs.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        logs.limit(100)
+                .orderBy("Date", Query.Direction.DESCENDING)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                 DateFormat df = DateFormat.getDateTimeInstance();
@@ -104,8 +107,8 @@ public class HealingLogs extends AppCompatActivity {
                         switch (dc.getType()){
                             case ADDED:
                                 //new healing added
-                                healings.add(0,healing);
-                                mAdapter.notifyItemInserted(0);
+                                healings.add(healing);
+                                mAdapter.notifyItemInserted(healings.size()-1);
                                 //increment counters appropriately
                                 if(today)
                                     this_day++;

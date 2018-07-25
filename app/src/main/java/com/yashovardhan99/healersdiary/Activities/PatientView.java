@@ -134,6 +134,17 @@ public class PatientView extends AppCompatActivity {
                 startActivity(logs);
             }
         });
+
+        //add new patient feedback
+        Button newFeedback = findViewById(R.id.newFeedbackButton);
+        newFeedback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent newFeed = new Intent(PatientView.this, NewPatientFeedback.class);
+                newFeed.putExtra(MainActivity.PATIENT_UID, Uid);
+                startActivity(newFeed);
+            }
+        });
     }
 
     @Override

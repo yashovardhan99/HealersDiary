@@ -40,6 +40,8 @@
             android:excludeFromRecents="true"
             android:theme="@style/AppTheme.Dialog" />
         <activity android:name=".Activities.PatientPaymentLogs" />
+        <activity android:name=".Activities.NewPatientFeedback"
+            android:theme="@style/AppTheme.Dialog"/>
     </application>
 
 </manifest>
