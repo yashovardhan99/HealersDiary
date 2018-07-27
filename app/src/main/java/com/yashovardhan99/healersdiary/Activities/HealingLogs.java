@@ -39,11 +39,13 @@ import javax.annotation.Nullable;
 public class HealingLogs extends AppCompatActivity {
 
     private RecyclerView.Adapter mAdapter;
-    CollectionReference logs;
+    private CollectionReference logs;
     //arraylist setup
-    final ArrayList<Healing> healings = new ArrayList<>();
-    FirebaseFirestore db;
-    public int this_day, this_month, last_month;
+    private final ArrayList<Healing> healings = new ArrayList<>();
+    private FirebaseFirestore db;
+    private int this_day;
+    private int this_month;
+    private int last_month;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +65,7 @@ public class HealingLogs extends AppCompatActivity {
 
         //initialize firestore
         db = FirebaseFirestore.getInstance();
-        logs = db.collection("users")
+        logs = db.collection(MainActivity.USERS)
                 .document(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid())
                 .collection("patients")
                 .document(getIntent().getStringExtra(MainActivity.PATIENT_UID))
@@ -178,7 +180,7 @@ public class HealingLogs extends AppCompatActivity {
         return super.onContextItemSelected(item);
     }
 
-    void deleteHealing(int id){
+    private void deleteHealing(int id){
         //deletes healing from firestore
         Healing healing = healings.get(id);
         logs.document(healing.getUid())
@@ -202,7 +204,7 @@ public class HealingLogs extends AppCompatActivity {
             }
         });
     }
-    void updateTextFields(){
+    private void updateTextFields(){
         TextView today = findViewById(R.id.todayHealings);
         TextView month = findViewById(R.id.thisMonthHealings);
         TextView last = findViewById(R.id.lastMonthHealings);

@@ -27,10 +27,10 @@ import javax.annotation.Nullable;
 
 public class PatientView extends AppCompatActivity {
 
-    public String Uid;
-    public final int REQUEST_HEALING_CONFIRMATION = 0;
-    public final int REQUEST_PAYMENT_ADDED = 1;
-    public final int REQUEST_FEEDBACK_ADDED = 2;
+    private String Uid;
+    private final int REQUEST_HEALING_CONFIRMATION = 0;
+    private final int REQUEST_PAYMENT_ADDED = 1;
+    private final int REQUEST_FEEDBACK_ADDED = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

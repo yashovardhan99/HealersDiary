@@ -54,5 +54,9 @@
     <string name="added">Added!</string>
     <string name="payment_added">Payment Added : %s</string>
     <string name="only_last_100_records_are_loaded">Only last 100 records are loaded</string>
+    <string name="healers_diary_logo">Healers Diary Logo</string>
+    <string name="this_is_a_paid_feature_you_are_allowed_to_use_it_for_free_only_under_the_app_test_program_tap_here_to_learn_more">This is a paid feature. You are allowed to use it for free only under the app test program. Tap here to learn more</string>
+    <string name="update">Update</string>
+    <string name="something_went_wrong_adding_record">Something went wrong and the new record was not added. Please check and try again!</string>
 
 </resources>

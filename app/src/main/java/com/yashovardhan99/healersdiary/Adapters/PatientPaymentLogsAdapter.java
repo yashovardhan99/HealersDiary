@@ -22,9 +22,9 @@ public class PatientPaymentLogsAdapter extends RecyclerView.Adapter<PatientPayme
     private static ArrayList<PaymentSnapshot> paymentSnapshots;
 
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
-        TextView mDateView;
-        TextView mAmountView;
-        public ViewHolder(RelativeLayout v) {
+        final TextView mDateView;
+        final TextView mAmountView;
+        ViewHolder(RelativeLayout v) {
             super(v);
             mDateView = v.findViewById(R.id.paymentDate);
             mAmountView = v.findViewById(R.id.paymentAmount);

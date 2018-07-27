@@ -36,8 +36,8 @@ import javax.annotation.Nullable;
 public class PatientPaymentLogs extends AppCompatActivity {
 
     private RecyclerView.Adapter mAdapter;
-    final ArrayList<PaymentSnapshot> payments = new ArrayList<>();
-    CollectionReference logs;
+    private final ArrayList<PaymentSnapshot> payments = new ArrayList<>();
+    private CollectionReference logs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,7 +124,7 @@ public class PatientPaymentLogs extends AppCompatActivity {
         }
         return super.onContextItemSelected(item);
     }
-    void deletePayment(int id){
+    private void deletePayment(int id){
         //delete the payment record from firestore
         double amount = 0.00;
         try {
@@ -148,16 +148,16 @@ public class PatientPaymentLogs extends AppCompatActivity {
                         }
                     }
                 });
-        logs.document(payments.get(id).Uid).delete()
+        logs.document(payments.get(id).getUid()).delete()
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            Log.d("FIRESTORE","Deleted Payment successfully");
+                            Log.d(MainActivity.FIRESTORE,"Deleted Payment successfully");
                         }
                         else
                         {
-                            Log.d("FIRESTORE","Error - "+task.getException());
+                            Log.d(MainActivity.FIRESTORE,"Error - "+task.getException());
                         }
                     }
                 });

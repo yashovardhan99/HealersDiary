@@ -12,6 +12,7 @@
         android:layout_centerHorizontal="true"
         android:paddingTop="16dp"
         android:padding="8dp"
+        android:contentDescription="@string/healers_diary_logo"
         android:id="@+id/signInLogo"/>
     <com.google.android.gms.common.SignInButton
         android:layout_width="wrap_content"

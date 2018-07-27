@@ -49,19 +49,20 @@ import javax.annotation.Nullable;
 public class MainActivity extends AppCompatActivity {
 
     public static final String PATIENT_UID = "PATIENT_UID";
-    public static final String PATIENT_RECORD = "patient_record";
-    public static final String DELETE_BUTTON = "Delete Button";
-    public static final String EDIT_BUTTON = "Edit Button";
-    public static final String NEW = "New";
+    private static final String PATIENT_RECORD = "patient_record";
+    private static final String DELETE_BUTTON = "Delete Button";
+    private static final String EDIT_BUTTON = "Edit Button";
+    private static final String NEW = "New";
     public static final String USERS = "users";
     public static final String FIRESTORE = "FIRESTORE";
     private RecyclerView.Adapter mAdapter;
     private ArrayList<Patient> patientList;
-    Toolbar mainActivityToolbar;
+    private Toolbar mainActivityToolbar;
     private FirebaseAnalytics mFirebaseAnalytics;
-    FirebaseFirestore db;
-    FirebaseAuth mAuth;
-    public static int healingsToday, healingsYesterday;
+    private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
+    private static int healingsToday;
+    private static int healingsYesterday;
     public static BillingClient mBillingClient;
 
     @Override
@@ -236,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
             return super.onContextItemSelected(item);
     }
 
-    void DeletePatientRecord(int id) {
+    private void DeletePatientRecord(int id) {
         DocumentReference patient = db.collection(USERS)
                 .document(Objects.requireNonNull(mAuth.getUid()))
                 .collection("patients")
@@ -279,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
         delete.putString(FirebaseAnalytics.Param.ITEM_ID,patient.getId());
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, delete);
     }
-    void countHealings(String uid) {
+    private void countHealings(String uid) {
         Log.d("COUNTING HEALINGS", uid);
 
         //yesterday's timestamp
@@ -325,7 +326,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
-    void updateTextFields(){
+    private void updateTextFields(){
         TextView today = findViewById(R.id.healingsToday);
         TextView yesterday = findViewById(R.id.healingsYesterday);
         Resources res = getResources();

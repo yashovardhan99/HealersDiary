@@ -22,8 +22,8 @@ public class HealingLogAdapter extends RecyclerView.Adapter<HealingLogAdapter.Vi
     private static ArrayList<Healing> healingLog;
 
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
-        TextView mTextView;
-        public ViewHolder(RelativeLayout v) {
+        final TextView mTextView;
+        ViewHolder(RelativeLayout v) {
             super(v);
             mTextView = v.findViewById(R.id.healingDetail);
             v.setOnCreateContextMenuListener(this);

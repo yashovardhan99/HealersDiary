@@ -66,7 +66,7 @@
             android:layout_gravity="center_horizontal"
             android:backgroundTint="#FFF"
             android:id="@+id/newHealingButton"
-            android:drawableLeft="@drawable/ic_add_black_24dp"
+            android:drawableStart="@drawable/ic_add_black_24dp"
             android:drawableTint="#000"
             android:elevation="4dp"/>
 
@@ -98,8 +98,7 @@
             android:backgroundTint="#FFF"
             android:layout_gravity="center_horizontal"
             android:text="@string/view_patient_feedback"
-            android:enabled="false"
-            android:hint="Coming soon"/>
+            android:enabled="false"/>
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

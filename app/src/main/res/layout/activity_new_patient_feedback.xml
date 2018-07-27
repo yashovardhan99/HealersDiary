@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:padding="8dp"
-        android:text="This is a paid feature. You are allowed to use it for free only under the app test program. Tap here to learn more"
+        android:text="@string/this_is_a_paid_feature_you_are_allowed_to_use_it_for_free_only_under_the_app_test_program_tap_here_to_learn_more"
         android:layout_below="@id/PatientFeedbackSaveBtn"/>
 
 </RelativeLayout>

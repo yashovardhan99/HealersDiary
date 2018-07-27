@@ -35,12 +35,12 @@ import java.util.Objects;
 
 public class Login extends AppCompatActivity {
 
-    GoogleSignInClient mGoogleSignInClient;
-    FirebaseAuth mAuth;
-    final int GOOGLE_SIGN_IN_RC = 1;
-    LinearLayout signInProgress;
+    private GoogleSignInClient mGoogleSignInClient;
+    private FirebaseAuth mAuth;
+    private final int GOOGLE_SIGN_IN_RC = 1;
+    private LinearLayout signInProgress;
     private FirebaseAnalytics mFirebaseAnalytics;
-    Bundle params;
+    private Bundle params;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +97,7 @@ public class Login extends AppCompatActivity {
                 break;
         }
     }
-    void FirebaseAuthWithGoogle(GoogleSignInAccount account){
+    private void FirebaseAuthWithGoogle(GoogleSignInAccount account){
         //authenticate the google sign in with firebase
         Log.d("GOOGLE","FirebaseAuth ID = "+account.getId());
 
@@ -113,7 +113,7 @@ public class Login extends AppCompatActivity {
                     }
                 });
     }
-    void signedIn()
+    private void signedIn()
     {
         //now the user is signed in
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -125,7 +125,7 @@ public class Login extends AppCompatActivity {
             user.put("Email", mAuth.getCurrentUser().getEmail());
             user.put("Phone", mAuth.getCurrentUser().getPhoneNumber());
         }
-        DocumentReference userDoc = db.collection("users").document(Objects.requireNonNull(mAuth.getUid()));
+        DocumentReference userDoc = db.collection(MainActivity.USERS).document(Objects.requireNonNull(mAuth.getUid()));
         final boolean signup[] = {true};
         userDoc.get()
         .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

@@ -37,7 +37,7 @@ public class NewHealingRecord extends AppCompatActivity {
             }
         });
     }
-    void SaveData(){
+    private void SaveData(){
         //saves data to firestore
         String Uid = getIntent().getStringExtra(MainActivity.PATIENT_UID);
         Log.d("PATIENT UID RECEIVED",Uid);
@@ -66,7 +66,7 @@ public class NewHealingRecord extends AppCompatActivity {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if(!task.isSuccessful()){
-                                                Toast.makeText(NewHealingRecord.this,"Something went wrong and the new record was not added. Please check and try again!",Toast.LENGTH_LONG).show();
+                                                Toast.makeText(NewHealingRecord.this, R.string.something_went_wrong_adding_record,Toast.LENGTH_LONG).show();
                                                 Log.d("FIRESTORE",task.getException().getMessage());
                                             }
                                             else

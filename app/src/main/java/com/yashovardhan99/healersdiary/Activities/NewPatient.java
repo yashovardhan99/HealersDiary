@@ -39,14 +39,14 @@ import javax.annotation.Nullable;
 
 public class NewPatient extends AppCompatActivity {
 
-    final int READ_CONTACT_PERMISSION_REQUEST_CODE = 1;
-    final int CONTACT_PICKER_REQUEST_CODE = 2;
-    TextInputEditText patientNameEditText;
-    TextInputEditText contactNumberEditText;
-    TextInputEditText rate;
-    TextInputEditText disease;
-    TextInputEditText due;
-    Toolbar newPatientToolbar;
+    private final int READ_CONTACT_PERMISSION_REQUEST_CODE = 1;
+    private final int CONTACT_PICKER_REQUEST_CODE = 2;
+    private TextInputEditText patientNameEditText;
+    private TextInputEditText contactNumberEditText;
+    private TextInputEditText rate;
+    private TextInputEditText disease;
+    private TextInputEditText due;
+    private Toolbar newPatientToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,7 +161,7 @@ public class NewPatient extends AppCompatActivity {
                                 rate.setText(documentSnapshot.get("Rate").toString());
                             if (documentSnapshot.contains("Due"))
                                 due.setText(documentSnapshot.get("Due").toString());
-                            save.setText("Update");
+                            save.setText(R.string.update);
                         }
                     });
         }
@@ -240,7 +240,7 @@ public class NewPatient extends AppCompatActivity {
                 }
         }
     }
-    public void launchContactPicker(){
+    private void launchContactPicker(){
         Intent pickContactIntent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
         startActivityForResult(pickContactIntent,CONTACT_PICKER_REQUEST_CODE);
     }

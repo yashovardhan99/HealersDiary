@@ -29,7 +29,7 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.ViewHo
     private static Context context;
 
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
-        TextView mTextView;
+        final TextView mTextView;
         ViewHolder(RelativeLayout v){
             super(v);
             mTextView = v.findViewById(R.id.patientName);

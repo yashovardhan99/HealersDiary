@@ -27,6 +27,7 @@
                 android:layout_height="match_parent"
                 android:src="@drawable/meditating_person"
                 android:scaleType="centerCrop"
+                android:contentDescription="@string/graphic_of_a_meditating_girl"
                 android:alpha="0.5"
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="0.2"/>
