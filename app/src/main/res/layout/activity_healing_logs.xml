@@ -82,4 +82,10 @@
         app:layout_anchorGravity="bottom"
         android:id="@+id/healingLogRecyclerView"
         android:scrollbars="vertical" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:layout_gravity="center|bottom"
+        android:text="@string/only_last_100_records_are_loaded"/>
 </android.support.design.widget.CoordinatorLayout>

@@ -53,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
     public static final String DELETE_BUTTON = "Delete Button";
     public static final String EDIT_BUTTON = "Edit Button";
     public static final String NEW = "New";
+    public static final String USERS = "users";
+    public static final String FIRESTORE = "FIRESTORE";
     private RecyclerView.Adapter mAdapter;
     private ArrayList<Patient> patientList;
     Toolbar mainActivityToolbar;
@@ -99,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
         //firestore init
         db = FirebaseFirestore.getInstance();
-        CollectionReference patients = db.collection("users")
+        CollectionReference patients = db.collection(USERS)
                 .document(mUser.getUid())
                 .collection("patients");
 
@@ -108,15 +110,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                 if (e != null) {
-                    Log.d("FIRESTORE", "ERROR : " + e.getMessage());
+                    Log.d(FIRESTORE, "ERROR : " + e.getMessage());
                     return;
                 }
-                Log.d("FIRESTORE", "Data fetced");
+                Log.d(FIRESTORE, "Data fetced");
                 if(queryDocumentSnapshots==null)
                     return;
                 for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
                     //getting changes in documents
-                    Log.d("FIRESTORE", dc.getDocument().getData().toString());
+                    Log.d(FIRESTORE, dc.getDocument().getData().toString());
 
                     switch (dc.getType()) {
 
@@ -235,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void DeletePatientRecord(int id) {
-        DocumentReference patient = db.collection("users")
+        DocumentReference patient = db.collection(USERS)
                 .document(Objects.requireNonNull(mAuth.getUid()))
                 .collection("patients")
                 .document(patientList.get(id).getUid());
@@ -286,7 +288,7 @@ public class MainActivity extends AppCompatActivity {
         Date yest = yesterday.getTime();
         Timestamp y = new Timestamp(yest);
 
-        db.collection("users")
+        db.collection(USERS)
                 .document(Objects.requireNonNull(mAuth.getUid()))
                 .collection("patients")
                 .document(uid)

@@ -2,7 +2,6 @@ package com.yashovardhan99.healersdiary.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -31,6 +30,7 @@ public class PatientView extends AppCompatActivity {
     public String Uid;
     public final int REQUEST_HEALING_CONFIRMATION = 0;
     public final int REQUEST_PAYMENT_ADDED = 1;
+    public final int REQUEST_FEEDBACK_ADDED = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +48,7 @@ public class PatientView extends AppCompatActivity {
 
             final FirebaseFirestore db = FirebaseFirestore.getInstance();
             //initialize firestore
-            final DocumentReference documentReference = db.collection("users")
+            final DocumentReference documentReference = db.collection(MainActivity.USERS)
                     .document(Objects.requireNonNull(FirebaseAuth.getInstance().getUid()))
                     .collection("patients")
                     .document(Uid);
@@ -59,7 +59,7 @@ public class PatientView extends AppCompatActivity {
                 public void onEvent(@Nullable DocumentSnapshot document, @Nullable FirebaseFirestoreException e) {
                     if (document!=null && document.exists()) {
                         //get document data
-                        Log.d("FIRESTORE", "Data exists : " + document.getData());
+                        Log.d(MainActivity.FIRESTORE, "Data exists : " + document.getData());
                         //store it in a map and update relevant fields
                         Map<String, Object> patient = document.getData();//data extracted
 
@@ -142,7 +142,7 @@ public class PatientView extends AppCompatActivity {
             public void onClick(View v) {
                 Intent newFeed = new Intent(PatientView.this, NewPatientFeedback.class);
                 newFeed.putExtra(MainActivity.PATIENT_UID, Uid);
-                startActivity(newFeed);
+                startActivityForResult(newFeed,REQUEST_FEEDBACK_ADDED);
             }
         });
     }
@@ -159,13 +159,19 @@ public class PatientView extends AppCompatActivity {
         switch (requestCode){
             case REQUEST_HEALING_CONFIRMATION:
                 if(resultCode==NewHealingRecord.NEW_HEALING_ADDED_RESULT)
-                    Snackbar.make(findViewById(R.id.patientNameInDetail),"Added!", BaseTransientBottomBar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(R.id.patientNameInDetail), R.string.added, Snackbar.LENGTH_SHORT).show();
                 break;
 
             case REQUEST_PAYMENT_ADDED:
                 if(resultCode==PatientAddPaymentDialog.PAYMENT_ADDED_RESULT)
-                    Snackbar.make(findViewById(R.id.patientNameInDetail),"Payment Added : "+data.getStringExtra("Amount"),Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(findViewById(R.id.patientNameInDetail),getString(R.string.payment_added ,data.getStringExtra("Amount")),Snackbar.LENGTH_LONG).show();
                 break;
+
+            case REQUEST_FEEDBACK_ADDED:
+                if(resultCode==RESULT_OK)
+                    Snackbar.make(findViewById(R.id.patientNameInDetail),R.string.added, Snackbar.LENGTH_SHORT).show();
+                break;
+
 
             default: super.onActivityResult(requestCode, resultCode, data);
         }

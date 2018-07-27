@@ -1,36 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     tools:context=".Activities.NewPatientFeedback">
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:text="@string/enter_patient_feedback"
         android:id="@+id/enterPatientFeedbackPrompt"
-        android:layout_centerHorizontal="true"
+        android:textAlignment="center"
         android:padding="16dp"/>
     <EditText
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:minHeight="300dp"
+        android:minHeight="100dp"
+        android:maxHeight="400dp"
         android:layout_below="@id/enterPatientFeedbackPrompt"
         android:padding="16dp"
         android:id="@+id/patientFeedbackEditText"
-        android:hint="@string/start_typing_here"/>
+        android:hint="@string/start_typing_here"
+        android:inputType="textMultiLine" />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/patientFeedbackEditText"
-        android:text="@string/save"/>
+        android:id="@+id/PatientFeedbackSaveBtn"
+        android:text="@string/save"
+        android:padding="8dp"
+        android:elevation="4dp"/>
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:padding="8dp"
         android:text="This is a paid feature. You are allowed to use it for free only under the app test program. Tap here to learn more"
-        android:layout_alignParentBottom="true"/>
+        android:layout_below="@id/PatientFeedbackSaveBtn"/>
 
 </RelativeLayout>
