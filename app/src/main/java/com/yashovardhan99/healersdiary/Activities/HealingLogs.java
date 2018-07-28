@@ -173,7 +173,7 @@ public class HealingLogs extends AppCompatActivity {
                 //record to be deleted
                 deleteHealing(item.getGroupId());//deleted from firestore
                 healings.remove(item.getGroupId());//removed from list
-                Snackbar.make(findViewById(R.id.healingLogRecyclerView),"Record Deleted",Snackbar.LENGTH_LONG);
+                Snackbar.make(findViewById(R.id.healingLogRecyclerView), R.string.deleted,Snackbar.LENGTH_LONG);
                 mAdapter.notifyItemRemoved(item.getGroupId());//updated adapter
                 return true;
         }

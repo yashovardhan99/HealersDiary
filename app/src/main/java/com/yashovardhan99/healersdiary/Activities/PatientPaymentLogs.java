@@ -110,17 +110,19 @@ public class PatientPaymentLogs extends AppCompatActivity {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        switch (item.getTitle().toString()){
-            case "Edit":
-                //edit payment
-                Snackbar.make(findViewById(R.id.patientPaymentLogsRecycler),"Not yet implemented", Snackbar.LENGTH_LONG).show();
-                Log.d("CONTEXT MENU","EDIT - "+item.getGroupId());
-                return true;
-            case "Delete":
-                //delete record
-                Log.d("CONTEXT MENU","DELETE - "+item.getGroupId());
-                deletePayment(item.getGroupId());
-                return true;
+        final String EDIT = getString(R.string.edit);
+        final String DELETE = getString(R.string.delete);
+        if(item.getTitle().toString().equals(EDIT)) {
+            //edit payment
+            Snackbar.make(findViewById(R.id.patientPaymentLogsRecycler), R.string.not_yet_implemented, Snackbar.LENGTH_LONG).show();
+            Log.d("CONTEXT MENU", "EDIT - " + item.getGroupId());
+            return true;
+        }
+        else if(item.getTitle().toString().equals(DELETE)) {
+            //delete record
+            Log.d("CONTEXT MENU", "DELETE - " + item.getGroupId());
+            deletePayment(item.getGroupId());
+            return true;
         }
         return super.onContextItemSelected(item);
     }

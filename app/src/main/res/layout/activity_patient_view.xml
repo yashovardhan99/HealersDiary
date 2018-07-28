@@ -98,7 +98,7 @@
             android:backgroundTint="#FFF"
             android:layout_gravity="center_horizontal"
             android:text="@string/view_patient_feedback"
-            android:enabled="false"/>
+            android:id="@+id/patientFeedbackLogs"/>
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

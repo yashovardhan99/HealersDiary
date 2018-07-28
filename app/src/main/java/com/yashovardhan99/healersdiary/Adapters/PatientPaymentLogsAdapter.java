@@ -1,5 +1,6 @@
 package com.yashovardhan99.healersdiary.Adapters;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
  */
 public class PatientPaymentLogsAdapter extends RecyclerView.Adapter<PatientPaymentLogsAdapter.ViewHolder> {
 
+    private static Context context;
     private static ArrayList<PaymentSnapshot> paymentSnapshots;
 
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
@@ -33,9 +35,9 @@ public class PatientPaymentLogsAdapter extends RecyclerView.Adapter<PatientPayme
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            menu.setHeaderTitle(mAmountView.getText()+ " on "+mDateView.getText());
-            menu.add(getAdapterPosition(), 0, 0, "Edit");
-            menu.add(getAdapterPosition(), 1, 0, "Delete");
+            menu.setHeaderTitle(context.getString(R.string.paid_on_date, mAmountView.getText(), mDateView.getText()));
+            menu.add(getAdapterPosition(), 0, 0, R.string.edit);
+            menu.add(getAdapterPosition(), 1, 0, R.string.delete);
         }
     }
 
@@ -46,6 +48,7 @@ public class PatientPaymentLogsAdapter extends RecyclerView.Adapter<PatientPayme
     public PatientPaymentLogsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         RelativeLayout v = (RelativeLayout) (LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.payment_logs_recycler, parent, false));
+        context = parent.getContext();
         return new ViewHolder(v);
     }
 

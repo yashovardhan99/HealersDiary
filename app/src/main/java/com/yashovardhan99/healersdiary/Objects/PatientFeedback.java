@@ -2,15 +2,18 @@ package com.yashovardhan99.healersdiary.Objects;
 
 import com.google.firebase.Timestamp;
 
+import java.text.DateFormat;
+
 /**
  * Created by Yashovardhan99 on 28-07-2018 as a part of HealersDiary.
  */
 public class PatientFeedback {
-    String feedback;
-    Timestamp timestamp;
-    Boolean verified;
+    public String feedback, Uid;
+    public Timestamp timestamp;
+    public Boolean verified;
     public PatientFeedback(){
         feedback="";
+        Uid = "";
         timestamp=Timestamp.now();
         verified=false;
     }
@@ -23,7 +26,11 @@ public class PatientFeedback {
         return verified;
     }
 
-    public Timestamp getTimestamp() {
-        return timestamp;
+    public String getTimestamp() {
+        return DateFormat.getDateInstance().format(timestamp.toDate());
+    }
+
+    public String getUid() {
+        return Uid;
     }
 }
