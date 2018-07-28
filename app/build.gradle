@@ -7,8 +7,8 @@ android {
         applicationId "com.yashovardhan99.healersdiary"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 6002
-        versionName "0.6.2"
+        versionCode 7000
+        versionName "0.7.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
