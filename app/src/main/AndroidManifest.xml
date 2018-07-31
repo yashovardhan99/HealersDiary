@@ -44,7 +44,8 @@
         <activity
             android:name=".Activities.NewPatientFeedback"
             android:theme="@style/AppTheme.Dialog" />
-        <activity android:name=".Activities.PatientFeedbackLogs"></activity>
+        <activity android:name=".Activities.PatientFeedbackLogs" />
+        <activity android:name=".Activities.ProDisplay"></activity>
     </application>
 
 </manifest>
