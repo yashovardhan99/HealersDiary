@@ -15,7 +15,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -37,7 +36,7 @@ public class Login extends AppCompatActivity {
 
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseAuth mAuth;
-    private final int GOOGLE_SIGN_IN_RC = 1;
+    public static final int GOOGLE_SIGN_IN_RC = 1;
     private LinearLayout signInProgress;
     private FirebaseAnalytics mFirebaseAnalytics;
     private Bundle params;
@@ -60,15 +59,6 @@ public class Login extends AppCompatActivity {
          mAuth = FirebaseAuth.getInstance();
 
          //when the Google sign in button is clicked
-        SignInButton gsb = findViewById(R.id.GoogleSignInButton);
-        gsb.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-                startActivityForResult(signInIntent,GOOGLE_SIGN_IN_RC);
-            }
-        });
-
         TextView privacy = findViewById(R.id.privacy_policy_login);
         privacy.setMovementMethod(LinkMovementMethod.getInstance());
 
@@ -113,6 +103,11 @@ public class Login extends AppCompatActivity {
                     }
                 });
     }
+
+    public GoogleSignInClient getmGoogleSignInClient() {
+        return mGoogleSignInClient;
+    }
+
     private void signedIn()
     {
         //now the user is signed in
