@@ -14,13 +14,6 @@
         android:padding="8dp"
         android:contentDescription="@string/healers_diary_logo"
         android:id="@+id/signInLogo"/>
-    <!--<fragment-->
-        <!--android:name="com.yashovardhan99.healersdiary.Fragments.SignInButtonFragment"-->
-        <!--android:layout_below="@id/signInLogo"-->
-        <!--android:layout_centerInParent="true"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:id="@+id/signInButtonFragment" />-->
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -36,20 +29,4 @@
         android:textAlignment="center"
         android:text="@string/by_signing_in_you_agree_to_our_s"
         android:linksClickable="true"/>
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:id="@+id/signInProgress"
-        android:visibility="gone"
-        android:layout_centerInParent="true">
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/signing_in"
-            android:layout_gravity="center_vertical"/>
-    </LinearLayout>
 </RelativeLayout>

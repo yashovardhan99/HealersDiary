@@ -9,8 +9,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
-import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +28,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.yashovardhan99.healersdiary.Fragments.SignInButtonFragment;
+import com.yashovardhan99.healersdiary.Fragments.SignInProgressFragment;
 import com.yashovardhan99.healersdiary.R;
 
 import java.util.HashMap;
@@ -41,10 +40,10 @@ public class Login extends FragmentActivity {
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseAuth mAuth;
     final private int GOOGLE_SIGN_IN_RC = 1;
-    private LinearLayout signInProgress;
     private FirebaseAnalytics mFirebaseAnalytics;
     private Bundle params;
     private Fragment signInFragment;
+    private Fragment signInProgressFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +52,7 @@ public class Login extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        signInProgress = findViewById(R.id.signInProgress);
-
+        signInProgressFragment = new SignInProgressFragment();
         signInFragment = new SignInButtonFragment();
 
         getSupportFragmentManager().beginTransaction().add(R.id.signInFragmentHolder, signInFragment).commit();
@@ -67,13 +65,13 @@ public class Login extends FragmentActivity {
          mGoogleSignInClient = GoogleSignIn.getClient(this,gso);
          mAuth = FirebaseAuth.getInstance();
 
-         //when the Google sign in button is clicked
-        TextView privacy = findViewById(R.id.privacy_policy_login);
-        privacy.setMovementMethod(LinkMovementMethod.getInstance());
+         TextView privacy = findViewById(R.id.privacy_policy_login);
+         privacy.setMovementMethod(LinkMovementMethod.getInstance());
 
     }
 
     public void signInWithGoogle(){
+        //When Sign in button is clicked
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent,GOOGLE_SIGN_IN_RC);
     }
@@ -81,14 +79,11 @@ public class Login extends FragmentActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-//        findViewById(R.id.GoogleSignInButton).setVisibility(View.GONE);
+
         FragmentManager fragmentManager  = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.remove(signInFragment);
-        fragmentTransaction.commit();
-        signInProgress.setVisibility(View.VISIBLE);
+
         Log.d("SIGNIN", String.valueOf(requestCode));
-        //adds the progress bar to not keep users waiting
+
         switch(requestCode){
             case GOOGLE_SIGN_IN_RC:
                 try{
@@ -97,11 +92,15 @@ public class Login extends FragmentActivity {
                     GoogleSignInAccount account = task.getResult(ApiException.class);
                     //Now authenticate with firebase
                     FirebaseAuthWithGoogle(account);
+
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.signInFragmentHolder,signInProgressFragment);
+                    fragmentTransaction.commit();
+
                     Log.d("GOOGLE","SIGNED IN");
                 }catch (Exception e){
                     Log.d("GOOGLE","SIGN IN FAILED");
-                    signInProgress.setVisibility(View.INVISIBLE);
-                    findViewById(R.id.GoogleSignInButton).setVisibility(View.VISIBLE);
+                    fragmentManager.beginTransaction().replace(R.id.signInFragmentHolder,signInFragment).commit();
                 }
                 break;
         }
@@ -118,6 +117,9 @@ public class Login extends FragmentActivity {
                         if(task.isSuccessful()){
                             params.putString(FirebaseAnalytics.Param.METHOD,"Google");
                             signedIn();
+                        }
+                        else{
+                            getSupportFragmentManager().beginTransaction().replace(R.id.signInFragmentHolder,signInFragment).commit();
                         }
                     }
                 });
