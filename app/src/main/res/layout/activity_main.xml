@@ -83,15 +83,14 @@
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-
-    <android.support.v7.widget.RecyclerView
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/recycler_main"
-        android:scrollbars="vertical"
         app:layout_anchor="@id/appBarLayout"
         app:layout_anchorGravity="bottom"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        android:scrollbars="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:id="@+id/mainListHolder"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/new_fab"
@@ -100,6 +99,7 @@
         android:layout_margin="16dp"
         android:src="@drawable/ic_add_black_24dp"
         android:layout_gravity="bottom|end"
-        app:layout_anchor="@id/recycler_main"
+        app:layout_anchor="@id/mainListHolder"
         app:layout_anchorGravity="bottom|end"/>
+
 </android.support.design.widget.CoordinatorLayout>

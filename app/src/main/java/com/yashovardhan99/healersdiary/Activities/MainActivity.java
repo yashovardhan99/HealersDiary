@@ -9,9 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -35,11 +32,9 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.yashovardhan99.healersdiary.Adapters.MainListAdapter;
-import com.yashovardhan99.healersdiary.Objects.Patient;
+import com.yashovardhan99.healersdiary.Fragments.MainListFragment;
 import com.yashovardhan99.healersdiary.R;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
@@ -55,15 +50,14 @@ public class MainActivity extends AppCompatActivity {
     private static final String NEW = "New";
     public static final String USERS = "users";
     public static final String FIRESTORE = "FIRESTORE";
-    private RecyclerView.Adapter mAdapter;
-    private ArrayList<Patient> patientList;
-    private Toolbar mainActivityToolbar;
     private FirebaseAnalytics mFirebaseAnalytics;
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
     private static int healingsToday;
     private static int healingsYesterday;
     public static BillingClient mBillingClient;
+    private MainListFragment listFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,9 +66,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        patientList = new ArrayList<>();
+//        patientList = new ArrayList<>();
 
-        mainActivityToolbar = findViewById(R.id.toolbar);
+        Toolbar mainActivityToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mainActivityToolbar);
         if(getSupportActionBar()!=null)
             getSupportActionBar().setTitle(R.string.app_name);
@@ -103,78 +97,83 @@ public class MainActivity extends AppCompatActivity {
 
         //firestore init
         db = FirebaseFirestore.getInstance();
-        CollectionReference patients = db.collection(USERS)
-                .document(mUser.getUid())
-                .collection("patients");
+//        CollectionReference patients = db.collection(USERS)
+//                .document(mUser.getUid())
+//                .collection("patients");
 
-        //to instantly make any changes reflect here
-        patients.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                if (e != null) {
-                    Log.d(FIRESTORE, "ERROR : " + e.getMessage());
-                    return;
-                }
-                Log.d(FIRESTORE, "Data fetced");
-                if(queryDocumentSnapshots==null)
-                    return;
-                for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
-                    //getting changes in documents
-                    Log.d(FIRESTORE, dc.getDocument().getData().toString());
 
-                    switch (dc.getType()) {
+        listFragment = new MainListFragment();
+        getSupportFragmentManager().beginTransaction().add(R.id.mainListHolder,listFragment).commit();
 
-                        case ADDED:
-                            //add new patient to arrayList
-                            Patient patient = new Patient();
-                            patient.name = Objects.requireNonNull(dc.getDocument().get("Name")).toString();
-                            patient.uid = dc.getDocument().getId();
-                            patientList.add(patient);
-                            mAdapter.notifyItemInserted(patientList.indexOf(patient));
-                            countHealings(patient.getUid());
-                            break;
 
-                        case MODIFIED:
-                            //modify patient name
-                            String id = dc.getDocument().getId();
-                            for (Patient patient1 : patientList) {
-                                if (patient1.getUid().equals(id)) {
-                                    patient1.name = Objects.requireNonNull(dc.getDocument().get("Name")).toString();
-                                    mAdapter.notifyItemChanged(patientList.indexOf(patient1));
-                                    break;
-                                }
-                            }
-                            break;
-                        case REMOVED:
-                            //remove patient record
-                            String id2 = dc.getDocument().getId();
-                            for (Patient patient1 : patientList) {
-                                if (patient1.getUid().equals(id2)) {
-                                    int pos = patientList.indexOf(patient1);
-                                    patientList.remove(patient1);
-                                    mAdapter.notifyItemRemoved(pos);
-                                    break;
-                                }
-                            }
-                            break;
-                    }
-                }
-            }
-        });
-
-        //Recycler view setup
-        RecyclerView mRecyclerView;
-        mRecyclerView = findViewById(R.id.recycler_main);
-        mRecyclerView.setHasFixedSize(false);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new MainListAdapter(patientList);
-        mRecyclerView.setAdapter(mAdapter);
-
-        //displays the divider line bw each item
-        DividerItemDecoration itemLine = new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL);
-        mRecyclerView.addItemDecoration(itemLine);
-
-        //new patient record button
+//        //to instantly make any changes reflect here
+//        patients.addSnapshotListener(new EventListener<QuerySnapshot>() {
+//            @Override
+//            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+//                if (e != null) {
+//                    Log.d(FIRESTORE, "ERROR : " + e.getMessage());
+//                    return;
+//                }
+//                Log.d(FIRESTORE, "Data fetced");
+//                if(queryDocumentSnapshots==null)
+//                    return;
+//                for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
+//                    //getting changes in documents
+//                    Log.d(FIRESTORE, dc.getDocument().getData().toString());
+//
+//                    switch (dc.getType()) {
+//
+//                        case ADDED:
+//                            //add new patient to arrayList
+//                            Patient patient = new Patient();
+//                            patient.name = Objects.requireNonNull(dc.getDocument().get("Name")).toString();
+//                            patient.uid = dc.getDocument().getId();
+//                            patientList.add(patient);
+//                            mAdapter.notifyItemInserted(patientList.indexOf(patient));
+//                            countHealings(patient.getUid());
+//                            break;
+//
+//                        case MODIFIED:
+//                            //modify patient name
+//                            String id = dc.getDocument().getId();
+//                            for (Patient patient1 : patientList) {
+//                                if (patient1.getUid().equals(id)) {
+//                                    patient1.name = Objects.requireNonNull(dc.getDocument().get("Name")).toString();
+//                                    mAdapter.notifyItemChanged(patientList.indexOf(patient1));
+//                                    break;
+//                                }
+//                            }
+//                            break;
+//                        case REMOVED:
+//                            //remove patient record
+//                            String id2 = dc.getDocument().getId();
+//                            for (Patient patient1 : patientList) {
+//                                if (patient1.getUid().equals(id2)) {
+//                                    int pos = patientList.indexOf(patient1);
+//                                    patientList.remove(patient1);
+//                                    mAdapter.notifyItemRemoved(pos);
+//                                    break;
+//                                }
+//                            }
+//                            break;
+//                    }
+//                }
+//            }
+//        });
+//
+//        //Recycler view setup
+//        RecyclerView mRecyclerView;
+//        mRecyclerView = findViewById(R.id.recycler_main);
+//        mRecyclerView.setHasFixedSize(false);
+//        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        mAdapter = new MainListAdapter(patientList);
+//        mRecyclerView.setAdapter(mAdapter);
+//
+//        //displays the divider line bw each item
+//        DividerItemDecoration itemLine = new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL);
+//        mRecyclerView.addItemDecoration(itemLine);
+//
+//        //new patient record button
         FloatingActionButton newPatientButton = findViewById(R.id.new_fab);
         newPatientButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -200,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
             //edit patient data
             Intent editPatient = new Intent(this, NewPatient.class);
             editPatient.putExtra("EDIT", true);
-            String id = patientList.get(item.getGroupId()).getUid();
+            String id = listFragment.patientList.get(item.getGroupId()).getUid();
             editPatient.putExtra(PATIENT_UID, id);
             startActivity(editPatient);
 
@@ -242,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
         DocumentReference patient = db.collection(USERS)
                 .document(Objects.requireNonNull(mAuth.getUid()))
                 .collection("patients")
-                .document(patientList.get(id).getUid());
+                .document(listFragment.patientList.get(id).getUid());
         //now to delete this record, we first delete all healing and payment history of this patient
         final CollectionReference healings = patient
                 .collection("healings");
@@ -281,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
         delete.putString(FirebaseAnalytics.Param.ITEM_ID,patient.getId());
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, delete);
     }
-    private void countHealings(String uid) {
+    public void countHealings(String uid) {
         Log.d("COUNTING HEALINGS", uid);
 
         //yesterday's timestamp
