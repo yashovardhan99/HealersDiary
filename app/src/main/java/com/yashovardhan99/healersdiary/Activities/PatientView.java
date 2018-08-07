@@ -3,6 +3,7 @@ package com.yashovardhan99.healersdiary.Activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -16,6 +17,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.yashovardhan99.healersdiary.Fragments.NewHealingDialog;
 import com.yashovardhan99.healersdiary.Helpers.HtmlCompat;
 import com.yashovardhan99.healersdiary.R;
 
@@ -28,7 +30,6 @@ import javax.annotation.Nullable;
 public class PatientView extends AppCompatActivity {
 
     private String Uid;
-    private final int REQUEST_HEALING_CONFIRMATION = 0;
     private final int REQUEST_PAYMENT_ADDED = 1;
     private final int REQUEST_FEEDBACK_ADDED = 2;
 
@@ -95,9 +96,8 @@ public class PatientView extends AppCompatActivity {
         newHealing.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent newHealingIntent = new Intent(PatientView.this,NewHealingRecord.class);
-                newHealingIntent.putExtra(MainActivity.PATIENT_UID,Uid);
-                startActivityForResult(newHealingIntent, REQUEST_HEALING_CONFIRMATION);
+                DialogFragment newHealing = new NewHealingDialog();
+                newHealing.show(getSupportFragmentManager(),"HEALINGNEW");
             }
         });
 
@@ -168,10 +168,6 @@ public class PatientView extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode){
-            case REQUEST_HEALING_CONFIRMATION:
-                if(resultCode==NewHealingRecord.NEW_HEALING_ADDED_RESULT)
-                    Snackbar.make(findViewById(R.id.patientNameInDetail), R.string.added, Snackbar.LENGTH_SHORT).show();
-                break;
 
             case REQUEST_PAYMENT_ADDED:
                 if(resultCode==PatientAddPaymentDialog.PAYMENT_ADDED_RESULT)
