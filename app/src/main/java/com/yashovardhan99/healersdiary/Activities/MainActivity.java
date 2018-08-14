@@ -8,10 +8,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -57,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private static int healingsYesterday;
     public static BillingClient mBillingClient;
     private MainListFragment listFragment;
+    private DrawerLayout mDrawerLayout;
 
 
     @Override
@@ -66,12 +71,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        patientList = new ArrayList<>();
-
         Toolbar mainActivityToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mainActivityToolbar);
-        if(getSupportActionBar()!=null)
+        if(getSupportActionBar()!=null) {
             getSupportActionBar().setTitle(R.string.app_name);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
+        }
+
+        mDrawerLayout = findViewById(R.id.drawer_layout);
 
         //check login and handle
         mAuth = FirebaseAuth.getInstance();
@@ -97,83 +105,13 @@ public class MainActivity extends AppCompatActivity {
 
         //firestore init
         db = FirebaseFirestore.getInstance();
-//        CollectionReference patients = db.collection(USERS)
-//                .document(mUser.getUid())
-//                .collection("patients");
 
 
         listFragment = new MainListFragment();
         getSupportFragmentManager().beginTransaction().add(R.id.mainListHolder,listFragment).commit();
 
 
-//        //to instantly make any changes reflect here
-//        patients.addSnapshotListener(new EventListener<QuerySnapshot>() {
-//            @Override
-//            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-//                if (e != null) {
-//                    Log.d(FIRESTORE, "ERROR : " + e.getMessage());
-//                    return;
-//                }
-//                Log.d(FIRESTORE, "Data fetced");
-//                if(queryDocumentSnapshots==null)
-//                    return;
-//                for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
-//                    //getting changes in documents
-//                    Log.d(FIRESTORE, dc.getDocument().getData().toString());
-//
-//                    switch (dc.getType()) {
-//
-//                        case ADDED:
-//                            //add new patient to arrayList
-//                            Patient patient = new Patient();
-//                            patient.name = Objects.requireNonNull(dc.getDocument().get("Name")).toString();
-//                            patient.uid = dc.getDocument().getId();
-//                            patientList.add(patient);
-//                            mAdapter.notifyItemInserted(patientList.indexOf(patient));
-//                            countHealings(patient.getUid());
-//                            break;
-//
-//                        case MODIFIED:
-//                            //modify patient name
-//                            String id = dc.getDocument().getId();
-//                            for (Patient patient1 : patientList) {
-//                                if (patient1.getUid().equals(id)) {
-//                                    patient1.name = Objects.requireNonNull(dc.getDocument().get("Name")).toString();
-//                                    mAdapter.notifyItemChanged(patientList.indexOf(patient1));
-//                                    break;
-//                                }
-//                            }
-//                            break;
-//                        case REMOVED:
-//                            //remove patient record
-//                            String id2 = dc.getDocument().getId();
-//                            for (Patient patient1 : patientList) {
-//                                if (patient1.getUid().equals(id2)) {
-//                                    int pos = patientList.indexOf(patient1);
-//                                    patientList.remove(patient1);
-//                                    mAdapter.notifyItemRemoved(pos);
-//                                    break;
-//                                }
-//                            }
-//                            break;
-//                    }
-//                }
-//            }
-//        });
-//
-//        //Recycler view setup
-//        RecyclerView mRecyclerView;
-//        mRecyclerView = findViewById(R.id.recycler_main);
-//        mRecyclerView.setHasFixedSize(false);
-//        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        mAdapter = new MainListAdapter(patientList);
-//        mRecyclerView.setAdapter(mAdapter);
-//
-//        //displays the divider line bw each item
-//        DividerItemDecoration itemLine = new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL);
-//        mRecyclerView.addItemDecoration(itemLine);
-//
-//        //new patient record button
+        ////new patient record button
         FloatingActionButton newPatientButton = findViewById(R.id.new_fab);
         newPatientButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -332,5 +270,28 @@ public class MainActivity extends AppCompatActivity {
         Resources res = getResources();
         today.setText(res.getQuantityString(R.plurals.healing, healingsToday, healingsToday, getString(R.string.today)));
         yesterday.setText(res.getQuantityString(R.plurals.healing, healingsYesterday, healingsYesterday, getString(R.string.yesterday)));
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                mDrawerLayout.openDrawer(GravityCompat.START);
+                return true;
+            case R.id.shareMenuItem:
+                Intent share = new Intent(Intent.ACTION_SEND);
+                share.putExtra(Intent.EXTRA_TEXT,getString(R.string.app_name));
+                share.setType("text/plain");
+                startActivity(Intent.createChooser(share,getString(R.string.share)));
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_options_menu,menu);
+        return true;
     }
 }

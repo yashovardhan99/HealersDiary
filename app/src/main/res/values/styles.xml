@@ -32,7 +32,6 @@
 
     <style name="AppTheme.CollapsingToolbarParent" parent="AppTheme">
         <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowContentOverlay">@null</item>
     </style>
 
 </resources>
