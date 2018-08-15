@@ -174,5 +174,6 @@ public class Login extends FragmentActivity {
         Intent done = new Intent(this,MainActivity.class);
         done.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(done);
+        finishAffinity();
     }
 }

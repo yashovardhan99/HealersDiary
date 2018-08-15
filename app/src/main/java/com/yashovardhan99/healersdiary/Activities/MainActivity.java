@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.GravityCompat;
@@ -47,6 +48,7 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.yashovardhan99.healersdiary.Fragments.MainListFragment;
 import com.yashovardhan99.healersdiary.Fragments.ProFragment;
+import com.yashovardhan99.healersdiary.Fragments.SignOutFragment;
 import com.yashovardhan99.healersdiary.R;
 
 import java.util.Calendar;
@@ -101,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         final FirebaseUser mUser = mAuth.getCurrentUser();
         if (mUser == null) {
+            Log.d("SIGN","NO USER");
             //not signed in
             signOut();
             return;
@@ -152,7 +155,6 @@ public class MainActivity extends AppCompatActivity {
                             share();
                             return true;
                         case R.id.signOutMenuItem:
-                            mAuth.signOut();
                             //add alertbox
                             signOut();
                             return true;
@@ -192,9 +194,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void signOut() {
-        startActivity(new Intent(MainActivity.this, Login.class)
-                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK));
-        finishAffinity();
+        DialogFragment signOutFragment = new SignOutFragment();
+        signOutFragment.show(getSupportFragmentManager(),"SIGNOUT");
+//        startActivity(new Intent(MainActivity.this, Login.class)
+//                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK));
+//        finishAffinity();
     }
 
 
