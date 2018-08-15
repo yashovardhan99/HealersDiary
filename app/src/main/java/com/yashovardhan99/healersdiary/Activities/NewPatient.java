@@ -218,8 +218,9 @@ public class NewPatient extends AppCompatActivity {
                 Intent openPatientDetail = new Intent(NewPatient.this, PatientView.class);
                 openPatientDetail.putExtra(MainActivity.PATIENT_UID,documentReference.getId());
                 Log.d("PATIENT UID",documentReference.getId());
-                openPatientDetail.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                openPatientDetail.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(openPatientDetail);
+                finish();
             }
         });
     }

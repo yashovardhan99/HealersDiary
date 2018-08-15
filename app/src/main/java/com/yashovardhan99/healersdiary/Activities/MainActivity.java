@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
             //not signed in
             startActivity(new Intent(this, Login.class)
                     .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK));
-            finish();
+            finishAffinity();
             return;
         }
 

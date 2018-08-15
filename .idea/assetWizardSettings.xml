@@ -81,7 +81,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/E:/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/navigation/ic_menu_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/E:/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_shopping_cart_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -92,7 +92,7 @@
                         <option name="values">
                           <map>
                             <entry key="color" value="f1fff1" />
-                            <entry key="outputName" value="ic_menu_black_24dp" />
+                            <entry key="outputName" value="ic_shopping_cart_black_24dp" />
                             <entry key="sourceFile" value="C:\Users\yasho" />
                           </map>
                         </option>
