@@ -46,6 +46,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.yashovardhan99.healersdiary.Fragments.MainListFragment;
+import com.yashovardhan99.healersdiary.Fragments.ProFragment;
 import com.yashovardhan99.healersdiary.R;
 
 import java.util.Calendar;
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
     private static int healingsYesterday;
     public static BillingClient mBillingClient;
     private MainListFragment listFragment;
+    private ProFragment proFragment;
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
 
@@ -97,17 +99,19 @@ public class MainActivity extends AppCompatActivity {
 
         //check login and handle
         mAuth = FirebaseAuth.getInstance();
-        FirebaseUser mUser = mAuth.getCurrentUser();
+        final FirebaseUser mUser = mAuth.getCurrentUser();
         if (mUser == null) {
             //not signed in
-            startActivity(new Intent(this, Login.class)
-                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK));
-            finishAffinity();
+            signOut();
             return;
         }
 
+
+        listFragment = new MainListFragment();
+        proFragment = new ProFragment();
+        getSupportFragmentManager().beginTransaction().add(R.id.mainListHolder,listFragment).commit();
+
         Uri profilePicture = mUser.getPhotoUrl();
-        Log.d("PROFILE",profilePicture.toString());
 
         Picasso.get().load(profilePicture).placeholder(R.drawable.ic_person_black_24dp).centerCrop().fit().into(profilePic, new Callback() {
             @Override
@@ -124,23 +128,50 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                if(item.getGroupId()==R.id.MainNavGroup){
+                    item.setChecked(true);
+                    mDrawerLayout.closeDrawers();
+                    switch (item.getItemId()){
+                        case R.id.home:
+                            getSupportFragmentManager().beginTransaction().replace(R.id.mainListHolder, listFragment).commit();
+                            return true;
+
+                        case R.id.getPro:
+                            getSupportFragmentManager().beginTransaction().replace(R.id.mainListHolder, proFragment).commit();
+                            return true;
+                    }
+                }
+                else{
+                    switch (item.getItemId()){
+                        case R.id.shareMenuItem:
+                            share();
+                            return true;
+                        case R.id.signOutMenuItem:
+                            mAuth.signOut();
+                            //add alertbox
+                            signOut();
+                            return true;
+                    }
+                }
+                return true;
+            }
+        });
+
         //initialize healings counter
         healingsToday = 0;
         healingsYesterday = 0;
 
         //display welcome message
         if (mUser.getDisplayName() != null)
-//            ((TextView) findViewById(R.id.userWelcome)).setText(getString(R.string.welcome_user, mUser.getDisplayName()));
             profileName.setText(mUser.getDisplayName());
-//        else
-//            findViewById(R.id.userWelcome).setVisibility(View.GONE);
 
         //firestore init
         db = FirebaseFirestore.getInstance();
-
-
-        listFragment = new MainListFragment();
-        getSupportFragmentManager().beginTransaction().add(R.id.mainListHolder,listFragment).commit();
 
 
         ////new patient record button
@@ -159,6 +190,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void signOut() {
+        startActivity(new Intent(MainActivity.this, Login.class)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK));
+        finishAffinity();
+    }
+
 
     @Override
     public boolean onContextItemSelected(final MenuItem item) {
@@ -250,6 +288,7 @@ public class MainActivity extends AppCompatActivity {
         delete.putString(FirebaseAnalytics.Param.ITEM_ID,patient.getId());
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, delete);
     }
+
     public void countHealings(String uid) {
         Log.d("COUNTING HEALINGS", uid);
 
@@ -311,13 +350,18 @@ public class MainActivity extends AppCompatActivity {
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
             case R.id.shareMenuItem:
-                Intent share = new Intent(Intent.ACTION_SEND);
-                share.putExtra(Intent.EXTRA_TEXT,getString(R.string.app_name));
-                share.setType("text/plain");
-                startActivity(Intent.createChooser(share,getString(R.string.share)));
+                share();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void share() {
+        Intent share = new Intent(Intent.ACTION_SEND);
+        share.putExtra(Intent.EXTRA_TEXT,getString(R.string.app_name));
+        share.setType("text/plain");
+        startActivity(Intent.createChooser(share,getString(R.string.share)));
     }
 
     @Override

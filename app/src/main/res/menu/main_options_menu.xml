@@ -2,20 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/signOutMenuItem"
-        android:title="@string/sign_out"
-        android:icon="@drawable/ic_power_settings_new_black_24dp"
-        android:contentDescription="@string/signs_you_out_of_the_app"
-        android:tooltipText="@string/sign_out"
-        android:orderInCategory="5"
-        app:showAsAction="ifRoom|withText"/>
-    <item
-        android:id="@+id/find_pro"
-        android:title="@string/upgrade_now"
-        android:icon="@drawable/ic_shop_black_24dp"
-        android:orderInCategory="4"
-        app:showAsAction="ifRoom"/>
-    <item
         android:id="@+id/shareMenuItem"
         android:title="@string/share"
         android:icon="@drawable/ic_share_black_24dp"

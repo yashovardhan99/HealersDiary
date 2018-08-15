@@ -6,7 +6,6 @@
     <ImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:background="@drawable/circle"
         android:id="@+id/profilePic"
         android:layout_gravity="center"
         android:padding="8dp"/>

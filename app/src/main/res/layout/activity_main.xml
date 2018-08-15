@@ -10,15 +10,6 @@
     app:statusBarBackground="@android:color/transparent"
     tools:context=".Activities.MainActivity">
 
-    <android.support.design.widget.NavigationView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:fitsSystemWindows="true"
-        app:headerLayout="@layout/nav_drawer_header"
-        app:menu="@menu/main_nav_menu"
-        android:id="@+id/main_nav_view"/>
-
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -107,4 +98,14 @@
             app:layout_anchorGravity="bottom|end" />
 
     </android.support.design.widget.CoordinatorLayout>
+
+    <android.support.design.widget.NavigationView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_drawer_header"
+        app:menu="@menu/main_nav_menu"
+        android:id="@+id/main_nav_view"/>
+
 </android.support.v4.widget.DrawerLayout>
