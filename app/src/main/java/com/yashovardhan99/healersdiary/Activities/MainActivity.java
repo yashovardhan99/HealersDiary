@@ -4,10 +4,16 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +24,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.billingclient.api.BillingClient;
@@ -36,6 +43,8 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 import com.yashovardhan99.healersdiary.Fragments.MainListFragment;
 import com.yashovardhan99.healersdiary.R;
 
@@ -62,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
     public static BillingClient mBillingClient;
     private MainListFragment listFragment;
     private DrawerLayout mDrawerLayout;
+    private NavigationView mNavigationView;
 
 
     @Override
@@ -80,6 +90,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
+        mNavigationView = findViewById(R.id.main_nav_view);
+
+        final ImageView profilePic = mNavigationView.getHeaderView(0).findViewById(R.id.profilePic);
+        final TextView profileName = mNavigationView.getHeaderView(0).findViewById(R.id.profileName);
 
         //check login and handle
         mAuth = FirebaseAuth.getInstance();
@@ -92,6 +106,23 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+        Uri profilePicture = mUser.getPhotoUrl();
+        Log.d("PROFILE",profilePicture.toString());
+
+        Picasso.get().load(profilePicture).placeholder(R.drawable.ic_person_black_24dp).centerCrop().fit().into(profilePic, new Callback() {
+            @Override
+            public void onSuccess() {
+                Bitmap imageBit = ((BitmapDrawable) profilePic.getDrawable()).getBitmap();
+                RoundedBitmapDrawable bitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), imageBit);
+                bitmapDrawable.setCircular(true);
+                bitmapDrawable.setCornerRadius(Math.max(imageBit.getWidth(), imageBit.getHeight())/2.0f);
+                profilePic.setImageDrawable(bitmapDrawable);
+            }
+
+            @Override
+            public void onError(Exception e) {
+            }
+        });
 
         //initialize healings counter
         healingsToday = 0;
@@ -99,9 +130,10 @@ public class MainActivity extends AppCompatActivity {
 
         //display welcome message
         if (mUser.getDisplayName() != null)
-            ((TextView) findViewById(R.id.userWelcome)).setText(getString(R.string.welcome_user, mUser.getDisplayName()));
-        else
-            findViewById(R.id.userWelcome).setVisibility(View.GONE);
+//            ((TextView) findViewById(R.id.userWelcome)).setText(getString(R.string.welcome_user, mUser.getDisplayName()));
+            profileName.setText(mUser.getDisplayName());
+//        else
+//            findViewById(R.id.userWelcome).setVisibility(View.GONE);
 
         //firestore init
         db = FirebaseFirestore.getInstance();
