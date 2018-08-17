@@ -105,7 +105,9 @@ public class MainActivity extends AppCompatActivity {
         if (mUser == null) {
             Log.d("SIGN","NO USER");
             //not signed in
-            signOut();
+            startActivity(new Intent(this, Login.class)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK));
+            finishAffinity();
             return;
         }
 

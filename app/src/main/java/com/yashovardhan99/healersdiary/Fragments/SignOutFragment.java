@@ -23,10 +23,10 @@ public class SignOutFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        return new AlertDialog.Builder(getActivity())
+        AlertDialog ad = new AlertDialog.Builder(getActivity())
                 .setIcon(R.drawable.ic_power_settings_new_black_24dp)
                 .setTitle(R.string.sign_out)
-                .setMessage("This will sign you out of the app. If you are connected to the internet, your data has been synced online and will not be deleted.")
+//                .setMessage()
                 .setPositiveButton(R.string.sign_out, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -42,5 +42,7 @@ public class SignOutFragment extends DialogFragment {
                         dismiss();
                     }
                 }).create();
+        ad.setMessage("This will sign you out of the app. If you are connected to the internet, your data has been synced online and will not be deleted.");
+        return ad;
     }
 }
