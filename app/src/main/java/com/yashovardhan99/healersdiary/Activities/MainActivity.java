@@ -13,6 +13,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.GravityCompat;
@@ -78,7 +79,8 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
     private AboutFragment aboutFragment;
-
+    private Fragment mContent;
+    private String FRAG_KEY = "MY_FRAG";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,7 +120,16 @@ public class MainActivity extends AppCompatActivity {
         proFragment = new ProFragment();
         aboutFragment = new AboutFragment();
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.mainListHolder,listFragment).commit();
+        if(savedInstanceState!=null){
+            mContent = getSupportFragmentManager().getFragment(savedInstanceState,FRAG_KEY);
+            getSupportFragmentManager().beginTransaction().replace(R.id.mainListHolder, mContent).commit();
+        }
+        else {
+            getSupportFragmentManager().beginTransaction().replace(R.id.mainListHolder, listFragment).commit();
+            mContent = listFragment;
+        }
+        resetHealingCounters();
+
 
         Uri profilePicture = mUser.getPhotoUrl();
 
@@ -147,18 +158,21 @@ public class MainActivity extends AppCompatActivity {
                     mDrawerLayout.closeDrawers();
                     switch (item.getItemId()){
                         case R.id.home:
-                            getSupportFragmentManager().beginTransaction().replace(R.id.mainListHolder, listFragment).commit();
-                            return true;
+//                            getSupportFragmentManager().beginTransaction().replace(R.id.mainListHolder, listFragment).commit();
+                            mContent = listFragment;
+                            break;
 
                         case R.id.getPro:
-                            getSupportFragmentManager().beginTransaction().replace(R.id.mainListHolder, proFragment).commit();
-                            return true;
+                            mContent = proFragment;
+//                            getSupportFragmentManager().beginTransaction().replace(R.id.mainListHolder, proFragment).commit();
+                            break;
 
                         case R.id.about:
-                            getSupportFragmentManager().beginTransaction().replace(R.id.mainListHolder, aboutFragment).commit();
-                            return true;
-
+                            mContent = aboutFragment;
+                            break;
                     }
+                    getSupportFragmentManager().beginTransaction().replace(R.id.mainListHolder, mContent).commit();
+                    return true;
                 }
                 else{
                     switch (item.getItemId()){
@@ -174,10 +188,6 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-
-        //initialize healings counter
-        healingsToday = 0;
-        healingsYesterday = 0;
 
         //display welcome message
         if (mUser.getDisplayName() != null)
@@ -202,6 +212,12 @@ public class MainActivity extends AppCompatActivity {
                 mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, newPatient);
             }
         });
+    }
+
+    public void resetHealingCounters() {
+        //initialize healings counter
+        healingsToday = 0;
+        healingsYesterday = 0;
     }
 
     private void signOut() {
@@ -384,5 +400,11 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_options_menu,menu);
         return true;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        getSupportFragmentManager().putFragment(outState, FRAG_KEY, mContent);
     }
 }

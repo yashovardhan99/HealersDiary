@@ -19,6 +19,7 @@ import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.yashovardhan99.healersdiary.Activities.MainActivity;
 import com.yashovardhan99.healersdiary.Adapters.MainListAdapter;
@@ -37,6 +38,7 @@ public class MainListFragment extends Fragment {
     public ArrayList<Patient> patientList;
     public FirebaseFirestore db;
     private CollectionReference patients;
+    private ListenerRegistration mListener;
     EventListener<QuerySnapshot> queryDocumentSnapshots;
 
 
@@ -44,16 +46,13 @@ public class MainListFragment extends Fragment {
         //required empty constructor
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View RootView = inflater.inflate(R.layout.fragment_main_list,container,false);
         patientList = new ArrayList<>();
+
+        ((MainActivity)getActivity()).resetHealingCounters();
 
         db = FirebaseFirestore.getInstance();
         patients = db.collection(MainActivity.USERS)
@@ -115,7 +114,7 @@ public class MainListFragment extends Fragment {
             }
         };
 
-        patients.addSnapshotListener(queryDocumentSnapshots);
+        mListener = patients.addSnapshotListener(queryDocumentSnapshots);
 
         //Recycler view setup
         RecyclerView mRecyclerView;
