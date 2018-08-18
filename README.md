@@ -13,6 +13,7 @@ An android app for professional healers to keep track of their patients and help
 ## Contributing
 * Clone the repo and set up a project in firebase.
 * Make relevant changes and make a pull request in the master (dev) branch.
+* The alpha/beta branch contains the latest releaase. Do **NOT** make any changes to that branch. Any pull requests not directly to the master branch will be declined.
 A contributing guide will be up here soon.
 
 ## Technologies used
