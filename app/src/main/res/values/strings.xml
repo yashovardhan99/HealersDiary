@@ -69,5 +69,6 @@
     <string name="home">Home</string>
     <string name="version_s">Version : %s</string>
     <string name="made_with_yashovardhan_dhanania">Made with ❤ Yashovardhan Dhanania</string>
-    <string name="logo_courtesy_yasujizr_on_github">Logo courtesy Yasujizr on Github</string>
+    <string name="logo_courtesy_yasujizr_on_github">Logo courtesy <a href="https://github.com/Yasujizr">Yasujizr</a></string>
+    <string name="about">About</string>
 </resources>

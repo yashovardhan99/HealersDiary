@@ -13,8 +13,13 @@
         <item
             android:id="@+id/getPro"
             android:title="@string/upgrade_now"
-            android:orderInCategory="3"
+            android:orderInCategory="2"
             android:icon="@drawable/ic_shopping_cart_black_24dp"/>
+        <item
+            android:id="@+id/about"
+            android:title="@string/about"
+            android:orderInCategory="3"
+            android:icon="@drawable/ic_info_outline_black_24dp"/>
     </group>
     <group
         android:checkableBehavior="none"

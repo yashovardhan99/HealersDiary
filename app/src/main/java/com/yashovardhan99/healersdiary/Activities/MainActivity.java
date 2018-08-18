@@ -46,6 +46,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.yashovardhan99.healersdiary.Fragments.AboutFragment;
 import com.yashovardhan99.healersdiary.Fragments.MainListFragment;
 import com.yashovardhan99.healersdiary.Fragments.ProFragment;
 import com.yashovardhan99.healersdiary.Fragments.SignOutFragment;
@@ -76,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
     private ProFragment proFragment;
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
+    private AboutFragment aboutFragment;
 
 
     @Override
@@ -114,7 +116,9 @@ public class MainActivity extends AppCompatActivity {
 
         listFragment = new MainListFragment();
         proFragment = new ProFragment();
-        getSupportFragmentManager().beginTransaction().add(R.id.mainListHolder,listFragment).commit();
+        aboutFragment = new AboutFragment();
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.mainListHolder,listFragment).commit();
 
         Uri profilePicture = mUser.getPhotoUrl();
 
@@ -149,6 +153,11 @@ public class MainActivity extends AppCompatActivity {
                         case R.id.getPro:
                             getSupportFragmentManager().beginTransaction().replace(R.id.mainListHolder, proFragment).commit();
                             return true;
+
+                        case R.id.about:
+                            getSupportFragmentManager().beginTransaction().replace(R.id.mainListHolder, aboutFragment).commit();
+                            return true;
+
                     }
                 }
                 else{
