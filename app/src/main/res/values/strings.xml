@@ -62,5 +62,13 @@
     <string name="feedback">feedback</string>
     <string name="patient_feedbacks">Patient Feedbacks</string>
     <string name="not_yet_implemented">Not yet implemented</string>
-
+    <string name="sign_out">Sign out</string>
+    <string name="signs_you_out_of_the_app">signs you out of the app</string>
+    <string name="upgrade_now">Upgrade now</string>
+    <string name="share">Share</string>
+    <string name="home">Home</string>
+    <string name="version_s">Version : %s</string>
+    <string name="made_with_yashovardhan_dhanania">Made with ❤ Yashovardhan Dhanania</string>
+    <string name="logo_courtesy_yasujizr_on_github">Logo courtesy <a href="https://github.com/Yasujizr">Yasujizr</a></string>
+    <string name="about">About</string>
 </resources>

@@ -17,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
@@ -218,8 +219,9 @@ public class NewPatient extends AppCompatActivity {
                 Intent openPatientDetail = new Intent(NewPatient.this, PatientView.class);
                 openPatientDetail.putExtra(MainActivity.PATIENT_UID,documentReference.getId());
                 Log.d("PATIENT UID",documentReference.getId());
-                openPatientDetail.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                openPatientDetail.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(openPatientDetail);
+                finish();
             }
         });
     }
@@ -277,5 +279,14 @@ public class NewPatient extends AppCompatActivity {
                     }
                 }
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case android.R.id.home: onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

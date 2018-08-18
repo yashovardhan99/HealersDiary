@@ -3,11 +3,12 @@ package com.yashovardhan99.healersdiary.Activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
-import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,7 +16,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -27,20 +27,23 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.yashovardhan99.healersdiary.Fragments.SignInButtonFragment;
+import com.yashovardhan99.healersdiary.Fragments.SignInProgressFragment;
 import com.yashovardhan99.healersdiary.R;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class Login extends AppCompatActivity {
+public class Login extends FragmentActivity {
 
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseAuth mAuth;
-    private final int GOOGLE_SIGN_IN_RC = 1;
-    private LinearLayout signInProgress;
+    final private int GOOGLE_SIGN_IN_RC = 1;
     private FirebaseAnalytics mFirebaseAnalytics;
     private Bundle params;
+    private Fragment signInFragment;
+    private Fragment signInProgressFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +52,10 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        signInProgress = findViewById(R.id.signInProgress);
+        signInProgressFragment = new SignInProgressFragment();
+        signInFragment = new SignInButtonFragment();
+
+        getSupportFragmentManager().beginTransaction().add(R.id.signInFragmentHolder, signInFragment).commit();
 
         //configuring google sign in
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -59,27 +65,25 @@ public class Login extends AppCompatActivity {
          mGoogleSignInClient = GoogleSignIn.getClient(this,gso);
          mAuth = FirebaseAuth.getInstance();
 
-         //when the Google sign in button is clicked
-        SignInButton gsb = findViewById(R.id.GoogleSignInButton);
-        gsb.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-                startActivityForResult(signInIntent,GOOGLE_SIGN_IN_RC);
-            }
-        });
+         TextView privacy = findViewById(R.id.privacy_policy_login);
+         privacy.setMovementMethod(LinkMovementMethod.getInstance());
 
-        TextView privacy = findViewById(R.id.privacy_policy_login);
-        privacy.setMovementMethod(LinkMovementMethod.getInstance());
+    }
 
+    public void signInWithGoogle(){
+        //When Sign in button is clicked
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent,GOOGLE_SIGN_IN_RC);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        findViewById(R.id.GoogleSignInButton).setVisibility(View.GONE);
-        signInProgress.setVisibility(View.VISIBLE);
-        //adds the progress bar to not keep users waiting
+
+        FragmentManager fragmentManager  = getSupportFragmentManager();
+
+        Log.d("SIGNIN", String.valueOf(requestCode));
+
         switch(requestCode){
             case GOOGLE_SIGN_IN_RC:
                 try{
@@ -88,11 +92,15 @@ public class Login extends AppCompatActivity {
                     GoogleSignInAccount account = task.getResult(ApiException.class);
                     //Now authenticate with firebase
                     FirebaseAuthWithGoogle(account);
+
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.signInFragmentHolder,signInProgressFragment);
+                    fragmentTransaction.commit();
+
                     Log.d("GOOGLE","SIGNED IN");
                 }catch (Exception e){
                     Log.d("GOOGLE","SIGN IN FAILED");
-                    signInProgress.setVisibility(View.INVISIBLE);
-                    findViewById(R.id.GoogleSignInButton).setVisibility(View.VISIBLE);
+                    fragmentManager.beginTransaction().replace(R.id.signInFragmentHolder,signInFragment).commit();
                 }
                 break;
         }
@@ -110,9 +118,13 @@ public class Login extends AppCompatActivity {
                             params.putString(FirebaseAnalytics.Param.METHOD,"Google");
                             signedIn();
                         }
+                        else{
+                            getSupportFragmentManager().beginTransaction().replace(R.id.signInFragmentHolder,signInFragment).commit();
+                        }
                     }
                 });
     }
+
     private void signedIn()
     {
         //now the user is signed in
@@ -162,5 +174,6 @@ public class Login extends AppCompatActivity {
         Intent done = new Intent(this,MainActivity.class);
         done.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(done);
+        finishAffinity();
     }
 }

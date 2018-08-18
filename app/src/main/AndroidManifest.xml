@@ -30,10 +30,6 @@
             android:name=".Activities.PatientView"
             android:parentActivityName=".Activities.MainActivity" />
         <activity
-            android:name=".Activities.NewHealingRecord"
-            android:excludeFromRecents="true"
-            android:theme="@style/AppTheme.Dialog" />
-        <activity
             android:name=".Activities.HealingLogs"
             android:parentActivityName=".Activities.PatientView" />
         <activity
@@ -44,7 +40,7 @@
         <activity
             android:name=".Activities.NewPatientFeedback"
             android:theme="@style/AppTheme.Dialog" />
-        <activity android:name=".Activities.PatientFeedbackLogs"></activity>
+        <activity android:name=".Activities.PatientFeedbackLogs" />
     </application>
 
 </manifest>
