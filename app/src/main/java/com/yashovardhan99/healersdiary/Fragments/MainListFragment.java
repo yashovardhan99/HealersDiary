@@ -35,12 +35,6 @@ import java.util.Objects;
 public class MainListFragment extends Fragment {
 
     private RecyclerView.Adapter mAdapter;
-    public ArrayList<Patient> patientList;
-    public FirebaseFirestore db;
-    private CollectionReference patients;
-    private ListenerRegistration mListener;
-    EventListener<QuerySnapshot> queryDocumentSnapshots;
-
 
     public MainListFragment(){
         //required empty constructor
@@ -50,80 +44,14 @@ public class MainListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View RootView = inflater.inflate(R.layout.fragment_main_list,container,false);
-        patientList = new ArrayList<>();
-
-        ((MainActivity)getActivity()).resetHealingCounters();
-
-        db = FirebaseFirestore.getInstance();
-        patients = db.collection(MainActivity.USERS)
-                .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .collection("patients");
-
-        //to instantly make any changes reflect here
-        queryDocumentSnapshots = new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
-                if (e != null) {
-                    Log.d(MainActivity.FIRESTORE, "ERROR : " + e.getMessage());
-                    return;
-                }
-                Log.d(MainActivity.FIRESTORE, "Data fetced");
-                if(queryDocumentSnapshots==null || getActivity()==null)
-                    return;
-                for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
-                    //getting changes in documents
-                    Log.d(MainActivity.FIRESTORE, dc.getDocument().getData().toString());
-
-                    switch (dc.getType()) {
-
-                        case ADDED:
-                            //add new patient to arrayList
-                            Patient patient = new Patient();
-                            patient.name = Objects.requireNonNull(dc.getDocument().get("Name")).toString();
-                            patient.uid = dc.getDocument().getId();
-                            patientList.add(patient);
-                            mAdapter.notifyItemInserted(patientList.indexOf(patient));
-                            ((MainActivity) getActivity()).countHealings(patient.getUid());
-                            break;
-
-                        case MODIFIED:
-                            //modify patient name
-                            String id = dc.getDocument().getId();
-                            for (Patient patient1 : patientList) {
-                                if (patient1.getUid().equals(id)) {
-                                    patient1.name = Objects.requireNonNull(dc.getDocument().get("Name")).toString();
-                                    mAdapter.notifyItemChanged(patientList.indexOf(patient1));
-                                    break;
-                                }
-                            }
-                            break;
-                        case REMOVED:
-                            //remove patient record
-                            String id2 = dc.getDocument().getId();
-                            for (Patient patient1 : patientList) {
-                                if (patient1.getUid().equals(id2)) {
-                                    int pos = patientList.indexOf(patient1);
-                                    patientList.remove(patient1);
-                                    mAdapter.notifyItemRemoved(pos);
-                                    break;
-                                }
-                            }
-                            break;
-                    }
-                }
-            }
-        };
-
-        mListener = patients.addSnapshotListener(queryDocumentSnapshots);
-
+        //
         //Recycler view setup
+        mAdapter = ((MainActivity) getActivity()).getAdapter();
         RecyclerView mRecyclerView;
         mRecyclerView = RootView.findViewById(R.id.recycler_main);
         mRecyclerView.setHasFixedSize(false);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mAdapter = new MainListAdapter(patientList);
         mRecyclerView.setAdapter(mAdapter);
-
         //displays the divider line bw each item
         DividerItemDecoration itemLine = new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL);
         mRecyclerView.addItemDecoration(itemLine);
