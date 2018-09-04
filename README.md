@@ -3,12 +3,12 @@
 An android app for professional healers to keep track of their patients and help in instant billing.
 
 ## Features
-- [X] Create, modify and delete patient records
-- [X] Keep track of healings done for each patient with the exact date and time
-- [X] Keep track of payments received and bills due
-- [X] Store a record of your patient feedback
-- [X] Effortlessly sync your data online and access it even if you lose the app with your google account
-- [X] View a quick summary of your healings, payments and more to stay on the top of your day
+- Create, modify and delete patient records
+- Keep track of healings done for each patient with the exact date and time
+- Keep track of payments received and bills due
+- Store a record of your patient feedback
+- Effortlessly sync your data online and access it even if you lose the app with your google account
+- View a quick summary of your healings, payments and more to stay on the top of your day
 
 ## Contributing
 * Clone the repo and set up a project in firebase.
@@ -23,8 +23,8 @@ A contributing guide will be up here soon.
 * [Picasso](http://square.github.io/picasso/)
 
 ## Expected release
-* Private Alpha - Out now. Register [here](https://goo.gl/forms/U6XDSo3eMADnj6U42)
-* Public Beta - End of ~~July~~ **August**, 2018
+* Private Alpha - Now closed.
+* Public Beta - Out now! [Download Now](https://play.google.com/store/apps/details?id=com.yashovardhan99.healersdiary)
 * Public release - End of November, 2018
 
 ## Support
