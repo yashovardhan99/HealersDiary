@@ -2,6 +2,11 @@
 
 An android app for professional healers to keep track of their patients and help in instant billing.
 
+<a href='https://play.google.com/store/apps/details?id=com.yashovardhan99.healersdiary&utm_source=github&utm_campaign=github&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'>
+  <img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png'  
+       height='90'/>
+</a>
+
 ## Features
 - Create, modify and delete patient records
 - Keep track of healings done for each patient with the exact date and time
