@@ -1,4 +1,4 @@
-package com.yashovardhan99.healersdiary.Activities;
+package com.yashovardhan99.healersdiary.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

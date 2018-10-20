@@ -4,7 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:id="@+id/SignInButtonFrame"
-    tools:context=".Fragments.SignInButtonFragment">
+    tools:context=".fragments.SignInButtonFragment">
 
     <com.google.android.gms.common.SignInButton
         android:layout_width="wrap_content"

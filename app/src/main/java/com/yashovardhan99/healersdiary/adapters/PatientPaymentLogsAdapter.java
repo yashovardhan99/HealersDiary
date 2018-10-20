@@ -1,4 +1,4 @@
-package com.yashovardhan99.healersdiary.Adapters;
+package com.yashovardhan99.healersdiary.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.yashovardhan99.healersdiary.Objects.PaymentSnapshot;
+import com.yashovardhan99.healersdiary.objects.PaymentSnapshot;
 import com.yashovardhan99.healersdiary.R;
 
 import java.util.ArrayList;

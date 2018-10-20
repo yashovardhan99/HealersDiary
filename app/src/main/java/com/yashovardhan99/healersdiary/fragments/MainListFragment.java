@@ -1,4 +1,4 @@
-package com.yashovardhan99.healersdiary.Fragments;
+package com.yashovardhan99.healersdiary.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -8,26 +8,12 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.ListenerRegistration;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.yashovardhan99.healersdiary.Activities.MainActivity;
-import com.yashovardhan99.healersdiary.Adapters.MainListAdapter;
-import com.yashovardhan99.healersdiary.Objects.Patient;
+import com.yashovardhan99.healersdiary.activities.MainActivity;
 import com.yashovardhan99.healersdiary.R;
-
-import java.util.ArrayList;
-import java.util.Objects;
 
 /**
  * Created by Yashovardhan99 on 05-08-2018 as a part of HealersDiary.

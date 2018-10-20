@@ -44,5 +44,14 @@ dependencies {
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.4'
     implementation 'com.android.billingclient:billing:1.1'
     implementation 'com.squareup.picasso:picasso:2.71828'
+
+    //Navigation components :
+    def nav_version = "1.0.0-alpha06"
+
+    implementation "android.arch.navigation:navigation-fragment:$nav_version"
+    implementation "android.arch.navigation:navigation-ui:$nav_version"
+
+    // optional - Test helpers
+    androidTestImplementation "android.arch.navigation:navigation-testing:$nav_version"
 }
 apply plugin: 'com.google.gms.google-services'

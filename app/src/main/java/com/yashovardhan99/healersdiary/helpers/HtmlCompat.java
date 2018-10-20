@@ -1,4 +1,4 @@
-package com.yashovardhan99.healersdiary.Helpers;
+package com.yashovardhan99.healersdiary.helpers;
 
 import android.os.Build;
 import android.text.Html;

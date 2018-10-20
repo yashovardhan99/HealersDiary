@@ -8,12 +8,12 @@
     android:fitsSystemWindows="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     app:statusBarBackground="@android:color/transparent"
-    tools:context=".Activities.MainActivity">
+    tools:context=".activities.MainActivity">
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".Activities.MainActivity">
+        tools:context=".activities.MainActivity">
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appBarLayout"

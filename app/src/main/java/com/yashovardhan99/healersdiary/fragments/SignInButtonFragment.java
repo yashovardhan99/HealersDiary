@@ -1,4 +1,4 @@
-package com.yashovardhan99.healersdiary.Fragments;
+package com.yashovardhan99.healersdiary.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.gms.common.SignInButton;
-import com.yashovardhan99.healersdiary.Activities.Login;
+import com.yashovardhan99.healersdiary.activities.Login;
 import com.yashovardhan99.healersdiary.R;
 
 public class SignInButtonFragment extends Fragment {

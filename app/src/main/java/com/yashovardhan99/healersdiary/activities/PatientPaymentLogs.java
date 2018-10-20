@@ -1,4 +1,4 @@
-package com.yashovardhan99.healersdiary.Activities;
+package com.yashovardhan99.healersdiary.activities;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,8 +21,8 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.yashovardhan99.healersdiary.Adapters.PatientPaymentLogsAdapter;
-import com.yashovardhan99.healersdiary.Objects.PaymentSnapshot;
+import com.yashovardhan99.healersdiary.adapters.PatientPaymentLogsAdapter;
+import com.yashovardhan99.healersdiary.objects.PaymentSnapshot;
 import com.yashovardhan99.healersdiary.R;
 
 import java.text.DateFormat;

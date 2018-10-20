@@ -1,4 +1,4 @@
-package com.yashovardhan99.healersdiary.Adapters;
+package com.yashovardhan99.healersdiary.adapters;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.yashovardhan99.healersdiary.Objects.Healing;
+import com.yashovardhan99.healersdiary.objects.Healing;
 import com.yashovardhan99.healersdiary.R;
 
 import java.util.ArrayList;

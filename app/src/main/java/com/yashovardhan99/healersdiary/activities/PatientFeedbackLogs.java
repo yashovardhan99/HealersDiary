@@ -1,4 +1,4 @@
-package com.yashovardhan99.healersdiary.Activities;
+package com.yashovardhan99.healersdiary.activities;
 
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -18,8 +18,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.yashovardhan99.healersdiary.Adapters.PatientFeedbackListAdapter;
-import com.yashovardhan99.healersdiary.Objects.PatientFeedback;
+import com.yashovardhan99.healersdiary.adapters.PatientFeedbackListAdapter;
+import com.yashovardhan99.healersdiary.objects.PatientFeedback;
 import com.yashovardhan99.healersdiary.R;
 
 import java.util.ArrayList;

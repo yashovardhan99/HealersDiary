@@ -1,4 +1,4 @@
-package com.yashovardhan99.healersdiary.Fragments;
+package com.yashovardhan99.healersdiary.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,8 +17,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.yashovardhan99.healersdiary.Activities.MainActivity;
-import com.yashovardhan99.healersdiary.Activities.PatientView;
+import com.yashovardhan99.healersdiary.activities.MainActivity;
+import com.yashovardhan99.healersdiary.activities.PatientView;
 import com.yashovardhan99.healersdiary.R;
 
 import java.util.Calendar;

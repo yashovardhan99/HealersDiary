@@ -1,4 +1,4 @@
-package com.yashovardhan99.healersdiary.Fragments;
+package com.yashovardhan99.healersdiary.fragments;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -9,7 +9,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.yashovardhan99.healersdiary.Activities.Login;
+import com.yashovardhan99.healersdiary.activities.Login;
 import com.yashovardhan99.healersdiary.R;
 
 /**

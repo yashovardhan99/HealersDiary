@@ -1,4 +1,4 @@
-package com.yashovardhan99.healersdiary.Objects;
+package com.yashovardhan99.healersdiary.objects;
 
 /**
  * Created by Yashovardhan99 on 23-05-2018 as a part of HealersDiary.

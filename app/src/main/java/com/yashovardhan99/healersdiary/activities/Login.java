@@ -1,4 +1,4 @@
-package com.yashovardhan99.healersdiary.Activities;
+package com.yashovardhan99.healersdiary.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,8 +27,8 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.yashovardhan99.healersdiary.Fragments.SignInButtonFragment;
-import com.yashovardhan99.healersdiary.Fragments.SignInProgressFragment;
+import com.yashovardhan99.healersdiary.fragments.SignInButtonFragment;
+import com.yashovardhan99.healersdiary.fragments.SignInProgressFragment;
 import com.yashovardhan99.healersdiary.R;
 
 import java.util.HashMap;

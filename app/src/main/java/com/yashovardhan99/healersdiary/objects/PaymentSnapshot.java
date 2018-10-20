@@ -1,4 +1,4 @@
-package com.yashovardhan99.healersdiary.Objects;
+package com.yashovardhan99.healersdiary.objects;
 
 import java.text.NumberFormat;
 

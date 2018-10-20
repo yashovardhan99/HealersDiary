@@ -1,4 +1,4 @@
-package com.yashovardhan99.healersdiary.Activities;
+package com.yashovardhan99.healersdiary.activities;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -30,7 +30,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.billingclient.api.BillingClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
@@ -49,12 +48,12 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-import com.yashovardhan99.healersdiary.Adapters.MainListAdapter;
-import com.yashovardhan99.healersdiary.Fragments.AboutFragment;
-import com.yashovardhan99.healersdiary.Fragments.MainListFragment;
-import com.yashovardhan99.healersdiary.Fragments.ProFragment;
-import com.yashovardhan99.healersdiary.Fragments.SignOutFragment;
-import com.yashovardhan99.healersdiary.Objects.Patient;
+import com.yashovardhan99.healersdiary.adapters.MainListAdapter;
+import com.yashovardhan99.healersdiary.fragments.AboutFragment;
+import com.yashovardhan99.healersdiary.fragments.MainListFragment;
+import com.yashovardhan99.healersdiary.fragments.ProFragment;
+import com.yashovardhan99.healersdiary.fragments.SignOutFragment;
+import com.yashovardhan99.healersdiary.objects.Patient;
 import com.yashovardhan99.healersdiary.R;
 
 import java.util.ArrayList;

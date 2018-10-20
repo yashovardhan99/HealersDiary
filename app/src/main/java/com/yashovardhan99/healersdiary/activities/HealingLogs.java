@@ -1,4 +1,4 @@
-package com.yashovardhan99.healersdiary.Activities;
+package com.yashovardhan99.healersdiary.activities;
 
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -24,8 +24,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.yashovardhan99.healersdiary.Adapters.HealingLogAdapter;
-import com.yashovardhan99.healersdiary.Objects.Healing;
+import com.yashovardhan99.healersdiary.adapters.HealingLogAdapter;
+import com.yashovardhan99.healersdiary.objects.Healing;
 import com.yashovardhan99.healersdiary.R;
 
 import java.text.DateFormat;

@@ -1,4 +1,4 @@
-package com.yashovardhan99.healersdiary.Activities;
+package com.yashovardhan99.healersdiary.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,8 +17,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.yashovardhan99.healersdiary.Fragments.NewHealingDialog;
-import com.yashovardhan99.healersdiary.Helpers.HtmlCompat;
+import com.yashovardhan99.healersdiary.fragments.NewHealingDialog;
+import com.yashovardhan99.healersdiary.helpers.HtmlCompat;
 import com.yashovardhan99.healersdiary.R;
 
 import java.text.NumberFormat;
@@ -157,13 +157,13 @@ public class PatientView extends AppCompatActivity {
             }
         });
     }
-
-    @Override
-    public void onBackPressed() {
-        Intent back = new Intent(this,MainActivity.class);
-        back.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(back);
-    }
+//
+//    @Override
+//    public void onBackPressed() {
+//        Intent back = new Intent(this,MainActivity.class);
+//        back.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//        startActivity(back);
+//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

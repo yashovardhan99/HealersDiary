@@ -1,4 +1,4 @@
-package com.yashovardhan99.healersdiary.Adapters;
+package com.yashovardhan99.healersdiary.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -12,8 +12,8 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.yashovardhan99.healersdiary.Activities.PatientView;
-import com.yashovardhan99.healersdiary.Objects.Patient;
+import com.yashovardhan99.healersdiary.activities.PatientView;
+import com.yashovardhan99.healersdiary.objects.Patient;
 import com.yashovardhan99.healersdiary.R;
 
 import java.util.ArrayList;
