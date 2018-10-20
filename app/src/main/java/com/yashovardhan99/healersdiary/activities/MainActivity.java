@@ -53,6 +53,7 @@ import com.yashovardhan99.healersdiary.adapters.MainListAdapter;
 import com.yashovardhan99.healersdiary.fragments.AboutFragment;
 import com.yashovardhan99.healersdiary.fragments.MainListFragment;
 import com.yashovardhan99.healersdiary.fragments.ProFragment;
+import com.yashovardhan99.healersdiary.fragments.SettingsFragment;
 import com.yashovardhan99.healersdiary.fragments.SignOutFragment;
 import com.yashovardhan99.healersdiary.objects.Patient;
 
@@ -79,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
     private static int healingsYesterday;
     private MainListFragment listFragment;
     private ProFragment proFragment;
+    private SettingsFragment settingsFragment;
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
     private AboutFragment aboutFragment;
@@ -132,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
         listFragment = new MainListFragment();
         proFragment = new ProFragment();
         aboutFragment = new AboutFragment();
+        settingsFragment = new SettingsFragment();
 
         if(savedInstanceState!=null){
             mContent = getSupportFragmentManager().getFragment(savedInstanceState,FRAG_KEY);
@@ -181,6 +184,8 @@ public class MainActivity extends AppCompatActivity {
                         case R.id.about:
                             mContent = aboutFragment;
                             break;
+                        case R.id.settings:
+                            mContent = settingsFragment;
                     }
                     getSupportFragmentManager().beginTransaction().replace(R.id.mainListHolder, mContent).commit();
                     return true;
