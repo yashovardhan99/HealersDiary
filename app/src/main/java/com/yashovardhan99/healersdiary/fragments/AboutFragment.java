@@ -26,7 +26,7 @@ public class AboutFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View RootView = inflater.inflate(R.layout.about,container,false);
+        View RootView = inflater.inflate(R.layout.fragment_about,container,false);
         TextView imageAttrib = RootView.findViewById(R.id.imageCour);
         imageAttrib.setMovementMethod(LinkMovementMethod.getInstance());
         TextView version = RootView.findViewById(R.id.appVersionString);

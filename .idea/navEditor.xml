@@ -6,49 +6,46 @@
         <entry key="nav_graph.xml">
           <value>
             <LayoutPositions>
+              <option name="myPosition">
+                <Point>
+                  <option name="x" value="12" />
+                  <option name="y" value="12" />
+                </Point>
+              </option>
               <option name="myPositions">
                 <map>
-                  <entry key="aboutFragment">
+                  <entry key="about">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="421" />
-                            <option name="y" value="12" />
+                            <option name="x" value="-48" />
+                            <option name="y" value="419" />
                           </Point>
                         </option>
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="mainActivity">
+                  <entry key="getPro">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="12" />
-                            <option name="y" value="12" />
+                            <option name="x" value="-54" />
+                            <option name="y" value="102" />
                           </Point>
                         </option>
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="mainListFragment">
+                  <entry key="home">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="177" />
-                            <option name="y" value="12" />
+                            <option name="x" value="-46" />
+                            <option name="y" value="-227" />
                           </Point>
-                        </option>
-                        <option name="myPositions">
-                          <map>
-                            <entry key="action_mainListFragment_to_aboutFragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                          </map>
                         </option>
                       </LayoutPositions>
                     </value>

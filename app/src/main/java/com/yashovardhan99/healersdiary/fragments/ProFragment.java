@@ -28,7 +28,7 @@ public class ProFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View RootView = inflater.inflate(R.layout.activity_pro_display,container,false);
+        View RootView = inflater.inflate(R.layout.fragment_pro_display,container,false);
         return RootView;
     }
 
