@@ -15,6 +15,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
@@ -184,9 +185,13 @@ public class NewPatient extends AppCompatActivity {
                 patient.put("Phone",contactNumberEditText.getText().toString());
                 patient.put("Disease",disease.getText().toString());
                 if(!rate.getText().toString().isEmpty())
-                    patient.put("Rate",Double.parseDouble(rate.getText().toString().substring(1)));
+                    try {
+                        patient.put("Rate", Double.parseDouble(rate.getText().toString().substring(1)));
+                    } catch (NumberFormatException e){ rate.setError("Invalid Format"); return;}
                 if(!due.getText().toString().isEmpty())
-                    patient.put("Due",Double.parseDouble(due.getText().toString().substring(1)));
+                    try {
+                        patient.put("Due", Double.parseDouble(due.getText().toString().substring(1)));
+                    }catch (NumberFormatException e){ due.setError("Invalid format"); return;}
                 patient.put("Date", Calendar.getInstance().getTime());
 
                 //creating docref for new or edited patient record
@@ -219,7 +224,6 @@ public class NewPatient extends AppCompatActivity {
                 Intent openPatientDetail = new Intent(NewPatient.this, PatientView.class);
                 openPatientDetail.putExtra(MainActivity.PATIENT_UID,documentReference.getId());
                 Log.d("PATIENT UID",documentReference.getId());
-//                openPatientDetail.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(openPatientDetail);
                 finish();
             }
