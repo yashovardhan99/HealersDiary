@@ -48,13 +48,13 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.yashovardhan99.healersdiary.R;
 import com.yashovardhan99.healersdiary.adapters.MainListAdapter;
 import com.yashovardhan99.healersdiary.fragments.AboutFragment;
 import com.yashovardhan99.healersdiary.fragments.MainListFragment;
 import com.yashovardhan99.healersdiary.fragments.ProFragment;
 import com.yashovardhan99.healersdiary.fragments.SignOutFragment;
 import com.yashovardhan99.healersdiary.objects.Patient;
-import com.yashovardhan99.healersdiary.R;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -90,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
     private ListenerRegistration mListener;
     EventListener<QuerySnapshot> queryDocumentSnapshots;
     private RecyclerView.Adapter mAdapter;
+
+    public static int Display_Mode_Choice = 0;
 
 
 
@@ -247,16 +249,25 @@ public class MainActivity extends AppCompatActivity {
                     //getting changes in documents
                     Log.d(MainActivity.FIRESTORE, dc.getDocument().getData().toString());
 
+                    QueryDocumentSnapshot document = dc.getDocument();
+
                     switch (dc.getType()) {
 
                         case ADDED:
                             //add new patient to arrayList
                             Patient patient = new Patient();
-                            patient.name = Objects.requireNonNull(dc.getDocument().get("Name")).toString();
-                            patient.uid = dc.getDocument().getId();
+                            patient.name = Objects.requireNonNull(document.get("Name")).toString();
+                            patient.uid = document.getId();
+                            patient.disease = Objects.requireNonNull(document.get("Disease")).toString();
+                            if (document.contains("Due") && !document.get("Due").toString().isEmpty()) {
+                                patient.due = document.getDouble("Due");
+                            }
+                            if (document.contains("Rate") && !document.get("Rate").toString().isEmpty()) {
+                                patient.rate = document.getDouble("Rate");
+                            }
                             patientList.add(patient);
                             mAdapter.notifyItemInserted(patientList.indexOf(patient));
-                            countHealings(patient.getUid());
+                            countHealings(patient);
                             break;
 
                         case MODIFIED:
@@ -264,7 +275,14 @@ public class MainActivity extends AppCompatActivity {
                             String id = dc.getDocument().getId();
                             for (Patient patient1 : patientList) {
                                 if (patient1.getUid().equals(id)) {
-                                    patient1.name = Objects.requireNonNull(dc.getDocument().get("Name")).toString();
+                                    patient1.name = Objects.requireNonNull(document.get("Name")).toString();
+                                    patient1.disease = Objects.requireNonNull(document.get("Disease")).toString();
+                                    if (document.contains("Due") && !Objects.requireNonNull(document.get("Due")).toString().isEmpty()) {
+                                        patient1.due = document.getDouble("Due");
+                                    }
+                                    if (document.contains("Rate") && !Objects.requireNonNull(document.get("Rate")).toString().isEmpty()) {
+                                        patient1.rate = document.getDouble("Rate");
+                                    }
                                     mAdapter.notifyItemChanged(patientList.indexOf(patient1));
                                     break;
                                 }
@@ -400,8 +418,8 @@ public class MainActivity extends AppCompatActivity {
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, delete);
     }
 
-    public void countHealings(String uid) {
-        Log.d("COUNTING HEALINGS", uid);
+    public void countHealings(final Patient patient) {
+        Log.d("COUNTING HEALINGS", patient.getUid());
 
         //yesterday's timestamp
         Calendar yesterday = Calendar.getInstance();
@@ -412,7 +430,7 @@ public class MainActivity extends AppCompatActivity {
         db.collection(USERS)
                 .document(Objects.requireNonNull(mAuth.getUid()))
                 .collection("patients")
-                .document(uid)
+                .document(patient.getUid())
                 .collection("healings")
                 .orderBy("Date", Query.Direction.DESCENDING)
                 .whereGreaterThan("Date",y)
@@ -429,19 +447,24 @@ public class MainActivity extends AppCompatActivity {
                             Long time = timestamp.toDate().getTime();
                             switch (dc.getType()){
                                 case ADDED:
-                                    if(DateUtils.isToday(time))
+                                    if(DateUtils.isToday(time)) {
                                         healingsToday++;
+                                        patient.healingsToday++;
+                                    }
                                     else if(DateUtils.isToday(time+DateUtils.DAY_IN_MILLIS))
                                         healingsYesterday++;
                                     break;
                                 case REMOVED:
-                                    if(DateUtils.isToday(time))
+                                    if(DateUtils.isToday(time)) {
                                         healingsToday--;
+                                        patient.healingsToday--;
+                                    }
                                     else if(DateUtils.isToday(time+DateUtils.DAY_IN_MILLIS))
                                         healingsYesterday--;
                                     break;
                             }
                         }
+                        mAdapter.notifyItemChanged(patientList.indexOf(patient));
                         updateTextFields();
                     }
                 });

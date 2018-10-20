@@ -60,7 +60,7 @@ public class NewPatient extends AppCompatActivity {
         getSupportActionBar().setTitle(R.string.add_new_patient);
         //toolbar setup
 
-         patientNameEditText = findViewById(R.id.patientName);
+        patientNameEditText = findViewById(R.id.patientName);
         contactNumberEditText = findViewById(R.id.phoneNumber);
         rate = findViewById(R.id.rate);
         due = findViewById(R.id.EnterPaymentDue);
@@ -71,17 +71,15 @@ public class NewPatient extends AppCompatActivity {
         contactBrowse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(ContextCompat.checkSelfPermission(NewPatient.this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED){
+                if (ContextCompat.checkSelfPermission(NewPatient.this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
                     //permission to read contacts not granted
-                    Log.d("CONTACT PERMISSION","NOT GRANTED");
-                    ActivityCompat.requestPermissions(NewPatient.this,new String[]{Manifest.permission.READ_CONTACTS},
+                    Log.d("CONTACT PERMISSION", "NOT GRANTED");
+                    ActivityCompat.requestPermissions(NewPatient.this, new String[]{Manifest.permission.READ_CONTACTS},
                             READ_CONTACT_PERMISSION_REQUEST_CODE);//Requesting contact permission
-                }
-                else
-                {
+                } else {
                     //permission is there
                     //call method for choosing contact
-                    Log.d("CONTACT PERMISSION","GRANTED ALREADY");
+                    Log.d("CONTACT PERMISSION", "GRANTED ALREADY");
                     launchContactPicker();
                 }
             }
@@ -101,7 +99,7 @@ public class NewPatient extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(!s.toString().isEmpty() && !(s.toString().startsWith(NumberFormat.getCurrencyInstance().getCurrency().getSymbol()))) {
+                if (!s.toString().isEmpty() && !(s.toString().startsWith(NumberFormat.getCurrencyInstance().getCurrency().getSymbol()))) {
                     String amount = NumberFormat.getCurrencyInstance().getCurrency().getSymbol() + s.toString();
                     rate.setText(amount);
                     rate.setSelection(amount.length());
@@ -123,7 +121,7 @@ public class NewPatient extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(!s.toString().isEmpty() && !(s.toString().startsWith(NumberFormat.getCurrencyInstance().getCurrency().getSymbol()))) {
+                if (!s.toString().isEmpty() && !(s.toString().startsWith(NumberFormat.getCurrencyInstance().getCurrency().getSymbol()))) {
                     String amount = NumberFormat.getCurrencyInstance().getCurrency().getSymbol() + s.toString();
                     due.setText(amount);
                     due.setSelection(amount.length());
@@ -134,10 +132,10 @@ public class NewPatient extends AppCompatActivity {
         //now saving
         final Button save = findViewById(R.id.saveNewPatient);
 
-        Log.d("EDIT", String.valueOf(getIntent().getBooleanExtra("EDIT",false)));
+        Log.d("EDIT", String.valueOf(getIntent().getBooleanExtra("EDIT", false)));
 
         //load previous content if editing
-        if(getIntent().getBooleanExtra("EDIT",false)) {
+        if (getIntent().getBooleanExtra("EDIT", false)) {
             String id = getIntent().getStringExtra(MainActivity.PATIENT_UID);
             Log.d("EDIT", getIntent().getStringExtra(MainActivity.PATIENT_UID));
             FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -148,8 +146,8 @@ public class NewPatient extends AppCompatActivity {
                     .addSnapshotListener(new EventListener<DocumentSnapshot>() {
                         @Override
                         public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                            if(!documentSnapshot.exists()){
-                                Snackbar.make(save,"Something went wrong!",Snackbar.LENGTH_INDEFINITE).show();
+                            if (!documentSnapshot.exists()) {
+                                Snackbar.make(save, "Something went wrong!", Snackbar.LENGTH_INDEFINITE).show();
                                 return;
                             }
                             if (documentSnapshot.contains("Name"))
@@ -172,30 +170,36 @@ public class NewPatient extends AppCompatActivity {
             public void onClick(View v) {
 
                 //error checking data
-                if(patientNameEditText.getText().toString().isEmpty()){
+                if (patientNameEditText.getText().toString().isEmpty()) {
                     patientNameEditText.setError(getString(R.string.name_cannot_be_blank));
                     return;
                 }
                 //firestore
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                 //creaating map of all data
-                Map<String,Object> patient = new HashMap<>();
-                patient.put("Name",patientNameEditText.getText().toString());
-                patient.put("Phone",contactNumberEditText.getText().toString());
-                patient.put("Disease",disease.getText().toString());
-                if(!rate.getText().toString().isEmpty())
+                Map<String, Object> patient = new HashMap<>();
+                patient.put("Name", patientNameEditText.getText().toString());
+                patient.put("Phone", contactNumberEditText.getText().toString());
+                patient.put("Disease", disease.getText().toString());
+                if (!rate.getText().toString().isEmpty())
                     try {
                         patient.put("Rate", Double.parseDouble(rate.getText().toString().substring(1)));
-                    } catch (NumberFormatException e){ rate.setError("Invalid Format"); return;}
-                if(!due.getText().toString().isEmpty())
+                    } catch (NumberFormatException e) {
+                        rate.setError("Invalid Format");
+                        return;
+                    }
+                if (!due.getText().toString().isEmpty())
                     try {
                         patient.put("Due", Double.parseDouble(due.getText().toString().substring(1)));
-                    }catch (NumberFormatException e){ due.setError("Invalid format"); return;}
+                    } catch (NumberFormatException e) {
+                        due.setError("Invalid format");
+                        return;
+                    }
                 patient.put("Date", Calendar.getInstance().getTime());
 
                 //creating docref for new or edited patient record
                 DocumentReference documentReference;
-                if(getIntent().getBooleanExtra("EDIT",false))
+                if (getIntent().getBooleanExtra("EDIT", false))
                     documentReference = db.collection("users")
                             .document(FirebaseAuth.getInstance().getUid())
                             .collection("patients")
@@ -211,18 +215,17 @@ public class NewPatient extends AppCompatActivity {
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                if(task.isSuccessful()){
-                                    Log.d("FIRESTORE","Saved patient data");
-                                }
-                                else {
-                                    Log.d("FIRESTORE","Error : "+task.getException().getMessage());
+                                if (task.isSuccessful()) {
+                                    Log.d("FIRESTORE", "Saved patient data");
+                                } else {
+                                    Log.d("FIRESTORE", "Error : " + task.getException().getMessage());
                                 }
                             }
                         });
                 //finally opening the relevant patient detail view
                 Intent openPatientDetail = new Intent(NewPatient.this, PatientView.class);
-                openPatientDetail.putExtra(MainActivity.PATIENT_UID,documentReference.getId());
-                Log.d("PATIENT UID",documentReference.getId());
+                openPatientDetail.putExtra(MainActivity.PATIENT_UID, documentReference.getId());
+                Log.d("PATIENT UID", documentReference.getId());
                 startActivity(openPatientDetail);
                 finish();
             }
@@ -231,51 +234,50 @@ public class NewPatient extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode)
-        {
+        switch (requestCode) {
             case READ_CONTACT_PERMISSION_REQUEST_CODE:
-                if(grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     //permission to read contacts granted
-                    Log.d("CONTACT PERMISSION","PERMISSION GRANTED!");
+                    Log.d("CONTACT PERMISSION", "PERMISSION GRANTED!");
                     launchContactPicker();
-                }
-                else {
+                } else {
                     //permission not granted... disable feature and show prompt
-                    Log.d("CONTACT PERMISSION","PERMISSION DENIED!");
+                    Log.d("CONTACT PERMISSION", "PERMISSION DENIED!");
                 }
         }
     }
-    private void launchContactPicker(){
+
+    private void launchContactPicker() {
         Intent pickContactIntent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-        startActivityForResult(pickContactIntent,CONTACT_PICKER_REQUEST_CODE);
+        startActivityForResult(pickContactIntent, CONTACT_PICKER_REQUEST_CODE);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode){
+        switch (requestCode) {
             case CONTACT_PICKER_REQUEST_CODE:
-                if (resultCode==RESULT_OK){
+                if (resultCode == RESULT_OK) {
                     //when we get the contact. to get the contact name and number
-                    Log.d("CONTACT PICKED","RESULT OK");
+                    Log.d("CONTACT PICKED", "RESULT OK");
                     //result successful
                     Uri ContactData = data.getData();
-                    Cursor c = getContentResolver().query(ContactData,null,null,null,null);
-                    if(c!=null && c.moveToFirst()){
+                    Cursor c = getContentResolver().query(ContactData, null, null, null, null);
+                    if (c != null && c.moveToFirst()) {
 
                         String id = c.getString(c.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
-                        Log.d("CONTACT PICKED","ID = "+id);
+                        Log.d("CONTACT PICKED", "ID = " + id);
                         String hasPhone = c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
                         String name = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                        Log.d("CONTACT PICKED",name);
+                        Log.d("CONTACT PICKED", name);
                         patientNameEditText.setText(name);
-                        if(hasPhone.equals("1")){
-                            Log.d("CONTACT PICKED",hasPhone);
+                        if (hasPhone.equals("1")) {
+                            Log.d("CONTACT PICKED", hasPhone);
                             Cursor phones = getContentResolver().query(
-                                    ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,
-                                    ContactsContract.CommonDataKinds.Phone.CONTACT_ID+ " = "+id,null,null);
+                                    ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+                                    ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + id, null, null);
                             phones.moveToFirst();
                             String phNo = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                            Log.d("CONTACT PICKED",phNo);
+                            Log.d("CONTACT PICKED", phNo);
                             contactNumberEditText.setText(phNo.trim());
                             c.close();
                         }
@@ -286,9 +288,10 @@ public class NewPatient extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()){
-            case android.R.id.home: onBackPressed();
-            return true;
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
