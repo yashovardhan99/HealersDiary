@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.8.2] - 2018-10-20
+### Fixed
+- Fixed app crashing when number was not formatted properly in the due and rate fields.
+
 ## [0.8.1] - 2018-09-04
 ### Changed
 - Moved code from mainListFragment to MainActivity to ensure that data persists among different fragments.
