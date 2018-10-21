@@ -30,6 +30,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
@@ -64,6 +65,8 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
+import io.fabric.sdk.android.Fabric;
+
 public class MainActivity extends AppCompatActivity {
 
     public static final String PATIENT_UID = "PATIENT_UID";
@@ -71,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String DELETE_BUTTON = "Delete Button";
     private static final String EDIT_BUTTON = "Edit Button";
     private static final String NEW = "New";
+    public static final String MAIN_LIST_CHOICE = "MAIN_LIST_CHOICE";
+    public static final String CRASH_ENABLED = "CRASH_REPORTING_STATE";
     public static final String USERS = "users";
     public static final String FIRESTORE = "FIRESTORE";
     private FirebaseAnalytics mFirebaseAnalytics;
@@ -92,10 +97,6 @@ public class MainActivity extends AppCompatActivity {
     private ListenerRegistration mListener;
     EventListener<QuerySnapshot> queryDocumentSnapshots;
     private RecyclerView.Adapter mAdapter;
-
-    public static int Display_Mode_Choice = 0;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -192,11 +193,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else{
                     switch (item.getItemId()){
-                        case R.id.shareMenuItem:
-                            share();
-                            return true;
                         case R.id.signOutMenuItem:
-                            //add alertbox
                             signOut();
                             return true;
                     }
@@ -311,8 +308,9 @@ public class MainActivity extends AppCompatActivity {
         };
 
         mListener = patients.addSnapshotListener(queryDocumentSnapshots);
-        mAdapter = new MainListAdapter(patientList);
-
+        mAdapter = new MainListAdapter(patientList, getPreferences(MODE_PRIVATE));
+        if(getPreferences(MODE_PRIVATE).getBoolean(CRASH_ENABLED,true))
+            this.setCrashEnabled();
     }
     public RecyclerView.Adapter getAdapter(){
         return mAdapter;
@@ -498,7 +496,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void share() {
         Intent share = new Intent(Intent.ACTION_SEND);
-        share.putExtra(Intent.EXTRA_TEXT,getString(R.string.app_name));
+        share.putExtra(Intent.EXTRA_TEXT,"Healers Diary - A simple and free app to keep track of your patients, healings, payments and more! Download now at https://play.google.com/store/apps/details?id=com.yashovardhan99.healersdiary");
         share.setType("text/plain");
         startActivity(Intent.createChooser(share,getString(R.string.share)));
     }
@@ -514,5 +512,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         getSupportFragmentManager().putFragment(outState, FRAG_KEY, mContent);
+    }
+    public void setCrashEnabled(){
+        Log.d("CRASH","Enabled");
+        Fabric.with(this, new Crashlytics());
     }
 }

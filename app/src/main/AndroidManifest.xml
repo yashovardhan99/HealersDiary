@@ -3,7 +3,7 @@
     package="com.yashovardhan99.healersdiary">
 
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="com.android.vending.BILLING" />
+    <!--<uses-permission android:name="com.android.vending.BILLING" />-->
 
     <application
         android:icon="@mipmap/ic_launcher"
@@ -42,6 +42,9 @@
             android:name=".activities.NewPatientFeedback"
             android:theme="@style/AppTheme.Dialog" />
         <activity android:name=".activities.PatientFeedbackLogs" />
+        <meta-data
+            android:name="firebase_crashlytics_collection_enabled"
+            android:value="false" />
     </application>
 
 </manifest>

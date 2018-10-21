@@ -3,6 +3,7 @@ package com.yashovardhan99.healersdiary.adapters;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -30,6 +31,7 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.ViewHo
     //patient array list
     @SuppressLint("StaticFieldLeak")
     private static Context context;
+    SharedPreferences preferences;
 
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
         TextView patentNameTextView, patientDataTextView;
@@ -57,8 +59,9 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.ViewHo
         }
     }
 
-    public MainListAdapter(ArrayList<Patient> mPatientList) {
+    public MainListAdapter(ArrayList<Patient> mPatientList, SharedPreferences preferences) {
         patientList = mPatientList;
+        this.preferences = preferences;
     }
 
     @NonNull
@@ -77,7 +80,7 @@ public class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.ViewHo
         Resources res = context.getResources();
         if(holder.patientDataTextView.getVisibility() == View.GONE)
             holder.patientDataTextView.setVisibility(View.VISIBLE);
-        switch (MainActivity.Display_Mode_Choice){
+        switch (preferences.getInt(MainActivity.MAIN_LIST_CHOICE,0)){
             case 0:
                 int healingsToday = patientList.get(position).getHealingsToday();
                 holder.patientDataTextView.setText(res.getQuantityString(R.plurals.healing, healingsToday, healingsToday, res.getString(R.string.today)));

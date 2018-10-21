@@ -4,15 +4,19 @@
         android:id="@+id/mainDisplayPrefGroup">
         <item
             android:id="@+id/healingsTodayMenuItem"
-            android:title="Number of healings today"/>
+            android:title="@string/number_of_healings_today"
+            android:orderInCategory="0"/>
         <item
             android:id="@+id/dueMenuItem"
-            android:title="@string/payment_due"/>
+            android:title="@string/payment_due"
+            android:orderInCategory="1"/>
         <item
             android:id="@+id/rateMenuItem"
-            android:title="@string/rate"/>
+            android:title="@string/rate"
+            android:orderInCategory="2"/>
         <item
             android:id="@+id/diseaseMenuItem"
-            android:title="@string/disease"/>
+            android:title="@string/disease"
+            android:orderInCategory="3"/>
     </group>
 </menu>

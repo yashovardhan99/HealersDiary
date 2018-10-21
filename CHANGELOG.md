@@ -5,6 +5,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Added an extra line after name in the main list to display additional information.
+- Added settings menu.
+- Added option to disable crash reporting.
+
+### Changed
+- Larger font size for patient name.
+- Enabled sharing.
+
+### Fixed
+- Changed package names to lowercase to follow standard conventions (internal change, wont affect app performance).
+
+### Removed
+- Removed redundant share option in navigation drawer.
+- Billing permission as not implemented.
 
 ## [0.8.2] - 2018-10-20
 ### Fixed
