@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Removed
 - Removed redundant share option in navigation drawer.
-- Billing permission as not implemented.
+- Billing permission as not needed.
 
 ## [0.8.2] - 2018-10-20
 ### Fixed

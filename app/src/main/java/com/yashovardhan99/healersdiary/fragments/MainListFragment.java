@@ -89,15 +89,13 @@ public class MainListFragment extends Fragment {
         today = RootView.findViewById(R.id.healingsToday);
         yesterday = RootView.findViewById(R.id.healingsYesterday);
 
-        updateTextFields();
-
         return RootView;
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-//        updateTextFields();
+    public void onResume() {
+        super.onResume();
+        updateTextFields();
     }
 
     @Override
