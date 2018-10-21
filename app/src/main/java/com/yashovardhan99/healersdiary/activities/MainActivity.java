@@ -3,13 +3,11 @@ package com.yashovardhan99.healersdiary.activities;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
@@ -20,13 +18,11 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -70,19 +66,19 @@ import io.fabric.sdk.android.Fabric;
 public class MainActivity extends AppCompatActivity {
 
     public static final String PATIENT_UID = "PATIENT_UID";
-    private static final String PATIENT_RECORD = "patient_record";
+    public static final String PATIENT_RECORD = "patient_record";
     private static final String DELETE_BUTTON = "Delete Button";
     private static final String EDIT_BUTTON = "Edit Button";
-    private static final String NEW = "New";
+    public static final String NEW = "New";
     public static final String MAIN_LIST_CHOICE = "MAIN_LIST_CHOICE";
     public static final String CRASH_ENABLED = "CRASH_REPORTING_STATE";
     public static final String USERS = "users";
     public static final String FIRESTORE = "FIRESTORE";
-    private FirebaseAnalytics mFirebaseAnalytics;
+    public static FirebaseAnalytics mFirebaseAnalytics;
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
-    private static int healingsToday;
-    private static int healingsYesterday;
+    public static int healingsToday;
+    public static int healingsYesterday;
     private MainListFragment listFragment;
     private ProFragment proFragment;
     private SettingsFragment settingsFragment;
@@ -104,14 +100,6 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Toolbar mainActivityToolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(mainActivityToolbar);
-        if(getSupportActionBar()!=null) {
-            getSupportActionBar().setTitle(R.string.app_name);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
-        }
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mNavigationView = findViewById(R.id.main_nav_view);
@@ -209,22 +197,6 @@ public class MainActivity extends AppCompatActivity {
         //firestore init
         db = FirebaseFirestore.getInstance();
 
-
-        ////new patient record button
-        FloatingActionButton newPatientButton = findViewById(R.id.new_fab);
-        newPatientButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent newPatinetIntent = new Intent(MainActivity.this, NewPatient.class);
-                startActivity(newPatinetIntent);
-                //log firebase analytics event
-                Bundle newPatient = new Bundle();
-                newPatient.putString(FirebaseAnalytics.Param.LOCATION, MainActivity.class.getName());
-                newPatient.putString(FirebaseAnalytics.Param.CONTENT_TYPE, NEW);
-                newPatient.putString(FirebaseAnalytics.Param.ITEM_CATEGORY,PATIENT_RECORD);
-                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, newPatient);
-            }
-        });
 
         //load data from database
 
@@ -468,16 +440,10 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                         mAdapter.notifyItemChanged(patientList.indexOf(patient));
-                        updateTextFields();
+                        if(listFragment.isVisible())
+                            listFragment.updateTextFields();
                     }
                 });
-    }
-    private void updateTextFields(){
-        TextView today = findViewById(R.id.healingsToday);
-        TextView yesterday = findViewById(R.id.healingsYesterday);
-        Resources res = getResources();
-        today.setText(res.getQuantityString(R.plurals.healing, healingsToday, healingsToday, getString(R.string.today)));
-        yesterday.setText(res.getQuantityString(R.plurals.healing, healingsYesterday, healingsYesterday, getString(R.string.yesterday)));
     }
 
     @Override

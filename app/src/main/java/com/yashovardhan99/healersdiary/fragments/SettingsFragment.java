@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,6 +44,16 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View RootView = inflater.inflate(R.layout.fragment_settings,container,false);
+
+        Toolbar toolbar = RootView.findViewById(R.id.toolbar);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        if(actionBar!=null) {
+            actionBar.setTitle(R.string.settings);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
+        }
+
         mainListChoice = RootView.findViewById(R.id.ChooseMainListPref);
         selectedMainListChoice = RootView.findViewById(R.id.chosenMainListPref);
         crashSwitch = RootView.findViewById(R.id.CrashSwitch);

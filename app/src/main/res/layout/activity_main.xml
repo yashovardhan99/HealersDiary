@@ -9,95 +9,14 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     app:statusBarBackground="@android:color/transparent"
     tools:context=".activities.MainActivity">
-
-    <android.support.design.widget.CoordinatorLayout
+    <FrameLayout
+        android:id="@+id/mainListHolder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".activities.MainActivity">
-
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/appBarLayout"
-            android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:fitsSystemWindows="true"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-            <android.support.design.widget.CollapsingToolbarLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fitsSystemWindows="true"
-                app:expandedTitleTextAppearance="@style/AppTheme.CollapsingToolbar.NoExpandedTitle"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed">
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:alpha="0.8"
-                    android:contentDescription="@string/graphic_of_a_meditating_girl"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/meditating_person"
-                    app:layout_collapseMode="parallax"
-                    app:layout_collapseParallaxMultiplier="0.2" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:orientation="vertical"
-                    app:layout_collapseMode="parallax"
-                    app:layout_collapseParallaxMultiplier="0.7">
-
-                    <TextView
-                        android:id="@+id/healingsToday"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="8dp"
-                        android:text="@string/today"
-                        android:textAlignment="center"
-                        android:textSize="24sp" />
-
-                    <TextView
-                        android:id="@+id/healingsYesterday"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="8dp"
-                        android:text="@string/yesterday"
-                        android:textAlignment="center"
-                        android:textSize="20sp" />
-                </LinearLayout>
-
-
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:elevation="4dp"
-                    app:layout_collapseMode="pin"
-                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-
-            </android.support.design.widget.CollapsingToolbarLayout>
-        </android.support.design.widget.AppBarLayout>
-
-        <FrameLayout
-            android:id="@+id/mainListHolder"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="vertical"
-            app:layout_anchor="@id/appBarLayout"
-            app:layout_anchorGravity="bottom"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/new_fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="16dp"
-            android:src="@drawable/ic_add_black_24dp"
-            app:layout_anchor="@id/mainListHolder"
-            app:layout_anchorGravity="bottom|end" />
-
-    </android.support.design.widget.CoordinatorLayout>
+        android:scrollbars="vertical"
+        app:layout_anchor="@id/appBarLayout"
+        app:layout_anchorGravity="bottom"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <android.support.design.widget.NavigationView
         android:layout_width="wrap_content"

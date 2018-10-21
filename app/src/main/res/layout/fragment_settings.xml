@@ -1,72 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@drawable/recycler_item_selecter">
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/settings"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:id="@+id/settings_text"
-        android:padding="16dp"
-        android:layout_marginStart="16dp"
-        android:elevation="4dp" />
+    tools:context=".activities.PatientView">
+
+    <include
+        android:id="@+id/settingsToolbar"
+        layout="@layout/app_bar_layout" />
+
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="16dp">
+        android:layout_marginStart="16dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <LinearLayout
+                android:id="@+id/ChooseMainListPref"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:id="@+id/ChooseMainListPref"
                 android:padding="16dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Set preferred main list format"
-                    android:textStyle="bold"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
                 <TextView
+                    android:id="@+id/chosenMainListPref"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/nothing_here"
-                    android:id="@+id/chosenMainListPref"/>
+                    android:text="@string/nothing_here" />
             </LinearLayout>
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp">
+
                 <TextView
+                    android:id="@+id/TextEnableCrash"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Enable Crash Reporting"
                     android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:id="@+id/TextEnableCrash"/>
+                    android:textStyle="bold" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Send crash reports to help me fix issues. The reports are normally anonymous but may include details like your device model and android version."
                     android:layout_below="@id/TextEnableCrash"
-                    android:textAlignment="textStart"
+                    android:layout_marginEnd="16dp"
                     android:layout_toStartOf="@id/CrashSwitch"
-                    android:layout_marginEnd="16dp"/>
+                    android:text="Send crash reports to help me fix issues. The reports are normally anonymous but may include details like your device model and android version."
+                    android:textAlignment="textStart" />
+
                 <Switch
+                    android:id="@+id/CrashSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:id="@+id/CrashSwitch" />
+                    android:paddingEnd="16dp" />
             </RelativeLayout>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

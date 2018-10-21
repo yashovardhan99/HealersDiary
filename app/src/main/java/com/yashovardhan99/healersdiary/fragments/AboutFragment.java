@@ -3,8 +3,10 @@ package com.yashovardhan99.healersdiary.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,10 +21,6 @@ import com.yashovardhan99.healersdiary.R;
  */
 public class AboutFragment extends Fragment {
 
-    public AboutFragment(){
-        //mandatory empty constructor
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -31,7 +29,15 @@ public class AboutFragment extends Fragment {
         imageAttrib.setMovementMethod(LinkMovementMethod.getInstance());
         TextView version = RootView.findViewById(R.id.appVersionString);
         version.setText(getString(R.string.version_s, BuildConfig.VERSION_NAME));
-        ((AppBarLayout)getActivity().findViewById(R.id.appBarLayout)).setExpanded(false);
+
+        Toolbar toolbar = RootView.findViewById(R.id.toolbar);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        if(actionBar!=null) {
+            actionBar.setTitle(R.string.about);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
+        }
         return RootView;
     }
 }
