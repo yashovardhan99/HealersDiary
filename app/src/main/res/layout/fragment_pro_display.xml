@@ -27,7 +27,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:padding="8dp"
-                android:text="More details will be available soon" />
+                android:text="@string/more_details_will_be_available_soon"
+                android:textSize="20sp"/>
         </android.support.design.widget.CoordinatorLayout>
     </android.support.v4.widget.NestedScrollView>
 </android.support.design.widget.CoordinatorLayout>

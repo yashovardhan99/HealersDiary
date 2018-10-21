@@ -12,8 +12,10 @@
         android:backgroundTint="#FFF"
         android:elevation="4dp"
         android:id="@+id/saveNewHealing"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginVertical="8dp"/>
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -21,7 +23,9 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@id/saveNewHealing"
         android:id="@+id/saveNewHealingConfirmationText"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginVertical="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:textAlignment="center"/>
 </RelativeLayout>
