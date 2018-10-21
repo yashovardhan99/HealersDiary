@@ -63,22 +63,24 @@ import javax.annotation.Nullable;
 
 import io.fabric.sdk.android.Fabric;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final String PATIENT_UID = "PATIENT_UID";
     public static final String PATIENT_RECORD = "patient_record";
-    private static final String DELETE_BUTTON = "Delete Button";
-    private static final String EDIT_BUTTON = "Edit Button";
     public static final String NEW = "New";
     public static final String MAIN_LIST_CHOICE = "MAIN_LIST_CHOICE";
     public static final String CRASH_ENABLED = "CRASH_REPORTING_STATE";
     public static final String USERS = "users";
     public static final String FIRESTORE = "FIRESTORE";
+    private static final String DELETE_BUTTON = "Delete Button";
+    private static final String EDIT_BUTTON = "Edit Button";
     public static FirebaseAnalytics mFirebaseAnalytics;
-    private FirebaseFirestore db;
-    private FirebaseAuth mAuth;
     public static int healingsToday;
     public static int healingsYesterday;
+    public ArrayList<Patient> patientList;
+    EventListener<QuerySnapshot> queryDocumentSnapshots;
+    private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
     private MainListFragment listFragment;
     private ProFragment proFragment;
     private SettingsFragment settingsFragment;
@@ -87,11 +89,8 @@ public class MainActivity extends AppCompatActivity {
     private AboutFragment aboutFragment;
     private Fragment mContent;
     private String FRAG_KEY = "MY_FRAG";
-
-    public ArrayList<Patient> patientList;
     private CollectionReference patients;
     private ListenerRegistration mListener;
-    EventListener<QuerySnapshot> queryDocumentSnapshots;
     private RecyclerView.Adapter mAdapter;
 
     @Override
@@ -111,29 +110,28 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         final FirebaseUser mUser = mAuth.getCurrentUser();
         if (mUser == null) {
-            Log.d("SIGN","NO USER");
+            Log.d("SIGN", "NO USER");
             //not signed in
             startActivity(new Intent(this, Login.class)
-                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK));
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
             finishAffinity();
             return;
         }
-
 
         listFragment = new MainListFragment();
         proFragment = new ProFragment();
         aboutFragment = new AboutFragment();
         settingsFragment = new SettingsFragment();
 
-        if(savedInstanceState!=null){
-            mContent = getSupportFragmentManager().getFragment(savedInstanceState,FRAG_KEY);
+        resetHealingCounters();
+
+        if (savedInstanceState != null) {
+            mContent = getSupportFragmentManager().getFragment(savedInstanceState, FRAG_KEY);
             getSupportFragmentManager().beginTransaction().replace(R.id.mainListHolder, mContent).commit();
-        }
-        else {
+        } else {
             getSupportFragmentManager().beginTransaction().replace(R.id.mainListHolder, listFragment).commit();
             mContent = listFragment;
         }
-        resetHealingCounters();
 
 
         Uri profilePicture = mUser.getPhotoUrl();
@@ -144,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                 Bitmap imageBit = ((BitmapDrawable) profilePic.getDrawable()).getBitmap();
                 RoundedBitmapDrawable bitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), imageBit);
                 bitmapDrawable.setCircular(true);
-                bitmapDrawable.setCornerRadius(Math.max(imageBit.getWidth(), imageBit.getHeight())/2.0f);
+                bitmapDrawable.setCornerRadius(Math.max(imageBit.getWidth(), imageBit.getHeight()) / 2.0f);
                 profilePic.setImageDrawable(bitmapDrawable);
             }
 
@@ -154,41 +152,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
-                if(item.getGroupId()==R.id.MainNavGroup){
-                    item.setChecked(true);
-                    mDrawerLayout.closeDrawers();
-                    switch (item.getItemId()){
-                        case R.id.home:
-                            mContent = listFragment;
-                            break;
-
-                        case R.id.getPro:
-                            mContent = proFragment;
-                            break;
-
-                        case R.id.about:
-                            mContent = aboutFragment;
-                            break;
-                        case R.id.settings:
-                            mContent = settingsFragment;
-                    }
-                    getSupportFragmentManager().beginTransaction().replace(R.id.mainListHolder, mContent).commit();
-                    return true;
-                }
-                else{
-                    switch (item.getItemId()){
-                        case R.id.signOutMenuItem:
-                            signOut();
-                            return true;
-                    }
-                }
-                return true;
-            }
-        });
+        mNavigationView.setNavigationItemSelectedListener(this);
 
         //display welcome message
         if (mUser.getDisplayName() != null)
@@ -217,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 Log.d(MainActivity.FIRESTORE, "Data fetced");
-                if(queryDocumentSnapshots==null)
+                if (queryDocumentSnapshots == null)
                     return;
                 for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
                     //getting changes in documents
@@ -281,12 +245,14 @@ public class MainActivity extends AppCompatActivity {
 
         mListener = patients.addSnapshotListener(queryDocumentSnapshots);
         mAdapter = new MainListAdapter(patientList, getPreferences(MODE_PRIVATE));
-        if(getPreferences(MODE_PRIVATE).getBoolean(CRASH_ENABLED,true))
+        if (getPreferences(MODE_PRIVATE).getBoolean(CRASH_ENABLED, true))
             this.setCrashEnabled();
     }
-    public RecyclerView.Adapter getAdapter(){
+
+    public RecyclerView.Adapter getAdapter() {
         return mAdapter;
     }
+
     public void resetHealingCounters() {
         //initialize healings counter
         healingsToday = 0;
@@ -295,7 +261,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void signOut() {
         DialogFragment signOutFragment = new SignOutFragment();
-        signOutFragment.show(getSupportFragmentManager(),"SIGNOUT");
+        signOutFragment.show(getSupportFragmentManager(), "SIGNOUT");
 //        startActivity(new Intent(MainActivity.this, Login.class)
 //                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK));
 //        finishAffinity();
@@ -388,8 +354,8 @@ public class MainActivity extends AppCompatActivity {
         Bundle delete = new Bundle();
         delete.putString(FirebaseAnalytics.Param.CONTENT_TYPE, DELETE_BUTTON);
         delete.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, PATIENT_RECORD);
-        delete.putString(FirebaseAnalytics.Param.LOCATION,MainActivity.class.getName());
-        delete.putString(FirebaseAnalytics.Param.ITEM_ID,patient.getId());
+        delete.putString(FirebaseAnalytics.Param.LOCATION, MainActivity.class.getName());
+        delete.putString(FirebaseAnalytics.Param.ITEM_ID, patient.getId());
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, delete);
     }
 
@@ -408,47 +374,47 @@ public class MainActivity extends AppCompatActivity {
                 .document(patient.getUid())
                 .collection("healings")
                 .orderBy("Date", Query.Direction.DESCENDING)
-                .whereGreaterThan("Date",y)
+                .whereGreaterThan("Date", y)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                         if(queryDocumentSnapshots == null)
-                             return;
-                        for(DocumentChange dc:queryDocumentSnapshots.getDocumentChanges()){
+                        if (queryDocumentSnapshots == null)
+                            return;
+                        for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
                             Timestamp timestamp = dc.getDocument().getTimestamp("Date");
-                            if(timestamp==null)
+                            if (timestamp == null)
                                 continue;
-                            Log.d("COUNTING HEALINGS",timestamp.toString());
+                            Log.d("COUNTING HEALINGS", timestamp.toString());
                             Long time = timestamp.toDate().getTime();
-                            switch (dc.getType()){
+                            switch (dc.getType()) {
                                 case ADDED:
-                                    if(DateUtils.isToday(time)) {
+                                    if (DateUtils.isToday(time)) {
                                         healingsToday++;
                                         patient.healingsToday++;
-                                    }
-                                    else if(DateUtils.isToday(time+DateUtils.DAY_IN_MILLIS))
+                                    } else if (DateUtils.isToday(time + DateUtils.DAY_IN_MILLIS))
                                         healingsYesterday++;
                                     break;
                                 case REMOVED:
-                                    if(DateUtils.isToday(time)) {
+                                    if (DateUtils.isToday(time)) {
                                         healingsToday--;
                                         patient.healingsToday--;
-                                    }
-                                    else if(DateUtils.isToday(time+DateUtils.DAY_IN_MILLIS))
+                                    } else if (DateUtils.isToday(time + DateUtils.DAY_IN_MILLIS))
                                         healingsYesterday--;
                                     break;
                             }
                         }
                         mAdapter.notifyItemChanged(patientList.indexOf(patient));
-                        if(listFragment.isVisible())
+                        if (listFragment.isVisible())
                             listFragment.updateTextFields();
+                        else
+                            Log.d("COUNTING HEALINGS", "UPDATE NOT CALLED");
                     }
                 });
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
@@ -462,15 +428,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void share() {
         Intent share = new Intent(Intent.ACTION_SEND);
-        share.putExtra(Intent.EXTRA_TEXT,"Healers Diary - A simple and free app to keep track of your patients, healings, payments and more! Download now at https://play.google.com/store/apps/details?id=com.yashovardhan99.healersdiary");
+        share.putExtra(Intent.EXTRA_TEXT, "Healers Diary - A simple and free app to keep track of your patients, healings, payments and more! Download now at https://play.google.com/store/apps/details?id=com.yashovardhan99.healersdiary");
         share.setType("text/plain");
-        startActivity(Intent.createChooser(share,getString(R.string.share)));
+        startActivity(Intent.createChooser(share, getString(R.string.share)));
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_options_menu,menu);
+        inflater.inflate(R.menu.main_options_menu, menu);
         return true;
     }
 
@@ -479,8 +445,44 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         getSupportFragmentManager().putFragment(outState, FRAG_KEY, mContent);
     }
-    public void setCrashEnabled(){
-        Log.d("CRASH","Enabled");
+
+    public void setCrashEnabled() {
+        Log.d("CRASH", "Enabled");
         Fabric.with(this, new Crashlytics());
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getGroupId()) {
+            case R.id.MainNavGroup:
+                item.setChecked(true);
+                mDrawerLayout.closeDrawers();
+                switch (item.getItemId()) {
+                    case R.id.home:
+                        mContent = listFragment;
+                        break;
+
+                    case R.id.getPro:
+                        mContent = proFragment;
+                        break;
+
+                    case R.id.about:
+                        mContent = aboutFragment;
+                        break;
+                    case R.id.settings:
+                        mContent = settingsFragment;
+                        getSupportFragmentManager().beginTransaction().replace(R.id.mainListHolder, mContent).commit();
+                        return true;
+                }
+                break;
+            case R.id.extra_nav_group:
+                switch (item.getItemId()) {
+                    case R.id.signOutMenuItem:
+                        signOut();
+                        return true;
+                }
+                break;
+        }
+        return false;
     }
 }

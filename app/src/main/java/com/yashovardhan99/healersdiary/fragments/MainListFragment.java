@@ -91,8 +91,8 @@ public class MainListFragment extends Fragment {
     }
 
     @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
+    public void onStart() {
+        super.onStart();
         updateTextFields();
     }
 
