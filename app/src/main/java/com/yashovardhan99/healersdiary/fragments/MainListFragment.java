@@ -14,6 +14,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,8 @@ public class MainListFragment extends Fragment {
     private RecyclerView.Adapter mAdapter;
     TextView today;
     TextView yesterday;
+    private final String TODAY = "TODAY";
+    private final String YEST = "YESTERDAY";
 
     public MainListFragment(){
         //required empty constructor
@@ -85,6 +88,7 @@ public class MainListFragment extends Fragment {
 
         today = RootView.findViewById(R.id.healingsToday);
         yesterday = RootView.findViewById(R.id.healingsYesterday);
+
         updateTextFields();
 
         return RootView;
@@ -93,7 +97,7 @@ public class MainListFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        updateTextFields();
+//        updateTextFields();
     }
 
     @Override
@@ -107,6 +111,7 @@ public class MainListFragment extends Fragment {
     }
 
     public void updateTextFields(){
+        Log.d("UPDATE","UDT called with : "+healingsToday+" and "+healingsYesterday);
         Resources res = getResources();
         today.setText(res.getQuantityString(R.plurals.healing, healingsToday, healingsToday, getString(R.string.today)));
         yesterday.setText(res.getQuantityString(R.plurals.healing, healingsYesterday, healingsYesterday, getString(R.string.yesterday)));

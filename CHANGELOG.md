@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - Larger font size for patient name.
 - Enabled sharing.
+- Collapsing Toolbar and new patient FAB only appear in the main list. The other views have their own standard toolbar.
 
 ### Fixed
 - Changed package names to lowercase to follow standard conventions (internal change, wont affect app performance).

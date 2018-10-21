@@ -95,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        resetHealingCounters();
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         super.onCreate(savedInstanceState);
@@ -122,8 +123,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         proFragment = new ProFragment();
         aboutFragment = new AboutFragment();
         settingsFragment = new SettingsFragment();
-
-        resetHealingCounters();
 
         if (savedInstanceState != null) {
             mContent = getSupportFragmentManager().getFragment(savedInstanceState, FRAG_KEY);
@@ -165,8 +164,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //load data from database
 
         patientList = new ArrayList<>();
-
-        resetHealingCounters();
 
         patients = db.collection(MainActivity.USERS)
                 .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -404,10 +401,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             }
                         }
                         mAdapter.notifyItemChanged(patientList.indexOf(patient));
-                        if (listFragment.isVisible())
+                        try {
                             listFragment.updateTextFields();
-                        else
-                            Log.d("COUNTING HEALINGS", "UPDATE NOT CALLED");
+                        } catch (IllegalStateException ise) {
+                            Log.d("COUNTING HEALINGS", "UDT NOT CALLED" + ise.toString());
+                        }
                     }
                 });
     }
@@ -471,10 +469,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         break;
                     case R.id.settings:
                         mContent = settingsFragment;
-                        getSupportFragmentManager().beginTransaction().replace(R.id.mainListHolder, mContent).commit();
-                        return true;
+                        break;
+                    default:
+                        return false;
                 }
-                break;
+                getSupportFragmentManager().beginTransaction().replace(R.id.mainListHolder, mContent).commit();
+                return true;
             case R.id.extra_nav_group:
                 switch (item.getItemId()) {
                     case R.id.signOutMenuItem:
