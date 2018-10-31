@@ -78,4 +78,7 @@
     <string name="set_preferred_main_list_format">Set preferred main list format</string>
     <string name="enable_crash_reporting">Enable Crash Reporting</string>
     <string name="send_crash_reports_to_help_me_fix_issues_the_reports_are_normally_anonymous_but_may_include_details_like_your_device_model_and_android_version">Send crash reports to help me fix issues. The reports are normally anonymous but may include details like your device model and android version.</string>
+    <string name="open_source_licenses">Open source licenses</string>
+    <string name="privacy_policy">Privacy policy</string>
+    <string name="end_user_license_agreement">End User License Agreement</string>
 </resources>

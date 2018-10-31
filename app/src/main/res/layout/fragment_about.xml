@@ -65,6 +65,27 @@
                 android:text="@string/logo_courtesy_yasujizr_on_github"
                 android:textAlignment="center"
                 android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="16dp"
+                android:textAlignment="center"
+                android:id="@+id/oss"
+                android:text="@string/open_source_licenses"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:id="@+id/privacy"
+                android:text="@string/privacy_policy"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:id="@+id/eula"
+                android:text="@string/end_user_license_agreement"/>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 </android.support.design.widget.CoordinatorLayout>

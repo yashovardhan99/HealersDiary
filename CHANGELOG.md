@@ -5,15 +5,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.9.0] - 2018-10-31
 ### Added
 - Added an extra line after name in the main list to display additional information.
 - Added settings menu.
 - Added option to disable crash reporting.
+- Added list of open source licenses.
+- Added link to privacy policy and EULA in about section.
 
 ### Changed
 - Larger font size for patient name.
 - Enabled sharing.
 - Collapsing Toolbar and new patient FAB only appear in the main list. The other views have their own standard toolbar.
+- Updated to latest versions of various libraries and plugins.
 
 ### Fixed
 - Changed package names to lowercase to follow standard conventions (internal change, wont affect app performance).
