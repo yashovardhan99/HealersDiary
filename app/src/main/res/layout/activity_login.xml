@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.Login"
+    tools:context=".activities.Login"
     android:orientation="vertical">
     <ImageView
         android:layout_width="wrap_content"

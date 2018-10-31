@@ -6,6 +6,27 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.9.0] - 2018-10-31
+### Added
+- Added an extra line after name in the main list to display additional information.
+- Added settings menu.
+- Added option to disable crash reporting.
+- Added list of open source licenses.
+- Added link to privacy policy and EULA in about section.
+
+### Changed
+- Larger font size for patient name.
+- Enabled sharing.
+- Collapsing Toolbar and new patient FAB only appear in the main list. The other views have their own standard toolbar.
+- Updated to latest versions of various libraries and plugins.
+
+### Fixed
+- Changed package names to lowercase to follow standard conventions (internal change, wont affect app performance).
+
+### Removed
+- Removed redundant share option in navigation drawer.
+- Billing permission as not needed.
+
 ## [0.8.2] - 2018-10-20
 ### Fixed
 - Fixed app crashing when number was not formatted properly in the due and rate fields.

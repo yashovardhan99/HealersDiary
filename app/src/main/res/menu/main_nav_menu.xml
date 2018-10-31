@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group
         android:checkableBehavior="single"
         android:id="@+id/MainNavGroup">
@@ -16,26 +15,25 @@
             android:orderInCategory="2"
             android:icon="@drawable/ic_shopping_cart_black_24dp"/>
         <item
+            android:id="@+id/settings"
+            android:title="@string/settings"
+            android:orderInCategory="3"
+            android:icon="@drawable/ic_settings_black_24dp"/>
+        <item
             android:id="@+id/about"
             android:title="@string/about"
-            android:orderInCategory="3"
+            android:orderInCategory="4"
             android:icon="@drawable/ic_info_outline_black_24dp"/>
     </group>
     <group
         android:checkableBehavior="none"
         android:id="@+id/extra_nav_group">
         <item
-            android:id="@+id/shareMenuItem"
-            android:title="@string/share"
-            android:icon="@drawable/ic_share_black_24dp"
-            app:showAsAction="ifRoom"
-            android:orderInCategory="4"/>
-        <item
             android:id="@+id/signOutMenuItem"
             android:title="@string/sign_out"
             android:icon="@drawable/ic_power_settings_new_black_24dp"
             android:contentDescription="@string/signs_you_out_of_the_app"
-            android:orderInCategory="5"/>
+            android:orderInCategory="6"/>
 
     </group>
 </menu>

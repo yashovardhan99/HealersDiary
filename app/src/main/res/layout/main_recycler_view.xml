@@ -1,17 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:focusable="true"
     android:clickable="true"
-    android:background="@drawable/recycler_item_selecter">
+    android:background="@drawable/recycler_item_selecter"
+    android:layout_marginBottom="8dp"
+    android:layout_marginTop="8dp">
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:id="@+id/patientName"
-        android:textSize="16sp"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textAlignment="textStart"
         android:text="@string/nothing_here"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:paddingTop="8dp" />
+        android:paddingTop="8dp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/patientName"
+        android:text="@string/nothing_here"
+        android:textSize="16sp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="8dp"
+        android:id="@+id/patientData"/>
 
 </RelativeLayout>

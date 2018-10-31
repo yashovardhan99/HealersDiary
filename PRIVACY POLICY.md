@@ -1,9 +1,16 @@
+## \*\*\*Summary of Update on 31 October, 2018\*\*\*
+This update is intended for changes introduced in version 0.9.0 of the app. 
+- Changed email ID for requesting deletion of data
+- Now you can disable crash reporting in settings.
+This summary is just for your information and not legally binding. The actual policy is stated below
+
 # Privacy Policy
+
 
 ## Introduction
 Yashovardhan Dhanania ("I", "Me") along with any other service providers ("We") provides this Privacy policy to explain to you ("User"), user of the app Healers Diary ("app"), what information I may collect from you and how I will use it.
 
-By using my app and services, you agree to this privacy policy and other [terms of service](https://github.com/yashovardhan99/HealersDiary/blob/master/EULA.md). If you do not agree to this policy, please uninstall the app and send me an email at yashovardhandhanania@gmail.com requesting deletion of your data. Such requests will be complied with in accordance with this [License Agreement](https://github.com/yashovardhan99/HealersDiary/blob/master/EULA.md).
+By using my app and services, you agree to this privacy policy and other [terms of service](https://github.com/yashovardhan99/HealersDiary/blob/master/EULA.md). If you do not agree to this policy, please uninstall the app and send me an email at yashovardhan99@outlook.com requesting deletion of your data. Such requests will be complied with in accordance with this [License Agreement](https://github.com/yashovardhan99/HealersDiary/blob/master/EULA.md).
 
 ## What do I collect
 By using this app, you may provide me with the following information:
@@ -18,7 +25,7 @@ By using this app, you may provide me with the following information:
 When the app connects to the internet, the app may sync the data you have stored to a secure server. I use third party cloud server providers and other third party service providers to provide you the best experience throughout your app. Their terms are as follows:
 - Firestore - I use Cloud Firestore by Firebase to securely store your data online. I have added security rules which only allow you to access your data. No other user of this app can access your data under these security rules. Your Google Account is used for identifying you. To give you complete transparency, their data protection and security terms are available [here](https://cloud.google.com/terms/data-processing-terms#top_of_page).
 - Google Analytics for Firebase - I use this service to collect anonymised data about the usage of my app to help improve the app and other services I may provide. Information collected includes, but is not limited to, your device type and model, your operating system version, language, region, app version and other anonymous information. I do not use this information to identify you. Their terms are available [here](https://firebase.google.com/terms/analytics/).
-- Crashlytics - To help prevent crashes, and to improve your experience, I collect logs when the app crashes or encounters an error. Such data is almost always anonymous and is not intended to track you. Their terms are available [here](https://firebase.google.com/terms/fabric-data-processing-terms).
+- Crashlytics - To help prevent crashes, and to improve your experience, I collect logs when the app crashes or encounters an error. Such data is almost always anonymous and is not intended to track you. Their terms are available [here](https://firebase.google.com/terms/fabric-data-processing-terms). To disable automatic collection and logging of crash data, go to settings and disable crash reporting.
 - Authentication - As outlined earlier, by signing in to the app, you may provide certain personal information to me. However, Firebase may also collect some other data and use it for facilitating  account management and authentication. Details are available [here](https://firebase.google.com/support/privacy/#examples_of_end_user_personal_data_processed_by_firebase).
 ## How long is data stored
 As most of the personal data collected is for your end use, it is not deleted directly by me unless requested by you or required by law.
@@ -27,6 +34,6 @@ While I use the best security tools available to me and design the app to preven
 ## Law enforcement requests
 Local law enforcement agencies may request your data from me. I will not entertain such requests unless they come through proper legal channels and follow stipulated laws and guidelines. I will follow all laws and regulations and will try my best to protect your data in such cases. Be informed that law enforcement agencies may directly contact the third party agencies listed above for your data. In such cases, their policies are applicable.
 ## General Information
-- Any changes to this policy will be updated here and will come in place 14 days from such a change. If you disagree with any chance, please contact me via email at yashovardhandhanania@gmail.com and inform me of the same. Also, immediately stop using the app and other related services. I will delete your data within 30 days from such written requests and disable your account as outlined in my End User License Agreement linked above.
+- Any changes to this policy will be updated here and will come in place 14 days from such a change. If you disagree with any chance, please contact me via email at yashovardhan99@outlook.com and inform me of the same. Also, immediately stop using the app and other related services. I will delete your data within 30 days from such written requests and disable your account as outlined in my End User License Agreement linked above.
 - This policy is governed by local laws and regulations. Any clause may be void where applicable per local laws.
-- This policy was last updated on 19 July, 2018.
+- This policy was last updated on 31 October, 2018.

@@ -15,7 +15,8 @@
         android:layout_height="wrap_content"
         android:text="@string/date"
         android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@id/PatientFeedbackText"
         android:padding="16dp"
         android:id="@+id/PatientFeedbackDateText"
-        android:textAlignment="viewStart"/>
+        android:textAlignment="textStart"/>
 </RelativeLayout>
