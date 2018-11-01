@@ -11,7 +11,7 @@
             android:checked="true"/>
         <item
             android:id="@+id/getPro"
-            android:title="@string/upgrade_now"
+            android:title="@string/donate"
             android:orderInCategory="2"
             android:icon="@drawable/ic_shopping_cart_black_24dp"/>
         <item

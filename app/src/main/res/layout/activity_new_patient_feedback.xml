@@ -30,13 +30,8 @@
         android:id="@+id/PatientFeedbackSaveBtn"
         android:text="@string/save"
         android:padding="8dp"
-        android:elevation="4dp"/>
-    <TextView
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:padding="8dp"
-        android:text="@string/this_is_a_paid_feature_you_are_allowed_to_use_it_for_free_only_under_the_app_test_program_tap_here_to_learn_more"
-        android:layout_below="@id/PatientFeedbackSaveBtn"/>
-
+        android:elevation="4dp"
+        android:backgroundTint="#FFF"
+        android:drawableStart="@drawable/ic_save_black_24dp"
+        android:drawableTint="@color/colorPrimary"/>
 </RelativeLayout>

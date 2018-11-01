@@ -12,6 +12,8 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.GravityCompat;
@@ -39,7 +41,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -48,8 +49,8 @@ import com.squareup.picasso.Picasso;
 import com.yashovardhan99.healersdiary.R;
 import com.yashovardhan99.healersdiary.adapters.MainListAdapter;
 import com.yashovardhan99.healersdiary.fragments.AboutFragment;
+import com.yashovardhan99.healersdiary.fragments.DonateFragment;
 import com.yashovardhan99.healersdiary.fragments.MainListFragment;
-import com.yashovardhan99.healersdiary.fragments.ProFragment;
 import com.yashovardhan99.healersdiary.fragments.SettingsFragment;
 import com.yashovardhan99.healersdiary.fragments.SignOutFragment;
 import com.yashovardhan99.healersdiary.objects.Patient;
@@ -82,15 +83,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
     private MainListFragment listFragment;
-    private ProFragment proFragment;
+    private DonateFragment donateFragment;
     private SettingsFragment settingsFragment;
     private DrawerLayout mDrawerLayout;
-    private NavigationView mNavigationView;
     private AboutFragment aboutFragment;
     private Fragment mContent;
     private String FRAG_KEY = "MY_FRAG";
-    private CollectionReference patients;
-    private ListenerRegistration mListener;
     private RecyclerView.Adapter mAdapter;
 
     @Override
@@ -102,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
-        mNavigationView = findViewById(R.id.main_nav_view);
+        NavigationView mNavigationView = findViewById(R.id.main_nav_view);
 
         final ImageView profilePic = mNavigationView.getHeaderView(0).findViewById(R.id.profilePic);
         final TextView profileName = mNavigationView.getHeaderView(0).findViewById(R.id.profileName);
@@ -120,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         listFragment = new MainListFragment();
-        proFragment = new ProFragment();
+        donateFragment = new DonateFragment();
         aboutFragment = new AboutFragment();
         settingsFragment = new SettingsFragment();
 
@@ -165,8 +163,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         patientList = new ArrayList<>();
 
-        patients = db.collection(MainActivity.USERS)
-                .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+        CollectionReference patients = db.collection(MainActivity.USERS)
+                .document(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid())
                 .collection("patients");
 
         //to instantly make any changes reflect here
@@ -177,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Log.d(MainActivity.FIRESTORE, "ERROR : " + e.getMessage());
                     return;
                 }
-                Log.d(MainActivity.FIRESTORE, "Data fetced");
+                Log.d(MainActivity.FIRESTORE, "Data fetched");
                 if (queryDocumentSnapshots == null)
                     return;
                 for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
@@ -240,7 +238,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         };
 
-        mListener = patients.addSnapshotListener(queryDocumentSnapshots);
+        patients.addSnapshotListener(queryDocumentSnapshots);
         mAdapter = new MainListAdapter(patientList, getPreferences(MODE_PRIVATE));
         if (getPreferences(MODE_PRIVATE).getBoolean(CRASH_ENABLED, true))
             this.setCrashEnabled();
@@ -461,7 +459,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         break;
 
                     case R.id.getPro:
-                        mContent = proFragment;
+                        mContent = donateFragment;
                         break;
 
                     case R.id.about:
@@ -473,7 +471,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     default:
                         return false;
                 }
-                getSupportFragmentManager().beginTransaction().replace(R.id.mainListHolder, mContent).commit();
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction().replace(R.id.mainListHolder, mContent);
+                if (mContent == listFragment)
+                    clearBackStack();
+                else
+                    transaction.addToBackStack(mContent.getClass().getName());
+                transaction.commit();
                 return true;
             case R.id.extra_nav_group:
                 switch (item.getItemId()) {
@@ -484,5 +487,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
         }
         return false;
+    }
+
+    private void clearBackStack() {
+        FragmentManager fm = getSupportFragmentManager();
+        fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 }
