@@ -34,7 +34,7 @@
             android:name=".activities.HealingLogs"
             android:parentActivityName=".activities.PatientView" />
         <activity
-            android:name=".activities.PatientAddPaymentDialog"
+            android:name=".fragments.PatientAddPaymentDialog"
             android:excludeFromRecents="true"
             android:theme="@style/AppTheme.Dialog" />
         <activity android:name=".activities.PatientPaymentLogs" />

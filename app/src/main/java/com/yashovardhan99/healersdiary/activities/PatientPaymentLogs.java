@@ -20,10 +20,11 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.yashovardhan99.healersdiary.R;
 import com.yashovardhan99.healersdiary.adapters.PatientPaymentLogsAdapter;
 import com.yashovardhan99.healersdiary.objects.PaymentSnapshot;
-import com.yashovardhan99.healersdiary.R;
 
 import java.text.DateFormat;
 import java.text.NumberFormat;
@@ -58,7 +59,7 @@ public class PatientPaymentLogs extends AppCompatActivity {
                 .collection("payments");
 
         //fetching payment records here
-        logs.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        logs.orderBy("Date",Query.Direction.ASCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                 DateFormat df = DateFormat.getDateTimeInstance();

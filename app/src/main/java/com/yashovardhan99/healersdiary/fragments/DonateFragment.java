@@ -17,9 +17,9 @@ import com.yashovardhan99.healersdiary.R;
 /**
  * Created by Yashovardhan99 on 15-08-2018 as a part of HealersDiary.
  */
-public class ProFragment extends Fragment {
+public class DonateFragment extends Fragment {
 
-    public ProFragment(){
+    public DonateFragment(){
         //mandatory empty constructor
     }
 
@@ -31,12 +31,12 @@ public class ProFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View RootView = inflater.inflate(R.layout.fragment_pro_display,container,false);
+        View RootView = inflater.inflate(R.layout.fragment_donate_display,container,false);
         Toolbar toolbar = RootView.findViewById(R.id.toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
         if(actionBar!=null) {
-            actionBar.setTitle(R.string.upgrade_now);
+            actionBar.setTitle(R.string.donate);
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
         }
