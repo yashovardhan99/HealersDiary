@@ -29,9 +29,9 @@
     <string name="confirm_new_healing">Confirm New Healing</string>
     <string name="new_healing">New Healing</string>
     <string name="view_healing_logs">View Healing Logs</string>
-    <string name="add_patient_feedback">Add Patient Feedback</string>
-    <string name="view_patient_feedback">View Patient Feedback</string>
-    <string name="add_payment_detail">Add Payment Detail</string>
+    <string name="add_patient_feedback">Add new Feedback</string>
+    <string name="view_patient_feedback">View Feedback logs</string>
+    <string name="add_payment_detail">Add new payment</string>
     <string name="view_payment_logs">View Payment logs</string>
     <string name="nothing_here">NOTHING HERE</string>
     <string name="date">DATE</string>

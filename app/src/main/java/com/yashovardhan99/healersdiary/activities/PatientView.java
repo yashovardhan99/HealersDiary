@@ -17,9 +17,10 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.yashovardhan99.healersdiary.fragments.NewHealingDialog;
-import com.yashovardhan99.healersdiary.helpers.HtmlCompat;
 import com.yashovardhan99.healersdiary.R;
+import com.yashovardhan99.healersdiary.fragments.NewHealingDialog;
+import com.yashovardhan99.healersdiary.fragments.PatientAddPaymentDialog;
+import com.yashovardhan99.healersdiary.helpers.HtmlCompat;
 
 import java.text.NumberFormat;
 import java.util.Map;
@@ -118,9 +119,8 @@ public class PatientView extends AppCompatActivity {
         addPayment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent pay = new Intent(PatientView.this,PatientAddPaymentDialog.class);
-                pay.putExtra(MainActivity.PATIENT_UID, Uid);
-                startActivityForResult(pay,REQUEST_PAYMENT_ADDED);
+                DialogFragment addPayment = new PatientAddPaymentDialog();
+                addPayment.show(getSupportFragmentManager(),"NewPayment");
             }
         });
 
@@ -169,18 +169,16 @@ public class PatientView extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode){
 
-            case REQUEST_PAYMENT_ADDED:
-                if(resultCode==PatientAddPaymentDialog.PAYMENT_ADDED_RESULT)
-                    Snackbar.make(findViewById(R.id.patientNameInDetail),getString(R.string.payment_added ,data.getStringExtra("Amount")),Snackbar.LENGTH_LONG).show();
-                break;
-
             case REQUEST_FEEDBACK_ADDED:
                 if(resultCode==RESULT_OK)
                     Snackbar.make(findViewById(R.id.patientNameInDetail),R.string.added, Snackbar.LENGTH_SHORT).show();
                 break;
 
-
             default: super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    public void paymentAdded(String amt){
+        Snackbar.make(findViewById(R.id.patientNameInDetail),getString(R.string.payment_added ,amt),Snackbar.LENGTH_LONG).show();
     }
 }

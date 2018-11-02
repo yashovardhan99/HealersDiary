@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    tools:context=".activities.PatientAddPaymentDialog"
+    tools:context=".fragments.PatientAddPaymentDialog"
     android:orientation="vertical">
     <android.support.design.widget.TextInputLayout
         android:layout_width="300dp"
@@ -25,12 +25,33 @@
         android:text="@string/save"
         android:id="@+id/saveNewPayment"
         android:elevation="4dp"
-        android:padding="16dp" />
-    <TextView
+        android:padding="16dp"
+        android:drawableStart="@drawable/ic_save_black_24dp"
+        android:drawableTint="@color/colorPrimary"/>
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:textAlignment="center"
-        android:padding="16dp"
-        android:text="@string/payment_will_be_credited_to_the_patient_s_account_with_the_current_date_and_time"/>
+        android:layout_gravity="center">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/paymentDate"
+            android:padding="16dp"
+            android:backgroundTint="#FFF"
+            android:drawableStart="@drawable/ic_date_range_black_24dp"
+            android:drawableTint="@color/colorPrimary"
+            android:text="@string/nothing_here"
+            android:elevation="4dp"
+            android:gravity="center"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/paymentTime"
+            android:padding="16dp"
+            android:text="@string/nothing_here"
+            android:elevation="4dp"
+            android:drawableStart="@drawable/ic_access_time_black_24dp"
+            android:gravity="center"
+            android:drawableTint="@color/colorPrimary"/>
+    </LinearLayout>
 </LinearLayout>
