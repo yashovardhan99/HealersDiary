@@ -72,6 +72,37 @@
                     android:layout_alignParentEnd="true"
                     android:paddingStart="16dp"/>
             </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/TextDailyReminder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/remind_me_daily"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/TextDailyReminder"
+                    android:id="@+id/dailyReminderDetail"
+                    android:layout_marginEnd="16dp"
+                    android:layout_toStartOf="@id/ReminderSwitch"
+                    android:text="@string/turn_it_on_to_schedule_a_daily_reminder_to_help_you_update_your_healing_records"
+                    android:textAlignment="viewStart" />
+
+                <Switch
+                    android:id="@+id/ReminderSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:paddingStart="16dp"/>
+            </RelativeLayout>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 </android.support.design.widget.CoordinatorLayout>
