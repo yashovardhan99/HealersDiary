@@ -121,6 +121,14 @@
             android:layout_gravity="center_horizontal"
             android:text="@string/view_payment_logs"
             android:id="@+id/viewPatientPaymentLogs"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:layout_gravity="center_horizontal"
+                android:text="Generate Bill"
+                android:id="@+id/generateBill"/>
         </LinearLayout>
 
     </LinearLayout>

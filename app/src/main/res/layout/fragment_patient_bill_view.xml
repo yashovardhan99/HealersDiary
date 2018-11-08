@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:context=".fragments.PatientBillView">
+
+    <LinearLayout
+        android:id="@+id/billTextScroller"
+        android:layout_width="wrap_content"
+        android:layout_height="300dp"
+        app:layout_constraintBottom_toTopOf="@id/shareBill"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxHeight="300dp"
+            android:minHeight="50dp">
+
+            <TextView
+                android:id="@+id/billText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:focusedByDefault="true"
+                android:selectAllOnFocus="true"
+                android:text="@string/bill_title"
+                android:textIsSelectable="true"
+                android:textSize="20sp" />
+        </ScrollView>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/shareBill"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:padding="16dp"
+        android:text="@string/share"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/billTextScroller" />
+
+    <Button
+        android:id="@+id/closeDialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/billTextScroller"
+        android:layout_toEndOf="@id/shareBill"
+        android:padding="16dp"
+        android:text="Close"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/shareBill"
+        app:layout_constraintTop_toBottomOf="@id/billTextScroller" />
+</android.support.constraint.ConstraintLayout>

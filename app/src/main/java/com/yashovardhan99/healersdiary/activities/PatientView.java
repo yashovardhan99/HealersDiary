@@ -18,6 +18,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.yashovardhan99.healersdiary.R;
+import com.yashovardhan99.healersdiary.fragments.GeneratePatientBill;
 import com.yashovardhan99.healersdiary.fragments.NewHealingDialog;
 import com.yashovardhan99.healersdiary.fragments.PatientAddPaymentDialog;
 import com.yashovardhan99.healersdiary.helpers.HtmlCompat;
@@ -28,11 +29,10 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
-public class PatientView extends AppCompatActivity {
+public class PatientView extends AppCompatActivity implements View.OnClickListener {
 
-    private String Uid;
-    private final int REQUEST_PAYMENT_ADDED = 1;
     private final int REQUEST_FEEDBACK_ADDED = 2;
+    private String Uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +59,7 @@ public class PatientView extends AppCompatActivity {
                 //listener to update patient data
                 @Override
                 public void onEvent(@Nullable DocumentSnapshot document, @Nullable FirebaseFirestoreException e) {
-                    if (document!=null && document.exists()) {
+                    if (document != null && document.exists()) {
                         //get document data
                         Log.d(MainActivity.FIRESTORE, "Data exists : " + document.getData());
                         //store it in a map and update relevant fields
@@ -81,10 +81,9 @@ public class PatientView extends AppCompatActivity {
                         TextView due = findViewById(R.id.bill);
                         if (patient.containsKey("Due") && !patient.get("Due").toString().isEmpty()) {
                             Double amt = Double.parseDouble(patient.get("Due").toString());
-                            String famt = getString(R.string.payment_due)+": <b><big>"+NumberFormat.getCurrencyInstance().format(amt)+"</big></b>";
+                            String famt = getString(R.string.payment_due) + ": <b><big>" + NumberFormat.getCurrencyInstance().format(amt) + "</big></b>";
                             due.setText(HtmlCompat.fromHtml(famt));
-                        }
-                        else
+                        } else
                             due.setVisibility(View.GONE);
                     }
                 }
@@ -94,13 +93,7 @@ public class PatientView extends AppCompatActivity {
 
         //new healing button - to add new healing
         Button newHealing = findViewById(R.id.newHealingButton);
-        newHealing.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DialogFragment newHealing = new NewHealingDialog();
-                newHealing.show(getSupportFragmentManager(),"HEALINGNEW");
-            }
-        });
+        newHealing.setOnClickListener(this);
 
         //go to healing logs
         Button healingLogs = findViewById(R.id.healingLogsButton);
@@ -108,8 +101,8 @@ public class PatientView extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent logs = new Intent(PatientView.this, HealingLogs.class);
-                logs.putExtra("PATIENT_NAME",((TextView)findViewById(R.id.patientNameInDetail)).getText());
-                logs.putExtra(MainActivity.PATIENT_UID,Uid);
+                logs.putExtra("PATIENT_NAME", ((TextView) findViewById(R.id.patientNameInDetail)).getText());
+                logs.putExtra(MainActivity.PATIENT_UID, Uid);
                 startActivity(logs);
             }
         });
@@ -120,7 +113,7 @@ public class PatientView extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 DialogFragment addPayment = new PatientAddPaymentDialog();
-                addPayment.show(getSupportFragmentManager(),"NewPayment");
+                addPayment.show(getSupportFragmentManager(), "NewPayment");
             }
         });
 
@@ -130,7 +123,7 @@ public class PatientView extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent logs = new Intent(PatientView.this, PatientPaymentLogs.class);
-                logs.putExtra(MainActivity.PATIENT_UID,Uid);
+                logs.putExtra(MainActivity.PATIENT_UID, Uid);
                 startActivity(logs);
             }
         });
@@ -142,7 +135,7 @@ public class PatientView extends AppCompatActivity {
             public void onClick(View v) {
                 Intent newFeed = new Intent(PatientView.this, NewPatientFeedback.class);
                 newFeed.putExtra(MainActivity.PATIENT_UID, Uid);
-                startActivityForResult(newFeed,REQUEST_FEEDBACK_ADDED);
+                startActivityForResult(newFeed, REQUEST_FEEDBACK_ADDED);
             }
         });
 
@@ -152,33 +145,46 @@ public class PatientView extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent logs = new Intent(PatientView.this, PatientFeedbackLogs.class);
-                logs.putExtra(MainActivity.PATIENT_UID,Uid);
+                logs.putExtra(MainActivity.PATIENT_UID, Uid);
                 startActivity(logs);
             }
         });
+
+        Button bill = findViewById(R.id.generateBill);
+        bill.setOnClickListener(this);
     }
-//
-//    @Override
-//    public void onBackPressed() {
-//        Intent back = new Intent(this,MainActivity.class);
-//        back.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//        startActivity(back);
-//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode){
+        switch (requestCode) {
 
             case REQUEST_FEEDBACK_ADDED:
-                if(resultCode==RESULT_OK)
-                    Snackbar.make(findViewById(R.id.patientNameInDetail),R.string.added, Snackbar.LENGTH_SHORT).show();
+                if (resultCode == RESULT_OK)
+                    Snackbar.make(findViewById(R.id.patientNameInDetail), R.string.added, Snackbar.LENGTH_SHORT).show();
                 break;
-
-            default: super.onActivityResult(requestCode, resultCode, data);
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
-    public void paymentAdded(String amt){
-        Snackbar.make(findViewById(R.id.patientNameInDetail),getString(R.string.payment_added ,amt),Snackbar.LENGTH_LONG).show();
+    public void paymentAdded(String amt) {
+        Snackbar.make(findViewById(R.id.patientNameInDetail), getString(R.string.payment_added, amt), Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.newHealingButton:
+                DialogFragment newHealing = new NewHealingDialog();
+                newHealing.show(getSupportFragmentManager(), "HEALINGNEW");
+                break;
+            case R.id.generateBill:
+                DialogFragment generateBill = new GeneratePatientBill();
+                Bundle bundle = new Bundle();
+                bundle.putString(MainActivity.PATIENT_UID,Uid);
+                generateBill.setArguments(bundle);
+                generateBill.show(getSupportFragmentManager(),"generatebill");
+                break;
+        }
     }
 }

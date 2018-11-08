@@ -67,12 +67,14 @@ import io.fabric.sdk.android.Fabric;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final String PATIENT_UID = "PATIENT_UID";
+    public static final String BILL_TYPE = "billtype";
     public static final String PATIENT_RECORD = "patient_record";
     public static final String NEW = "New";
     public static final String MAIN_LIST_CHOICE = "MAIN_LIST_CHOICE";
     public static final String CRASH_ENABLED = "CRASH_REPORTING_STATE";
     public static final String USERS = "users";
     public static final String FIRESTORE = "FIRESTORE";
+    public static final String INCLUDE_LOGS = "includeHealingLogs";
     private static final String DELETE_BUTTON = "Delete Button";
     private static final String EDIT_BUTTON = "Edit Button";
     public static FirebaseAnalytics mFirebaseAnalytics;
