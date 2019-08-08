@@ -59,6 +59,9 @@ freeline_project_description.json
 
 # fastlane
 fastlane/report.xml
+
+# Removing backup zip files
+HealersDiary*.zip
 fastlane/Preview.html
 fastlane/screenshots
 fastlane/test_output
