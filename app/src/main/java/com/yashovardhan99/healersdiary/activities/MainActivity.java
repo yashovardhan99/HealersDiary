@@ -191,14 +191,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         case ADDED:
                             //add new patient to arrayList
                             Patient patient = new Patient();
-                            patient.name = Objects.requireNonNull(document.get("Name")).toString();
-                            patient.uid = document.getId();
-                            patient.disease = Objects.requireNonNull(document.get("Disease")).toString();
+                            patient.setName(Objects.requireNonNull(document.get("Name")).toString());
+                            patient.setUid(document.getId());
+                            patient.setDisease(Objects.requireNonNull(document.get("Disease")).toString());
                             if (document.contains("Due") && !document.get("Due").toString().isEmpty()) {
-                                patient.due = document.getDouble("Due");
+                                patient.setDue(document.getDouble("Due"));
                             }
                             if (document.contains("Rate") && !document.get("Rate").toString().isEmpty()) {
-                                patient.rate = document.getDouble("Rate");
+                                patient.setRate(document.getDouble("Rate"));
                             }
                             patientList.add(patient);
                             mAdapter.notifyItemInserted(patientList.indexOf(patient));
@@ -210,13 +210,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             String id = dc.getDocument().getId();
                             for (Patient patient1 : patientList) {
                                 if (patient1.getUid().equals(id)) {
-                                    patient1.name = Objects.requireNonNull(document.get("Name")).toString();
-                                    patient1.disease = Objects.requireNonNull(document.get("Disease")).toString();
+                                    patient1.setName(Objects.requireNonNull(document.get("Name")).toString());
+                                    patient1.setDisease(Objects.requireNonNull(document.get("Disease")).toString());
                                     if (document.contains("Due") && !Objects.requireNonNull(document.get("Due")).toString().isEmpty()) {
-                                        patient1.due = document.getDouble("Due");
+                                        patient1.setDue(document.getDouble("Due"));
                                     }
                                     if (document.contains("Rate") && !Objects.requireNonNull(document.get("Rate")).toString().isEmpty()) {
-                                        patient1.rate = document.getDouble("Rate");
+                                        patient1.setRate(document.getDouble("Rate"));
                                     }
                                     mAdapter.notifyItemChanged(patientList.indexOf(patient1));
                                     break;
@@ -387,14 +387,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 case ADDED:
                                     if (DateUtils.isToday(time)) {
                                         healingsToday++;
-                                        patient.healingsToday++;
+                                        patient.setHealingsToday(patient.getHealingsToday() + 1);
                                     } else if (DateUtils.isToday(time + DateUtils.DAY_IN_MILLIS))
                                         healingsYesterday++;
                                     break;
                                 case REMOVED:
                                     if (DateUtils.isToday(time)) {
                                         healingsToday--;
-                                        patient.healingsToday--;
+                                        patient.setHealingsToday(patient.getHealingsToday() - 1);
                                     } else if (DateUtils.isToday(time + DateUtils.DAY_IN_MILLIS))
                                         healingsYesterday--;
                                     break;

@@ -58,11 +58,11 @@ public class PatientBillView extends DialogFragment implements com.google.fireba
                     billText.setText(billText.getText() + "\n" + date);
                 }
             }
-            patient.due = patient.rate * no;
+            patient.setDue(patient.getRate() * no);
             billText.setText(billText.getText() + "\n" + getString(R.string.bill,
-                    patient.name,
+                    patient.getName(),
                     DateFormat.getDateInstance().format(Calendar.getInstance().getTime()),
-                    NumberFormat.getCurrencyInstance().format(patient.due),
+                    NumberFormat.getCurrencyInstance().format(patient.getDue()),
                     FirebaseAuth.getInstance().getCurrentUser().getDisplayName()));
         }
     };
@@ -92,7 +92,7 @@ public class PatientBillView extends DialogFragment implements com.google.fireba
                 .document(uid);
         registration = documentReference.addSnapshotListener(this);
         patient = new Patient();
-        patient.uid = uid;
+        patient.setUid(uid);
         detailed = bundle.getBoolean(MainActivity.INCLUDE_LOGS);
         return RootView;
     }
@@ -100,9 +100,9 @@ public class PatientBillView extends DialogFragment implements com.google.fireba
     @Override
     public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
         assert documentSnapshot != null;
-        patient.name = documentSnapshot.getString("Name");
-        patient.due = Double.parseDouble(Objects.requireNonNull(documentSnapshot.get("Due")).toString());
-        patient.rate = Double.parseDouble(Objects.requireNonNull(documentSnapshot.get("Rate")).toString());
+        patient.setName(documentSnapshot.getString("Name"));
+        patient.setDue(Double.parseDouble(Objects.requireNonNull(documentSnapshot.get("Due")).toString()));
+        patient.setRate(Double.parseDouble(Objects.requireNonNull(documentSnapshot.get("Rate")).toString()));
         Calendar thisMonth = Calendar.getInstance();
         thisMonth.set(Calendar.HOUR_OF_DAY, 0);
         thisMonth.clear(Calendar.MINUTE);
@@ -111,7 +111,7 @@ public class PatientBillView extends DialogFragment implements com.google.fireba
         thisMonth.set(Calendar.DAY_OF_MONTH, 1);
         switch (billtype) {
             case R.id.allBillButton:
-                billText.setText(getString(R.string.bill, patient.name,
+                billText.setText(getString(R.string.bill, patient.getName(),
                         DateFormat.getDateInstance().format(Calendar.getInstance().getTime()),
                         NumberFormat.getCurrencyInstance().format(patient.getDue()),
                         Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getDisplayName()));
