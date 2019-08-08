@@ -1,7 +1,5 @@
 package com.yashovardhan99.healersdiary.adapters;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,8 +7,11 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.yashovardhan99.healersdiary.objects.Healing;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.yashovardhan99.healersdiary.R;
+import com.yashovardhan99.healersdiary.objects.Healing;
 
 import java.util.ArrayList;
 

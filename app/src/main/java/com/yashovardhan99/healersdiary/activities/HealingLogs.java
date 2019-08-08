@@ -2,19 +2,20 @@ package com.yashovardhan99.healersdiary.activities;
 
 import android.content.res.Resources;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
@@ -24,9 +25,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.yashovardhan99.healersdiary.R;
 import com.yashovardhan99.healersdiary.adapters.HealingLogAdapter;
 import com.yashovardhan99.healersdiary.objects.Healing;
-import com.yashovardhan99.healersdiary.R;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -90,9 +91,7 @@ public class HealingLogs extends AppCompatActivity {
                     for(DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()){
 
                         Date date = dc.getDocument().getDate("Date");
-                        Healing healing = new Healing();
-                        healing.date = df.format(date);
-                        healing.Uid = dc.getDocument().getId();
+                        Healing healing = new Healing(df.format(date), dc.getDocument().getId());
 
                         //get today's date
                         Calendar day =Calendar.getInstance();
