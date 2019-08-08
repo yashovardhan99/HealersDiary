@@ -1,18 +1,19 @@
 package com.yashovardhan99.healersdiary.activities;
 
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
@@ -64,10 +65,9 @@ public class PatientPaymentLogs extends AppCompatActivity {
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                 DateFormat df = DateFormat.getDateTimeInstance();
                 for(DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()){
-                    PaymentSnapshot payment = new PaymentSnapshot();
-                    payment.date = df.format(dc.getDocument().getDate("Date"));
-                    payment.Uid = dc.getDocument().getId();
-                    payment.amount = NumberFormat.getCurrencyInstance().format(dc.getDocument().getDouble("Amount"));
+                    PaymentSnapshot payment = new PaymentSnapshot(dc.getDocument().getId(),
+                            df.format(dc.getDocument().getDate("Date")),
+                            NumberFormat.getCurrencyInstance().format(dc.getDocument().getDouble("Amount")));
 
                     switch (dc.getType()){
 
