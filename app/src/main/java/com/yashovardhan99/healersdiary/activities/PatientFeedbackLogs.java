@@ -1,15 +1,16 @@
 package com.yashovardhan99.healersdiary.activities;
 
 import android.os.Bundle;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
@@ -18,9 +19,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.yashovardhan99.healersdiary.R;
 import com.yashovardhan99.healersdiary.adapters.PatientFeedbackListAdapter;
 import com.yashovardhan99.healersdiary.objects.PatientFeedback;
-import com.yashovardhan99.healersdiary.R;
 
 import java.util.ArrayList;
 
@@ -56,11 +57,10 @@ public class PatientFeedbackLogs extends AppCompatActivity {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                         for (DocumentChange dc : queryDocumentSnapshots.getDocumentChanges()) {
-                            PatientFeedback feedback = new PatientFeedback();
-                            feedback.Uid = dc.getDocument().getId();
-                            feedback.feedback = dc.getDocument().getString("Feedback");
-                            feedback.timestamp = dc.getDocument().getTimestamp("Date");
-                            feedback.verified = dc.getDocument().contains("Verified");
+                            PatientFeedback feedback = new PatientFeedback(dc.getDocument().getId(),
+                                    dc.getDocument().getString("Feedback"),
+                                    dc.getDocument().getTimestamp("Date"),
+                                    dc.getDocument().contains("Verified"));
 
                             switch (dc.getType()) {
 
