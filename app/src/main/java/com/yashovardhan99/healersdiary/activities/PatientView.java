@@ -2,15 +2,16 @@ package com.yashovardhan99.healersdiary.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.fragment.app.DialogFragment;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.DialogFragment;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -82,7 +83,7 @@ public class PatientView extends AppCompatActivity implements View.OnClickListen
                         if (patient.containsKey("Due") && !patient.get("Due").toString().isEmpty()) {
                             Double amt = Double.parseDouble(patient.get("Due").toString());
                             String famt = getString(R.string.payment_due) + ": <b><big>" + NumberFormat.getCurrencyInstance().format(amt) + "</big></b>";
-                            due.setText(HtmlCompat.fromHtml(famt));
+                            due.setText(HtmlCompat.INSTANCE.fromHtml(famt));
                         } else
                             due.setVisibility(View.GONE);
                     }
