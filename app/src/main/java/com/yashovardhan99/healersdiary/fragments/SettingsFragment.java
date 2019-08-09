@@ -211,8 +211,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener, 
         Notification notification = builder.build();
 
         Intent notificationIntent = new Intent(context, MyNotificationPublisher.class);
-        notificationIntent.putExtra(MyNotificationPublisher.NOTIFICATION_ID, notificationId);
-        notificationIntent.putExtra(MyNotificationPublisher.NOTIFICATION, notification);
+        notificationIntent.putExtra(MyNotificationPublisher.Companion.getNOTIFICATION_ID(), notificationId);
+        notificationIntent.putExtra(MyNotificationPublisher.Companion.getNOTIFICATION(), notification);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationId, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY, pendingIntent);
