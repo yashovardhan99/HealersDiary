@@ -1,8 +1,6 @@
 package com.yashovardhan99.healersdiary.adapters;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,9 +8,13 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.yashovardhan99.healersdiary.objects.PatientFeedback;
-import com.yashovardhan99.healersdiary.R;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.yashovardhan99.healersdiary.R;
+import com.yashovardhan99.healersdiary.objects.PatientFeedback;
+
+import java.text.DateFormat;
 import java.util.ArrayList;
 
 /**
@@ -55,9 +57,9 @@ public class PatientFeedbackListAdapter extends RecyclerView.Adapter<PatientFeed
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PatientFeedbackListAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.mFeedbackView.setText(patientFeedbacks.get(position).getFeedback());
-        holder.mDateView.setText(patientFeedbacks.get(position).getTimestamp());
+        holder.mDateView.setText(DateFormat.getDateInstance().format(patientFeedbacks.get(position).getTimestamp().toDate()));
     }
 
     @Override

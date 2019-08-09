@@ -12,8 +12,4 @@ data class PatientFeedback(
         val feedback: String,
         val timestamp: Timestamp,
         val verified: Boolean
-) {
-    fun getTimestamp(): String {
-        return DateFormat.getDateInstance().format(timestamp.toDate())
-    }
-}
+)
