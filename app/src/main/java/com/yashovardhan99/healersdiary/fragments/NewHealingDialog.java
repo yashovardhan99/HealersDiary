@@ -148,7 +148,7 @@ public class NewHealingDialog extends DialogFragment implements View.OnClickList
     @Override
     public void onDateSet(DialogFragment dialogFragment) {
         DatePickerFragment dpf = (DatePickerFragment) dialogFragment;
-        calendar.set(dpf.year, dpf.month, dpf.day);
+        calendar.set(dpf.getYear(), dpf.getMonth(), dpf.getDay());
         dateText.setText(DateFormat.getDateInstance().format(calendar.getTime()));
         timeText.performClick();
     }
