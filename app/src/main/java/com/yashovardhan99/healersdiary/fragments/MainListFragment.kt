@@ -17,8 +17,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.activities.MainActivity
-import com.yashovardhan99.healersdiary.activities.MainActivity.healingsToday
-import com.yashovardhan99.healersdiary.activities.MainActivity.healingsYesterday
+import com.yashovardhan99.healersdiary.activities.MainActivity.Companion.healingsToday
+import com.yashovardhan99.healersdiary.activities.MainActivity.Companion.healingsYesterday
 import com.yashovardhan99.healersdiary.activities.NewPatient
 
 /**
@@ -57,8 +57,8 @@ class MainListFragment : Fragment() {
         ////new patient record button
         val newPatientButton = rootView.findViewById<FloatingActionButton>(R.id.new_fab)
         newPatientButton.setOnClickListener {
-            val newPatinetIntent = Intent(activity, NewPatient::class.java)
-            startActivity(newPatinetIntent)
+            val newPatientIntent = Intent(activity, NewPatient::class.java)
+            startActivity(newPatientIntent)
             //log firebase analytics event
             val newPatient = Bundle().apply {
                 putString(FirebaseAnalytics.Param.LOCATION, MainActivity::class.java.name)
