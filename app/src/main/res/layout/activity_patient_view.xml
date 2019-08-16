@@ -127,7 +127,7 @@
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:layout_gravity="center_horizontal"
-                android:text="Generate Bill"
+                android:text="@string/generate_bill"
                 android:id="@+id/generateBill"/>
         </LinearLayout>
 
