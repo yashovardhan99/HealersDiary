@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 # [Unreleased]
 
+## [1.0.0] - 2019-08-16
+### Added
+- Added donate option
+### Changed
+- Fixed bug with healing counter on main page
+- Internal changes (Switched from Java to Kotlin)
+
 ## [0.10.0] - 2018-11-02
 ### Added
 - Added option to set date and time for new healings.

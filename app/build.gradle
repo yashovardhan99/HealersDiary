@@ -11,8 +11,8 @@ android {
         applicationId "com.yashovardhan99.healersdiary"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 10000
-        versionName "0.10.0"
+        versionCode 1000000
+        versionName "1.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }

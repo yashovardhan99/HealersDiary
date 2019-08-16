@@ -18,7 +18,7 @@ An android app for professional healers to keep track of their patients and help
 ## Contributing
 * Clone the repo and set up a project in firebase.
 * Make relevant changes and make a pull request in the master (dev) branch.
-* The alpha/beta branch contains the latest releaase. Do **NOT** make any changes to that branch. Any pull requests not directly to the master branch will be declined.
+* The alpha/beta branch contains the latest release. Do **NOT** make any changes to that branch. Any pull requests not directly to the master branch will be declined.
 A contributing guide will be up here soon.
 
 ## Technologies used
@@ -30,7 +30,7 @@ A contributing guide will be up here soon.
 ## Expected release
 * Private Alpha - Now closed.
 * Public Beta - Out now! [Download Now](https://play.google.com/store/apps/details?id=com.yashovardhan99.healersdiary)
-* Public release - End of November, 2018
+* Public release - Out now! [Download Now](https://play.google.com/store/apps/details?id=com.yashovardhan99.healersdiary)
 
 ## Support
 * Support the development by cloning this repo and helping me fix any issues
