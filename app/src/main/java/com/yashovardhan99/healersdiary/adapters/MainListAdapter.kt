@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.activities.MainActivity
@@ -48,7 +47,7 @@ class MainListAdapter(private val patientList: ArrayList<Patient>, private val p
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
-        val binding = DataBindingUtil.inflate<MainRecyclerViewBinding>(LayoutInflater.from(context), R.layout.main_recycler_view,
+        val binding = MainRecyclerViewBinding.inflate(LayoutInflater.from(context),
                 parent, false)
         return ViewHolder(binding)
     }
