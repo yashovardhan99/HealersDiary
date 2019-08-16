@@ -40,7 +40,7 @@
                     android:id="@+id/chosenMainListPref"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/nothing_here" />
+                    tools:text="@string/nothing_here" />
             </LinearLayout>
 
             <RelativeLayout
