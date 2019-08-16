@@ -7,12 +7,13 @@ import android.view.ContextMenu
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.activities.MainActivity
 import com.yashovardhan99.healersdiary.activities.PatientView
+import com.yashovardhan99.healersdiary.databinding.MainRecyclerViewBinding
 import com.yashovardhan99.healersdiary.objects.Patient
 import java.text.NumberFormat
 import java.util.*
@@ -24,37 +25,36 @@ class MainListAdapter(private val patientList: ArrayList<Patient>, private val p
 
     lateinit var context: Context
 
-    inner class ViewHolder(v: RelativeLayout) : RecyclerView.ViewHolder(v), View.OnCreateContextMenuListener {
-        var patentNameTextView: TextView = v.findViewById(R.id.patientName)
-        var patientDataTextView: TextView = v.findViewById(R.id.patientData)
+    inner class ViewHolder(val binding: MainRecyclerViewBinding) : RecyclerView.ViewHolder(binding.root), View.OnCreateContextMenuListener {
+        var patientDataTextView: TextView = binding.patientData
 
         init {
-            v.setOnClickListener {
+            binding.root.setOnClickListener {
                 //start patient detail
                 val detail = Intent(context, PatientView::class.java)
                 detail.putExtra("PATIENT_UID", patientList[adapterPosition].uid)
                 context.startActivity(detail)
             }
-            v.setOnCreateContextMenuListener(this)
+
+            binding.root.setOnCreateContextMenuListener(this)
         }
 
         override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
-            menu?.setHeaderTitle(patentNameTextView.text.toString())
+            menu?.setHeaderTitle(binding.patient?.name)
             menu?.add(adapterPosition, 0, 0, R.string.edit)
             menu?.add(adapterPosition, 1, 0, R.string.delete)
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val v = LayoutInflater.from(parent.context)
-                .inflate(R.layout.main_recycler_view, parent, false) as RelativeLayout
-        val vh = ViewHolder(v)
         context = parent.context
-        return vh
+        val binding = DataBindingUtil.inflate<MainRecyclerViewBinding>(LayoutInflater.from(context), R.layout.main_recycler_view,
+                parent, false)
+        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.patentNameTextView.text = patientList[position].name
+        holder.binding.patient = patientList[position]
         val res = context.resources
         if (holder.patientDataTextView.visibility == View.GONE)
             holder.patientDataTextView.visibility = View.VISIBLE
