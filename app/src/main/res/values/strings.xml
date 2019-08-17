@@ -94,4 +94,5 @@
     <string name="paypal_url">http://paypal.me/yashovardhan99</string>
     <string name="patient_data">Patient Data</string>
     <string name="generate_bill">Generate Bill [BETA]</string>
+    <string name="new_patient_analytics" translatable="false">new_patient</string>
 </resources>

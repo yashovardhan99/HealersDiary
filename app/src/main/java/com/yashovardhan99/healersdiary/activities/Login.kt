@@ -115,37 +115,39 @@ class Login : FragmentActivity() {
         user["Email"] = mAuth.currentUser?.email
         user["Phone"] = mAuth.currentUser?.phoneNumber
         val userDoc = db.collection(MainActivity.USERS).document(mAuth.uid!!)
-        val signup = booleanArrayOf(true)
+        var signup = false
         userDoc.get()
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        if (task.result!!.exists()) {
+                        signup = if (task.result!!.exists()) {
                             //repeat login
                             mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN, params)
-                            signup[0] = false
+                            false
                         } else {
                             //sign up
                             mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SIGN_UP, params)
-                            signup[0] = true
+                            true
                         }
                     }
+                }.continueWith {
+                    userDoc.set(user)
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    if (signup)
+                                        Toast.makeText(this@Login, R.string.tap_plus_to_get_started, Toast.LENGTH_LONG).show()
+                                    Log.d("FIRESTORE", "Added user document")
+
+                                } else {
+                                    Log.d("FIRESTORE", task.result!!.toString() + " : " + task.exception.toString())
+                                    Toast.makeText(this@Login, R.string.something_went_wrong, Toast.LENGTH_LONG).show()
+                                }
+                            }
+                    //now we can start the main activity
+                    val done = Intent(this, MainActivity::class.java)
+                    done.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    startActivity(done)
+                    finishAffinity()
                 }
-        userDoc.set(user)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        if (signup[0])
-                            Toast.makeText(this@Login, R.string.tap_plus_to_get_started, Toast.LENGTH_LONG).show()
-                        Log.d("FIRESTORE", "Added user document")
-                    } else {
-                        Log.d("FIRESTORE", task.result!!.toString() + " : " + task.exception.toString())
-                        Toast.makeText(this@Login, R.string.something_went_wrong, Toast.LENGTH_LONG).show()
-                    }
-                }
-        //now we can start the main activity
-        val done = Intent(this, MainActivity::class.java)
-        done.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-        startActivity(done)
-        finishAffinity()
     }
 
     companion object {
