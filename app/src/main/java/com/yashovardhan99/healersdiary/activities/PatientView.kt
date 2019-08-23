@@ -27,7 +27,6 @@ class PatientView : AppCompatActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_patient_view)
-
         setSupportActionBar(findViewById<View>(R.id.toolbar) as Toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.title = "Patient Detail"
