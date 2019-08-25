@@ -6,6 +6,22 @@ apply plugin: 'io.fabric'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-kapt'
 
+def build_param = "${build}"
+if (build_param != "dev") {
+    android.variantFilter { variant ->
+        if (variant.buildType.name == 'dev') {
+            variant.setIgnore(true)
+        }
+    }
+} else {
+    //exclude all except production build
+    android.variantFilter { variant ->
+        if (variant.buildType.name != 'dev') {
+            variant.setIgnore(true)
+        }
+    }
+}
+
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -18,6 +34,12 @@ android {
         multiDexEnabled true
     }
     buildTypes {
+
+        dev {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
