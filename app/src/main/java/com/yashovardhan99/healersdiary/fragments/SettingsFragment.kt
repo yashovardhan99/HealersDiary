@@ -174,6 +174,7 @@ class SettingsFragment : Fragment(), View.OnClickListener, PopupMenu.OnMenuItemC
                 .setContentText(context.getString(R.string.content))
                 .setAutoCancel(true)
                 .setSmallIcon(R.drawable.ic_launcher)
+                .setCategory(NotificationCompat.CATEGORY_REMINDER)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
 
         Log.d("NOTIFICATION BUILDER", builder.toString())
