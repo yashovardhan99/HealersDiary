@@ -53,7 +53,7 @@ class HealingLogs : AppCompatActivity() {
         logs = db.collection(MainActivity.USERS)
                 .document(FirebaseAuth.getInstance().currentUser!!.uid)
                 .collection("patients")
-                .document(intent.getStringExtra(MainActivity.PATIENT_UID))
+                .document(intent.getStringExtra(MainActivity.PATIENT_UID) ?: return)
                 .collection("healings")
 
 

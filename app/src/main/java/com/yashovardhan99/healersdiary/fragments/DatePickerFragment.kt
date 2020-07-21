@@ -15,7 +15,7 @@ class DatePickerFragment : DialogFragment(), DatePickerDialog.OnDateSetListener 
     var year: Int = 0
     var month: Int = 0
     var day: Int = 0
-    lateinit var listener: DatePickerListener
+    private lateinit var listener: DatePickerListener
 
     init {
         val c = Calendar.getInstance()
@@ -32,7 +32,7 @@ class DatePickerFragment : DialogFragment(), DatePickerDialog.OnDateSetListener 
         fun onDateSet(dialogFragment: DialogFragment)
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         try {
             listener = targetFragment as DatePickerListener

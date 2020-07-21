@@ -40,7 +40,7 @@ class PatientFeedbackLogs : AppCompatActivity() {
                 .collection(MainActivity.USERS)
                 .document(FirebaseAuth.getInstance().uid!!)
                 .collection("patients")
-                .document(intent.getStringExtra(MainActivity.PATIENT_UID))
+                .document(intent.getStringExtra(MainActivity.PATIENT_UID) ?: return)
                 .collection("feedbacks")
 
         //fetching records

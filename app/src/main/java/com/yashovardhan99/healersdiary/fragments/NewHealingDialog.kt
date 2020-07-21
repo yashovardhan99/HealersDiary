@@ -47,12 +47,12 @@ class NewHealingDialog : DialogFragment(), View.OnClickListener, DatePickerFragm
 
     private fun saveData() {
         val uid = activity!!.intent.getStringExtra(MainActivity.PATIENT_UID)
-        Log.d("PATIENT UID RECEIVED", uid)
+        Log.d("PATIENT UID RECEIVED", uid ?: "null")
         val db = FirebaseFirestore.getInstance()
         val patient = db.collection("users")
                 .document(FirebaseAuth.getInstance().currentUser!!.uid)
                 .collection("patients")
-                .document(uid)
+                .document(uid ?: return)
         //get patient reference
         patient.get()
                 .addOnCompleteListener(OnCompleteListener { task ->
@@ -75,7 +75,7 @@ class NewHealingDialog : DialogFragment(), View.OnClickListener, DatePickerFragm
                                 .addOnCompleteListener {
                                     if (!it.isSuccessful) {
                                         Toast.makeText(context, R.string.something_went_wrong_adding_record, Toast.LENGTH_LONG).show()
-                                        Log.d("FIRESTORE", it.exception!!.message)
+                                        Log.d("FIRESTORE", it.exception?.message ?: "null")
                                     } else
                                         Log.d("FIRESTORE", "Data updated")
                                 }

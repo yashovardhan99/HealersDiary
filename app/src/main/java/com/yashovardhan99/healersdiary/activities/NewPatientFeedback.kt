@@ -50,7 +50,7 @@ class NewPatientFeedback : AppCompatActivity() {
             val documentReference = firestore.collection(MainActivity.USERS)
                     .document(userId!!)
                     .collection("patients")
-                    .document(uid)
+                    .document(uid ?: return@OnClickListener)
                     .collection("feedbacks")
                     .document(calendar.timeInMillis.toString())
             //reference to new feedback

@@ -30,7 +30,10 @@ import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.adapters.MainListAdapter
-import com.yashovardhan99.healersdiary.fragments.*
+import com.yashovardhan99.healersdiary.fragments.AboutFragment
+import com.yashovardhan99.healersdiary.fragments.MainListFragment
+import com.yashovardhan99.healersdiary.fragments.SettingsFragment
+import com.yashovardhan99.healersdiary.fragments.SignOutFragment
 import com.yashovardhan99.healersdiary.objects.Patient
 import io.fabric.sdk.android.Fabric
 import java.util.*
@@ -42,7 +45,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var db: FirebaseFirestore
     private lateinit var mAuth: FirebaseAuth
     private lateinit var listFragment: MainListFragment
-    private lateinit var donateFragment: DonateFragment
     private lateinit var settingsFragment: SettingsFragment
     private lateinit var mDrawerLayout: DrawerLayout
     private lateinit var aboutFragment: AboutFragment
@@ -65,17 +67,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         //check login and handle
         mAuth = FirebaseAuth.getInstance()
         val mUser = mAuth.currentUser
-        if (mUser == null) {
-            Log.d("SIGN", "NO USER")
-            //not signed in
-            startActivity(Intent(this, Login::class.java)
-                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK))
-            finishAffinity()
-            return
-        }
 
         listFragment = MainListFragment()
-        donateFragment = DonateFragment()
         aboutFragment = AboutFragment()
         settingsFragment = SettingsFragment()
 
@@ -88,7 +81,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
 
-        val profilePicture = mUser.photoUrl
+        val profilePicture = mUser?.photoUrl
 
         Picasso.get().load(profilePicture).placeholder(R.drawable.ic_person_black_24dp).centerCrop().fit().into(profilePic, object : Callback {
             override fun onSuccess() {
@@ -106,8 +99,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         mNavigationView.setNavigationItemSelectedListener(this)
 
         //display welcome message
-        if (mUser.displayName != null)
-            profileName.text = mUser.displayName
+        profileName.text = mUser?.displayName
 
         //firestore init
         db = FirebaseFirestore.getInstance()
@@ -379,13 +371,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.MainNavGroup -> {
                 item.isChecked = true
                 mDrawerLayout.closeDrawers()
-                when (item.itemId) {
-                    R.id.home -> mContent = listFragment
-
-                    R.id.getPro -> mContent = donateFragment
-
-                    R.id.about -> mContent = aboutFragment
-                    R.id.settings -> mContent = settingsFragment
+                mContent = when (item.itemId) {
+                    R.id.home -> listFragment
+                    R.id.about -> aboutFragment
+                    R.id.settings -> settingsFragment
                     else -> return false
                 }
                 val transaction = supportFragmentManager.beginTransaction().replace(R.id.mainListHolder, mContent)

@@ -113,12 +113,12 @@ class NewPatient : AppCompatActivity() {
         //load previous content if editing
         if (intent.getBooleanExtra("EDIT", false)) {
             val id = intent.getStringExtra(MainActivity.PATIENT_UID)
-            Log.d("EDIT", id)
+            Log.d("EDIT", "$id")
             val db = FirebaseFirestore.getInstance()
             db.collection("users")
                     .document(FirebaseAuth.getInstance().uid!!)
                     .collection("patients")
-                    .document(id)
+                    .document(id ?: return)
                     .addSnapshotListener(EventListener { documentSnapshot, _ ->
                         if (!documentSnapshot!!.exists()) {
                             Snackbar.make(save, "Something went wrong!", Snackbar.LENGTH_INDEFINITE).show()
@@ -174,7 +174,8 @@ class NewPatient : AppCompatActivity() {
                 db.collection("users")
                         .document(FirebaseAuth.getInstance().uid!!)
                         .collection("patients")
-                        .document(intent.getStringExtra(MainActivity.PATIENT_UID))
+                        .document(intent.getStringExtra(MainActivity.PATIENT_UID)
+                                ?: return@OnClickListener)
             else
                 db.collection("users")
                         .document(FirebaseAuth.getInstance().uid!!)
@@ -221,6 +222,7 @@ class NewPatient : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             CONTACT_PICKER_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
                 //when we get the contact. to get the contact name and number

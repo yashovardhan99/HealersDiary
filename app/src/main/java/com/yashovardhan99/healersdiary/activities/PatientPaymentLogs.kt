@@ -43,7 +43,7 @@ class PatientPaymentLogs : AppCompatActivity() {
                 .collection("users")
                 .document(FirebaseAuth.getInstance().uid!!)
                 .collection("patients")
-                .document(intent.getStringExtra(MainActivity.PATIENT_UID))
+                .document(intent.getStringExtra(MainActivity.PATIENT_UID)?:return)
                 .collection("payments")
 
         //fetching payment records here

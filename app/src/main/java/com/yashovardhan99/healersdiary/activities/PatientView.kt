@@ -32,7 +32,7 @@ class PatientView : AppCompatActivity(), View.OnClickListener {
         supportActionBar!!.title = "Patient Detail"
         //toolbar setup
 
-        uid = intent.getStringExtra(MainActivity.PATIENT_UID)
+        uid = intent.getStringExtra(MainActivity.PATIENT_UID) ?: return
         //patient record UID to fetch records from firestore
 
         val db = FirebaseFirestore.getInstance()

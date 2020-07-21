@@ -33,7 +33,6 @@ class GeneratePatientBill : DialogFragment(), View.OnClickListener {
         thisMonth.setOnClickListener(this)
         lastMonth.setOnClickListener(this)
         all.setOnClickListener(this)
-        assert(arguments != null)
         uid = arguments!!.getString(MainActivity.PATIENT_UID)!!
         return rootView
     }
@@ -45,7 +44,7 @@ class GeneratePatientBill : DialogFragment(), View.OnClickListener {
         bundle.putInt(MainActivity.BILL_TYPE, v.id)
         bundle.putBoolean(MainActivity.INCLUDE_LOGS, includeLogs.isChecked)
         patientBillView.arguments = bundle
-        patientBillView.show(activity?.supportFragmentManager, "billview")
+        activity?.supportFragmentManager?.let { patientBillView.show(it, "billview") }
         dismiss()
     }
 }

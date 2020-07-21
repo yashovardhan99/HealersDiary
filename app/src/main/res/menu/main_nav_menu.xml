@@ -10,11 +10,6 @@
             android:icon="@drawable/ic_home_black_24dp"
             android:checked="true"/>
         <item
-            android:id="@+id/getPro"
-            android:title="@string/donate"
-            android:orderInCategory="2"
-            android:icon="@drawable/ic_shopping_cart_black_24dp"/>
-        <item
             android:id="@+id/settings"
             android:title="@string/settings"
             android:orderInCategory="3"

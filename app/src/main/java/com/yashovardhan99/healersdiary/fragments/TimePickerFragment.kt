@@ -31,7 +31,7 @@ class TimePickerFragment : DialogFragment(), TimePickerDialog.OnTimeSetListener 
         fun onTimeSet(dialogFragment: DialogFragment)
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         try {
             listener = targetFragment as TimePickerListener

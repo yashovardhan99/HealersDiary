@@ -39,5 +39,4 @@
         <item name="android:backgroundTint" tools:targetApi="lollipop">#FFFFFF</item>
         <item name="android:elevation" tools:targetApi="lollipop">4dp</item>
     </style>
-
 </resources>

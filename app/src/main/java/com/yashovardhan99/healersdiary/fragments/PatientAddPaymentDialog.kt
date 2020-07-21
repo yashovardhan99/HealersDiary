@@ -41,7 +41,7 @@ class PatientAddPaymentDialog : DialogFragment(), View.OnClickListener, DatePick
         val patient = db.collection("users")
                 .document(FirebaseAuth.getInstance().uid!!)
                 .collection("patients")
-                .document(activity!!.intent.getStringExtra(MainActivity.PATIENT_UID))
+                .document(activity!!.intent.getStringExtra(MainActivity.PATIENT_UID)!!)
 
         val save = rootView.findViewById<Button>(R.id.saveNewPayment)
         save.setOnClickListener(View.OnClickListener {
