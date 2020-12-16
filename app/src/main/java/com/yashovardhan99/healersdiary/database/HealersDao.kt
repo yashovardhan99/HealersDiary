@@ -2,6 +2,8 @@ package com.yashovardhan99.healersdiary.database
 
 import androidx.paging.PagingSource
 import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 import java.util.*
@@ -23,4 +25,13 @@ interface HealersDao {
 
     @Query("SELECT * FROM payments WHERE patient_id == :patientId ORDER BY time DESC")
     fun getAllPayments(patientId: Long): PagingSource<Int, Payment>
+
+    @Insert(entity = Patient::class, onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertPatient(patient: Patient): Long
+
+    @Insert(entity = Healing::class, onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertHealing(patient: Healing): Long
+
+    @Insert(entity = Payment::class, onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertPayment(payment: Payment): Long
 }
