@@ -4,8 +4,16 @@
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="android:statusBarColor">@android:color/white</item>
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorSecondary">@color/colorPrimary</item>
+        <item name="colorPrimary">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryDark">#FF454791</item>
+        <item name="android:titleTextStyle">@style/h1</item>
+    </style>
+
+    <style name="h1" parent="TextAppearance.MaterialComponents.Headline1">
+        <item name="fontFamily">@font/lato_bold</item>
+        <item name="android:fontFamily">@font/lato_bold</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">28sp</item>
     </style>
 </resources>

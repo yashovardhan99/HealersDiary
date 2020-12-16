@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Healer\'s Diary</string>
+    <string name="app_name">Healers Diary</string>
     <string name="patient_name">Patient Name</string>
     <string name="browse">Browse</string>
     <string name="disease">Disease</string>
