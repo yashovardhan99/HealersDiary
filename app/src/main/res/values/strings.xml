@@ -96,4 +96,7 @@
     <string name="generate_bill">Generate Bill [BETA]</string>
     <string name="new_patient_analytics" translatable="false">new_patient</string>
     <string name="get_started">Get Started</string>
+    <string name="analytics">Analytics</string>
+    <string name="patients">Patients</string>
+    <string name="add_new_record">Add new record</string>
 </resources>
