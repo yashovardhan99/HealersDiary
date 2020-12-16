@@ -95,4 +95,5 @@
     <string name="patient_data">Patient Data</string>
     <string name="generate_bill">Generate Bill [BETA]</string>
     <string name="new_patient_analytics" translatable="false">new_patient</string>
+    <string name="get_started">Get Started</string>
 </resources>

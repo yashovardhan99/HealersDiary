@@ -3,52 +3,21 @@
     package="com.yashovardhan99.healersdiary">
 
     <application
+        android:name=".HealersApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.SplashActivity">
+        <activity android:name=".onboarding.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activities.MainActivity"
-            android:launchMode="singleTop"
-            android:theme="@style/AppTheme.CollapsingToolbarParent">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".activities.NewPatient"
-            android:parentActivityName=".activities.MainActivity" />
-        <activity android:name=".activities.Login" />
-        <activity
-            android:name=".activities.PatientView"
-            android:parentActivityName=".activities.MainActivity" />
-        <activity
-            android:name=".activities.HealingLogs"
-            android:parentActivityName=".activities.PatientView" />
-        <activity android:name=".activities.PatientPaymentLogs" />
-        <activity
-            android:name=".activities.NewPatientFeedback"
-            android:theme="@style/AppTheme.Dialog" />
-        <activity android:name=".activities.PatientFeedbackLogs" />
-
-        <meta-data
-            android:name="firebase_crashlytics_collection_enabled"
-            android:value="false" />
-
-        <receiver android:name=".helpers.MyNotificationPublisher" />
+        <activity android:name=".dashboard.MainActivity" />
     </application>
-
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
 </manifest>
