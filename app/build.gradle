@@ -26,10 +26,10 @@ android {
     compileSdkVersion 30
     defaultConfig {
         applicationId "com.yashovardhan99.healersdiary"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 30
-        versionCode 1000000
-        versionName "1.0.0"
+        versionCode 2000000
+        versionName "2.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
