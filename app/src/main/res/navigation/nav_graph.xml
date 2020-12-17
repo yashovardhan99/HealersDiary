@@ -10,4 +10,8 @@
         android:name="com.yashovardhan99.healersdiary.dashboard.HomeFragment"
         android:label="HomeFragment"
         tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/patients"
+        android:name="com.yashovardhan99.healersdiary.patients.PatientsListFragment"
+        android:label="PatientsListFragment" />
 </navigation>

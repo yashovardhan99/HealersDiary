@@ -6,7 +6,7 @@
         android:title="@string/home" />
     <item
         android:id="@+id/patients"
-        android:icon="@drawable/common_full_open_on_phone"
+        android:icon="@drawable/list"
         android:title="@string/patients" />
     <item android:enabled="false" />
     <item
