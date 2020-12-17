@@ -8,7 +8,7 @@ import java.util.*
 data class Healing(
         @PrimaryKey(autoGenerate = true) val id: Long,
         var time: Date,
-        var charge: Int,
+        var charge: Long,
         var notes: String,
         @ColumnInfo(name = "patient_id") val patientId: Long
 )

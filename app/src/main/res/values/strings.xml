@@ -102,4 +102,6 @@
     <string name="healings_this_month">Healings this month</string>
     <string name="earned_this_month">Earned this month</string>
     <string name="earned_last_month">Earned last month</string>
+    <string name="recent_activity">Recent Activity</string>
+    <string name="sample_money">$500.00</string>
 </resources>

@@ -8,7 +8,7 @@ import java.util.*
 data class Payment(
         @PrimaryKey(autoGenerate = true) val id: Long,
         var time: Date,
-        var amount: Int,
+        var amount: Long,
         var notes: String,
         @ColumnInfo(name = "patient_id") val patientId: Long
 )

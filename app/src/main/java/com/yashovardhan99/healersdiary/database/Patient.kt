@@ -10,9 +10,13 @@ import java.util.*
 data class Patient(
         @PrimaryKey(autoGenerate = true) val id: Long,
         var name: String,
-        var charge: Int,
-        var due: Int,
+        var charge: Long,
+        var due: Long,
         var notes: String,
         var lastModified: Date,
         val created: Date
-)
+) {
+    companion object {
+        val MissingPatient = Patient(-1, "Error", 0, 0, "", Date(0), Date(0))
+    }
+}

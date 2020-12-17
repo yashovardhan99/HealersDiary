@@ -6,13 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.FragmentHomeBinding
 import com.yashovardhan99.healersdiary.utils.Header
+import com.yashovardhan99.healersdiary.utils.HeaderAdapter
 import com.yashovardhan99.healersdiary.utils.StatAdapter
 import com.yashovardhan99.healersdiary.utils.getIcon
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -24,9 +28,18 @@ class HomeFragment : Fragment() {
                     resources.getString(R.string.app_name),
                     getIcon(R.drawable.settings))
         }
-        val adapter = StatAdapter()
-        binding.recycler.adapter = adapter
-        adapter.submitList(viewModel.dashboardStats)
+        val statAdapter = StatAdapter()
+        val headerAdapter = HeaderAdapter(false)
+        val activityAdapter = ActivityAdapter()
+        binding.recycler.adapter = ConcatAdapter(statAdapter, headerAdapter, activityAdapter)
+        lifecycleScope.launchWhenStarted {
+            viewModel.dashboardFlow.collectLatest { statWithActivity ->
+                statAdapter.submitList(statWithActivity.first)
+                headerAdapter.isVisible = statWithActivity.second != null
+                headerAdapter.notifyDataSetChanged()
+                activityAdapter.submitList(statWithActivity.second)
+            }
+        }
         val layoutManager = GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
