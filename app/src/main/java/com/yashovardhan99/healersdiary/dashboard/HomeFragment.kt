@@ -11,10 +11,7 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.FragmentHomeBinding
-import com.yashovardhan99.healersdiary.utils.Header
-import com.yashovardhan99.healersdiary.utils.HeaderAdapter
-import com.yashovardhan99.healersdiary.utils.StatAdapter
-import com.yashovardhan99.healersdiary.utils.getIcon
+import com.yashovardhan99.healersdiary.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 
@@ -31,12 +28,15 @@ class HomeFragment : Fragment() {
         val statAdapter = StatAdapter()
         val headerAdapter = HeaderAdapter(false)
         val activityAdapter = ActivityAdapter()
-        binding.recycler.adapter = ConcatAdapter(statAdapter, headerAdapter, activityAdapter)
+        val emptyStateAdapter = EmptyStateAdapter(false)
+        binding.recycler.adapter = ConcatAdapter(statAdapter, headerAdapter, activityAdapter, emptyStateAdapter)
         lifecycleScope.launchWhenStarted {
             viewModel.dashboardFlow.collectLatest { statWithActivity ->
                 statAdapter.submitList(statWithActivity.first)
                 headerAdapter.isVisible = statWithActivity.second != null
+                emptyStateAdapter.isVisible = statWithActivity.second == null
                 headerAdapter.notifyDataSetChanged()
+                emptyStateAdapter.notifyDataSetChanged()
                 activityAdapter.submitList(statWithActivity.second)
             }
         }
