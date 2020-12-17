@@ -73,7 +73,7 @@
     <string name="about">About</string>
     <string name="main_list_extra_choice">Main List Extra Choice :</string>
     <string name="settings">Settings</string>
-    <string name="number_of_healings_today">Number of healings today</string>
+    <string name="healings_today">Healings today</string>
     <string name="more_details_will_be_available_soon">More details will be available soon</string>
     <string name="set_preferred_main_list_format">Set preferred main list format</string>
     <string name="enable_crash_reporting">Enable Crash Reporting</string>
@@ -99,4 +99,7 @@
     <string name="analytics">Analytics</string>
     <string name="patients">Patients</string>
     <string name="add_new_record">Add new record</string>
+    <string name="healings_this_month">Healings this month</string>
+    <string name="earned_this_month">Earned this month</string>
+    <string name="earned_last_month">Earned last month</string>
 </resources>

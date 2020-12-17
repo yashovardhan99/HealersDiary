@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="@layout/fragment_home">
+
+    <data>
+
+        <variable
+            name="header"
+            type="com.yashovardhan99.healersdiary.utils.Header" />
+    </data>
+
+    <merge>
+
+
+        <ImageButton
+            android:id="@+id/icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_margin="16dp"
+            android:backgroundTint="@android:color/transparent"
+            android:clickable="@{header.icon.clickable}"
+            android:contentDescription="@{header.icon.description}"
+            android:padding="2dp"
+            android:src="@{header.icon.drawable}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/home" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
+            android:text="@{header.title}"
+            android:textAppearance="@style/h1"
+            app:layout_constraintBottom_toBottomOf="@id/icon"
+            app:layout_constraintEnd_toStartOf="@id/settings"
+            app:layout_constraintStart_toEndOf="@id/icon"
+            app:layout_constraintTop_toTopOf="@id/icon"
+            tools:text="@string/app_name" />
+
+        <ImageButton
+            android:id="@+id/optionsIcon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_margin="16dp"
+            android:backgroundTint="@android:color/transparent"
+            android:clickable="@{header.optionIcon.clickable}"
+            android:contentDescription="@{header.optionIcon.description"
+            android:padding="2dp"
+            android:src="@{header.optionIcon.drawable}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/settings" />
+
+    </merge>
+</layout>
