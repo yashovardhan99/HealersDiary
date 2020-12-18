@@ -11,7 +11,7 @@
     <item android:enabled="false" />
     <item
         android:id="@+id/analytics"
-        android:icon="@drawable/common_full_open_on_phone"
+        android:icon="@drawable/analytics"
         android:title="@string/analytics" />
     <item
         android:id="@+id/settings"

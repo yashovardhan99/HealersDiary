@@ -20,6 +20,7 @@
             android:layout_height="24dp"
             android:layout_margin="16dp"
             android:backgroundTint="@android:color/transparent"
+            android:tint="@android:color/black"
             android:clickable="@{header.icon.clickable}"
             android:contentDescription="@{header.icon.description}"
             android:padding="2dp"
@@ -43,6 +44,7 @@
             tools:text="@string/app_name" />
 
         <ImageButton
+            android:tint="@android:color/black"
             android:id="@+id/optionsIcon"
             android:layout_width="24dp"
             android:layout_height="24dp"

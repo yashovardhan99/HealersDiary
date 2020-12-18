@@ -14,4 +14,8 @@
         android:id="@+id/patients"
         android:name="com.yashovardhan99.healersdiary.patients.PatientsListFragment"
         android:label="PatientsListFragment" />
+    <fragment
+        android:id="@+id/analytics"
+        android:name="com.yashovardhan99.healersdiary.analytics.AnalyticsFragment"
+        android:label="AnalyticsFragment" />
 </navigation>

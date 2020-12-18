@@ -35,5 +35,6 @@ class EmptyStateAdapter(var isVisible: Boolean, private val emptyState: EmptySta
 
 enum class EmptyState(@DrawableRes val drawable: Int, @StringRes val headerText: Int, @StringRes val subText: Int) {
     DASHBOARD(R.drawable.no_data, R.string.not_much_to_show_here, R.string.add_some_healings_to_get_started),
-    PATIENTS(R.drawable.add_user_illustration, R.string.a_bit_lonely, R.string.click_to_add_patient)
+    PATIENTS(R.drawable.add_user_illustration, R.string.a_bit_lonely, R.string.click_to_add_patient),
+    ANALYTICS(R.drawable.analytics_illustration, R.string.nothing_here_yet, R.string.we_are_working)
 }
