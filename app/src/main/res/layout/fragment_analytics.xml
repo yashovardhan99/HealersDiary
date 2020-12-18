@@ -23,6 +23,9 @@
             bind:header="@{header}" />
 
         <include
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            bind:layout_constraintTop_toBottomOf="@id/heading"
             android:id="@+id/empty_state_layout"
             layout="@layout/empty_dashboard"
             bind:emptyState="@{emptyState}"

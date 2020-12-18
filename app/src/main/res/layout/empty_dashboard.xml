@@ -40,9 +40,11 @@
             app:layout_constraintTop_toBottomOf="@id/no_data_image" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
             android:paddingBottom="32dp"
             android:text="@{emptyState.subText}"
             android:textAlignment="center"
