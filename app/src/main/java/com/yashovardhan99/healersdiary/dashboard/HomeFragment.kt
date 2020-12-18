@@ -28,7 +28,7 @@ class HomeFragment : Fragment() {
         val statAdapter = StatAdapter()
         val headerAdapter = HeaderAdapter(false)
         val activityAdapter = ActivityAdapter()
-        val emptyStateAdapter = EmptyStateAdapter(false)
+        val emptyStateAdapter = EmptyStateAdapter(false, EmptyState.DASHBOARD)
         binding.recycler.adapter = ConcatAdapter(statAdapter, headerAdapter, activityAdapter, emptyStateAdapter)
         lifecycleScope.launchWhenStarted {
             viewModel.dashboardFlow.collectLatest { statWithActivity ->

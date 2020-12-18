@@ -2,7 +2,12 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data></data>
+    <data>
+
+        <variable
+            name="emptyState"
+            type="com.yashovardhan99.healersdiary.utils.EmptyState" />
+    </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -15,8 +20,8 @@
             android:layout_marginStart="36dp"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="36dp"
+            android:contentDescription="@string/nothing_here"
             android:scaleType="centerInside"
-            android:src="@drawable/no_data"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -26,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
-            android:text="@string/not_much_to_show_here"
+            android:text="@{emptyState.headerText}"
             android:textAlignment="center"
             android:textAppearance="@style/subtitle"
             android:textSize="28sp"
@@ -41,7 +46,7 @@
             android:paddingBottom="32dp"
             android:text="@string/add_some_healings_to_get_started"
             android:textAlignment="center"
-            android:textAppearance="@style/subtitle2"
+            android:textAppearance="@{emptyState.subText}"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

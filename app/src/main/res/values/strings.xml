@@ -117,5 +117,7 @@
     <string name="add_some_healings_to_get_started">Add some healings to get started</string>
     <string name="total_amount_due">Total amount due</string>
     <string name="number_this_month_text">%d this month</string>
+    <string name="a_bit_lonely">A bit lonely in here</string>
+    <string name="click_to_add_patient">Click here to add a new patient</string>
 </resources>
 
