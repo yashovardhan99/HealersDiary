@@ -7,7 +7,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import java.util.*
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class DashboardRepository @Inject constructor(private val healersDao: HealersDao) {
     val patients = healersDao.getAllPatients().distinctUntilChanged()
     fun getHealingsStarting(startDate: Date): Flow<List<Healing>> {

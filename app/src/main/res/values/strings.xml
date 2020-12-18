@@ -121,5 +121,6 @@
     <string name="click_to_add_patient">Click here to add a new patient</string>
     <string name="nothing_here_yet">Nothing here yet</string>
     <string name="we_are_working">We are working to find relevant  insights for you, keep using the  app and check back later</string>
+    <string name="choose_a_patient">Choose a Patient</string>
 </resources>
 
