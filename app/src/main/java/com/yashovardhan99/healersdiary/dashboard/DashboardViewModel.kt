@@ -14,8 +14,6 @@ import com.yashovardhan99.healersdiary.utils.Stat.Companion.healingsToday
 import com.yashovardhan99.healersdiary.utils.setToStartOfDay
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.conflate
-import kotlinx.coroutines.flow.distinctUntilChanged
 import timber.log.Timber
 import java.util.*
 
@@ -31,14 +29,32 @@ class DashboardViewModel @ViewModelInject constructor(private val repository: Da
     private val lastMonth = (thisMonth.clone() as Calendar).apply {
         roll(Calendar.MONTH, false)
     }
-    val dashboardFlow = repository.getHealingsStarting(lastMonth.time)
-            .distinctUntilChanged().conflate()
+    private val healings = repository.getHealingsStarting(lastMonth.time)
+    private val payments = repository.getPaymentsStarting(lastMonth.time)
+
+    val patientsList = healings.combine(patientsFlow) { healings, patients ->
+        val patientsMap = patients.associateBy { it.id }
+        Timber.d(patientsMap.toString())
+        Timber.d("Healings 1 = $healings")
+        val patientWithHealings = healings.groupBy {
+            patientsMap[it.patientId] ?: Patient.MissingPatient
+        }
+        patients.map { patient ->
+            val today = patientWithHealings[patient]?.count { it.time >= today.time } ?: 0
+            val thisMonth = patientWithHealings[patient]?.count { it.time >= thisMonth.time } ?: 0
+            patient.copy(healingsToday = today, healingsThisMonth = thisMonth)
+        }.sortedByDescending { it.lastModified }
+    }
+
+    val dashboardFlow = healings
             .combine(patientsFlow) { healings, patients ->
                 Pair(healings, patients)
-            }.conflate()
-            .combine(repository.getPaymentsStarting(lastMonth.time).distinctUntilChanged().conflate()) { healingsWithPatients: Pair<List<Healing>, List<Patient>>, payments: List<Payment> ->
+            }
+            .combine(payments) { healingsWithPatients: Pair<List<Healing>, List<Patient>>, payments: List<Payment> ->
                 val healings = healingsWithPatients.first
                 val patients = healingsWithPatients.second.associateBy { it.id }
+                Timber.d("Healings = $healings")
+                Timber.d("Patients = $patients")
                 val activities = healings.map { healing ->
                     Activity(healing.time, Activity.Type.HEALING(context), healing.charge, patients[healing.patientId]
                             ?: Patient.MissingPatient)

@@ -20,12 +20,12 @@
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="patientsListFragment">
+                  <entry key="patients">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="256" />
+                            <option name="x" value="12" />
                             <option name="y" value="12" />
                           </Point>
                         </option>
