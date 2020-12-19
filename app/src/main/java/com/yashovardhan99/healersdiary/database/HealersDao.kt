@@ -14,6 +14,9 @@ abstract class HealersDao {
     @Query("SELECT * FROM patients")
     abstract fun getAllPatients(): Flow<List<Patient>>
 
+    @Query("SELECT * FROM patients WHERE id=:patientId")
+    abstract suspend fun getPatient(patientId: Long): Patient?
+
     @Query("SELECT * FROM healings WHERE time>=:startDate")
     abstract fun getAllHealings(startDate: Date): Flow<List<Healing>>
 

@@ -7,11 +7,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yashovardhan99.healersdiary.database.Patient
 import com.yashovardhan99.healersdiary.databinding.ItemChoosePatientBinding
 import com.yashovardhan99.healersdiary.patients.PatientDiff
+import timber.log.Timber
 
-class ChoosePatientAdapter : ListAdapter<Patient, ChoosePatientAdapter.ChoosePatientViewHolder>(PatientDiff()) {
+class ChoosePatientAdapter(private val onSelect: (Patient) -> Unit) : ListAdapter<Patient, ChoosePatientAdapter.ChoosePatientViewHolder>(PatientDiff()) {
     class ChoosePatientViewHolder(val binding: ItemChoosePatientBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(patient: Patient) {
+        fun bind(patient: Patient, onSelect: (Patient) -> Unit) {
             binding.patient = patient
+            binding.root.setOnClickListener {
+                onSelect(patient)
+                Timber.d("Selected patient = $patient")
+            }
         }
     }
 
@@ -21,6 +26,6 @@ class ChoosePatientAdapter : ListAdapter<Patient, ChoosePatientAdapter.ChoosePat
     }
 
     override fun onBindViewHolder(holder: ChoosePatientViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), onSelect)
     }
 }

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="header"
+            type="com.yashovardhan99.healersdiary.utils.Header" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/heading"
+            layout="@layout/header"
+            bind:header="@{header}" />
+
+        <ImageView
+            android:id="@+id/healing"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:contentDescription="@string/new_healing"
+            android:paddingTop="20dp"
+            android:paddingBottom="28dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/healing_illustration"
+            app:layout_constraintBottom_toTopOf="@id/payment"
+            app:layout_constraintTop_toBottomOf="@id/title" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="28dp"
+            android:layout_marginBottom="8dp"
+            android:background="@android:color/white"
+            android:text="@string/new_healing"
+            android:textAppearance="@style/h2"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@id/healing"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="28dp"
+            android:layout_marginBottom="8dp"
+            android:background="@android:color/white"
+            android:text="@string/new_payment"
+            android:textAppearance="@style/h2"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/payment"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:contentDescription="@string/new_payment"
+            android:paddingTop="20dp"
+            android:paddingBottom="28dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/payment_illustration"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/healing" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

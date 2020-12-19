@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.FragmentChoosePatientBinding
@@ -23,12 +25,24 @@ class ChoosePatientFragment : Fragment() {
         binding.heading = context?.run {
             Header(getIcon(R.drawable.cross), getString(R.string.choose_a_patient), null)
         }
-        val adapter = ChoosePatientAdapter()
+        val adapter = ChoosePatientAdapter { patient ->
+            viewModel.selectPatient(patient)
+        }
         binding.recycler.adapter = adapter
         binding.recycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         lifecycleScope.launchWhenStarted {
             viewModel.patients.collect {
                 adapter.submitList(it)
+            }
+        }
+        viewModel.selectedPatient.asLiveData().observe(viewLifecycleOwner) { patient ->
+            if (patient != null) {
+                val action = ChoosePatientFragmentDirections.actionChoosePatientFragmentToChooseActivityFragment(
+                        patient.id,
+                        patient.name
+                )
+                viewModel.selectPatient(null)
+                findNavController().navigate(action)
             }
         }
         return binding.root

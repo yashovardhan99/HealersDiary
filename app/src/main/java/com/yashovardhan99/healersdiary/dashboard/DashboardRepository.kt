@@ -2,6 +2,7 @@ package com.yashovardhan99.healersdiary.dashboard
 
 import com.yashovardhan99.healersdiary.database.HealersDao
 import com.yashovardhan99.healersdiary.database.Healing
+import com.yashovardhan99.healersdiary.database.Patient
 import com.yashovardhan99.healersdiary.database.Payment
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -18,5 +19,9 @@ class DashboardRepository @Inject constructor(private val healersDao: HealersDao
 
     fun getPaymentsStarting(startDate: Date): Flow<List<Payment>> {
         return healersDao.getAllPayments(startDate)
+    }
+
+    suspend fun getPatient(pid: Long): Patient? {
+        return healersDao.getPatient(pid)
     }
 }

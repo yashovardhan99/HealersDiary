@@ -6,5 +6,21 @@
     <fragment
         android:id="@+id/choosePatientFragment"
         android:name="com.yashovardhan99.healersdiary.create.ChoosePatientFragment"
-        android:label="ChoosePatientFragment" />
+        android:label="ChoosePatientFragment" >
+        <action
+            android:id="@+id/action_choosePatientFragment_to_chooseActivityFragment"
+            app:destination="@id/chooseActivityFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/chooseActivityFragment"
+        android:name="com.yashovardhan99.healersdiary.create.ChooseActivityFragment"
+        android:label="ChooseActivityFragment" >
+        <argument
+            android:name="patient_id"
+            app:argType="long" />
+        <argument
+            android:name="patient_name"
+            app:argType="string" />
+    </fragment>
 </navigation>
