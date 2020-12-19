@@ -123,5 +123,8 @@
     <string name="we_are_working">We are working to find relevant  insights for you, keep using the  app and check back later</string>
     <string name="choose_a_patient">Choose a Patient</string>
     <string name="new_payment">New Payment</string>
+    <string name="charge">Charge</string>
+    <string name="notes">Notes</string>
+    <string name="add_healing">Add Healing</string>
 </resources>
 
