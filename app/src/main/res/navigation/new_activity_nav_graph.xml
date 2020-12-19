@@ -46,8 +46,11 @@
         <argument
             android:name="default_charge"
             app:argType="long" />
+        <action
+            android:id="@+id/action_newHealingFragment_to_datePickerFragment"
+            app:destination="@id/datePickerFragment" />
     </fragment>
-    <fragment
+    <dialog
         android:id="@+id/newPaymentFragment"
         android:name="com.yashovardhan99.healersdiary.create.NewPaymentFragment"
         android:label="NewPaymentFragment" >
@@ -60,5 +63,9 @@
         <argument
             android:name="current_due"
             app:argType="long" />
-    </fragment>
+    </dialog>
+    <fragment
+        android:id="@+id/datePickerFragment"
+        android:name="com.yashovardhan99.healersdiary.utils.DatePickerFragment"
+        android:label="DatePickerFragment" />
 </navigation>

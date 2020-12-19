@@ -13,12 +13,15 @@ import java.util.*
 class CreateActivityViewModel @ViewModelInject constructor(
         private val repository: DashboardRepository
 ) : ViewModel() {
-    private var lastSelected: Patient? = null
+    var selectedPatient: Patient? = null
+        private set
     private val today = Calendar.getInstance().apply { setToStartOfDay() }.time
     private val healings = repository.getHealingsStarting(today)
     private val patientsFlow = repository.patients
     private val _selectedPatient = MutableStateFlow<Patient?>(null)
-    val selectedPatient: StateFlow<Patient?> = _selectedPatient
+    val selectedPatientFlow: StateFlow<Patient?> = _selectedPatient
+    private val _activityCalendar = MutableStateFlow(Calendar.getInstance())
+    val activityCalendar: StateFlow<Calendar> = _activityCalendar
     val patients = healings.combine(patientsFlow) { healings, patients ->
         val patientsMap = patients.associateBy { it.id }
         val patientWithHealings = healings.groupBy {
@@ -30,8 +33,12 @@ class CreateActivityViewModel @ViewModelInject constructor(
         }
     }.distinctUntilChanged().conflate()
 
+    fun setActivityCalendar(calendar: Calendar) {
+        _activityCalendar.value = calendar
+    }
+
     fun selectPatient(patient: Patient?) {
-        if (patient != null) lastSelected = patient
+        if (patient != null) selectedPatient = patient
         viewModelScope.launch {
             _selectedPatient.emit(patient)
         }

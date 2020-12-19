@@ -35,7 +35,7 @@ class ChoosePatientFragment : Fragment() {
                 adapter.submitList(it)
             }
         }
-        viewModel.selectedPatient.asLiveData().observe(viewLifecycleOwner) { patient ->
+        viewModel.selectedPatientFlow.asLiveData().observe(viewLifecycleOwner) { patient ->
             if (patient != null) {
                 val action = ChoosePatientFragmentDirections.actionChoosePatientFragmentToChooseActivityFragment(
                         patient.id,

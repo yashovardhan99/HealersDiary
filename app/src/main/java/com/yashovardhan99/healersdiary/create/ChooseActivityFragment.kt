@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.FragmentChooseActivityBinding
@@ -23,6 +24,12 @@ class ChooseActivityFragment : Fragment() {
             Header(getIcon(R.drawable.cross, null, true),
                     args.patientName,
                     null)
+        }
+        binding.healing.setOnClickListener {
+            val action = ChooseActivityFragmentDirections
+                    .actionChooseActivityFragmentToNewHealingFragment(args.patientId, args.patientName,
+                            viewModel.selectedPatient?.charge ?: 0)
+            findNavController().navigate(action)
         }
         return binding.root
     }

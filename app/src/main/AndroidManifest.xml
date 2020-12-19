@@ -18,7 +18,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".dashboard.MainActivity" />
-        <activity android:name=".create.CreateNewActivity" />
+        <activity
+            android:name=".create.CreateNewActivity"
+            android:windowSoftInputMode="adjustResize" />
 
         <meta-data
             android:name="preloaded_fonts"

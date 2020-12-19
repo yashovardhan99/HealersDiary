@@ -40,8 +40,8 @@
     <string name="add_payment_detail">Add new payment</string>
     <string name="view_payment_logs">View Payment logs</string>
     <string name="nothing_here">NOTHING HERE</string>
-    <string name="date">DATE</string>
-    <string name="amount">AMOUNT</string>
+    <string name="date">Date</string>
+    <string name="amount">Amount</string>
     <string name="tap_plus_to_get_started">Tap the + button to get started!</string>
     <string name="something_went_wrong">Some problem Occurred. You have been logged in but some features may not work properly</string>
     <string name="delete_warning_message">This will delete all patient records permanently. This action cannot be undone</string>
@@ -126,5 +126,6 @@
     <string name="charge">Charge</string>
     <string name="notes">Notes</string>
     <string name="add_healing">Add Healing</string>
+    <string name="time">Time</string>
 </resources>
 

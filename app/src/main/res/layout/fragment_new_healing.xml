@@ -42,6 +42,46 @@
                     tools:text="@tools:sample/full_names" />
 
                 <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:hint="@string/date"
+                    app:hintTextAppearance="@style/subtitle2">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/date_edit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        android:focusable="false"
+                        android:textAppearance="@style/subtitle"
+                        android:textSize="16sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:hint="@string/time"
+                    app:hintTextAppearance="@style/subtitle2">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/time_edit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:inputType="none"
+                        android:textAppearance="@style/subtitle"
+                        android:textSize="16sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/charge_box"
                     style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                     android:layout_width="match_parent"
@@ -52,9 +92,12 @@
                     android:hint="@string/charge"
                     app:hintEnabled="true"
                     app:hintTextAppearance="@style/subtitle2"
-                    app:prefixText="$">
+                    app:prefixText="$"
+                    app:prefixTextAppearance="@style/h2"
+                    app:prefixTextColor="@color/colorPrimaryDark">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/charge_edit"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
@@ -73,6 +116,7 @@
                     app:hintTextAppearance="@style/subtitle2">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/notes_edit"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="top"
