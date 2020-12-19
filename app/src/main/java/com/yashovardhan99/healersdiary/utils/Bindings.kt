@@ -4,12 +4,14 @@ import android.text.format.DateUtils
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.yashovardhan99.healersdiary.R
+import java.math.BigDecimal
 import java.text.NumberFormat
 import java.util.*
 
 @BindingAdapter("bind:amountText")
 fun setAmountText(view: TextView, amount: Long) {
-    view.text = NumberFormat.getCurrencyInstance().format(amount.toDouble() / 100)
+    val amtInDecimal = BigDecimal(amount).movePointLeft(2)
+    view.text = NumberFormat.getCurrencyInstance().format(amtInDecimal)
 }
 
 @BindingAdapter("bind:date")
