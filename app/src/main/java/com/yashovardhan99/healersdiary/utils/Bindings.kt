@@ -21,7 +21,8 @@ fun setFormattedDate(view: TextView, date: Date) {
 
 @BindingAdapter("bind:healingsToday")
 fun setHealingsToday(view: TextView, healings: Int) {
-    view.text = view.context.resources.getQuantityString(R.plurals.healing, healings, healings, "today")
+    val today = view.context.resources.getString(R.string.today)
+    view.text = view.context.resources.getQuantityString(R.plurals.healing, healings, healings, today)
 }
 
 @BindingAdapter("bind:healingsThisMonth")
