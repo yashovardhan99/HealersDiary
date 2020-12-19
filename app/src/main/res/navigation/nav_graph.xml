@@ -13,9 +13,11 @@
     <fragment
         android:id="@+id/patients"
         android:name="com.yashovardhan99.healersdiary.patients.PatientsListFragment"
-        android:label="PatientsListFragment" />
+        android:label="PatientsListFragment"
+        tools:layout="@layout/fragment_patients_list" />
     <fragment
         android:id="@+id/analytics"
         android:name="com.yashovardhan99.healersdiary.analytics.AnalyticsFragment"
-        android:label="AnalyticsFragment" />
+        android:label="AnalyticsFragment"
+        tools:layout="@layout/fragment_analytics" />
 </navigation>

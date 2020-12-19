@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/new_activity_nav_graph"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/new_activity_nav_graph"
     app:startDestination="@id/choosePatientFragment">
 
     <fragment
+        tools:layout="@layout/fragment_choose_patient"
         android:id="@+id/choosePatientFragment"
         android:name="com.yashovardhan99.healersdiary.create.ChoosePatientFragment"
         android:label="ChoosePatientFragment" >
@@ -13,6 +16,7 @@
             app:popUpToInclusive="false" />
     </fragment>
     <fragment
+        tools:layout="@layout/fragment_choose_activity"
         android:id="@+id/chooseActivityFragment"
         android:name="com.yashovardhan99.healersdiary.create.ChooseActivityFragment"
         android:label="ChooseActivityFragment" >
@@ -22,5 +26,39 @@
         <argument
             android:name="patient_name"
             app:argType="string" />
+        <action
+            android:id="@+id/action_chooseActivityFragment_to_newHealingFragment"
+            app:destination="@id/newHealingFragment" />
+        <action
+            android:id="@+id/action_chooseActivityFragment_to_newPaymentFragment"
+            app:destination="@id/newPaymentFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/newHealingFragment"
+        android:name="com.yashovardhan99.healersdiary.create.NewHealingFragment"
+        android:label="NewHealingFragment" >
+        <argument
+            android:name="patient_id"
+            app:argType="long" />
+        <argument
+            android:name="patient_name"
+            app:argType="string" />
+        <argument
+            android:name="default_charge"
+            app:argType="long" />
+    </fragment>
+    <fragment
+        android:id="@+id/newPaymentFragment"
+        android:name="com.yashovardhan99.healersdiary.create.NewPaymentFragment"
+        android:label="NewPaymentFragment" >
+        <argument
+            android:name="patient_id"
+            app:argType="long" />
+        <argument
+            android:name="patient_name"
+            app:argType="string" />
+        <argument
+            android:name="current_due"
+            app:argType="long" />
     </fragment>
 </navigation>
