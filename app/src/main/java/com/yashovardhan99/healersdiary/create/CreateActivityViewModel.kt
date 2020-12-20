@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.yashovardhan99.healersdiary.dashboard.DashboardRepository
 import com.yashovardhan99.healersdiary.database.Healing
 import com.yashovardhan99.healersdiary.database.Patient
+import com.yashovardhan99.healersdiary.database.Payment
 import com.yashovardhan99.healersdiary.utils.setToStartOfDay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -76,10 +77,10 @@ class CreateActivityViewModel @ViewModelInject constructor(
 
     fun createPayment(amount: String, notes: String, pid: Long) {
         try {
-            val chargeInLong = if (amount.isBlank()) 0L else BigDecimal(amount).movePointRight(2).longValueExact()
-            val healing = Healing(0, _activityCalendar.value.time, chargeInLong, notes, pid)
+            val amountInLong = if (amount.isBlank()) 0L else BigDecimal(amount).movePointRight(2).longValueExact()
+            val payment = Payment(0, _activityCalendar.value.time, amountInLong, notes, pid)
             viewModelScope.launch {
-                createRepository.insertNewHealing(healing)
+                createRepository.insertNewPayment(payment)
                 Timber.d("Inserted new Healing!")
                 _result.emit(pid)
             }

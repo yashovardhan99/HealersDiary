@@ -36,7 +36,7 @@ abstract class HealersDao {
     abstract suspend fun insertHealing(healing: Healing): Long
 
     @Transaction
-    suspend fun newHealing(healing: Healing): Long {
+    open suspend fun newHealing(healing: Healing): Long {
         val patient = getPatient(healing.patientId)
                 ?: throw IllegalArgumentException("Invalid patient id")
         patient.due = patient.due + healing.charge
@@ -46,7 +46,7 @@ abstract class HealersDao {
     }
 
     @Transaction
-    suspend fun newPayment(payment: Payment): Long {
+    open suspend fun newPayment(payment: Payment): Long {
         val patient = getPatient(payment.patientId)
                 ?: throw IllegalArgumentException("Invalid patient id")
         patient.due = patient.due - payment.amount
