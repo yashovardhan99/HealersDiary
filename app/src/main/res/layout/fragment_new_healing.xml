@@ -92,7 +92,7 @@
                     android:hint="@string/charge"
                     app:hintEnabled="true"
                     app:hintTextAppearance="@style/subtitle2"
-                    app:prefixText="$"
+                    tools:prefixText="$"
                     app:prefixTextAppearance="@style/h2"
                     app:prefixTextColor="@color/colorPrimaryDark">
 

@@ -39,7 +39,9 @@ class ChoosePatientFragment : Fragment() {
             if (patient != null) {
                 val action = ChoosePatientFragmentDirections.actionChoosePatientFragmentToChooseActivityFragment(
                         patient.id,
-                        patient.name
+                        patient.name,
+                        patient.charge,
+                        patient.due
                 )
                 viewModel.selectPatient(null)
                 findNavController().navigate(action)

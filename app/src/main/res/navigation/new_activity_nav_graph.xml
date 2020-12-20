@@ -6,20 +6,20 @@
     app:startDestination="@id/choosePatientFragment">
 
     <fragment
-        tools:layout="@layout/fragment_choose_patient"
         android:id="@+id/choosePatientFragment"
         android:name="com.yashovardhan99.healersdiary.create.ChoosePatientFragment"
-        android:label="ChoosePatientFragment" >
+        android:label="ChoosePatientFragment"
+        tools:layout="@layout/fragment_choose_patient">
         <action
             android:id="@+id/action_choosePatientFragment_to_chooseActivityFragment"
             app:destination="@id/chooseActivityFragment"
             app:popUpToInclusive="false" />
     </fragment>
     <fragment
-        tools:layout="@layout/fragment_choose_activity"
         android:id="@+id/chooseActivityFragment"
         android:name="com.yashovardhan99.healersdiary.create.ChooseActivityFragment"
-        android:label="ChooseActivityFragment" >
+        android:label="ChooseActivityFragment"
+        tools:layout="@layout/fragment_choose_activity">
         <argument
             android:name="patient_id"
             app:argType="long" />
@@ -32,11 +32,18 @@
         <action
             android:id="@+id/action_chooseActivityFragment_to_newPaymentFragment"
             app:destination="@id/newPaymentFragment" />
+        <argument
+            android:name="default_charge"
+            app:argType="long" />
+        <argument
+            android:name="amount_due"
+            app:argType="long" />
     </fragment>
     <fragment
         android:id="@+id/newHealingFragment"
         android:name="com.yashovardhan99.healersdiary.create.NewHealingFragment"
-        android:label="NewHealingFragment" >
+        android:label="NewHealingFragment"
+        tools:layout="@layout/fragment_new_healing">
         <argument
             android:name="patient_id"
             app:argType="long" />
@@ -46,14 +53,11 @@
         <argument
             android:name="default_charge"
             app:argType="long" />
-        <action
-            android:id="@+id/action_newHealingFragment_to_datePickerFragment"
-            app:destination="@id/datePickerFragment" />
     </fragment>
     <dialog
         android:id="@+id/newPaymentFragment"
         android:name="com.yashovardhan99.healersdiary.create.NewPaymentFragment"
-        android:label="NewPaymentFragment" >
+        android:label="NewPaymentFragment">
         <argument
             android:name="patient_id"
             app:argType="long" />
@@ -64,8 +68,4 @@
             android:name="current_due"
             app:argType="long" />
     </dialog>
-    <fragment
-        android:id="@+id/datePickerFragment"
-        android:name="com.yashovardhan99.healersdiary.utils.DatePickerFragment"
-        android:label="DatePickerFragment" />
 </navigation>

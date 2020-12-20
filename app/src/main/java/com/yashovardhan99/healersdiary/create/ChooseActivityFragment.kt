@@ -28,7 +28,7 @@ class ChooseActivityFragment : Fragment() {
         binding.healing.setOnClickListener {
             val action = ChooseActivityFragmentDirections
                     .actionChooseActivityFragmentToNewHealingFragment(args.patientId, args.patientName,
-                            viewModel.selectedPatient?.charge ?: 0)
+                            args.defaultCharge)
             findNavController().navigate(action)
         }
         return binding.root
