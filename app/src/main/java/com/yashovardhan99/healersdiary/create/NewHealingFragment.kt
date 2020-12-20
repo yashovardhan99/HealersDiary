@@ -33,11 +33,17 @@ class NewHealingFragment : Fragment() {
         val chargeString = BigDecimal(args.defaultCharge).movePointLeft(2).setScale(2, RoundingMode.HALF_EVEN).toPlainString()
         binding.chargeEdit.setText(chargeString)
         binding.chargeEdit.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                val edited = BigDecimal(binding.chargeEdit.text.toString()).setScale(2, RoundingMode.HALF_EVEN).toPlainString()
-                binding.chargeEdit.setText(edited)
-            } else if (chargeString == binding.chargeEdit.text?.toString()) {
-                binding.chargeEdit.selectAll()
+            val inputText = binding.chargeEdit.text.toString()
+            try {
+                if (!hasFocus && inputText.isNotBlank()) {
+                    val edited = BigDecimal(inputText).setScale(2, RoundingMode.HALF_EVEN).toPlainString()
+                    binding.chargeEdit.setText(edited)
+                } else if (inputText.isNotBlank() && chargeString == inputText) {
+                    binding.chargeEdit.selectAll()
+                }
+            } catch (e: Exception) {
+                Timber.w(e, "Invalid input")
+                binding.chargeEdit.text?.clear()
             }
         }
         viewModel.activityCalendar.asLiveData().observe(viewLifecycleOwner) { calendar ->
@@ -50,25 +56,23 @@ class NewHealingFragment : Fragment() {
                     getIcon(R.drawable.save, getString(R.string.save), true))
         }
 
-        val timePicker = TimePickerFragment { calendar ->
-            viewModel.setActivityCalendar(calendar)
-            Timber.d("Selected time = $calendar")
-        }
         val datePicker = DatePickerFragment { calendar ->
             viewModel.setActivityCalendar(calendar)
-            Timber.d("Selected = $calendar")
-            showTimePicker(timePicker)
+            showTimePicker()
         }
         binding.dateEdit.setOnClickListener {
             datePicker.arguments = bundleOf(Pair(DatePickerFragment.DateKey,
                     viewModel.activityCalendar.value.timeInMillis))
             datePicker.show(parentFragmentManager, "datePicker")
         }
-        binding.timeEdit.setOnClickListener { showTimePicker(timePicker) }
+        binding.timeEdit.setOnClickListener { showTimePicker() }
         return binding.root
     }
 
-    private fun showTimePicker(timePicker: TimePickerFragment) {
+    private fun showTimePicker() {
+        val timePicker = TimePickerFragment { calendar ->
+            viewModel.setActivityCalendar(calendar)
+        }
         timePicker.arguments = bundleOf(Pair(TimePickerFragment.TimeKey,
                 viewModel.activityCalendar.value.timeInMillis))
         timePicker.show(parentFragmentManager, "timePicker")

@@ -22,7 +22,9 @@ class DatePickerFragment(val onDateSet: (Calendar) -> Unit) : DialogFragment(), 
         calendar.set(Calendar.YEAR, year)
         calendar.set(Calendar.MONTH, month)
         calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-        onDateSet(calendar)
+        val cur = Calendar.getInstance()
+        if (calendar > cur) onDateSet(cur)
+        else onDateSet(calendar)
     }
 
     companion object {

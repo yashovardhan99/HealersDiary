@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.format.DateFormat
 import android.widget.TimePicker
 import androidx.fragment.app.DialogFragment
+import timber.log.Timber
 import java.util.*
 
 class TimePickerFragment(val onTimeSet: (Calendar) -> Unit) : DialogFragment(), TimePickerDialog.OnTimeSetListener {
@@ -14,6 +15,7 @@ class TimePickerFragment(val onTimeSet: (Calendar) -> Unit) : DialogFragment(), 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         arguments?.run {
             calendar.timeInMillis = getLong(TimeKey)
+            Timber.d("Received cal = ${calendar.time}")
         }
         val timePicker = TimePickerDialog(
                 context, this, calendar.get(Calendar.HOUR_OF_DAY),
@@ -32,6 +34,7 @@ class TimePickerFragment(val onTimeSet: (Calendar) -> Unit) : DialogFragment(), 
         calendar.set(Calendar.MINUTE, minute)
         calendar.set(Calendar.SECOND, 0)
         val cur = Calendar.getInstance()
+        Timber.d("Calendar set = ${calendar.time}")
         if (calendar > cur) calendar.timeInMillis = cur.timeInMillis
         onTimeSet(calendar)
     }

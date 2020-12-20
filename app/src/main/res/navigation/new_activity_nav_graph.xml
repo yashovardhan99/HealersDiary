@@ -54,7 +54,8 @@
             android:name="default_charge"
             app:argType="long" />
     </fragment>
-    <dialog
+    <fragment
+        tools:layout="@layout/fragment_new_payment"
         android:id="@+id/newPaymentFragment"
         android:name="com.yashovardhan99.healersdiary.create.NewPaymentFragment"
         android:label="NewPaymentFragment">
@@ -67,5 +68,5 @@
         <argument
             android:name="current_due"
             app:argType="long" />
-    </dialog>
+    </fragment>
 </navigation>

@@ -31,6 +31,11 @@ class ChooseActivityFragment : Fragment() {
                             args.defaultCharge)
             findNavController().navigate(action)
         }
+        binding.payment.setOnClickListener {
+            val action = ChooseActivityFragmentDirections
+                    .actionChooseActivityFragmentToNewPaymentFragment(args.patientId, args.patientName, args.amountDue)
+            findNavController().navigate(action)
+        }
         return binding.root
     }
 }

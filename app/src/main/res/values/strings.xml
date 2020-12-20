@@ -127,5 +127,6 @@
     <string name="notes">Notes</string>
     <string name="add_healing">Add Healing</string>
     <string name="time">Time</string>
+    <string name="due_amount">Due: %s</string>
 </resources>
 
