@@ -3,6 +3,7 @@ package com.yashovardhan99.healersdiary.create
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.asLiveData
 import com.yashovardhan99.healersdiary.R
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -17,6 +18,12 @@ class CreateNewActivity : AppCompatActivity() {
         if (pid != -1L) {
             viewModel.selectPatient(pid)
             Timber.d("Patient id = $pid")
+        }
+        viewModel.result.asLiveData().observe(this) { patientId ->
+            if (patientId != -1L) {
+                Timber.d("Done and dusted")
+                finish()
+            }
         }
     }
 

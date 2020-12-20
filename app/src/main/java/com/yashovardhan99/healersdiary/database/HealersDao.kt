@@ -1,10 +1,7 @@
 package com.yashovardhan99.healersdiary.database
 
 import androidx.paging.PagingSource
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 
@@ -29,11 +26,34 @@ abstract class HealersDao {
     @Query("SELECT * FROM payments WHERE patient_id == :patientId ORDER BY time DESC")
     abstract fun getAllPayments(patientId: Long): PagingSource<Int, Payment>
 
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun updatePatient(patient: Patient)
+
     @Insert(entity = Patient::class, onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertPatient(patient: Patient): Long
 
     @Insert(entity = Healing::class, onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertHealing(healing: Healing): Long
+
+    @Transaction
+    suspend fun newHealing(healing: Healing): Long {
+        val patient = getPatient(healing.patientId)
+                ?: throw IllegalArgumentException("Invalid patient id")
+        patient.due = patient.due + healing.charge
+        patient.lastModified = maxOf(patient.lastModified, healing.time)
+        updatePatient(patient)
+        return insertHealing(healing)
+    }
+
+    @Transaction
+    suspend fun newPayment(payment: Payment): Long {
+        val patient = getPatient(payment.patientId)
+                ?: throw IllegalArgumentException("Invalid patient id")
+        patient.due = patient.due - payment.amount
+        patient.lastModified = maxOf(patient.lastModified, payment.time)
+        updatePatient(patient)
+        return insertPayment(payment)
+    }
 
     @Insert(entity = Payment::class, onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertPayment(payment: Payment): Long

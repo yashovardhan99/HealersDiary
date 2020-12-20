@@ -4,20 +4,24 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yashovardhan99.healersdiary.dashboard.DashboardRepository
+import com.yashovardhan99.healersdiary.database.Healing
 import com.yashovardhan99.healersdiary.database.Patient
 import com.yashovardhan99.healersdiary.utils.setToStartOfDay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
+import java.math.BigDecimal
 import java.util.*
 
 class CreateActivityViewModel @ViewModelInject constructor(
-        private val repository: DashboardRepository
+        private val dashboardRepository: DashboardRepository,
+        private val createRepository: CreateRepository
 ) : ViewModel() {
     var selectedPatient: Patient? = null
         private set
     private val today = Calendar.getInstance().apply { setToStartOfDay() }.time
-    private val healings = repository.getHealingsStarting(today)
-    private val patientsFlow = repository.patients
+    private val healings = dashboardRepository.getHealingsStarting(today)
+    private val patientsFlow = dashboardRepository.patients
     private val _selectedPatient = MutableStateFlow<Patient?>(null)
     val selectedPatientFlow: StateFlow<Patient?> = _selectedPatient
     private val _activityCalendar = MutableStateFlow(Calendar.getInstance())
@@ -33,6 +37,9 @@ class CreateActivityViewModel @ViewModelInject constructor(
         }
     }.distinctUntilChanged().conflate()
 
+    private val _result = MutableStateFlow(-1L)
+    val result: StateFlow<Long> = _result
+
     fun setActivityCalendar(calendar: Calendar) {
         _activityCalendar.value = calendar
     }
@@ -46,8 +53,40 @@ class CreateActivityViewModel @ViewModelInject constructor(
 
     fun selectPatient(pid: Long) {
         viewModelScope.launch {
-            val patient = repository.getPatient(pid)
+            val patient = dashboardRepository.getPatient(pid)
             if (patient != null) selectPatient(patient)
+        }
+    }
+
+    fun createHealing(charge: String, notes: String, pid: Long) {
+        try {
+            val chargeInLong = if (charge.isBlank()) 0 else BigDecimal(charge).movePointRight(2).longValueExact()
+            val healing = Healing(0, _activityCalendar.value.time, chargeInLong, notes, pid)
+            viewModelScope.launch {
+                createRepository.insertNewHealing(healing)
+                Timber.d("Inserted new Healing!")
+                _result.emit(pid)
+            }
+        } catch (e: NumberFormatException) {
+            Timber.e(e, "Invalid charge")
+        } catch (e: Exception) {
+            Timber.e(e, "Error creating healing")
+        }
+    }
+
+    fun createPayment(amount: String, notes: String, pid: Long) {
+        try {
+            val chargeInLong = if (amount.isBlank()) 0L else BigDecimal(amount).movePointRight(2).longValueExact()
+            val healing = Healing(0, _activityCalendar.value.time, chargeInLong, notes, pid)
+            viewModelScope.launch {
+                createRepository.insertNewHealing(healing)
+                Timber.d("Inserted new Healing!")
+                _result.emit(pid)
+            }
+        } catch (e: NumberFormatException) {
+            Timber.e(e, "Invalid charge")
+        } catch (e: Exception) {
+            Timber.e(e, "Error creating healing")
         }
     }
 }
