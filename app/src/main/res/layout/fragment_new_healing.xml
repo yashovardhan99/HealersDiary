@@ -55,8 +55,8 @@
                         android:id="@+id/date_edit"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="none"
                         android:focusable="false"
+                        android:inputType="none"
                         android:textAppearance="@style/subtitle"
                         android:textSize="16sp" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -92,9 +92,9 @@
                     android:hint="@string/charge"
                     app:hintEnabled="true"
                     app:hintTextAppearance="@style/subtitle2"
-                    tools:prefixText="$"
                     app:prefixTextAppearance="@style/h2"
-                    app:prefixTextColor="@color/colorPrimaryDark">
+                    app:prefixTextColor="@color/colorPrimaryDark"
+                    tools:prefixText="$">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/charge_edit"
@@ -126,6 +126,7 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/new_healing"
                     style="@style/Widget.MaterialComponents.Button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

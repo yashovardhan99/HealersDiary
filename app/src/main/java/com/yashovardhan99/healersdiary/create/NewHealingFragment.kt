@@ -66,7 +66,15 @@ class NewHealingFragment : Fragment() {
             datePicker.show(parentFragmentManager, "datePicker")
         }
         binding.timeEdit.setOnClickListener { showTimePicker() }
+        binding.heading.optionsIcon.setOnClickListener { save(binding) }
+        binding.newHealing.setOnClickListener { save(binding) }
         return binding.root
+    }
+
+    private fun save(binding: FragmentNewHealingBinding) {
+        val charge = binding.chargeEdit.text.toString()
+        val notes = binding.notesEdit.text.toString()
+        viewModel.createHealing(charge, notes, args.patientId)
     }
 
     private fun showTimePicker() {
