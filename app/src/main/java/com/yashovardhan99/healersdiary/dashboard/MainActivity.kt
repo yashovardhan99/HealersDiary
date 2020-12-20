@@ -11,6 +11,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.create.CreateNewActivity
 import com.yashovardhan99.healersdiary.databinding.ActivityMainBinding
+import com.yashovardhan99.healersdiary.utils.Request
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -32,6 +33,7 @@ class MainActivity : AppCompatActivity() {
         val host = uri?.host
         val port = uri?.port
         Timber.d("authority = $authority scheme = $scheme path = $path queries = $queries host = $host port = $port")
+        uri?.let { Timber.d("Request = ${Request.fromUri(it)}") }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

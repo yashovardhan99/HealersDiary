@@ -2,7 +2,6 @@ package com.yashovardhan99.healersdiary.patients
 
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
@@ -11,9 +10,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.asLiveData
 import com.google.android.material.textfield.TextInputEditText
 import com.yashovardhan99.healersdiary.R
-import com.yashovardhan99.healersdiary.create.CreateNewActivity
 import com.yashovardhan99.healersdiary.databinding.ActivityNewPatientBinding
 import com.yashovardhan99.healersdiary.utils.Header
+import com.yashovardhan99.healersdiary.utils.Request
 import com.yashovardhan99.healersdiary.utils.getIcon
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -49,12 +48,7 @@ class NewPatientActivity : AppCompatActivity() {
         binding.heading.optionsIcon.setOnClickListener { save(binding) }
         viewModel.result.asLiveData().observe(this) { pid ->
             if (pid != -1L) {
-                Intent(Intent.ACTION_VIEW, Uri.Builder()
-                        .scheme(CreateNewActivity.SCHEME)
-                        .authority(CreateNewActivity.AUTHORITY)
-                        .appendPath("patients")
-                        .appendQueryParameter(CreateNewActivity.PATIENT_ID, pid.toString())
-                        .build()).also { result ->
+                Intent(Intent.ACTION_VIEW, Request.ViewPatient(pid).getUri()).also { result ->
                     setResult(Activity.RESULT_OK, result)
                     Timber.d("Setting result = $result")
                 }

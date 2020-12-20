@@ -7,12 +7,15 @@ import com.yashovardhan99.healersdiary.database.Healing
 import com.yashovardhan99.healersdiary.database.Patient
 import com.yashovardhan99.healersdiary.database.Payment
 import com.yashovardhan99.healersdiary.utils.Activity
+import com.yashovardhan99.healersdiary.utils.Request
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.earnedLastMonth
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.earnedThisMonth
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.healingsThisMonth
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.healingsToday
 import com.yashovardhan99.healersdiary.utils.setToStartOfDay
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import timber.log.Timber
 import java.util.*
@@ -79,6 +82,19 @@ class DashboardViewModel @ViewModelInject constructor(private val repository: Da
                 if (activities.isNotEmpty()) Pair(stats, activities.sortedByDescending { it.time })
                 else Pair(stats, null)
             }
+    private val _requests = MutableStateFlow<Request?>(null)
+    val requests: StateFlow<Request?> = _requests
+    fun viewPatient(patientId: Long) {
+        _requests.value = Request.ViewPatient(patientId)
+    }
+
+    fun resetRequest() {
+        _requests.value = null
+    }
+
+    fun addNewPatient() {
+        _requests.value = Request.NewPatient
+    }
 
     init {
         Timber.d("DATES: Today = ${today.time} This month = ${thisMonth.time} Last month = ${lastMonth.time}")
