@@ -8,6 +8,6 @@ import javax.inject.Singleton
 
 @Singleton
 class CreateRepository @Inject constructor(private val healersDao: HealersDao) {
-    suspend fun insertNewHealing(healing: Healing) = healersDao.insertHealing(healing)
-    suspend fun insertNewPayment(payment: Payment) = healersDao.insertPayment(payment)
+    suspend fun insertNewHealing(healing: Healing) = healersDao.newHealing(healing)
+    suspend fun insertNewPayment(payment: Payment) = healersDao.newPayment(payment)
 }

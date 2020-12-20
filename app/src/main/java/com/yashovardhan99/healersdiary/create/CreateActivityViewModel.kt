@@ -81,13 +81,13 @@ class CreateActivityViewModel @ViewModelInject constructor(
             val payment = Payment(0, _activityCalendar.value.time, amountInLong, notes, pid)
             viewModelScope.launch {
                 createRepository.insertNewPayment(payment)
-                Timber.d("Inserted new Healing!")
+                Timber.d("Inserted new Payment!")
                 _result.emit(pid)
             }
         } catch (e: NumberFormatException) {
-            Timber.e(e, "Invalid charge")
+            Timber.e(e, "Invalid amount")
         } catch (e: Exception) {
-            Timber.e(e, "Error creating healing")
+            Timber.e(e, "Error creating payment")
         }
     }
 }

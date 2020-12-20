@@ -26,7 +26,7 @@ abstract class HealersDao {
     @Query("SELECT * FROM payments WHERE patient_id == :patientId ORDER BY time DESC")
     abstract fun getAllPayments(patientId: Long): PagingSource<Int, Payment>
 
-    @Update(onConflict = OnConflictStrategy.REPLACE)
+    @Update(entity = Patient::class, onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun updatePatient(patient: Patient)
 
     @Insert(entity = Patient::class, onConflict = OnConflictStrategy.REPLACE)

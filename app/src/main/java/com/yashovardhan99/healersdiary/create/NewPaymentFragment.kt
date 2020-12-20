@@ -65,8 +65,16 @@ class NewPaymentFragment : Fragment() {
                     viewModel.activityCalendar.value.timeInMillis))
             datePicker.show(parentFragmentManager, "datePicker")
         }
+        binding.heading.optionsIcon.setOnClickListener { save(binding) }
+        binding.newPayment.setOnClickListener { save(binding) }
         binding.timeEdit.setOnClickListener { showTimePicker() }
         return binding.root
+    }
+
+    private fun save(binding: FragmentNewPaymentBinding) {
+        val amount = binding.amountEdit.text.toString()
+        val notes = binding.notesEdit.text.toString()
+        viewModel.createPayment(amount, notes, args.patientId)
     }
 
     private fun showTimePicker() {
