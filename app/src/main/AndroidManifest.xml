@@ -13,7 +13,13 @@
         <activity android:name=".onboarding.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.VIEW" />
 
+                <data
+                    android:host="com.yashovardhan99.healersdiary"
+                    android:scheme="healersdiary" />
+
+                <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

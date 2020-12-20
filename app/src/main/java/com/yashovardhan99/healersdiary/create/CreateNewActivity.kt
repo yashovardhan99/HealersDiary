@@ -1,5 +1,8 @@
 package com.yashovardhan99.healersdiary.create
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +24,15 @@ class CreateNewActivity : AppCompatActivity() {
         }
         viewModel.result.asLiveData().observe(this) { patientId ->
             if (patientId != -1L) {
+                Intent(Intent.ACTION_VIEW, Uri.Builder()
+                        .scheme(SCHEME)
+                        .authority(AUTHORITY)
+                        .appendPath("patients")
+                        .appendQueryParameter(PATIENT_ID, patientId.toString())
+                        .build()).also { result ->
+                    setResult(Activity.RESULT_OK, result)
+                    Timber.d("Setting result = $result")
+                }
                 Timber.d("Done and dusted")
                 finish()
             }
@@ -28,6 +40,8 @@ class CreateNewActivity : AppCompatActivity() {
     }
 
     companion object {
+        const val AUTHORITY = "com.yashovardhan99.healersdiary"
+        const val SCHEME = "healersdiary"
         const val PATIENT_ID = "patient_id"
     }
 }

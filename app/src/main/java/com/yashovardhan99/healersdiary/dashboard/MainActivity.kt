@@ -2,6 +2,7 @@ package com.yashovardhan99.healersdiary.dashboard
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -16,6 +17,23 @@ import timber.log.Timber
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private val viewModel: DashboardViewModel by viewModels()
+    private val getPid = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        val intent = result.data
+        val uri = intent?.data
+        if (result.resultCode != RESULT_OK) {
+            Timber.d("Result Not Ok = $result")
+            return@registerForActivityResult
+        }
+        Timber.d("Received! Uri = $uri Intent = $intent")
+        val authority = uri?.authority
+        val path = uri?.path
+        val scheme = uri?.scheme
+        val queries = uri?.query
+        val host = uri?.host
+        val port = uri?.port
+        Timber.d("authority = $authority scheme = $scheme path = $path queries = $queries host = $host port = $port")
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
@@ -28,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         binding.newRecord.setOnClickListener {
             Timber.d("New record")
             val intent = Intent(this, CreateNewActivity::class.java)
-            startActivity(intent)
+            getPid.launch(intent)
         }
     }
 }
