@@ -42,6 +42,13 @@ class CreateActivityViewModel @ViewModelInject constructor(
     private val _result = MutableStateFlow<Request?>(null)
     val result: StateFlow<Request?> = _result
 
+    private val _error = MutableStateFlow(false)
+    val error: StateFlow<Boolean> = _error
+
+    fun resetError() {
+        _error.value = false
+    }
+
     fun setActivityCalendar(calendar: Calendar) {
         _activityCalendar.value = calendar
     }
@@ -66,6 +73,7 @@ class CreateActivityViewModel @ViewModelInject constructor(
 
     fun createHealing(charge: String, notes: String, pid: Long) {
         try {
+            _error.value = false
             val chargeInLong = if (charge.isBlank()) 0 else BigDecimal(charge).movePointRight(2).longValueExact()
             val healing = Healing(0, _activityCalendar.value.time, chargeInLong, notes, pid)
             viewModelScope.launch {
@@ -74,14 +82,17 @@ class CreateActivityViewModel @ViewModelInject constructor(
                 _result.emit(Request.ViewPatient(pid))
             }
         } catch (e: NumberFormatException) {
+            _error.value = true
             Timber.e(e, "Invalid charge")
         } catch (e: Exception) {
+            _error.value = true
             Timber.e(e, "Error creating healing")
         }
     }
 
     fun createPayment(amount: String, notes: String, pid: Long) {
         try {
+            _error.value = false
             val amountInLong = if (amount.isBlank()) 0L else BigDecimal(amount).movePointRight(2).longValueExact()
             val payment = Payment(0, _activityCalendar.value.time, amountInLong, notes, pid)
             viewModelScope.launch {
@@ -90,8 +101,10 @@ class CreateActivityViewModel @ViewModelInject constructor(
                 _result.emit(Request.ViewPatient(pid))
             }
         } catch (e: NumberFormatException) {
+            _error.value = true
             Timber.e(e, "Invalid amount")
         } catch (e: Exception) {
+            _error.value = true
             Timber.e(e, "Error creating payment")
         }
     }

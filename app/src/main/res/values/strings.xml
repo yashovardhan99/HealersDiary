@@ -132,5 +132,6 @@
     <string name="charge_per_healing">Charge per healing</string>
     <string name="due_if_any">Amount due (if any)</string>
     <string name="healings_last_month">Healings last month</string>
+    <string name="error_creating_activity">Error saving. Check the values you entered</string>
 </resources>
 

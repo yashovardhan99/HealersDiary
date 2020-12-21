@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.snackbar.Snackbar
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.FragmentNewHealingBinding
 import com.yashovardhan99.healersdiary.utils.DatePickerFragment
@@ -68,6 +69,12 @@ class NewHealingFragment : Fragment() {
         binding.timeEdit.setOnClickListener { showTimePicker() }
         binding.heading.optionsIcon.setOnClickListener { save(binding) }
         binding.newHealing.setOnClickListener { save(binding) }
+        viewModel.error.asLiveData().observe(viewLifecycleOwner) { error ->
+            if (error) {
+                Snackbar.make(binding.newHealing, resources.getString(R.string.error_creating_activity), Snackbar.LENGTH_LONG)
+                viewModel.resetError()
+            }
+        }
         return binding.root
     }
 

@@ -6,8 +6,10 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.doAfterTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.asLiveData
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.ActivityNewPatientBinding
@@ -18,6 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.text.NumberFormat
 
 @AndroidEntryPoint
 class NewPatientActivity : AppCompatActivity() {
@@ -28,6 +31,17 @@ class NewPatientActivity : AppCompatActivity() {
         binding.header = Header(getIcon(R.drawable.cross, null, true),
                 resources.getString(R.string.add_new_patient),
                 getIcon(R.drawable.save, resources.getString(R.string.save), true))
+        binding.chargeBox.prefixText = NumberFormat.getCurrencyInstance().currency?.symbol
+        binding.dueBox.prefixText = NumberFormat.getCurrencyInstance().currency?.symbol
+        binding.nameEdit.doAfterTextChanged { text ->
+            if (text.isNullOrBlank()) {
+                binding.nameEdit.error = resources.getString(R.string.name_cannot_be_blank)
+                binding.newPatient.isEnabled = false
+            } else {
+                binding.nameEdit.error = null
+                binding.newPatient.isEnabled = true
+            }
+        }
         val amountFocusListener = View.OnFocusChangeListener { v, hasFocus ->
             val inputText = (v as TextInputEditText).text.toString()
             try {
@@ -53,6 +67,12 @@ class NewPatientActivity : AppCompatActivity() {
                     Timber.d("Setting result = $result")
                 }
                 finish()
+            }
+        }
+        viewModel.error.asLiveData().observe(this) { error ->
+            if (error) {
+                Snackbar.make(binding.newPatient, R.string.error_creating_activity, Snackbar.LENGTH_LONG).show()
+                viewModel.resetError()
             }
         }
     }

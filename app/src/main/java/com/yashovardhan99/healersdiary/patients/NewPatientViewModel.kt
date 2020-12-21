@@ -15,8 +15,15 @@ import java.util.*
 class NewPatientViewModel @ViewModelInject constructor(private val repository: CreateRepository) : ViewModel() {
     private val _result = MutableStateFlow(-1L)
     val result: StateFlow<Long> = _result
+    private val _error = MutableStateFlow(false)
+    val error: StateFlow<Boolean> = _error
     fun createPatient(name: String, charge: String, due: String, notes: String) {
+        if (name.isBlank()) {
+            _error.value = true
+            return
+        }
         try {
+            _error.value = false
             val chargeInLong = if (charge.isBlank()) 0L else BigDecimal(charge).movePointRight(2).longValueExact()
             val dueInLong = if (due.isBlank()) 0L else BigDecimal(due).movePointRight(2).longValueExact()
             val patient = Patient(0, name, chargeInLong, dueInLong, notes, Date(), Date())
@@ -27,9 +34,15 @@ class NewPatientViewModel @ViewModelInject constructor(private val repository: C
             }
         } catch (e: NumberFormatException) {
             Timber.e(e, "Invalid amount")
+            _error.value = true
         } catch (e: Exception) {
             Timber.e(e, "Error creating payment")
+            _error.value = true
         }
+    }
+
+    fun resetError() {
+        _error.value = false
     }
 
 }
