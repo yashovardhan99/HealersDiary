@@ -63,4 +63,7 @@ abstract class HealersDao {
 
     @Insert(entity = Payment::class, onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertPayment(payment: Payment): Long
+
+    @Delete(entity = Patient::class)
+    abstract suspend fun deletePatient(patient: Patient)
 }

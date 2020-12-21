@@ -26,15 +26,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleRequest(request: Request) {
+        Timber.d("Handling request = $request")
         when (request) {
-            is Request.NewHealing -> TODO()
-            is Request.NewPayment -> TODO()
+            is Request.NewHealing -> getRequestContract.launch(request)
+            is Request.NewPayment -> getRequestContract.launch(request)
             Request.NewPatient -> getRequestContract.launch(request)
-            is Request.NewActivity -> TODO()
+            is Request.NewActivity -> getRequestContract.launch(request)
             is Request.ViewPatient -> findNavController(R.id.nav_host_fragment_container).navigate(request.getUri())
-            is Request.UpdateHealing -> TODO()
-            is Request.UpdatePayment -> TODO()
-            is Request.UpdatePatient -> TODO()
+            is Request.UpdateHealing -> getRequestContract.launch(request)
+            is Request.UpdatePayment -> getRequestContract.launch(request)
+            is Request.UpdatePatient -> getRequestContract.launch(request)
+            Request.ViewDashboard -> findNavController(R.id.nav_host_fragment_container).navigate(R.id.home)
         }
     }
 

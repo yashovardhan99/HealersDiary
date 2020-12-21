@@ -31,18 +31,38 @@ sealed class Request(val path: String) {
         }
     }
 
-    data class UpdateHealing(val patientId: Long, val healingId: Long) : Request("edit_healing")
-    data class UpdatePayment(val patientId: Long, val paymentId: Long) : Request("edit_payment")
-    data class UpdatePatient(val patientId: Long) : Request("edit_patient")
+    data class UpdateHealing(val patientId: Long, val healingId: Long) : Request("edit_healing") {
+        override fun getUri(): Uri {
+            return super.uriBuilder.appendQueryParameter(PATIENT_ID, patientId.toString())
+                    .appendQueryParameter(HEALING_ID, healingId.toString()).build()
+        }
+    }
+
+    data class UpdatePayment(val patientId: Long, val paymentId: Long) : Request("edit_payment") {
+        override fun getUri(): Uri {
+            return super.uriBuilder.appendQueryParameter(PATIENT_ID, patientId.toString())
+                    .appendQueryParameter(PAYMENT_ID, paymentId.toString()).build()
+        }
+    }
+
+    data class UpdatePatient(val patientId: Long) : Request("edit_patient") {
+        override fun getUri(): Uri {
+            return super.uriBuilder.appendQueryParameter(PATIENT_ID, patientId.toString()).build()
+        }
+    }
+
+    object ViewDashboard : Request("dashboard")
 
     open fun getUri(): Uri = uriBuilder.build()
+
+
     private val uriBuilder = Uri.Builder()
             .scheme(SCHEME)
             .authority(AUTHORITY)
             .appendPath(path)
 
-
     companion object {
+
         private fun Uri.getLong(key: String): Long {
             return getQueryParameter(key)?.toLongOrNull()
                     ?: throw IllegalArgumentException("Invalid/missing query parameters for key=$key")
@@ -60,6 +80,7 @@ sealed class Request(val path: String) {
                 "patients" -> ViewPatient(uri.getLong(PATIENT_ID))
                 "edit_healing" -> UpdateHealing(uri.getLong(PATIENT_ID), uri.getLong(HEALING_ID))
                 "edit_payment" -> UpdatePayment(uri.getLong(PATIENT_ID), uri.getLong(PAYMENT_ID))
+                "dashboard" -> ViewDashboard
                 else -> throw java.lang.IllegalArgumentException("Unknown path: ${uri.path}")
             }
         }

@@ -96,6 +96,10 @@ class DashboardViewModel @ViewModelInject constructor(private val repository: Da
         _requests.value = Request.NewPatient
     }
 
+    fun editPatient(patientId: Long) {
+        _requests.value = Request.UpdatePatient(patientId)
+    }
+
     init {
         Timber.d("DATES: Today = ${today.time} This month = ${thisMonth.time} Last month = ${lastMonth.time}")
     }
