@@ -8,10 +8,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yashovardhan99.healersdiary.database.Patient
 import com.yashovardhan99.healersdiary.databinding.PatientListItemBinding
 
-class PatientListAdapter : ListAdapter<Patient, PatientListAdapter.PatientViewHolder>(PatientDiff()) {
+class PatientListAdapter(val onPatientSelected: (Patient) -> Unit) : ListAdapter<Patient, PatientListAdapter.PatientViewHolder>(PatientDiff()) {
     class PatientViewHolder(val binding: PatientListItemBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(patient: Patient) {
+        fun bind(patient: Patient, onPatientSelected: (Patient) -> Unit) {
             binding.patient = patient
+            binding.root.setOnClickListener { onPatientSelected(patient) }
         }
     }
 
@@ -21,7 +22,7 @@ class PatientListAdapter : ListAdapter<Patient, PatientListAdapter.PatientViewHo
     }
 
     override fun onBindViewHolder(holder: PatientViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), onPatientSelected)
     }
 }
 

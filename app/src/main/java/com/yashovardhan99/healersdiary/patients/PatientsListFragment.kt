@@ -18,6 +18,7 @@ import com.yashovardhan99.healersdiary.utils.Header
 import com.yashovardhan99.healersdiary.utils.getIcon
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
+import timber.log.Timber
 
 @AndroidEntryPoint
 class PatientsListFragment : Fragment() {
@@ -29,7 +30,11 @@ class PatientsListFragment : Fragment() {
                     resources.getString(R.string.patients),
                     getIcon(R.drawable.add_person, null, true))
         }
-        val patientListAdapter = PatientListAdapter()
+        val patientListAdapter = PatientListAdapter {
+            Timber.d("Patient selected = $it")
+            viewModel.viewPatient(it.id)
+        }
+        binding.toolbar.optionsIcon.setOnClickListener { viewModel.addNewPatient() }
         val emptyStateAdapter = EmptyStateAdapter(false, EmptyState.PATIENTS)
         binding.recycler.adapter = ConcatAdapter(patientListAdapter, emptyStateAdapter)
         binding.recycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)

@@ -20,11 +20,17 @@ abstract class HealersDao {
     @Query("SELECT * FROM payments WHERE time>=:startDate")
     abstract fun getAllPayments(startDate: Date): Flow<List<Payment>>
 
-    @Query("SELECT * FROM healings WHERE patient_id == :patientId ORDER BY time DESC")
+    @Query("SELECT * FROM healings WHERE patient_id = :patientId ORDER BY time DESC")
     abstract fun getAllHealings(patientId: Long): PagingSource<Int, Healing>
 
-    @Query("SELECT * FROM payments WHERE patient_id == :patientId ORDER BY time DESC")
+    @Query("SELECT * FROM payments WHERE patient_id = :patientId ORDER BY time DESC")
     abstract fun getAllPayments(patientId: Long): PagingSource<Int, Payment>
+
+    @Query("SELECT * FROM healings WHERE patient_id = :patientId AND time>=:startDate")
+    abstract fun getRecentHealings(patientId: Long, startDate: Date): Flow<List<Healing>>
+
+    @Query("SELECT * FROM payments WHERE patient_id = :patientId AND time>=:startDate")
+    abstract fun getRecentPayments(patientId: Long, startDate: Date): Flow<List<Payment>>
 
     @Update(entity = Patient::class, onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun updatePatient(patient: Patient)
