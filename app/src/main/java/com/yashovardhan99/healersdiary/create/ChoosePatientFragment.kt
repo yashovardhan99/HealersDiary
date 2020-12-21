@@ -47,6 +47,9 @@ class ChoosePatientFragment : Fragment() {
                 findNavController().navigate(action)
             }
         }
+        binding.newPatient.setOnClickListener {
+            viewModel.newPatient()
+        }
         return binding.root
     }
 }

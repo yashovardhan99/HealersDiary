@@ -43,8 +43,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/add_new_record"
+            android:src="@drawable/add"
+            app:backgroundTint="@color/colorPrimaryDark"
+            app:fabSize="normal"
             app:layout_anchor="@id/bottom_app_bar"
-            app:layout_behavior="com.google.android.material.floatingactionbutton.FloatingActionButton$Behavior" />
+            app:layout_behavior="com.google.android.material.floatingactionbutton.FloatingActionButton$Behavior"
+            app:maxImageSize="16dp"
+            app:tint="@android:color/white" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

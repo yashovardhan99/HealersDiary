@@ -7,6 +7,7 @@ import com.yashovardhan99.healersdiary.dashboard.DashboardRepository
 import com.yashovardhan99.healersdiary.database.Healing
 import com.yashovardhan99.healersdiary.database.Patient
 import com.yashovardhan99.healersdiary.database.Payment
+import com.yashovardhan99.healersdiary.utils.Request
 import com.yashovardhan99.healersdiary.utils.setToStartOfDay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -38,8 +39,8 @@ class CreateActivityViewModel @ViewModelInject constructor(
         }
     }.distinctUntilChanged().conflate()
 
-    private val _result = MutableStateFlow(-1L)
-    val result: StateFlow<Long> = _result
+    private val _result = MutableStateFlow<Request?>(null)
+    val result: StateFlow<Request?> = _result
 
     fun setActivityCalendar(calendar: Calendar) {
         _activityCalendar.value = calendar
@@ -59,6 +60,10 @@ class CreateActivityViewModel @ViewModelInject constructor(
         }
     }
 
+    fun newPatient() {
+        _result.value = Request.NewPatient
+    }
+
     fun createHealing(charge: String, notes: String, pid: Long) {
         try {
             val chargeInLong = if (charge.isBlank()) 0 else BigDecimal(charge).movePointRight(2).longValueExact()
@@ -66,7 +71,7 @@ class CreateActivityViewModel @ViewModelInject constructor(
             viewModelScope.launch {
                 createRepository.insertNewHealing(healing)
                 Timber.d("Inserted new Healing!")
-                _result.emit(pid)
+                _result.emit(Request.ViewPatient(pid))
             }
         } catch (e: NumberFormatException) {
             Timber.e(e, "Invalid charge")
@@ -82,7 +87,7 @@ class CreateActivityViewModel @ViewModelInject constructor(
             viewModelScope.launch {
                 createRepository.insertNewPayment(payment)
                 Timber.d("Inserted new Payment!")
-                _result.emit(pid)
+                _result.emit(Request.ViewPatient(pid))
             }
         } catch (e: NumberFormatException) {
             Timber.e(e, "Invalid amount")

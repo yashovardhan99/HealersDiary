@@ -21,14 +21,14 @@ class CreateNewActivity : AppCompatActivity() {
         val request = intent.data?.let { uri ->
             fromUri(uri)
         }
-        val pid = if (request is Request.ViewPatient) request.patientId else -1
+        val pid = if (request is Request.NewActivity) request.patientId else -1
         if (pid != -1L) {
             viewModel.selectPatient(pid)
             Timber.d("Patient id = $pid")
         }
-        viewModel.result.asLiveData().observe(this) { patientId ->
-            if (patientId != -1L) {
-                Intent(Intent.ACTION_VIEW, Request.ViewPatient(patientId).getUri()).also { result ->
+        viewModel.result.asLiveData().observe(this) { requestResult ->
+            if (requestResult != null) {
+                Intent(Intent.ACTION_VIEW, requestResult.getUri()).also { result ->
                     setResult(Activity.RESULT_OK, result)
                     Timber.d("Setting result = $result")
                 }
