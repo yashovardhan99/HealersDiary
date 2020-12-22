@@ -4,7 +4,10 @@ import android.content.Context
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import com.yashovardhan99.healersdiary.database.Healing
 import com.yashovardhan99.healersdiary.database.Patient
+import com.yashovardhan99.healersdiary.database.Payment
 import com.yashovardhan99.healersdiary.utils.Activity
 import com.yashovardhan99.healersdiary.utils.Stat
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.earnedLastMonth
@@ -74,5 +77,13 @@ class PatientDetailViewModel @ViewModelInject constructor(
             }
             Pair(stats, activities.sortedByDescending { it.time })
         }
+    }
+
+    fun getHealings(patientId: Long): Flow<PagingData<Healing>> {
+        return repository.getAllHealings(patientId)
+    }
+
+    fun getPayments(patientId: Long): Flow<PagingData<Payment>> {
+        return repository.getAllPayments(patientId)
     }
 }

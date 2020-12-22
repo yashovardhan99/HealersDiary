@@ -1,20 +1,17 @@
 package com.yashovardhan99.healersdiary.database
 
-import androidx.room.Entity
-import androidx.room.Ignore
-import androidx.room.PrimaryKey
-import androidx.room.TypeConverters
+import androidx.room.*
 import java.util.*
 
 @TypeConverters(DateConverter::class)
 @Entity(tableName = "patients")
 data class Patient(
         @PrimaryKey(autoGenerate = true) val id: Long,
-        var name: String,
-        var charge: Long,
-        var due: Long,
-        var notes: String,
-        var lastModified: Date,
+        val name: String,
+        val charge: Long,
+        val due: Long,
+        val notes: String,
+        @ColumnInfo(name = "last_modified") val lastModified: Date,
         val created: Date,
         @Ignore val healingsToday: Int = 0,
         @Ignore val healingsThisMonth: Int = 0

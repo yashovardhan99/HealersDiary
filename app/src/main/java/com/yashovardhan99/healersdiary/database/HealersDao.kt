@@ -45,9 +45,8 @@ abstract class HealersDao {
     open suspend fun newHealing(healing: Healing): Long {
         val patient = getPatient(healing.patientId)
                 ?: throw IllegalArgumentException("Invalid patient id")
-        patient.due = patient.due + healing.charge
-        patient.lastModified = maxOf(patient.lastModified, healing.time)
-        updatePatient(patient)
+        updatePatient(patient.copy(due = patient.due + healing.charge,
+                lastModified = maxOf(patient.lastModified, healing.time)))
         return insertHealing(healing)
     }
 
@@ -55,9 +54,8 @@ abstract class HealersDao {
     open suspend fun newPayment(payment: Payment): Long {
         val patient = getPatient(payment.patientId)
                 ?: throw IllegalArgumentException("Invalid patient id")
-        patient.due = patient.due - payment.amount
-        patient.lastModified = maxOf(patient.lastModified, payment.time)
-        updatePatient(patient)
+        updatePatient(patient.copy(due = patient.due - payment.amount,
+                lastModified = maxOf(patient.lastModified, payment.time)))
         return insertPayment(payment)
     }
 
