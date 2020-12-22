@@ -7,9 +7,9 @@ import java.util.*
 @Entity(tableName = "healings")
 data class Healing(
         @PrimaryKey(autoGenerate = true) val id: Long,
-        var time: Date,
-        var charge: Long,
-        var notes: String,
+        val time: Date,
+        val charge: Long,
+        val notes: String,
         @ColumnInfo(name = "patient_id") val patientId: Long
 )
 

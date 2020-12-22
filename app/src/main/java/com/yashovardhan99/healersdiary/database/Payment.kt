@@ -7,9 +7,9 @@ import java.util.*
 @Entity(tableName = "payments")
 data class Payment(
         @PrimaryKey(autoGenerate = true) val id: Long,
-        var time: Date,
-        var amount: Long,
-        var notes: String,
+        val time: Date,
+        val amount: Long,
+        val notes: String,
         @ColumnInfo(name = "patient_id") val patientId: Long
 )
 
