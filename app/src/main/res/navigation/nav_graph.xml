@@ -41,5 +41,15 @@
             android:autoVerify="true"
             app:action="ACTION_VIEW"
             app:uri="healersdiary://com.yashovardhan99.healersdiary/patients?patient_id={patientId}" />
+        <action
+            android:id="@+id/action_patientDetailFragment_to_healingListFragment"
+            app:destination="@id/healingListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/healingListFragment"
+        android:name="com.yashovardhan99.healersdiary.patients.HealingListFragment"
+        android:label="HealingListFragment" >
+        <argument android:name="patientId"
+            app:argType="long" />
     </fragment>
 </navigation>

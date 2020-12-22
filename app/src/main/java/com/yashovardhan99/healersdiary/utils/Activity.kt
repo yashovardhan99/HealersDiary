@@ -12,7 +12,7 @@ data class Activity(
         val patient: Patient
 ) {
     sealed class Type(val description: String, val icon: Icon) {
-        class HEALING(context: Context) : Type("New Healing", context.getIcon(R.drawable.check))
-        class PAYMENT(context: Context) : Type("Payment Received", context.getIcon(R.drawable.card))
+        class HEALING(context: Context) : Type(context.resources.getString(R.string.new_healing), context.getIcon(R.drawable.check))
+        class PAYMENT(context: Context) : Type(context.resources.getString(R.string.payment_received), context.getIcon(R.drawable.card))
     }
 }
