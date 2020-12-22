@@ -14,3 +14,15 @@ class DateConverter {
         return date?.time
     }
 }
+
+class ActivityTypeConverter {
+    @TypeConverter
+    fun actTypeToString(activityType: ActivityType?): String? {
+        return activityType?.type
+    }
+
+    @TypeConverter
+    fun typeStringToActType(type: String?): ActivityType? {
+        return type?.let { ActivityType.valueOf(it) }
+    }
+}
