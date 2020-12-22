@@ -37,16 +37,22 @@
             app:tint="@android:color/white"
             tools:src="@drawable/clock" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/stat_figure"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="20dp"
+            android:layout_marginEnd="16dp"
             android:fontFamily="@font/lato_bold"
+            android:lines="1"
             android:text="@{stat.figure}"
             android:textColor="@android:color/white"
-            android:textSize="26sp"
+            app:autoSizeMaxTextSize="26sp"
+            app:autoSizeMinTextSize="16sp"
+            app:autoSizeTextType="uniform"
+            app:layout_constraintBottom_toTopOf="@id/stat_description"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/stat_icon"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="@tools:sample/us_zipcodes" />
