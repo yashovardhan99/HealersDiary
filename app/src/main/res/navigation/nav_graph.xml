@@ -9,12 +9,16 @@
         android:id="@+id/home"
         android:name="com.yashovardhan99.healersdiary.dashboard.HomeFragment"
         android:label="HomeFragment"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home">
+        <deepLink
+            android:id="@+id/deepLink2"
+            app:uri="healersdiary://com.yashovardhan99.healersdiary/dashboard" />
+    </fragment>
     <fragment
         android:id="@+id/patients"
         android:name="com.yashovardhan99.healersdiary.patients.PatientsListFragment"
         android:label="PatientsListFragment"
-        tools:layout="@layout/fragment_patients_list" >
+        tools:layout="@layout/fragment_patients_list">
         <action
             android:id="@+id/action_patients_to_patientDetailFragment"
             app:destination="@id/patientDetailFragment" />
@@ -27,7 +31,8 @@
     <fragment
         android:id="@+id/patientDetailFragment"
         android:name="com.yashovardhan99.healersdiary.patients.PatientDetailFragment"
-        android:label="PatientDetailFragment">
+        android:label="PatientDetailFragment"
+        tools:layout="@layout/fragment_patient_detail">
         <argument
             android:name="patientId"
             app:argType="long" />

@@ -15,14 +15,16 @@
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
 
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />
+
                 <data
                     android:host="com.yashovardhan99.healersdiary"
                     android:scheme="healersdiary" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".dashboard.MainActivity" />
         <activity
             android:name=".create.CreateNewActivity"

@@ -2,23 +2,30 @@ package com.yashovardhan99.healersdiary.utils
 
 import android.net.Uri
 
-sealed class Request(val path: String) {
-    data class NewHealing(val patientId: Long = -1) : Request("new_healing") {
+sealed class Request(vararg val path: String) {
+    val uriBuilder: Uri.Builder
+        get() = Uri.Builder().scheme(SCHEME).authority(AUTHORITY).apply {
+            for (segment in path) appendPath(segment)
+        }
+
+    open fun getUri(): Uri = uriBuilder.build()
+
+    data class NewHealing(val patientId: Long = -1) : Request("activities", "new_healing") {
         override fun getUri(): Uri {
             return if (patientId == -1L) super.getUri()
             else super.uriBuilder.appendQueryParameter(PATIENT_ID, patientId.toString()).build()
         }
     }
 
-    data class NewPayment(val patientId: Long = -1) : Request("new_payment") {
+    data class NewPayment(val patientId: Long = -1) : Request("activities", "new_payment") {
         override fun getUri(): Uri {
             return if (patientId == -1L) super.getUri()
             else super.uriBuilder.appendQueryParameter(PATIENT_ID, patientId.toString()).build()
         }
     }
 
-    object NewPatient : Request("new_patient")
-    data class NewActivity(val patientId: Long = -1L) : Request("new_activity") {
+    object NewPatient : Request("patients", "new_patient")
+    data class NewActivity(val patientId: Long = -1L) : Request("activities", "new_activity") {
         override fun getUri(): Uri {
             return if (patientId == -1L) super.getUri()
             else super.uriBuilder.appendQueryParameter(PATIENT_ID, patientId.toString()).build()
@@ -31,35 +38,27 @@ sealed class Request(val path: String) {
         }
     }
 
-    data class UpdateHealing(val patientId: Long, val healingId: Long) : Request("edit_healing") {
+    data class UpdateHealing(val patientId: Long, val healingId: Long) : Request("activities", "edit_healing") {
         override fun getUri(): Uri {
             return super.uriBuilder.appendQueryParameter(PATIENT_ID, patientId.toString())
                     .appendQueryParameter(HEALING_ID, healingId.toString()).build()
         }
     }
 
-    data class UpdatePayment(val patientId: Long, val paymentId: Long) : Request("edit_payment") {
+    data class UpdatePayment(val patientId: Long, val paymentId: Long) : Request("activities", "edit_payment") {
         override fun getUri(): Uri {
             return super.uriBuilder.appendQueryParameter(PATIENT_ID, patientId.toString())
                     .appendQueryParameter(PAYMENT_ID, paymentId.toString()).build()
         }
     }
 
-    data class UpdatePatient(val patientId: Long) : Request("edit_patient") {
+    data class UpdatePatient(val patientId: Long) : Request("activities", "edit_patient") {
         override fun getUri(): Uri {
             return super.uriBuilder.appendQueryParameter(PATIENT_ID, patientId.toString()).build()
         }
     }
 
     object ViewDashboard : Request("dashboard")
-
-    open fun getUri(): Uri = uriBuilder.build()
-
-
-    private val uriBuilder = Uri.Builder()
-            .scheme(SCHEME)
-            .authority(AUTHORITY)
-            .appendPath(path)
 
     companion object {
 
@@ -92,4 +91,3 @@ sealed class Request(val path: String) {
         private const val PAYMENT_ID = "payment_id"
     }
 }
-

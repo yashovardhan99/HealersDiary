@@ -24,7 +24,7 @@ import timber.log.Timber
 class PatientDetailFragment : Fragment() {
     private val args: PatientDetailFragmentArgs by navArgs()
     val viewModel: PatientDetailViewModel by viewModels()
-    val dashboardViewModel: DashboardViewModel by activityViewModels()
+    private val dashboardViewModel: DashboardViewModel by activityViewModels()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = FragmentPatientDetailBinding.inflate(inflater, container, false)
         binding.header = context?.run {
