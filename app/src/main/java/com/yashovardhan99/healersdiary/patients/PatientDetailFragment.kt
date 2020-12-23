@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
@@ -25,7 +26,7 @@ class PatientDetailFragment : Fragment() {
     private val args: PatientDetailFragmentArgs by navArgs()
     val viewModel: PatientDetailViewModel by viewModels()
     private val dashboardViewModel: DashboardViewModel by activityViewModels()
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val binding = FragmentPatientDetailBinding.inflate(inflater, container, false)
         binding.header = context?.run {
             Timber.d("Setting header")
@@ -40,7 +41,13 @@ class PatientDetailFragment : Fragment() {
         }
         val statAdapter = StatAdapter()
         val headerAdapter = HeaderAdapter(false)
-        val activityAdapter = ActivityAdapter()
+        val activityAdapter = ActivityAdapter { activity ->
+            when (activity.type) {
+                is Activity.Type.HEALING -> goToHealings()
+                is Activity.Type.PAYMENT -> {
+                }
+            }
+        }
         val emptyStatAdapter = EmptyStateAdapter(false, EmptyState.DASHBOARD)
         binding.recycler.adapter = ConcatAdapter(statAdapter, headerAdapter, activityAdapter, emptyStatAdapter)
         binding.recycler.layoutManager = GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false).apply {
@@ -65,5 +72,15 @@ class PatientDetailFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    private fun goToHealings() {
+        val action = PatientDetailFragmentDirections
+                .actionPatientDetailFragmentToHealingListFragment(args.patientId)
+        findNavController().navigate(action)
+    }
+
+    private fun goToPayments() {
+        // TODO: 23/12/20 Implement Payment Fragment, adapter and add navigation
     }
 }

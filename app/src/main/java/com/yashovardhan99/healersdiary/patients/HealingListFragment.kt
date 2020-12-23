@@ -27,7 +27,8 @@ class HealingListFragment : Fragment() {
         viewModel.patient.asLiveData().observe(viewLifecycleOwner) { patient ->
             binding.header = context?.run {
                 Header(getIcon(R.drawable.cross),
-                        patient?.name.orEmpty(),
+                        resources.getString(R.string.patient_all_healings,
+                                patient?.name.orEmpty()),
                         null)
             }
         }

@@ -134,5 +134,7 @@
     <string name="healings_last_month">Healings last month</string>
     <string name="error_creating_activity">Error saving. Check the values you entered</string>
     <string name="payment_received">Payment Received</string>
+    <string name="patient_all_healings">%s: All Healings</string>
+    <string name="patient_all_payments">%s: All Payments</string>
 </resources>
 
