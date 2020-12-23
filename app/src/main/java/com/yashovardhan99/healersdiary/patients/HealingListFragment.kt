@@ -11,11 +11,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yashovardhan99.healersdiary.R
+import com.yashovardhan99.healersdiary.database.Healing
 import com.yashovardhan99.healersdiary.databinding.FragmentHealingListBinding
 import com.yashovardhan99.healersdiary.utils.Header
 import com.yashovardhan99.healersdiary.utils.getIcon
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
+import timber.log.Timber
 
 @AndroidEntryPoint
 class HealingListFragment : Fragment() {
@@ -33,7 +35,7 @@ class HealingListFragment : Fragment() {
             }
         }
         binding.recycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        val adapter = HealingListAdapter()
+        val adapter = HealingListAdapter { healing -> deleteHealing(healing) }
         lifecycleScope.launchWhenStarted {
             viewModel.getHealings(args.patientId).collect { pagingData ->
                 adapter.submitData(pagingData)
@@ -41,5 +43,10 @@ class HealingListFragment : Fragment() {
         }
         binding.recycler.adapter = adapter
         return binding.root
+    }
+
+    private fun deleteHealing(healing: Healing) {
+        Timber.d("Delete healing $healing")
+        // todo viewModel.deleteHealing(healing)
     }
 }
