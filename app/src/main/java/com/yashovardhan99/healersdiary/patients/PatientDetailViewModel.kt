@@ -88,14 +88,22 @@ class PatientDetailViewModel @ViewModelInject constructor(
     }
 
     fun deleteHealing(healing: Healing) {
+        val updatedPatient = patient.value?.let {
+            it.copy(due = it.due - healing.charge)
+        }
         viewModelScope.launch {
             repository.deleteHealing(healing)
+            updatedPatient?.let { repository.updatePatient(it) }
         }
     }
 
     fun deletePayment(payment: Payment) {
+        val updatedPatient = patient.value?.let {
+            it.copy(due = it.due + payment.amount)
+        }
         viewModelScope.launch {
             repository.deletePayment(payment)
+            updatedPatient?.let { repository.updatePatient(it) }
         }
     }
 }

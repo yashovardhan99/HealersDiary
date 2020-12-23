@@ -5,6 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.yashovardhan99.healersdiary.database.HealersDao
 import com.yashovardhan99.healersdiary.database.Healing
+import com.yashovardhan99.healersdiary.database.Patient
 import com.yashovardhan99.healersdiary.database.Payment
 import kotlinx.coroutines.flow.Flow
 import java.util.*
@@ -28,6 +29,10 @@ class PatientDetailRepository @Inject constructor(private val healersDao: Healer
                 config = PagingConfig(pageSize = 20)) {
             healersDao.getAllPayments(patientId)
         }.flow
+    }
+
+    suspend fun updatePatient(patient: Patient) {
+        healersDao.updatePatient(patient)
     }
 
     suspend fun deleteHealing(healing: Healing) {
