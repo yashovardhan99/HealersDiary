@@ -27,7 +27,9 @@ class HomeFragment : Fragment() {
         }
         val statAdapter = StatAdapter()
         val headerAdapter = HeaderAdapter(false)
-        val activityAdapter = ActivityAdapter()
+        val activityAdapter = ActivityAdapter { activity ->
+            viewModel.viewPatient(activity.patient.id)
+        }
         val emptyStateAdapter = EmptyStateAdapter(false, EmptyState.DASHBOARD)
         binding.recycler.adapter = ConcatAdapter(statAdapter, headerAdapter, activityAdapter, emptyStateAdapter)
         lifecycleScope.launchWhenStarted {

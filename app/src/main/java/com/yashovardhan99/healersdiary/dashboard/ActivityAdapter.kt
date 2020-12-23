@@ -8,10 +8,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yashovardhan99.healersdiary.databinding.ActivityCardBinding
 import com.yashovardhan99.healersdiary.utils.Activity
 
-class ActivityAdapter : ListAdapter<Activity, ActivityAdapter.ActivityViewHolder>(ActivityDiffUtils()) {
+class ActivityAdapter(val onClick: (Activity) -> Unit = {}) : ListAdapter<Activity, ActivityAdapter.ActivityViewHolder>(ActivityDiffUtils()) {
     class ActivityViewHolder(val binding: ActivityCardBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(activity: Activity) {
+        fun bind(activity: Activity, onClick: (Activity) -> Unit) {
             binding.activity = activity
+            binding.root.setOnClickListener { onClick(activity) }
         }
     }
 
@@ -20,7 +21,7 @@ class ActivityAdapter : ListAdapter<Activity, ActivityAdapter.ActivityViewHolder
     }
 
     override fun onBindViewHolder(holder: ActivityViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), onClick)
     }
 }
 
