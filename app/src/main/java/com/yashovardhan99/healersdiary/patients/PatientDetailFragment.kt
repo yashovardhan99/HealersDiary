@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.dashboard.DashboardViewModel
+import com.yashovardhan99.healersdiary.database.ActivityType
 import com.yashovardhan99.healersdiary.databinding.FragmentPatientDetailBinding
 import com.yashovardhan99.healersdiary.utils.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,7 +40,12 @@ class PatientDetailFragment : Fragment() {
             Timber.d("Patient = $patient")
             binding.header = binding.header?.copy(title = patient?.name ?: "")
         }
-        val statAdapter = StatAdapter()
+        val statAdapter = StatAdapter { stat ->
+            when (stat.type) {
+                ActivityType.HEALING -> goToHealings()
+                ActivityType.PAYMENT -> goToPayments()
+            }
+        }
         val headerAdapter = HeaderAdapter(false)
         val activityAdapter = ActivityAdapter { activity ->
             when (activity.type) {

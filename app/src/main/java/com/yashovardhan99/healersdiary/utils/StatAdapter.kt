@@ -7,10 +7,11 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.yashovardhan99.healersdiary.databinding.LayoutStatBoxBinding
 
-class StatAdapter : ListAdapter<Stat, StatAdapter.StatViewHolder>(StatDiffUtil()) {
+class StatAdapter(val onClick: (Stat) -> Unit = {}) : ListAdapter<Stat, StatAdapter.StatViewHolder>(StatDiffUtil()) {
     class StatViewHolder(val binding: LayoutStatBoxBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(stat: Stat) {
+        fun bind(stat: Stat, onClick: (Stat) -> Unit) {
             binding.stat = stat
+            binding.root.setOnClickListener { onClick(stat) }
         }
     }
 
@@ -20,7 +21,7 @@ class StatAdapter : ListAdapter<Stat, StatAdapter.StatViewHolder>(StatDiffUtil()
     }
 
     override fun onBindViewHolder(holder: StatViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), onClick)
     }
 }
 
