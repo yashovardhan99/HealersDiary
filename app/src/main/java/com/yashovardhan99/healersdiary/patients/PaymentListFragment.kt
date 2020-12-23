@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yashovardhan99.healersdiary.R
+import com.yashovardhan99.healersdiary.database.Payment
 import com.yashovardhan99.healersdiary.databinding.FragmentHealingListBinding
 import com.yashovardhan99.healersdiary.utils.Header
 import com.yashovardhan99.healersdiary.utils.getIcon
@@ -33,7 +34,8 @@ class PaymentListFragment : Fragment() {
             }
         }
         binding.recycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        val adapter = PaymentListAdapter()
+        val adapter = PaymentListAdapter(::deletePayment)
+
         lifecycleScope.launchWhenStarted {
             viewModel.getPayments(args.patientId).collect { pagingData ->
                 adapter.submitData(pagingData)
@@ -41,5 +43,9 @@ class PaymentListFragment : Fragment() {
         }
         binding.recycler.adapter = adapter
         return binding.root
+    }
+
+    private fun deletePayment(payment: Payment) {
+        viewModel.deletePayment(payment)
     }
 }

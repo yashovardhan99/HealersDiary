@@ -5,14 +5,20 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.database.Payment
 import com.yashovardhan99.healersdiary.databinding.ItemCardPaymentBinding
 
 
-class PaymentListAdapter : PagingDataAdapter<Payment, PaymentListAdapter.PaymentViewHolder>(PaymentDiffUtils()) {
+class PaymentListAdapter(private val onRequestDelete: (Payment) -> Unit) : PagingDataAdapter<Payment, PaymentListAdapter.PaymentViewHolder>(PaymentDiffUtils()) {
     class PaymentViewHolder(val binding: ItemCardPaymentBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(payment: Payment?) {
+        fun bind(payment: Payment?, onRequestDelete: (Payment) -> Unit) {
             binding.payment = payment
+            binding.root.setOnCreateContextMenuListener { menu, _, _ ->
+                menu.add(0, 0, 0, R.string.delete).setOnMenuItemClickListener { _ ->
+                    payment?.let { onRequestDelete(it); true } ?: false
+                }
+            }
         }
     }
 
@@ -21,7 +27,7 @@ class PaymentListAdapter : PagingDataAdapter<Payment, PaymentListAdapter.Payment
     }
 
     override fun onBindViewHolder(holder: PaymentViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), onRequestDelete)
     }
 }
 

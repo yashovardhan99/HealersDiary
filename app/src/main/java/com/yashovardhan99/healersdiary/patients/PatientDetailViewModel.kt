@@ -92,4 +92,10 @@ class PatientDetailViewModel @ViewModelInject constructor(
             repository.deleteHealing(healing)
         }
     }
+
+    fun deletePayment(payment: Payment) {
+        viewModelScope.launch {
+            repository.deletePayment(payment)
+        }
+    }
 }
