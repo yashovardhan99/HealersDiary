@@ -44,8 +44,7 @@ class PatientDetailFragment : Fragment() {
         val activityAdapter = ActivityAdapter { activity ->
             when (activity.type) {
                 is Activity.Type.HEALING -> goToHealings()
-                is Activity.Type.PAYMENT -> {
-                }
+                is Activity.Type.PAYMENT -> goToPayments()
             }
         }
         val emptyStatAdapter = EmptyStateAdapter(false, EmptyState.DASHBOARD)
@@ -81,6 +80,8 @@ class PatientDetailFragment : Fragment() {
     }
 
     private fun goToPayments() {
-        // TODO: 23/12/20 Implement Payment Fragment, adapter and add navigation
+        val action = PatientDetailFragmentDirections
+                .actionPatientDetailFragmentToPaymentListFragment(args.patientId)
+        findNavController().navigate(action)
     }
 }

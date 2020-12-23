@@ -44,12 +44,24 @@
         <action
             android:id="@+id/action_patientDetailFragment_to_healingListFragment"
             app:destination="@id/healingListFragment" />
+        <action
+            android:id="@+id/action_patientDetailFragment_to_paymentListFragment"
+            app:destination="@id/paymentListFragment" />
     </fragment>
     <fragment
         android:id="@+id/healingListFragment"
         android:name="com.yashovardhan99.healersdiary.patients.HealingListFragment"
         android:label="HealingListFragment"
         tools:layout="@layout/fragment_healing_list">
+        <argument
+            android:name="patientId"
+            app:argType="long" />
+    </fragment>
+    <fragment
+        android:id="@+id/paymentListFragment"
+        android:name="com.yashovardhan99.healersdiary.patients.PaymentListFragment"
+        android:label="PaymentListFragment"
+        tools:layout="@layout/fragment_healing_list" >
         <argument
             android:name="patientId"
             app:argType="long" />

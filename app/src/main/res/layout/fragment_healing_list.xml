@@ -22,12 +22,12 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler"
-            tools:listitem="@layout/item_card_healing"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/icon" />
+            app:layout_constraintTop_toBottomOf="@id/icon"
+            tools:listitem="@layout/item_card_healing" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
