@@ -14,5 +14,5 @@ class CreateRepository @Inject constructor(private val healersDao: HealersDao) {
     suspend fun insertNewPatient(patient: Patient) = healersDao.insertPatient(patient)
     suspend fun getPatient(patientId: Long): Patient? = healersDao.getPatient(patientId)
     suspend fun updatePatient(updatedPatient: Patient) = healersDao.updatePatient(updatedPatient)
-    suspend fun deletePatient(patient: Patient) = healersDao.deletePatient(patient)
+    suspend fun deletePatient(patient: Patient) = healersDao.deletePatientData(patient)
 }
