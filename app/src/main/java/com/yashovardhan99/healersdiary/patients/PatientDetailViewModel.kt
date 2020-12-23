@@ -86,4 +86,10 @@ class PatientDetailViewModel @ViewModelInject constructor(
     fun getPayments(patientId: Long): Flow<PagingData<Payment>> {
         return repository.getAllPayments(patientId)
     }
+
+    fun deleteHealing(healing: Healing) {
+        viewModelScope.launch {
+            repository.deleteHealing(healing)
+        }
+    }
 }

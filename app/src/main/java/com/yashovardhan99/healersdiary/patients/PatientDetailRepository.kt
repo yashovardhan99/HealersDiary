@@ -29,4 +29,12 @@ class PatientDetailRepository @Inject constructor(private val healersDao: Healer
             healersDao.getAllPayments(patientId)
         }.flow
     }
+
+    suspend fun deleteHealing(healing: Healing) {
+        healersDao.deleteHealing(healing)
+    }
+
+    suspend fun deletePayment(payment: Payment) {
+        healersDao.deletePayment(payment)
+    }
 }

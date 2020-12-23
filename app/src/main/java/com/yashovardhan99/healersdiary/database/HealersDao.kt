@@ -65,6 +65,12 @@ abstract class HealersDao {
     @Delete(entity = Patient::class)
     abstract suspend fun deletePatient(patient: Patient)
 
+    @Delete(entity = Healing::class)
+    abstract suspend fun deleteHealing(healing: Healing)
+
+    @Delete(entity = Payment::class)
+    abstract suspend fun deletePayment(payment: Payment)
+
     @Query("SELECT * FROM activity ORDER BY time")
     abstract fun getAllActivities(): PagingSource<Int, Activity>
 

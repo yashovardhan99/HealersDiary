@@ -47,6 +47,6 @@ class HealingListFragment : Fragment() {
 
     private fun deleteHealing(healing: Healing) {
         Timber.d("Delete healing $healing")
-        // todo viewModel.deleteHealing(healing)
+        viewModel.deleteHealing(healing)
     }
 }
