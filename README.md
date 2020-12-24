@@ -1,4 +1,4 @@
-![Healers Diary](app/src/main/res/drawable/logo_type.png)
+![Healers Diary](.github/full_logo.png)
 
 An android app for professional healers to keep track of their patients and help in instant billing.
 
@@ -7,30 +7,37 @@ An android app for professional healers to keep track of their patients and help
        height='90'/>
 </a>
 
+### Imporant: The app is currently being re-written to make it completely offline, so that your data stays on your device. This new version won't be compatible with older versions. Migration timeline will be shared soon.
+
+To check out the currently released version of the app, check out the [stable branch](https://github.com/yashovardhan99/HealersDiary/tree/stable)
+
+This new version uses the latest Jetpack libraries.
+
 ## Features
 - Create, modify and delete patient records
 - Keep track of healings done for each patient with the exact date and time
 - Keep track of payments received and bills due
-- Store a record of your patient feedback
-- Effortlessly sync your data online and access it even if you lose the app with your google account
+- Use the app completely offline
 - View a quick summary of your healings, payments and more to stay on the top of your day
 
 ## Contributing
 * Clone the repo and set up a project in firebase.
 * Make relevant changes and make a pull request in the master (dev) branch.
-* The alpha/beta branch contains the latest release. Do **NOT** make any changes to that branch. Any pull requests not directly to the master branch will be declined.
 A contributing guide will be up here soon.
 
-## Technologies used
-* Native android app
-* Firebase based authentication
-* Firestore storage for effortless online sync
-* [Picasso](http://square.github.io/picasso/)
+## Dev Bytes
+* Uses latest Jetpack libraries
+* Room for local persistence
+* Jetpack navigation with safe-args for easier navigation.
+* Flow and LiveData for staying up-to-date.
+* Paging 3.0 for loading long lists
+* Latest material design components
 
-## Expected release
-* Private Alpha - Now closed.
-* Public Beta - Out now! [Download Now](https://play.google.com/store/apps/details?id=com.yashovardhan99.healersdiary)
-* Public release - Out now! [Download Now](https://play.google.com/store/apps/details?id=com.yashovardhan99.healersdiary)
+## V2.0 timeline
+* Private Alpha - January 2021.
+* Public Beta - *tentative* April 2021
+* Public Stable - *tentative* December 2021 (To allow users to migrate),
+* Firestore access and all user data on Firebase will be deleted within a few months of stable release.
 
 ## Support
 * Support the development by cloning this repo and helping me fix any issues
