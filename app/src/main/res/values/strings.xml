@@ -136,5 +136,7 @@
     <string name="payment_received">Payment Received</string>
     <string name="patient_all_healings">%s: All Healings</string>
     <string name="patient_all_payments">%s: All Payments</string>
+    <string name="patient_list_transition" translatable="false">patient_%d</string>
+    <string name="patient_detail_transition">patient_detail_transition</string>
 </resources>
 

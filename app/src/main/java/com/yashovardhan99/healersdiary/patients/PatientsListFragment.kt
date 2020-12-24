@@ -4,18 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.transition.MaterialElevationScale
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.dashboard.DashboardViewModel
+import com.yashovardhan99.healersdiary.database.Patient
 import com.yashovardhan99.healersdiary.databinding.FragmentPatientsListBinding
-import com.yashovardhan99.healersdiary.utils.EmptyState
-import com.yashovardhan99.healersdiary.utils.EmptyStateAdapter
-import com.yashovardhan99.healersdiary.utils.Header
-import com.yashovardhan99.healersdiary.utils.getIcon
+import com.yashovardhan99.healersdiary.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
@@ -30,10 +32,7 @@ class PatientsListFragment : Fragment() {
                     resources.getString(R.string.patients),
                     getIcon(R.drawable.add_person, null, true))
         }
-        val patientListAdapter = PatientListAdapter {
-            Timber.d("Patient selected = $it")
-            viewModel.viewPatient(it.id)
-        }
+        val patientListAdapter = PatientListAdapter(::openPatientDetail)
         binding.toolbar.optionsIcon.setOnClickListener { viewModel.addNewPatient() }
         val emptyStateAdapter = EmptyStateAdapter(false, EmptyState.PATIENTS)
         binding.recycler.adapter = ConcatAdapter(patientListAdapter, emptyStateAdapter)
@@ -46,5 +45,26 @@ class PatientsListFragment : Fragment() {
             }
         }
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        postponeEnterTransition()
+        view.doOnPreDraw { startPostponedEnterTransition() }
+    }
+
+    private fun openPatientDetail(patient: Patient, view: View) {
+        exitTransition = MaterialElevationScale(false).apply {
+            duration = transitionDurationLarge
+        }
+        reenterTransition = MaterialElevationScale(true).apply {
+            duration = transitionDurationLarge
+        }
+        val patientDetailTransName = resources.getString(R.string.patient_detail_transition)
+        val extras = FragmentNavigatorExtras(view to patientDetailTransName)
+        val direction = PatientsListFragmentDirections
+                .actionPatientsToPatientDetailFragment(patient.id)
+        Timber.d("Patient selected = $patient")
+        findNavController().navigate(direction, extras)
     }
 }

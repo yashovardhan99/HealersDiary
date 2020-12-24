@@ -1,5 +1,6 @@
 package com.yashovardhan99.healersdiary.patients
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.transition.MaterialContainerTransform
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.dashboard.DashboardViewModel
 import com.yashovardhan99.healersdiary.database.ActivityType
@@ -27,6 +29,17 @@ class PatientDetailFragment : Fragment() {
     private val args: PatientDetailFragmentArgs by navArgs()
     val viewModel: PatientDetailViewModel by viewModels()
     private val dashboardViewModel: DashboardViewModel by activityViewModels()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        sharedElementEnterTransition = MaterialContainerTransform().apply {
+            drawingViewId = R.id.nav_host_fragment_container
+            duration = transitionDurationLarge
+            scrimColor = Color.TRANSPARENT
+            setAllContainerColors(requireContext().getColorFromAttr(R.attr.colorSurface))
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val binding = FragmentPatientDetailBinding.inflate(inflater, container, false)
         binding.header = context?.run {

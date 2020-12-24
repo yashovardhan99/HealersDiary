@@ -1,6 +1,7 @@
 package com.yashovardhan99.healersdiary.patients
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -8,11 +9,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yashovardhan99.healersdiary.database.Patient
 import com.yashovardhan99.healersdiary.databinding.PatientListItemBinding
 
-class PatientListAdapter(val onPatientSelected: (Patient) -> Unit) : ListAdapter<Patient, PatientListAdapter.PatientViewHolder>(PatientDiff()) {
+class PatientListAdapter(val onPatientSelected: (Patient, View) -> Unit) : ListAdapter<Patient, PatientListAdapter.PatientViewHolder>(PatientDiff()) {
     class PatientViewHolder(val binding: PatientListItemBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(patient: Patient, onPatientSelected: (Patient) -> Unit) {
+        fun bind(patient: Patient, onPatientSelected: (Patient, View) -> Unit) {
             binding.patient = patient
-            binding.root.setOnClickListener { onPatientSelected(patient) }
+            binding.root.setOnClickListener { onPatientSelected(patient, binding.root) }
         }
     }
 
