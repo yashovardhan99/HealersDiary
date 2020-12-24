@@ -1,11 +1,12 @@
 ![Healers Diary](.github/full_logo.png)
 
-An android app for professional healers to keep track of their patients and help in instant billing.
-
 <a href='https://play.google.com/store/apps/details?id=com.yashovardhan99.healersdiary&utm_source=github&utm_campaign=github&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'>
   <img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png'  
        height='90'/>
 </a>
+![Android CI](https://github.com/yashovardhan99/HealersDiary/workflows/Android%20CI/badge.svg)
+
+An android app for professional healers to keep track of their patients and help in instant billing.
 
 ### Imporant: The app is currently being re-written to make it completely offline, so that your data stays on your device. This new version won't be compatible with older versions. Migration timeline will be shared soon.
 
