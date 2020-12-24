@@ -12,7 +12,8 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
-import com.google.android.material.transition.MaterialElevationScale
+import com.google.android.material.transition.Hold
+import com.google.android.material.transition.MaterialFadeThrough
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.FragmentHomeBinding
 import com.yashovardhan99.healersdiary.utils.*
@@ -55,6 +56,11 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enterTransition = MaterialFadeThrough().apply { duration = transitionDurationLarge }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         postponeEnterTransition()
@@ -62,10 +68,10 @@ class HomeFragment : Fragment() {
     }
 
     private fun goToPatient(activity: Activity, view: View) {
-        exitTransition = MaterialElevationScale(false).apply {
+        exitTransition = Hold().apply {
             duration = transitionDurationLarge
         }
-        reenterTransition = MaterialElevationScale(true).apply {
+        reenterTransition = Hold().apply {
             duration = transitionDurationLarge
         }
         val patientDetailTransName = resources.getString(R.string.patient_detail_transition)

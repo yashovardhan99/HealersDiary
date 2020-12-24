@@ -16,6 +16,7 @@
         <action
             android:id="@+id/action_home_to_patientDetailFragment"
             app:destination="@id/patientDetailFragment"
+            app:launchSingleTop="true"
             app:popUpTo="@id/home" />
     </fragment>
     <fragment
@@ -26,6 +27,7 @@
         <action
             android:id="@+id/action_patients_to_patientDetailFragment"
             app:destination="@id/patientDetailFragment"
+            app:launchSingleTop="true"
             app:popUpTo="@id/patients" />
     </fragment>
     <fragment
@@ -66,7 +68,7 @@
         android:id="@+id/paymentListFragment"
         android:name="com.yashovardhan99.healersdiary.patients.PaymentListFragment"
         android:label="PaymentListFragment"
-        tools:layout="@layout/fragment_healing_list" >
+        tools:layout="@layout/fragment_healing_list">
         <argument
             android:name="patientId"
             app:argType="long" />
