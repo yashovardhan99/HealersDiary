@@ -14,6 +14,7 @@ class ActivityAdapter(private val onClick: (Activity, View) -> Unit) : ListAdapt
         fun bind(activity: Activity, onClick: (Activity, View) -> Unit) {
             binding.activity = activity
             binding.root.setOnClickListener { onClick(activity, binding.root) }
+            binding.root.transitionName = "activity_trans_pos_${activity.id}_${activity.type.description}"
         }
     }
 

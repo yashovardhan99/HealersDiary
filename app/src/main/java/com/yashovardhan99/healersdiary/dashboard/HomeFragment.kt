@@ -12,7 +12,7 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
-import com.google.android.material.transition.Hold
+import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialFadeThrough
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.FragmentHomeBinding
@@ -68,10 +68,10 @@ class HomeFragment : Fragment() {
     }
 
     private fun goToPatient(activity: Activity, view: View) {
-        exitTransition = Hold().apply {
+        exitTransition = MaterialElevationScale(true).apply {
             duration = transitionDurationLarge
         }
-        reenterTransition = Hold().apply {
+        reenterTransition = MaterialElevationScale(false).apply {
             duration = transitionDurationLarge
         }
         val patientDetailTransName = resources.getString(R.string.patient_detail_transition)

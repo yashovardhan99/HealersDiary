@@ -17,8 +17,7 @@
         android:clickable="true"
         android:focusable="true"
         android:paddingTop="2dp"
-        android:paddingBottom="2dp"
-        android:transitionName="@{@string/date_transition(activity.time.time)}">
+        android:paddingBottom="2dp">
 
         <ImageView
             android:id="@+id/icon"

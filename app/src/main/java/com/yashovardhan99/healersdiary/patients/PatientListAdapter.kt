@@ -9,11 +9,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yashovardhan99.healersdiary.database.Patient
 import com.yashovardhan99.healersdiary.databinding.PatientListItemBinding
 
-class PatientListAdapter(val onPatientSelected: (Patient, View) -> Unit) : ListAdapter<Patient, PatientListAdapter.PatientViewHolder>(PatientDiff()) {
+class PatientListAdapter(private val onPatientSelected: (Patient, View) -> Unit) : ListAdapter<Patient, PatientListAdapter.PatientViewHolder>(PatientDiff()) {
     class PatientViewHolder(val binding: PatientListItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(patient: Patient, onPatientSelected: (Patient, View) -> Unit) {
             binding.patient = patient
             binding.root.setOnClickListener { onPatientSelected(patient, binding.root) }
+            binding.root.transitionName = "patient_trans_pos_${patient.id}"
         }
     }
 

@@ -6,6 +6,7 @@ import com.yashovardhan99.healersdiary.database.Patient
 import java.util.*
 
 data class Activity(
+        val id: Long,
         val time: Date,
         val type: Type,
         val amount: Long,

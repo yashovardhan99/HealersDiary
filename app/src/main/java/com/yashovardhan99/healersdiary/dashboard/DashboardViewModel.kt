@@ -59,10 +59,10 @@ class DashboardViewModel @ViewModelInject constructor(private val repository: Da
                 Timber.d("Healings = $healings")
                 Timber.d("Patients = $patients")
                 val activities = healings.map { healing ->
-                    Activity(healing.time, Activity.Type.HEALING(context), healing.charge, patients[healing.patientId]
+                    Activity(healing.id, healing.time, Activity.Type.HEALING(context), healing.charge, patients[healing.patientId]
                             ?: Patient.MissingPatient)
                 } + payments.map { payment ->
-                    Activity(payment.time, Activity.Type.PAYMENT(context), payment.amount, patients[payment.patientId]
+                    Activity(payment.id, payment.time, Activity.Type.PAYMENT(context), payment.amount, patients[payment.patientId]
                             ?: Patient.MissingPatient)
                 }
                 val healingsThisMonth = healings.filter { !it.time.before(thisMonth.time) }

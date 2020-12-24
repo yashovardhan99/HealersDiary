@@ -69,10 +69,10 @@ class PatientDetailViewModel @ViewModelInject constructor(
             val healings = triplet.second
             val patient = triplet.third
             val activities = healings.map { healing ->
-                Activity(healing.time, Activity.Type.HEALING(context), healing.charge, patient
+                Activity(healing.id, healing.time, Activity.Type.HEALING(context), healing.charge, patient
                         ?: Patient.MissingPatient)
             } + payments.map { payment ->
-                Activity(payment.time, Activity.Type.PAYMENT(context), payment.amount, patient
+                Activity(payment.id, payment.time, Activity.Type.PAYMENT(context), payment.amount, patient
                         ?: Patient.MissingPatient)
             }
             Pair(stats, activities.sortedByDescending { it.time })
