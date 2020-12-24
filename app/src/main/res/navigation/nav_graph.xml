@@ -13,6 +13,10 @@
         <deepLink
             android:id="@+id/deepLink2"
             app:uri="healersdiary://com.yashovardhan99.healersdiary/dashboard" />
+        <action
+            android:id="@+id/action_home_to_patientDetailFragment"
+            app:destination="@id/patientDetailFragment"
+            app:popUpTo="@id/home" />
     </fragment>
     <fragment
         android:id="@+id/patients"
@@ -21,7 +25,8 @@
         tools:layout="@layout/fragment_patients_list">
         <action
             android:id="@+id/action_patients_to_patientDetailFragment"
-            app:destination="@id/patientDetailFragment" />
+            app:destination="@id/patientDetailFragment"
+            app:popUpTo="@id/patients" />
     </fragment>
     <fragment
         android:id="@+id/analytics"

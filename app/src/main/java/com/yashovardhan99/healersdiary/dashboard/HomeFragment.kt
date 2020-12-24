@@ -4,11 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.transition.MaterialElevationScale
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.FragmentHomeBinding
 import com.yashovardhan99.healersdiary.utils.*
@@ -27,9 +31,7 @@ class HomeFragment : Fragment() {
         }
         val statAdapter = StatAdapter()
         val headerAdapter = HeaderAdapter(false)
-        val activityAdapter = ActivityAdapter { activity ->
-            viewModel.viewPatient(activity.patient.id)
-        }
+        val activityAdapter = ActivityAdapter(::goToPatient)
         val emptyStateAdapter = EmptyStateAdapter(false, EmptyState.DASHBOARD)
         binding.recycler.adapter = ConcatAdapter(statAdapter, headerAdapter, activityAdapter, emptyStateAdapter)
         lifecycleScope.launchWhenStarted {
@@ -51,5 +53,25 @@ class HomeFragment : Fragment() {
         }
         binding.recycler.layoutManager = layoutManager
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        postponeEnterTransition()
+        view.doOnPreDraw { startPostponedEnterTransition() }
+    }
+
+    private fun goToPatient(activity: Activity, view: View) {
+        exitTransition = MaterialElevationScale(false).apply {
+            duration = transitionDurationLarge
+        }
+        reenterTransition = MaterialElevationScale(true).apply {
+            duration = transitionDurationLarge
+        }
+        val patientDetailTransName = resources.getString(R.string.patient_detail_transition)
+        val extras = FragmentNavigatorExtras(view to patientDetailTransName)
+        val direction = HomeFragmentDirections
+                .actionHomeToPatientDetailFragment(activity.patient.id)
+        findNavController().navigate(direction, extras)
     }
 }
