@@ -1,19 +1,16 @@
 package com.yashovardhan99.healersdiary.utils
 
 import android.text.format.DateUtils
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
 object Utils {
     private val thisWeek = Calendar.getInstance().apply {
-        setToStartOfDay()
         add(Calendar.WEEK_OF_YEAR, -1)
     }.time
     private val thisMonth = Calendar.getInstance().apply { setToStartOfMonth() }.time
 
     fun List<ActivityParent.Activity>.insertSeparators(): List<ActivityParent> {
-        Timber.d("This month = $thisMonth")
         val listWithSeparator = mutableListOf<ActivityParent>()
         forEachIndexed { index, activity ->
             if (index == 0 || getHeading(activity.time) != getHeading(get(index - 1).time)) {
