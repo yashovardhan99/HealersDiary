@@ -62,8 +62,8 @@ class PatientDetailFragment : Fragment() {
         val headerAdapter = HeaderAdapter(false)
         val activityAdapter = ActivityAdapter { activity ->
             when (activity.type) {
-                is Activity.Type.HEALING -> goToHealings()
-                is Activity.Type.PAYMENT -> goToPayments()
+                is ActivityParent.Activity.Type.HEALING -> goToHealings()
+                is ActivityParent.Activity.Type.PAYMENT -> goToPayments()
             }
         }
         val emptyStatAdapter = EmptyStateAdapter(false, EmptyState.DASHBOARD)

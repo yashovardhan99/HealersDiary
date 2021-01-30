@@ -19,6 +19,7 @@ import com.yashovardhan99.healersdiary.databinding.FragmentHomeBinding
 import com.yashovardhan99.healersdiary.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import timber.log.Timber
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -37,6 +38,7 @@ class HomeFragment : Fragment() {
         binding.recycler.adapter = ConcatAdapter(statAdapter, headerAdapter, activityAdapter, emptyStateAdapter)
         lifecycleScope.launchWhenStarted {
             viewModel.dashboardFlow.collectLatest { statWithActivity ->
+                Timber.d("${statWithActivity.second}")
                 statAdapter.submitList(statWithActivity.first)
                 headerAdapter.isVisible = statWithActivity.second != null
                 emptyStateAdapter.isVisible = statWithActivity.second == null
@@ -67,7 +69,8 @@ class HomeFragment : Fragment() {
         view.doOnPreDraw { startPostponedEnterTransition() }
     }
 
-    private fun goToPatient(activity: Activity, view: View) {
+    private fun goToPatient(activity: ActivityParent, view: View) {
+        if (activity !is ActivityParent.Activity) return
         exitTransition = MaterialElevationScale(true).apply {
             duration = transitionDurationLarge
         }

@@ -11,6 +11,7 @@ import com.yashovardhan99.healersdiary.utils.Stat.Companion.earnedLastMonth
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.earnedThisMonth
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.healingsThisMonth
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.healingsToday
+import com.yashovardhan99.healersdiary.utils.Utils.insertSeparators
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,7 +19,7 @@ import kotlinx.coroutines.flow.combine
 import timber.log.Timber
 import java.util.*
 
-class DashboardViewModel @ViewModelInject constructor(private val repository: DashboardRepository,
+class DashboardViewModel @ViewModelInject constructor(repository: DashboardRepository,
                                                       @ApplicationContext val context: Context) : ViewModel() {
     private val patientsFlow = repository.patients
     private val today = Calendar.getInstance().apply {
@@ -53,10 +54,10 @@ class DashboardViewModel @ViewModelInject constructor(private val repository: Da
                 Timber.d("Healings = $healings")
                 Timber.d("Patients = $patients")
                 val activities = healings.map { healing ->
-                    Activity(healing.id, healing.time, Activity.Type.HEALING(context), healing.charge, patients[healing.patientId]
+                    ActivityParent.Activity(healing.id, healing.time, ActivityParent.Activity.Type.HEALING(context), healing.charge, patients[healing.patientId]
                             ?: Patient.MissingPatient)
                 } + payments.map { payment ->
-                    Activity(payment.id, payment.time, Activity.Type.PAYMENT(context), payment.amount, patients[payment.patientId]
+                    ActivityParent.Activity(payment.id, payment.time, ActivityParent.Activity.Type.PAYMENT(context), payment.amount, patients[payment.patientId]
                             ?: Patient.MissingPatient)
                 }
                 val healingsThisMonth = healings.filter { !it.time.before(thisMonth.time) }
@@ -73,7 +74,7 @@ class DashboardViewModel @ViewModelInject constructor(private val repository: Da
                     listOf(healingsToday(healingsToday.size), healingsThisMonth(healingsThisMonth.size),
                             earnedThisMonth(earningsThisMonth), earnedLastMonth(earningsLastMonth))
                 }
-                if (activities.isNotEmpty()) Pair(stats, activities.sortedByDescending { it.time })
+                if (activities.isNotEmpty()) Pair(stats, activities.sortedByDescending { it.time }.insertSeparators())
                 else Pair(stats, null)
             }
     private val _requests = MutableStateFlow<Request?>(null)

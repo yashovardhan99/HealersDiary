@@ -39,7 +39,7 @@ class PatientDetailViewModel @ViewModelInject constructor(
         }
     }
 
-    fun getStatWithActivities(patientId: Long): Flow<Pair<List<Stat>, List<Activity>>> {
+    fun getStatWithActivities(patientId: Long): Flow<Pair<List<Stat>, List<ActivityParent.Activity>>> {
         val healingsFlow = repository.getHealings(patientId, lastMonthDate.time)
         val paymentsFlow = repository.getPayments(patientId, lastMonthDate.time)
         return healingsFlow.combine(patient) { healings, patient ->
@@ -63,10 +63,10 @@ class PatientDetailViewModel @ViewModelInject constructor(
             val healings = triplet.second
             val patient = triplet.third
             val activities = healings.map { healing ->
-                Activity(healing.id, healing.time, Activity.Type.HEALING(context), healing.charge, patient
+                ActivityParent.Activity(healing.id, healing.time, ActivityParent.Activity.Type.HEALING(context), healing.charge, patient
                         ?: Patient.MissingPatient)
             } + payments.map { payment ->
-                Activity(payment.id, payment.time, Activity.Type.PAYMENT(context), payment.amount, patient
+                ActivityParent.Activity(payment.id, payment.time, ActivityParent.Activity.Type.PAYMENT(context), payment.amount, patient
                         ?: Patient.MissingPatient)
             }
             Pair(stats, activities.sortedByDescending { it.time })

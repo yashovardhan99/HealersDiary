@@ -6,11 +6,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.yashovardhan99.healersdiary.databinding.ActivityInnerCardBinding
-import com.yashovardhan99.healersdiary.utils.Activity
+import com.yashovardhan99.healersdiary.utils.ActivityParent
 
-class ActivityAdapter(private val onClick: (Activity) -> Unit = {}) : ListAdapter<Activity, ActivityAdapter.ActivityViewHolder>(ActivityDiffUtils()) {
+class ActivityAdapter(private val onClick: (ActivityParent.Activity) -> Unit = {}) : ListAdapter<ActivityParent.Activity, ActivityAdapter.ActivityViewHolder>(ActivityDiffUtils()) {
     class ActivityViewHolder(val binding: ActivityInnerCardBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(activity: Activity, onClick: (Activity) -> Unit = { }) {
+        fun bind(activity: ActivityParent.Activity, onClick: (ActivityParent.Activity) -> Unit = { }) {
             binding.activity = activity
             binding.root.setOnClickListener { onClick(activity) }
         }
@@ -25,12 +25,12 @@ class ActivityAdapter(private val onClick: (Activity) -> Unit = {}) : ListAdapte
     }
 }
 
-class ActivityDiffUtils : DiffUtil.ItemCallback<Activity>() {
-    override fun areItemsTheSame(oldItem: Activity, newItem: Activity): Boolean {
+class ActivityDiffUtils : DiffUtil.ItemCallback<ActivityParent.Activity>() {
+    override fun areItemsTheSame(oldItem: ActivityParent.Activity, newItem: ActivityParent.Activity): Boolean {
         return oldItem == newItem
     }
 
-    override fun areContentsTheSame(oldItem: Activity, newItem: Activity): Boolean {
+    override fun areContentsTheSame(oldItem: ActivityParent.Activity, newItem: ActivityParent.Activity): Boolean {
         return oldItem == newItem
     }
 }

@@ -8,7 +8,7 @@
 
         <variable
             name="activity"
-            type="com.yashovardhan99.healersdiary.utils.Activity" />
+            type="com.yashovardhan99.healersdiary.utils.ActivityParent.Activity" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
