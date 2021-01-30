@@ -12,6 +12,7 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialFadeThrough
 import com.yashovardhan99.healersdiary.R
@@ -31,9 +32,9 @@ class HomeFragment : Fragment() {
                     resources.getString(R.string.app_name),
                     getIcon(R.drawable.settings))
         }
-        val statAdapter = StatAdapter()
+        val statAdapter = StatAdapter().apply { stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY }
         val headerAdapter = HeaderAdapter(false)
-        val activityAdapter = ActivityAdapter(::goToPatient)
+        val activityAdapter = ActivityAdapter(::goToPatient).apply { stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY }
         val emptyStateAdapter = EmptyStateAdapter(false, EmptyState.DASHBOARD)
         binding.recycler.adapter = ConcatAdapter(statAdapter, headerAdapter, activityAdapter, emptyStateAdapter)
         lifecycleScope.launchWhenStarted {
