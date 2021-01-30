@@ -6,13 +6,11 @@ import androidx.lifecycle.ViewModel
 import com.yashovardhan99.healersdiary.database.Healing
 import com.yashovardhan99.healersdiary.database.Patient
 import com.yashovardhan99.healersdiary.database.Payment
-import com.yashovardhan99.healersdiary.utils.Activity
-import com.yashovardhan99.healersdiary.utils.Request
+import com.yashovardhan99.healersdiary.utils.*
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.earnedLastMonth
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.earnedThisMonth
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.healingsThisMonth
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.healingsToday
-import com.yashovardhan99.healersdiary.utils.setToStartOfDay
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,12 +24,8 @@ class DashboardViewModel @ViewModelInject constructor(private val repository: Da
     private val today = Calendar.getInstance().apply {
         setToStartOfDay()
     }
-    private val thisMonth = (today.clone() as Calendar).apply {
-        set(Calendar.DAY_OF_MONTH, getActualMinimum(Calendar.DAY_OF_MONTH))
-    }
-    private val lastMonth = (thisMonth.clone() as Calendar).apply {
-        roll(Calendar.MONTH, false)
-    }
+    private val thisMonth = Calendar.getInstance().apply { setToStartOfMonth() }
+    private val lastMonth = Calendar.getInstance().apply { setToStartOfLastMonth() }
     private val healings = repository.getHealingsStarting(lastMonth.time)
     private val payments = repository.getPaymentsStarting(lastMonth.time)
 

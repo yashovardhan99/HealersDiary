@@ -8,15 +8,13 @@ import androidx.paging.PagingData
 import com.yashovardhan99.healersdiary.database.Healing
 import com.yashovardhan99.healersdiary.database.Patient
 import com.yashovardhan99.healersdiary.database.Payment
-import com.yashovardhan99.healersdiary.utils.Activity
-import com.yashovardhan99.healersdiary.utils.Stat
+import com.yashovardhan99.healersdiary.utils.*
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.earnedLastMonth
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.earnedThisMonth
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.healingsLastMonth
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.healingsThisMonth
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.healingsToday
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.paymentDue
-import com.yashovardhan99.healersdiary.utils.setToStartOfDay
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,12 +30,8 @@ class PatientDetailViewModel @ViewModelInject constructor(
     private val _patient = MutableStateFlow<Patient?>(null)
     val patient: StateFlow<Patient?> = _patient
     private val todayDate = Calendar.getInstance().apply { setToStartOfDay() }
-    private val thisMonthDate = (todayDate.clone() as Calendar).apply {
-        set(Calendar.DAY_OF_MONTH, getActualMinimum(Calendar.DAY_OF_MONTH))
-    }
-    private val lastMonthDate = (thisMonthDate.clone() as Calendar).apply {
-        roll(Calendar.MONTH, false)
-    }
+    private val thisMonthDate = Calendar.getInstance().apply { setToStartOfMonth() }
+    private val lastMonthDate = Calendar.getInstance().apply { setToStartOfLastMonth() }
 
     fun setPatientId(patientId: Long) {
         viewModelScope.launch {
