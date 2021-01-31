@@ -4,15 +4,17 @@ import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.createDataStore
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class OnboardingViewModel @ViewModelInject constructor(@ApplicationContext application: Context) : ViewModel() {
+@HiltViewModel
+class OnboardingViewModel @Inject constructor(@ApplicationContext application: Context) : ViewModel() {
     private val dataStore = application.createDataStore("Onboarding")
 
     data class OnboardingPreferences(val onboardingComplete: Boolean)

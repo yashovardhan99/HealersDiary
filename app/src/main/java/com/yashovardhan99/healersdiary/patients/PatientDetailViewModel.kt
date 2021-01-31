@@ -1,7 +1,6 @@
 package com.yashovardhan99.healersdiary.patients
 
 import android.content.Context
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -15,6 +14,7 @@ import com.yashovardhan99.healersdiary.utils.Stat.Companion.healingsLastMonth
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.healingsThisMonth
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.healingsToday
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.paymentDue
+import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,8 +22,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import java.util.*
+import javax.inject.Inject
 
-class PatientDetailViewModel @ViewModelInject constructor(
+@HiltViewModel
+class PatientDetailViewModel @Inject constructor(
         private val repository: PatientDetailRepository,
         @ApplicationContext private val context: Context) : ViewModel() {
 

@@ -1,7 +1,6 @@
 package com.yashovardhan99.healersdiary.dashboard
 
 import android.content.Context
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import com.yashovardhan99.healersdiary.database.Healing
 import com.yashovardhan99.healersdiary.database.Patient
@@ -12,15 +11,18 @@ import com.yashovardhan99.healersdiary.utils.Stat.Companion.earnedThisMonth
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.healingsThisMonth
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.healingsToday
 import com.yashovardhan99.healersdiary.utils.Utils.insertSeparators
+import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import timber.log.Timber
 import java.util.*
+import javax.inject.Inject
 
-class DashboardViewModel @ViewModelInject constructor(repository: DashboardRepository,
-                                                      @ApplicationContext val context: Context) : ViewModel() {
+@HiltViewModel
+class DashboardViewModel @Inject constructor(repository: DashboardRepository,
+                                             @ApplicationContext val context: Context) : ViewModel() {
     private val patientsFlow = repository.patients
     private val today = Calendar.getInstance().apply {
         setToStartOfDay()

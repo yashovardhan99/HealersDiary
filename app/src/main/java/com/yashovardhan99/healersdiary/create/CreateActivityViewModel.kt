@@ -1,6 +1,5 @@
 package com.yashovardhan99.healersdiary.create
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yashovardhan99.healersdiary.dashboard.DashboardRepository
@@ -9,13 +8,16 @@ import com.yashovardhan99.healersdiary.database.Patient
 import com.yashovardhan99.healersdiary.database.Payment
 import com.yashovardhan99.healersdiary.utils.Request
 import com.yashovardhan99.healersdiary.utils.setToStartOfDay
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.math.BigDecimal
 import java.util.*
+import javax.inject.Inject
 
-class CreateActivityViewModel @ViewModelInject constructor(
+@HiltViewModel
+class CreateActivityViewModel @Inject constructor(
         private val dashboardRepository: DashboardRepository,
         private val createRepository: CreateRepository
 ) : ViewModel() {
