@@ -36,7 +36,7 @@ class PaymentListFragment : Fragment() {
         }
         binding.toolbar.icon.setOnClickListener { findNavController().navigateUp() }
         binding.recycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        val adapter = PaymentListAdapter(::deletePayment)
+        val adapter = PaymentListAdapter(::editPayment, ::deletePayment)
 
         lifecycleScope.launchWhenStarted {
             viewModel.getPayments(args.patientId).collect { pagingData ->
@@ -45,6 +45,10 @@ class PaymentListFragment : Fragment() {
         }
         binding.recycler.adapter = adapter
         return binding.root
+    }
+
+    private fun editPayment(payment: Payment) {
+        // TODO: 31/1/21 Edit Payment
     }
 
     private fun deletePayment(payment: Payment) {

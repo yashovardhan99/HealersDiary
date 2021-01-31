@@ -10,12 +10,15 @@ import com.yashovardhan99.healersdiary.database.Healing
 import com.yashovardhan99.healersdiary.databinding.ItemCardHealingBinding
 
 
-class HealingListAdapter(val onRequestDelete: (Healing) -> Unit) : PagingDataAdapter<Healing, HealingListAdapter.HealingViewHolder>(HealingDiffUtils()) {
+class HealingListAdapter(private val onRequestEdit: (Healing) -> Unit, private val onRequestDelete: (Healing) -> Unit) : PagingDataAdapter<Healing, HealingListAdapter.HealingViewHolder>(HealingDiffUtils()) {
     class HealingViewHolder(val binding: ItemCardHealingBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(healing: Healing?, onRequestDelete: (Healing) -> Unit) {
+        fun bind(healing: Healing?, onRequestEdit: (Healing) -> Unit, onRequestDelete: (Healing) -> Unit) {
             binding.healing = healing
             binding.root.setOnCreateContextMenuListener { menu, _, _ ->
-                menu.add(0, 0, 0, R.string.delete).setOnMenuItemClickListener { _ ->
+                menu.add(R.string.edit).setOnMenuItemClickListener { _ ->
+                    healing?.let { onRequestEdit(it); true } ?: false
+                }
+                menu.add(R.string.delete).setOnMenuItemClickListener { _ ->
                     healing?.let { onRequestDelete(it); true } ?: false
                 }
             }
@@ -27,7 +30,7 @@ class HealingListAdapter(val onRequestDelete: (Healing) -> Unit) : PagingDataAda
     }
 
     override fun onBindViewHolder(holder: HealingViewHolder, position: Int) {
-        holder.bind(getItem(position), onRequestDelete)
+        holder.bind(getItem(position), onRequestEdit, onRequestDelete)
     }
 }
 

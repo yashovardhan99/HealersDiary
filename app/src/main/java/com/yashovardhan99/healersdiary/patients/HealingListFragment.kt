@@ -37,7 +37,7 @@ class HealingListFragment : Fragment() {
         }
         binding.toolbar.icon.setOnClickListener { findNavController().navigateUp() }
         binding.recycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        val adapter = HealingListAdapter { healing -> deleteHealing(healing) }
+        val adapter = HealingListAdapter(::editHealing, ::deleteHealing)
         lifecycleScope.launchWhenStarted {
             viewModel.getHealings(args.patientId).collect { pagingData ->
                 adapter.submitData(pagingData)
@@ -45,6 +45,10 @@ class HealingListFragment : Fragment() {
         }
         binding.recycler.adapter = adapter
         return binding.root
+    }
+
+    private fun editHealing(healing: Healing) {
+        // TODO: 31/1/21 Edit Healing
     }
 
     private fun deleteHealing(healing: Healing) {

@@ -10,12 +10,15 @@ import com.yashovardhan99.healersdiary.database.Payment
 import com.yashovardhan99.healersdiary.databinding.ItemCardPaymentBinding
 
 
-class PaymentListAdapter(private val onRequestDelete: (Payment) -> Unit) : PagingDataAdapter<Payment, PaymentListAdapter.PaymentViewHolder>(PaymentDiffUtils()) {
+class PaymentListAdapter(private val onRequestEdit: (Payment) -> Unit, private val onRequestDelete: (Payment) -> Unit) : PagingDataAdapter<Payment, PaymentListAdapter.PaymentViewHolder>(PaymentDiffUtils()) {
     class PaymentViewHolder(val binding: ItemCardPaymentBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(payment: Payment?, onRequestDelete: (Payment) -> Unit) {
+        fun bind(payment: Payment?, onRequestEdit: (Payment) -> Unit, onRequestDelete: (Payment) -> Unit) {
             binding.payment = payment
             binding.root.setOnCreateContextMenuListener { menu, _, _ ->
-                menu.add(0, 0, 0, R.string.delete).setOnMenuItemClickListener { _ ->
+                menu.add(R.string.edit).setOnMenuItemClickListener { _ ->
+                    payment?.let { onRequestEdit(it); true } ?: false
+                }
+                menu.add(R.string.delete).setOnMenuItemClickListener { _ ->
                     payment?.let { onRequestDelete(it); true } ?: false
                 }
             }
@@ -27,7 +30,7 @@ class PaymentListAdapter(private val onRequestDelete: (Payment) -> Unit) : Pagin
     }
 
     override fun onBindViewHolder(holder: PaymentViewHolder, position: Int) {
-        holder.bind(getItem(position), onRequestDelete)
+        holder.bind(getItem(position), onRequestEdit, onRequestDelete)
     }
 }
 
