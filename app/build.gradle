@@ -31,8 +31,19 @@ android {
         applicationId "com.yashovardhan99.healersdiary"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 2000002
-        versionName "2.0.0"
+        def major = 2
+        def minor = 0
+        def patch = 0
+        def type = 'alpha'
+        def build = 0
+        def types = ['alpha': 0, 'beta': 1, 'rc': 2, 'release': 3]
+        def curType = types.get(type, 3)
+        def standard = ((major * 100) + minor) * 100 + patch
+        versionCode = (standard * 10+curType)*100 + build
+        if(type=="release") versionName = "$major.$minor.$patch"
+        else if(build == 0) versionName = "$major.$minor.$patch-$type"
+        else if(build < 10) versionName = "$major.$minor.$patch-${type}0${build}"
+        else versionName = "$major.$minor.$patch-$type$build"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         javaCompileOptions {
