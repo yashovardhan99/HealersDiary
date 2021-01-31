@@ -22,12 +22,12 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="12dp"
-            android:transitionGroup="true"
             android:layout_marginEnd="12dp"
             android:paddingTop="24dp"
+            android:transitionGroup="true"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -37,5 +37,23 @@
             tools:ignore="NotSibling"
             tools:itemCount="4"
             tools:listitem="@layout/layout_stat_box" />
+
+        <com.reddit.indicatorfastscroll.FastScrollerView
+            android:id="@+id/fast_scroller"
+            android:layout_width="300dp"
+            android:layout_height="600dp"
+            app:layout_constraintBottom_toBottomOf="@id/recycler"
+            app:layout_constraintStart_toEndOf="@id/recycler"
+            app:layout_constraintTop_toTopOf="@id/recycler" />
+
+        <com.reddit.indicatorfastscroll.FastScrollerThumbView
+            android:id="@+id/thumb_fast_scroller"
+            android:layout_width="100dp"
+            android:layout_height="0dp"
+            android:textColor="?attr/colorOnPrimary"
+            app:layout_constraintBottom_toBottomOf="@id/fast_scroller"
+            app:layout_constraintEnd_toStartOf="@id/fast_scroller"
+            app:layout_constraintTop_toTopOf="@id/fast_scroller"
+            app:thumbColor="@color/colorPrimaryDark" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

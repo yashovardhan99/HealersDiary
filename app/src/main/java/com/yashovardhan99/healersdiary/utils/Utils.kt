@@ -21,7 +21,7 @@ object Utils {
         return listWithSeparator
     }
 
-    private fun getHeading(date: Date): String {
+    fun getHeading(date: Date): String {
         return when {
             date.after(thisWeek) -> DateUtils.getRelativeTimeSpanString(date.time, Date().time, DateUtils.DAY_IN_MILLIS).toString()
             !date.before(thisMonth) -> DateUtils.getRelativeTimeSpanString(date.time, Date().time, DateUtils.WEEK_IN_MILLIS).toString()
