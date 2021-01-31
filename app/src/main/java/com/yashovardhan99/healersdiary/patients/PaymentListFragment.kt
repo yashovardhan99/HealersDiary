@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.asLiveData
@@ -49,6 +50,7 @@ class PaymentListFragment : Fragment() {
 
     private fun editPayment(payment: Payment) {
         // TODO: 31/1/21 Edit Payment
+        Toast.makeText(context, R.string.not_yet_implemented, Toast.LENGTH_SHORT).show()
     }
 
     private fun deletePayment(payment: Payment) {
