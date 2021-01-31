@@ -73,4 +73,9 @@
             android:name="patientId"
             app:argType="long" />
     </fragment>
+    <fragment
+        android:id="@+id/settings"
+        android:name="com.yashovardhan99.healersdiary.settings.SettingsFragment"
+        android:label="SettingsFragment"
+        tools:layout="@layout/fragment_settings" />
 </navigation>
