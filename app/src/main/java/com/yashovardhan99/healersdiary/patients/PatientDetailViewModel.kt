@@ -14,6 +14,7 @@ import com.yashovardhan99.healersdiary.utils.Stat.Companion.healingsLastMonth
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.healingsThisMonth
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.healingsToday
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.paymentDue
+import com.yashovardhan99.healersdiary.utils.Utils.insertSeparators
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
@@ -41,7 +42,7 @@ class PatientDetailViewModel @Inject constructor(
         }
     }
 
-    fun getStatWithActivities(patientId: Long): Flow<Pair<List<Stat>, List<ActivityParent.Activity>>> {
+    fun getStatWithActivities(patientId: Long): Flow<Pair<List<Stat>, List<ActivityParent>>> {
         val healingsFlow = repository.getHealings(patientId, lastMonthDate.time)
         val paymentsFlow = repository.getPayments(patientId, lastMonthDate.time)
         return healingsFlow.combine(patient) { healings, patient ->
@@ -71,7 +72,7 @@ class PatientDetailViewModel @Inject constructor(
                 ActivityParent.Activity(payment.id, payment.time, ActivityParent.Activity.Type.PAYMENT(context), payment.amount, patient
                         ?: Patient.MissingPatient)
             }
-            Pair(stats, activities.sortedByDescending { it.time })
+            Pair(stats, activities.sortedByDescending { it.time }.insertSeparators())
         }
     }
 

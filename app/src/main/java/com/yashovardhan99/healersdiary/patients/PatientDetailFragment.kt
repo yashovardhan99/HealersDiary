@@ -62,6 +62,7 @@ class PatientDetailFragment : Fragment() {
         }
         val headerAdapter = HeaderAdapter(false)
         val activityAdapter = ActivityAdapter { activity ->
+            if (activity !is ActivityParent.Activity) return@ActivityAdapter
             when (activity.type) {
                 is ActivityParent.Activity.Type.HEALING -> goToHealings()
                 is ActivityParent.Activity.Type.PAYMENT -> goToPayments()
