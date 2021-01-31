@@ -30,6 +30,7 @@ class DashboardViewModel @ViewModelInject constructor(repository: DashboardRepos
     private val healings = repository.getHealingsStarting(lastMonth.time)
     private val payments = repository.getPaymentsStarting(lastMonth.time)
 
+    private var currentPatientId = -1L
     val patientsList = healings.combine(patientsFlow) { healings, patients ->
         val patientsMap = patients.associateBy { it.id }
         Timber.d(patientsMap.toString())
@@ -94,6 +95,16 @@ class DashboardViewModel @ViewModelInject constructor(repository: DashboardRepos
     fun editPatient(patientId: Long) {
         _requests.value = Request.UpdatePatient(patientId)
     }
+
+    fun setPatientId(patientId: Long) {
+        currentPatientId = patientId
+    }
+
+    fun resetPatientId() {
+        currentPatientId = -1L
+    }
+
+    fun getPatientId(): Long = currentPatientId
 
     init {
         Timber.d("DATES: Today = ${today.time} This month = ${thisMonth.time} Last month = ${lastMonth.time}")

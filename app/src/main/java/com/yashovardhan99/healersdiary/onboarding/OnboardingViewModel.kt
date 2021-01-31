@@ -1,8 +1,8 @@
 package com.yashovardhan99.healersdiary.onboarding
 
 import android.content.Context
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.preferencesKey
 import androidx.datastore.preferences.createDataStore
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
@@ -17,7 +17,7 @@ class OnboardingViewModel @ViewModelInject constructor(@ApplicationContext appli
 
     data class OnboardingPreferences(val onboardingComplete: Boolean)
     private object PreferencesKey {
-        val onboardingComplete = preferencesKey<Boolean>("onboarding_completed")
+        val onboardingComplete = booleanPreferencesKey("onboarding_completed")
     }
 
     val onboardingFlow: Flow<OnboardingPreferences> = dataStore.data.map { preferences ->

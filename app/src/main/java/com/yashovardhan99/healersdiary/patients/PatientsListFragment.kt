@@ -52,6 +52,7 @@ class PatientsListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
+        viewModel.resetPatientId()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,6 +72,7 @@ class PatientsListFragment : Fragment() {
         val direction = PatientsListFragmentDirections
                 .actionPatientsToPatientDetailFragment(patient.id)
         Timber.d("Patient selected = $patient")
+        viewModel.setPatientId(patient.id)
         findNavController().navigate(direction, extras)
     }
 }

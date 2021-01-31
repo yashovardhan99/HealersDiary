@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
         }
         binding.newRecord.setOnClickListener {
             Timber.d("New record")
-            getRequestContract.launch(Request.NewActivity())
+            getRequestContract.launch(Request.NewActivity(viewModel.getPatientId()))
         }
         viewModel.requests.asLiveData().observe(this) { request ->
             if (request != null) {

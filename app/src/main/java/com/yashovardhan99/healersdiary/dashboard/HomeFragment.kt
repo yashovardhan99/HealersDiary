@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialFadeThrough
-import com.reddit.indicatorfastscroll.FastScrollItemIndicator
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.FragmentHomeBinding
 import com.yashovardhan99.healersdiary.utils.*
@@ -47,15 +46,6 @@ class HomeFragment : Fragment() {
                 headerAdapter.notifyDataSetChanged()
                 emptyStateAdapter.notifyDataSetChanged()
                 activityAdapter.submitList(statWithActivity.second)
-                binding.fastScroller.setupWithRecyclerView(binding.recycler, { position ->
-                    if (position <= 4) null
-                    else when (val activity = statWithActivity.second?.getOrNull(position - 5)) {
-                        is ActivityParent.ActivitySeparator -> FastScrollItemIndicator.Text(activity.heading)
-                        is ActivityParent.Activity -> FastScrollItemIndicator.Text(Utils.getHeading(activity.time))
-                        else -> null
-                    }
-                })
-                binding.thumbFastScroller.setupWithFastScroller(binding.fastScroller)
             }
         }
         val layoutManager = GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
@@ -66,6 +56,7 @@ class HomeFragment : Fragment() {
             }
         }
         binding.recycler.layoutManager = layoutManager
+        Timber.d("Setting up thumbfastscroller")
         return binding.root
     }
 
@@ -78,6 +69,7 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
+        viewModel.resetPatientId()
     }
 
     private fun goToPatient(activity: ActivityParent, view: View) {
@@ -90,6 +82,7 @@ class HomeFragment : Fragment() {
         }
         val patientDetailTransName = resources.getString(R.string.patient_detail_transition)
         val extras = FragmentNavigatorExtras(view to patientDetailTransName)
+        viewModel.setPatientId(activity.patient.id)
         val direction = HomeFragmentDirections
                 .actionHomeToPatientDetailFragment(activity.patient.id)
         findNavController().navigate(direction, extras)

@@ -49,6 +49,7 @@ class PatientDetailFragment : Fragment() {
                     getIcon(R.drawable.edit, null, true))
         }
         viewModel.setPatientId(args.patientId)
+        dashboardViewModel.setPatientId(args.patientId)
         viewModel.patient.asLiveData().observe(viewLifecycleOwner) { patient ->
             Timber.d("Patient = $patient")
             binding.header = binding.header?.copy(title = patient?.name ?: "")
