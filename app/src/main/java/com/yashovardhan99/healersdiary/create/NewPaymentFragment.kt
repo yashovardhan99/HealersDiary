@@ -8,6 +8,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.asLiveData
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
 import com.yashovardhan99.healersdiary.R
@@ -52,10 +53,11 @@ class NewPaymentFragment : Fragment() {
             binding.timeEdit.setText(SimpleDateFormat.getTimeInstance().format(calendar.time))
         }
         binding.header = context?.run {
-            Header(getIcon(R.drawable.cross, null, true),
+            Header(getIcon(R.drawable.back, null, true),
                     getString(R.string.new_payment),
                     getIcon(R.drawable.save, getString(R.string.save), true))
         }
+        binding.heading.icon.setOnClickListener { findNavController().navigateUp() }
 
         val datePicker = DatePickerFragment { calendar ->
             viewModel.setActivityCalendar(calendar)

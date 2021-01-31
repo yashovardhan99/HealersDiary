@@ -18,13 +18,14 @@ import dagger.hilt.android.AndroidEntryPoint
 class ChooseActivityFragment : Fragment() {
     private val viewModel: CreateActivityViewModel by activityViewModels()
     private val args: ChooseActivityFragmentArgs by navArgs()
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val binding = FragmentChooseActivityBinding.inflate(inflater, container, false)
         binding.header = context?.run {
-            Header(getIcon(R.drawable.cross, null, true),
+            Header(getIcon(R.drawable.back, null, true),
                     args.patientName,
                     null)
         }
+        binding.heading.icon.setOnClickListener { findNavController().navigateUp() }
         binding.healing.setOnClickListener {
             val action = ChooseActivityFragmentDirections
                     .actionChooseActivityFragmentToNewHealingFragment(args.patientId, args.patientName,

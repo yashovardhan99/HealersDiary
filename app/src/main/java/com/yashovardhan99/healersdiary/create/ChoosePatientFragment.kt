@@ -20,10 +20,13 @@ import kotlinx.coroutines.flow.collect
 @AndroidEntryPoint
 class ChoosePatientFragment : Fragment() {
     private val viewModel: CreateActivityViewModel by activityViewModels()
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val binding = FragmentChoosePatientBinding.inflate(inflater, container, false)
         binding.heading = context?.run {
-            Header(getIcon(R.drawable.cross), getString(R.string.choose_a_patient), null)
+            Header(getIcon(R.drawable.cross, null, true), getString(R.string.choose_a_patient), null)
+        }
+        binding.header.icon.setOnClickListener {
+            if (!findNavController().navigateUp()) activity?.finish()
         }
         val adapter = ChoosePatientAdapter { patient ->
             viewModel.selectPatient(patient)

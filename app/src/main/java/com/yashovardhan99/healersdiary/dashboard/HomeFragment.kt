@@ -30,7 +30,11 @@ class HomeFragment : Fragment() {
         binding.header = context?.run {
             Header(getIcon(R.drawable.home),
                     resources.getString(R.string.app_name),
-                    getIcon(R.drawable.settings))
+                    getIcon(R.drawable.settings, getString(R.string.settings), true))
+        }
+        binding.toolbar.optionsIcon.setOnClickListener {
+            Timber.d("Options icon press")
+            findNavController().navigate(R.id.settings)
         }
         val statAdapter = StatAdapter().apply { stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY }
         val headerAdapter = HeaderAdapter(false)

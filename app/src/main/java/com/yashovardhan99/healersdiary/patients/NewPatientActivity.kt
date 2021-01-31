@@ -99,7 +99,7 @@ class NewPatientActivity : AppCompatActivity() {
                 binding.dueEdit.setText(patient.due.toBigDecimal().movePointLeft(2).toPlainString())
                 binding.notesEdit.setText(patient.notes)
                 binding.header = Header(getIcon(R.drawable.cross, null, true),
-                        "Edit Patient",
+                        resources.getString(R.string.edit_patient),
                         getIcon(R.drawable.ic_baseline_delete_forever_24, null, true))
             } else {
                 binding.newPatient.setText(R.string.add_new_patient)
@@ -109,6 +109,7 @@ class NewPatientActivity : AppCompatActivity() {
             }
 
         }
+        binding.heading.icon.setOnClickListener { finish() }
     }
 
     private fun delete() {

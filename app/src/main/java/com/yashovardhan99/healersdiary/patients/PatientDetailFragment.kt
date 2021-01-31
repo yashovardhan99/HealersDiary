@@ -44,10 +44,11 @@ class PatientDetailFragment : Fragment() {
         val binding = FragmentPatientDetailBinding.inflate(inflater, container, false)
         binding.header = context?.run {
             Timber.d("Setting header")
-            Header(getIcon(R.drawable.cross),
+            Header(getIcon(R.drawable.cross, null, true),
                     viewModel.patient.value?.name ?: "Loading!",
                     getIcon(R.drawable.edit, null, true))
         }
+        binding.toolbar.icon.setOnClickListener { findNavController().navigateUp() }
         viewModel.setPatientId(args.patientId)
         dashboardViewModel.setPatientId(args.patientId)
         viewModel.patient.asLiveData().observe(viewLifecycleOwner) { patient ->

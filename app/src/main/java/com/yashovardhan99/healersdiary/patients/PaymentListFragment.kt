@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yashovardhan99.healersdiary.R
@@ -27,12 +28,13 @@ class PaymentListFragment : Fragment() {
         viewModel.setPatientId(args.patientId)
         viewModel.patient.asLiveData().observe(viewLifecycleOwner) { patient ->
             binding.header = context?.run {
-                Header(getIcon(R.drawable.cross),
+                Header(getIcon(R.drawable.back, null, true),
                         resources.getString(R.string.patient_all_payments,
                                 patient?.name.orEmpty()),
                         null)
             }
         }
+        binding.toolbar.icon.setOnClickListener { findNavController().navigateUp() }
         binding.recycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         val adapter = PaymentListAdapter(::deletePayment)
 

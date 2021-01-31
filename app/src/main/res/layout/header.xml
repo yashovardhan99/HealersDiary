@@ -16,15 +16,14 @@
 
         <ImageButton
             android:id="@+id/icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_margin="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:backgroundTint="@android:color/transparent"
-            android:tint="@android:color/black"
             android:clickable="@{header.icon.clickable}"
             android:contentDescription="@{header.icon.description}"
-            android:padding="2dp"
+            android:padding="16dp"
             android:src="@{header.icon.drawable}"
+            android:tint="@android:color/black"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/home" />
@@ -44,16 +43,15 @@
             tools:text="@string/app_name" />
 
         <ImageButton
-            android:tint="@android:color/black"
             android:id="@+id/optionsIcon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_margin="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:backgroundTint="@android:color/transparent"
             android:clickable="@{header.optionIcon.clickable}"
             android:contentDescription="@{header.optionIcon.description"
-            android:padding="2dp"
+            android:padding="16dp"
             android:src="@{header.optionIcon.drawable}"
+            android:tint="@android:color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/settings" />
