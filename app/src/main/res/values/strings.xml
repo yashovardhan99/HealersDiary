@@ -142,5 +142,6 @@
     <string name="date_transition" translatable="false">transition %d</string>
     <string name="patient_detail_transition" translatable="false">patient_detail_transition</string>
   <string name="edit_patient">Edit Patient</string>
+  <string name="back">back</string>
 </resources>
 

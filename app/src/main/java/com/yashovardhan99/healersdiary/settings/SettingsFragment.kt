@@ -13,6 +13,7 @@ import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.dashboard.DashboardViewModel
 import com.yashovardhan99.healersdiary.databinding.FragmentSettingsBinding
 import com.yashovardhan99.healersdiary.utils.Header
+import com.yashovardhan99.healersdiary.utils.Icons
 import com.yashovardhan99.healersdiary.utils.getIcon
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -22,7 +23,7 @@ class SettingsFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val binding = FragmentSettingsBinding.inflate(inflater, container, false)
         binding.header = context?.run {
-            Header(getIcon(R.drawable.settings),
+            Header(getIcon(Icons.Settings, false),
                     resources.getString(R.string.settings),
                     null
             )
