@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.asLiveData
 import com.yashovardhan99.healersdiary.R
+import com.yashovardhan99.healersdiary.database.ActivityType
 import com.yashovardhan99.healersdiary.utils.Request
 import com.yashovardhan99.healersdiary.utils.Request.Companion.fromUri
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,11 +22,7 @@ class CreateNewActivity : AppCompatActivity() {
         val request = intent.data?.let { uri ->
             fromUri(uri)
         }
-        val pid = if (request is Request.NewActivity) request.patientId else -1
-        if (pid != -1L) {
-            viewModel.selectPatient(pid)
-            Timber.d("Patient id = $pid")
-        }
+        handleRequest(request)
         viewModel.result.asLiveData().observe(this) { requestResult ->
             if (requestResult != null) {
                 Intent(Intent.ACTION_VIEW, requestResult.getUri()).also { result ->
@@ -35,6 +32,19 @@ class CreateNewActivity : AppCompatActivity() {
                 Timber.d("Done and dusted")
                 finish()
             }
+        }
+    }
+
+    private fun handleRequest(request: Request?) {
+        when (request) {
+            is Request.NewHealing -> viewModel.selectPatient(request.patientId, ActivityType.HEALING)
+            is Request.NewPayment -> viewModel.selectPatient(request.patientId, ActivityType.PAYMENT)
+            Request.NewPatient -> viewModel.newPatient()
+            is Request.NewActivity -> viewModel.selectPatient(request.patientId)
+            is Request.UpdateHealing -> throw NotImplementedError()
+            is Request.UpdatePayment -> throw NotImplementedError()
+            Request.ViewDashboard -> finish()
+            else -> throw IllegalArgumentException()
         }
     }
 }

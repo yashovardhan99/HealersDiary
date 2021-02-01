@@ -3,6 +3,7 @@ package com.yashovardhan99.healersdiary.create
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yashovardhan99.healersdiary.dashboard.DashboardRepository
+import com.yashovardhan99.healersdiary.database.ActivityType
 import com.yashovardhan99.healersdiary.database.Healing
 import com.yashovardhan99.healersdiary.database.Patient
 import com.yashovardhan99.healersdiary.database.Payment
@@ -30,6 +31,8 @@ class CreateActivityViewModel @Inject constructor(
     val selectedPatientFlow: StateFlow<Patient?> = _selectedPatient
     private val _activityCalendar = MutableStateFlow(Calendar.getInstance())
     val activityCalendar: StateFlow<Calendar> = _activityCalendar
+    private val _selectedActivityType = MutableStateFlow<ActivityType?>(null)
+    val selectedActivityType: StateFlow<ActivityType?> = _selectedActivityType
     val patients = healings.combine(patientsFlow) { healings, patients ->
         val patientsMap = patients.associateBy { it.id }
         val patientWithHealings = healings.groupBy {
@@ -62,9 +65,10 @@ class CreateActivityViewModel @Inject constructor(
         }
     }
 
-    fun selectPatient(pid: Long) {
+    fun selectPatient(pid: Long, activityType: ActivityType? = null) {
         viewModelScope.launch {
             val patient = dashboardRepository.getPatient(pid)
+            _selectedActivityType.emit(activityType)
             if (patient != null) selectPatient(patient)
         }
     }
@@ -108,6 +112,12 @@ class CreateActivityViewModel @Inject constructor(
         } catch (e: Exception) {
             _error.value = true
             Timber.e(e, "Error creating payment")
+        }
+    }
+
+    fun resetActivityType() {
+        viewModelScope.launch {
+            _selectedActivityType.emit(null)
         }
     }
 }

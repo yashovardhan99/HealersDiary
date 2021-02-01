@@ -6,9 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.yashovardhan99.healersdiary.R
+import com.yashovardhan99.healersdiary.database.ActivityType
 import com.yashovardhan99.healersdiary.databinding.FragmentChooseActivityBinding
 import com.yashovardhan99.healersdiary.utils.Header
 import com.yashovardhan99.healersdiary.utils.getIcon
@@ -26,17 +28,30 @@ class ChooseActivityFragment : Fragment() {
                     null)
         }
         binding.heading.icon.setOnClickListener { findNavController().navigateUp() }
-        binding.healing.setOnClickListener {
-            val action = ChooseActivityFragmentDirections
-                    .actionChooseActivityFragmentToNewHealingFragment(args.patientId, args.patientName,
-                            args.defaultCharge)
-            findNavController().navigate(action)
-        }
-        binding.payment.setOnClickListener {
-            val action = ChooseActivityFragmentDirections
-                    .actionChooseActivityFragmentToNewPaymentFragment(args.patientId, args.patientName, args.amountDue)
-            findNavController().navigate(action)
+        binding.healing.setOnClickListener { newHealing() }
+        binding.payment.setOnClickListener { newPayment() }
+        viewModel.selectedActivityType.asLiveData().observe(viewLifecycleOwner) { activityType ->
+            if (activityType != null) {
+                when (activityType) {
+                    ActivityType.HEALING -> newHealing()
+                    ActivityType.PAYMENT -> newPayment()
+                }
+                viewModel.resetActivityType()
+            }
         }
         return binding.root
+    }
+
+    private fun newPayment() {
+        val action = ChooseActivityFragmentDirections
+                .actionChooseActivityFragmentToNewPaymentFragment(args.patientId, args.patientName, args.amountDue)
+        findNavController().navigate(action)
+    }
+
+    private fun newHealing() {
+        val action = ChooseActivityFragmentDirections
+                .actionChooseActivityFragmentToNewHealingFragment(args.patientId, args.patientName,
+                        args.defaultCharge)
+        findNavController().navigate(action)
     }
 }
