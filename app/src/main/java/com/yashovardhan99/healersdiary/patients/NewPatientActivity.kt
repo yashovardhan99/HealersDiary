@@ -15,9 +15,9 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.ActivityNewPatientBinding
-import com.yashovardhan99.healersdiary.utils.Header
+import com.yashovardhan99.healersdiary.utils.Icons
 import com.yashovardhan99.healersdiary.utils.Request
-import com.yashovardhan99.healersdiary.utils.getIcon
+import com.yashovardhan99.healersdiary.utils.buildHeader
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.math.BigDecimal
@@ -98,14 +98,10 @@ class NewPatientActivity : AppCompatActivity() {
                 binding.chargeEdit.setText(patient.charge.toBigDecimal().movePointLeft(2).toPlainString())
                 binding.dueEdit.setText(patient.due.toBigDecimal().movePointLeft(2).toPlainString())
                 binding.notesEdit.setText(patient.notes)
-                binding.header = Header(getIcon(R.drawable.cross, null, true),
-                        resources.getString(R.string.edit_patient),
-                        getIcon(R.drawable.ic_baseline_delete_forever_24, null, true))
+                binding.header = buildHeader(Icons.Close, R.string.edit_patient, Icons.Delete)
             } else {
                 binding.newPatient.setText(R.string.add_new_patient)
-                binding.header = Header(getIcon(R.drawable.cross, null, true),
-                        resources.getString(R.string.add_new_patient),
-                        getIcon(R.drawable.save, resources.getString(R.string.save), true))
+                binding.header = buildHeader(Icons.Close, R.string.add_new_patient, Icons.Save)
             }
 
         }

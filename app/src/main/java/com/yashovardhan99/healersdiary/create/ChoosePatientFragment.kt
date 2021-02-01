@@ -12,8 +12,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.FragmentChoosePatientBinding
-import com.yashovardhan99.healersdiary.utils.Header
-import com.yashovardhan99.healersdiary.utils.getIcon
+import com.yashovardhan99.healersdiary.utils.Icons
+import com.yashovardhan99.healersdiary.utils.buildHeader
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 
@@ -23,7 +23,7 @@ class ChoosePatientFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val binding = FragmentChoosePatientBinding.inflate(inflater, container, false)
         binding.heading = context?.run {
-            Header(getIcon(R.drawable.cross, null, true), getString(R.string.choose_a_patient), null)
+            buildHeader(Icons.Close, R.string.choose_a_patient)
         }
         binding.header.icon.setOnClickListener {
             if (!findNavController().navigateUp()) activity?.finish()

@@ -9,11 +9,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.database.ActivityType
 import com.yashovardhan99.healersdiary.databinding.FragmentChooseActivityBinding
-import com.yashovardhan99.healersdiary.utils.Header
-import com.yashovardhan99.healersdiary.utils.getIcon
+import com.yashovardhan99.healersdiary.utils.Icons
+import com.yashovardhan99.healersdiary.utils.buildHeader
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -23,9 +22,7 @@ class ChooseActivityFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val binding = FragmentChooseActivityBinding.inflate(inflater, container, false)
         binding.header = context?.run {
-            Header(getIcon(R.drawable.back, null, true),
-                    args.patientName,
-                    null)
+            buildHeader(Icons.Back, args.patientName)
         }
         binding.heading.icon.setOnClickListener { findNavController().navigateUp() }
         binding.healing.setOnClickListener { newHealing() }

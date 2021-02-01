@@ -16,8 +16,8 @@ import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.dashboard.DashboardViewModel
 import com.yashovardhan99.healersdiary.database.Healing
 import com.yashovardhan99.healersdiary.databinding.FragmentHealingListBinding
-import com.yashovardhan99.healersdiary.utils.Header
-import com.yashovardhan99.healersdiary.utils.getIcon
+import com.yashovardhan99.healersdiary.utils.Icons
+import com.yashovardhan99.healersdiary.utils.buildHeader
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
@@ -32,10 +32,7 @@ class HealingListFragment : Fragment() {
         viewModel.setPatientId(args.patientId)
         viewModel.patient.asLiveData().observe(viewLifecycleOwner) { patient ->
             binding.header = context?.run {
-                Header(getIcon(R.drawable.back, null, true),
-                        resources.getString(R.string.patient_all_healings,
-                                patient?.name.orEmpty()),
-                        getIcon(R.drawable.add, getString(R.string.new_healing), true))
+                buildHeader(Icons.Back, resources.getString(R.string.patient_all_healings, patient?.name.orEmpty()), Icons.Add)
             }
         }
         binding.toolbar.icon.setOnClickListener { findNavController().navigateUp() }

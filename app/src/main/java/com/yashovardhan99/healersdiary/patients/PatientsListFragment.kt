@@ -29,9 +29,7 @@ class PatientsListFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val binding = FragmentPatientsListBinding.inflate(inflater, container, false)
         binding.header = context?.run {
-            Header(getIcon(R.drawable.list),
-                    resources.getString(R.string.patients),
-                    getIcon(R.drawable.add_person, null, true))
+            buildHeader(R.drawable.list, R.string.patients, Icons.CustomButton(R.drawable.add_person, R.string.add_new_patient))
         }
         val patientListAdapter = PatientListAdapter(::openPatientDetail)
         binding.toolbar.optionsIcon.setOnClickListener { viewModel.addNewPatient() }

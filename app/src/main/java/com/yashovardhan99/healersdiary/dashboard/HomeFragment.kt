@@ -28,9 +28,7 @@ class HomeFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val binding = FragmentHomeBinding.inflate(inflater, container, false)
         binding.header = context?.run {
-            Header(getIcon(R.drawable.home),
-                    resources.getString(R.string.app_name),
-                    getIcon(R.drawable.settings, getString(R.string.settings), true))
+            buildHeader(R.drawable.home, R.string.app_name, Icons.Settings)
         }
         binding.toolbar.optionsIcon.setOnClickListener {
             Timber.d("Options icon press")

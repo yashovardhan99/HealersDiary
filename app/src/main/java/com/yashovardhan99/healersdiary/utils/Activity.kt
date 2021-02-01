@@ -1,6 +1,6 @@
 package com.yashovardhan99.healersdiary.utils
 
-import android.content.Context
+import androidx.annotation.StringRes
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.database.Patient
 import java.util.*
@@ -14,9 +14,9 @@ sealed class ActivityParent {
             val amount: Long,
             val patient: Patient
     ) : ActivityParent() {
-        sealed class Type(val description: String, val icon: Icon) {
-            class HEALING(context: Context) : Type(context.resources.getString(R.string.new_healing), context.getIcon(R.drawable.check))
-            class PAYMENT(context: Context) : Type(context.resources.getString(R.string.payment_received), context.getIcon(R.drawable.card))
+        sealed class Type(@StringRes val description: Int, val icon: Icons) {
+            object HEALING : Type(R.string.new_healing, Icons.CustomStatic(R.drawable.check))
+            object PAYMENT : Type(R.string.payment_received, Icons.CustomStatic(R.drawable.card))
         }
     }
 }

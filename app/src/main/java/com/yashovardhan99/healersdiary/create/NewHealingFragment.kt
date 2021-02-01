@@ -14,9 +14,9 @@ import com.google.android.material.snackbar.Snackbar
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.FragmentNewHealingBinding
 import com.yashovardhan99.healersdiary.utils.DatePickerFragment
-import com.yashovardhan99.healersdiary.utils.Header
+import com.yashovardhan99.healersdiary.utils.Icons
 import com.yashovardhan99.healersdiary.utils.TimePickerFragment
-import com.yashovardhan99.healersdiary.utils.getIcon
+import com.yashovardhan99.healersdiary.utils.buildHeader
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.math.BigDecimal
@@ -53,9 +53,7 @@ class NewHealingFragment : Fragment() {
             binding.timeEdit.setText(SimpleDateFormat.getTimeInstance().format(calendar.time))
         }
         binding.header = context?.run {
-            Header(getIcon(R.drawable.back, null, true),
-                    getString(R.string.new_healing),
-                    getIcon(R.drawable.save, getString(R.string.save), true))
+            buildHeader(Icons.Back, R.string.new_healing, Icons.Save)
         }
         binding.heading.icon.setOnClickListener { findNavController().navigateUp() }
 

@@ -1,7 +1,9 @@
 package com.yashovardhan99.healersdiary.utils
 
 import android.text.format.DateUtils
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.DrawableRes
 import androidx.databinding.BindingAdapter
 import com.yashovardhan99.healersdiary.BuildConfig
 import com.yashovardhan99.healersdiary.R
@@ -43,4 +45,9 @@ fun TextView.setVersion(showDebugVersion: Boolean) {
     } else {
         context.resources.getString(R.string.version_s, BuildConfig.VERSION_NAME)
     }
+}
+
+@BindingAdapter("android:src")
+fun setImageResource(imageView: ImageView, @DrawableRes resource: Int) {
+    imageView.setImageResource(resource)
 }

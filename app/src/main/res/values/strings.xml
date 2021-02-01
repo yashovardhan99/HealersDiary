@@ -143,5 +143,6 @@
     <string name="patient_detail_transition" translatable="false">patient_detail_transition</string>
   <string name="edit_patient">Edit Patient</string>
   <string name="back">back</string>
+  <string name="loading">Loading!</string>
 </resources>
 

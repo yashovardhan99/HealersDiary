@@ -43,10 +43,8 @@ class PatientDetailFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val binding = FragmentPatientDetailBinding.inflate(inflater, container, false)
         binding.header = context?.run {
-            Timber.d("Setting header")
-            Header(getIcon(R.drawable.cross, null, true),
-                    viewModel.patient.value?.name ?: "Loading!",
-                    getIcon(R.drawable.edit, null, true))
+            buildHeader(Icons.Close, viewModel.patient.value?.name ?: getString(R.string.loading),
+                    Icons.CustomButton(R.drawable.edit, R.string.edit_patient))
         }
         binding.toolbar.icon.setOnClickListener { findNavController().navigateUp() }
         viewModel.setPatientId(args.patientId)
@@ -65,8 +63,8 @@ class PatientDetailFragment : Fragment() {
         val activityAdapter = ActivityAdapter { activity ->
             if (activity !is ActivityParent.Activity) return@ActivityAdapter
             when (activity.type) {
-                is ActivityParent.Activity.Type.HEALING -> goToHealings()
-                is ActivityParent.Activity.Type.PAYMENT -> goToPayments()
+                ActivityParent.Activity.Type.HEALING -> goToHealings()
+                ActivityParent.Activity.Type.PAYMENT -> goToPayments()
             }
         }
         val emptyStatAdapter = EmptyStateAdapter(false, EmptyState.DASHBOARD)
