@@ -1,6 +1,5 @@
 package com.yashovardhan99.healersdiary.patients
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -16,7 +15,6 @@ import com.yashovardhan99.healersdiary.utils.Stat.Companion.healingsToday
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.paymentDue
 import com.yashovardhan99.healersdiary.utils.Utils.insertSeparators
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,8 +25,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PatientDetailViewModel @Inject constructor(
-        private val repository: PatientDetailRepository,
-        @ApplicationContext private val context: Context) : ViewModel() {
+        private val repository: PatientDetailRepository) : ViewModel() {
 
     private val _patient = MutableStateFlow<Patient?>(null)
     val patient: StateFlow<Patient?> = _patient
@@ -53,12 +50,12 @@ class PatientDetailViewModel @Inject constructor(
             val earningsLastMonth = healings.filter { it.time < thisMonthDate.time }.sumOf { it.charge }
             val paymentDue = patient?.due ?: 0
             val stats = listOf(
-                    context.healingsToday(healingsToday),
-                    context.paymentDue(paymentDue.toBigDecimal().movePointLeft(2)),
-                    context.healingsThisMonth(healingsThisMonth),
-                    context.earnedThisMonth(earningsThisMonth.toBigDecimal().movePointLeft(2).toDouble()),
-                    context.healingsLastMonth(healingsLastMonth),
-                    context.earnedLastMonth(earningsLastMonth.toBigDecimal().movePointLeft(2).toDouble())
+                    healingsToday(healingsToday),
+                    paymentDue(paymentDue.toBigDecimal().movePointLeft(2)),
+                    healingsThisMonth(healingsThisMonth),
+                    earnedThisMonth(earningsThisMonth.toBigDecimal().movePointLeft(2).toDouble()),
+                    healingsLastMonth(healingsLastMonth),
+                    earnedLastMonth(earningsLastMonth.toBigDecimal().movePointLeft(2).toDouble())
             )
             Triple(stats, healings, patient)
         }.combine(paymentsFlow) { triplet, payments ->

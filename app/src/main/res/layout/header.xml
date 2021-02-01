@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@android:color/transparent"
             android:clickable="@{header.optionIcon.clickable}"
-            android:contentDescription="@{header.optionIcon.description"
+            android:contentDescription="@{header.optionIcon.description}"
             android:padding="16dp"
             android:src="@{header.optionIcon.drawable}"
             android:tint="@android:color/black"

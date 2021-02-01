@@ -1,9 +1,11 @@
 package com.yashovardhan99.healersdiary.utils
 
 import android.text.format.DateUtils
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.databinding.BindingAdapter
 import com.yashovardhan99.healersdiary.BuildConfig
 import com.yashovardhan99.healersdiary.R
@@ -50,4 +52,9 @@ fun TextView.setVersion(showDebugVersion: Boolean) {
 @BindingAdapter("android:src")
 fun setImageResource(imageView: ImageView, @DrawableRes resource: Int) {
     imageView.setImageResource(resource)
+}
+
+@BindingAdapter("android:contentDescription")
+fun setContentDescriptionRes(view: View, @StringRes resource: Int?) {
+    view.contentDescription = resource?.let { view.resources.getString(it) }
 }

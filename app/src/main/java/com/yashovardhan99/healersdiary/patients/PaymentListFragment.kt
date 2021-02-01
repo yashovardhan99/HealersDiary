@@ -30,9 +30,7 @@ class PaymentListFragment : Fragment() {
         val binding = FragmentHealingListBinding.inflate(inflater, container, false)
         viewModel.setPatientId(args.patientId)
         viewModel.patient.asLiveData().observe(viewLifecycleOwner) { patient ->
-            binding.header = context?.run {
-                buildHeader(Icons.Back, resources.getString(R.string.patient_all_payments, patient?.name.orEmpty()), Icons.Add)
-            }
+            binding.header = buildHeader(Icons.Back, resources.getString(R.string.patient_all_payments, patient?.name.orEmpty()), Icons.Add)
         }
         binding.toolbar.icon.setOnClickListener { findNavController().navigateUp() }
         binding.toolbar.optionsIcon.setOnClickListener { dashboardViewModel.newPayment(args.patientId) }

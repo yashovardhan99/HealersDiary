@@ -21,9 +21,7 @@ class ChooseActivityFragment : Fragment() {
     private val args: ChooseActivityFragmentArgs by navArgs()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val binding = FragmentChooseActivityBinding.inflate(inflater, container, false)
-        binding.header = context?.run {
-            buildHeader(Icons.Back, args.patientName)
-        }
+        binding.header = buildHeader(Icons.Back, args.patientName)
         binding.heading.icon.setOnClickListener { findNavController().navigateUp() }
         binding.healing.setOnClickListener { newHealing() }
         binding.payment.setOnClickListener { newPayment() }

@@ -1,6 +1,5 @@
 package com.yashovardhan99.healersdiary.dashboard
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import com.yashovardhan99.healersdiary.database.Healing
 import com.yashovardhan99.healersdiary.database.Patient
@@ -12,7 +11,6 @@ import com.yashovardhan99.healersdiary.utils.Stat.Companion.healingsThisMonth
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.healingsToday
 import com.yashovardhan99.healersdiary.utils.Utils.insertSeparators
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -21,8 +19,7 @@ import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class DashboardViewModel @Inject constructor(repository: DashboardRepository,
-                                             @ApplicationContext val context: Context) : ViewModel() {
+class DashboardViewModel @Inject constructor(repository: DashboardRepository) : ViewModel() {
     private val patientsFlow = repository.patients
     private val today = Calendar.getInstance().apply {
         setToStartOfDay()
@@ -73,10 +70,8 @@ class DashboardViewModel @Inject constructor(repository: DashboardRepository,
                 val earningsLastMonth = healingsLastMonth.sumOf { it.charge }.toDouble() / 100
                 Timber.d("Earnings this month = $earningsThisMonth")
                 Timber.d("Earnings last month = $earningsLastMonth")
-                val stats = with(context) {
-                    listOf(healingsToday(healingsToday.size), healingsThisMonth(healingsThisMonth.size),
-                            earnedThisMonth(earningsThisMonth), earnedLastMonth(earningsLastMonth))
-                }
+                val stats = listOf(healingsToday(healingsToday.size), healingsThisMonth(healingsThisMonth.size),
+                        earnedThisMonth(earningsThisMonth), earnedLastMonth(earningsLastMonth))
                 if (activities.isNotEmpty()) Pair(stats, activities.sortedByDescending { it.time }.insertSeparators())
                 else Pair(stats, null)
             }
