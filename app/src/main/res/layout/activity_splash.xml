@@ -33,6 +33,18 @@
             android:layout_margin="16dp"
             android:text="@string/get_started"
             android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/disclaimer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/disclaimer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:text="@string/by_signing_in_you_agree_to_our_s"
+            android:textAlignment="center"
+            android:textAppearance="@style/subtitle2"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
