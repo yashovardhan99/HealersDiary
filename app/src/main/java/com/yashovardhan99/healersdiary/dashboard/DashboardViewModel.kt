@@ -86,6 +86,14 @@ class DashboardViewModel @Inject constructor(repository: DashboardRepository,
         _requests.value = Request.ViewPatient(patientId)
     }
 
+    fun newHealing(patientId: Long) {
+        _requests.value = Request.NewHealing(patientId)
+    }
+
+    fun newPayment(patientId: Long) {
+        _requests.value = Request.NewPayment(patientId)
+    }
+
     fun resetRequest() {
         _requests.value = null
     }

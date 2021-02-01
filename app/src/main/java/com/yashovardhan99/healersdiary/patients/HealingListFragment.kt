@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yashovardhan99.healersdiary.R
+import com.yashovardhan99.healersdiary.dashboard.DashboardViewModel
 import com.yashovardhan99.healersdiary.database.Healing
 import com.yashovardhan99.healersdiary.databinding.FragmentHealingListBinding
 import com.yashovardhan99.healersdiary.utils.Header
@@ -24,6 +25,7 @@ import timber.log.Timber
 @AndroidEntryPoint
 class HealingListFragment : Fragment() {
     private val viewModel: PatientDetailViewModel by activityViewModels()
+    private val dashboardViewModel: DashboardViewModel by activityViewModels()
     private val args: HealingListFragmentArgs by navArgs()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val binding = FragmentHealingListBinding.inflate(inflater, container, false)
@@ -33,10 +35,11 @@ class HealingListFragment : Fragment() {
                 Header(getIcon(R.drawable.back, null, true),
                         resources.getString(R.string.patient_all_healings,
                                 patient?.name.orEmpty()),
-                        null)
+                        getIcon(R.drawable.add, getString(R.string.new_healing), true))
             }
         }
         binding.toolbar.icon.setOnClickListener { findNavController().navigateUp() }
+        binding.toolbar.optionsIcon.setOnClickListener { dashboardViewModel.newHealing(args.patientId) }
         binding.recycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         val adapter = HealingListAdapter(::editHealing, ::deleteHealing)
         lifecycleScope.launchWhenStarted {
