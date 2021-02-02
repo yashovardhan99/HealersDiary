@@ -39,6 +39,7 @@ android {
     buildTypes {
         dev { //needed for CI
             minifyEnabled false
+            consumerProguardFiles 'proguard-rules.pro'
         }
         release {
             minifyEnabled false
