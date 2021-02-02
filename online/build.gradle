@@ -4,6 +4,24 @@ plugins {
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
 }
+def build_param = "${build}"
+// Needed for CI
+if (build_param != "dev") {
+    //exclude production build
+    android.variantFilter { variant ->
+        if (variant.buildType.name == 'dev') {
+            variant.setIgnore(true)
+        }
+    }
+} else {
+    //exclude all except production build
+    android.variantFilter { variant ->
+        if (variant.buildType.name != 'dev') {
+            variant.setIgnore(true)
+        }
+    }
+}
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
@@ -19,6 +37,9 @@ android {
     }
 
     buildTypes {
+        dev { //needed for CI
+            minifyEnabled false
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -29,10 +50,13 @@ android {
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8gs
     }
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+    lintOptions {
+        abortOnError false
     }
 }
 
