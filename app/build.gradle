@@ -39,10 +39,10 @@ android {
         def types = ['alpha': 0, 'beta': 1, 'rc': 2, 'release': 3]
         def curType = types.get(type, 3)
         def standard = ((major * 100) + minor) * 100 + patch
-        versionCode = (standard * 10+curType)*100 + build
-        if(type=="release") versionName = "$major.$minor.$patch"
-        else if(build == 0) versionName = "$major.$minor.$patch-$type"
-        else if(build < 10) versionName = "$major.$minor.$patch-${type}0${build}"
+        versionCode = (standard * 10 + curType) * 100 + build
+        if (type == "release") versionName = "$major.$minor.$patch"
+        else if (build == 0) versionName = "$major.$minor.$patch-$type"
+        else if (build < 10) versionName = "$major.$minor.$patch-${type}0${build}"
         else versionName = "$major.$minor.$patch-$type$build"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
@@ -82,6 +82,7 @@ android {
     lintOptions {
         abortOnError false
     }
+    dynamicFeatures = [':online']
 }
 
 dependencies {
@@ -94,37 +95,38 @@ dependencies {
     testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test:runner:1.3.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-    implementation 'com.google.firebase:firebase-core:18.0.2'
-    implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'com.google.firebase:firebase-crashlytics:17.3.1'
-    implementation 'com.google.firebase:firebase-analytics:18.0.2'
-    implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
-    implementation "androidx.core:core-ktx:1.3.2"
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    api 'com.google.firebase:firebase-core:18.0.2'
+    api 'androidx.multidex:multidex:2.0.1'
+    api 'com.google.firebase:firebase-crashlytics:17.3.1'
+    api 'com.google.firebase:firebase-analytics:18.0.2'
+    api 'com.google.android.gms:play-services-oss-licenses:17.0.0'
+    api "androidx.core:core-ktx:1.3.2"
+    api 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     def room_version = "2.3.0-beta01"
-    implementation "androidx.room:room-runtime:$room_version"
+    api "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
-    implementation "androidx.room:room-ktx:$room_version"
+    api "androidx.room:room-ktx:$room_version"
     testImplementation "androidx.room:room-testing:$room_version"
     def lifecycle_version = "2.2.0"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
+    api "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    api "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+    api "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
     def nav_version = "2.3.3"
-    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
-    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+    api "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    api "androidx.navigation:navigation-ui-ktx:$nav_version"
     androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
+    api "androidx.navigation:navigation-dynamic-features-fragment:$nav_version"
     def paging_version = "3.0.0-alpha13"
     implementation "androidx.paging:paging-runtime-ktx:$paging_version"
     testImplementation "androidx.paging:paging-common-ktx:$paging_version"
-    implementation "com.google.dagger:hilt-android:$hilt_version"
+    api "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
     kapt 'androidx.hilt:hilt-compiler:1.0.0-alpha03'
-    implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03"
-    implementation "androidx.datastore:datastore-preferences:1.0.0-alpha06"
-    implementation 'com.jakewharton.timber:timber:4.7.1'
-    implementation 'androidx.activity:activity-ktx:1.2.0-rc01'
-    implementation 'androidx.fragment:fragment-ktx:1.3.0-rc02'
+    api "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03"
+    api "androidx.datastore:datastore-preferences:1.0.0-alpha06"
+    api 'com.jakewharton.timber:timber:4.7.1'
+    api 'androidx.activity:activity-ktx:1.2.0-rc01'
+    api 'androidx.fragment:fragment-ktx:1.3.0-rc02'
     implementation 'com.reddit:indicator-fast-scroll:1.3.0'
 }

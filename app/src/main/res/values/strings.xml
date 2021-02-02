@@ -141,8 +141,10 @@
     <string name="patient_list_transition" translatable="false">patient_%d</string>
     <string name="date_transition" translatable="false">transition %d</string>
     <string name="patient_detail_transition" translatable="false">patient_detail_transition</string>
-  <string name="edit_patient">Edit Patient</string>
-  <string name="back">back</string>
-  <string name="loading">Loading!</string>
+    <string name="edit_patient">Edit Patient</string>
+    <string name="back">back</string>
+    <string name="loading">Loading!</string>
+    <string name="title_online">Backup &amp; Sync</string>
+  <string name="import_from_v1_0">Import from v1.0</string>
 </resources>
 
