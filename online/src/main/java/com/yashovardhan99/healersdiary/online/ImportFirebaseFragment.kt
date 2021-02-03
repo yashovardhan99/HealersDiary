@@ -4,20 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.ktx.Firebase
 import com.yashovardhan99.healersdiary.OnlineModuleDependencies
-import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.online.databinding.FragmentImportFirebaseBinding
 import dagger.hilt.android.EntryPointAccessors
-import timber.log.Timber
 import javax.inject.Inject
 
 class ImportFirebaseFragment : Fragment() {
@@ -43,17 +33,17 @@ class ImportFirebaseFragment : Fragment() {
 //            signIn()
 //        }
     }
-
-    private fun signIn() {
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build()
-        val client = GoogleSignIn.getClient(requireContext(), gso)
-        val intent = client.signInIntent
-        val contract = ActivityResultContracts.StartActivityForResult()
+//
+//    private fun signIn() {
+//        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//                .requestIdToken(getString(R.string.default_web_client_id))
+//                .requestEmail()
+//                .build()
+//        val client = GoogleSignIn.getClient(requireContext(), gso)
+//        val intent = client.signInIntent
+//        val contract = ActivityResultContracts.StartActivityForResult()
 //        registerForActivityResult(contract, ::onSignIn).launch(intent)
-    }
+//    }
 
 //    private fun onSignIn(result: ActivityResult?) {
 //        if (result != null) {
