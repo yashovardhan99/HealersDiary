@@ -1,3 +1,5 @@
+import dependencies.Version
+
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
@@ -24,28 +26,16 @@ if (build_param != "dev") {
         }
     }
 }
-
 android {
-    compileSdkVersion 30
+    compileSdkVersion = Version.AppVersion.compileSdk
     defaultConfig {
-        applicationId "com.yashovardhan99.healersdiary"
-        minSdkVersion 21
-        targetSdkVersion 30
-        def major = 2
-        def minor = 0
-        def patch = 0
-        def type = 'alpha'
-        def build = 0
-        def types = ['alpha': 0, 'beta': 1, 'rc': 2, 'release': 3]
-        def curType = types.get(type, 3)
-        def standard = ((major * 100) + minor) * 100 + patch
-        versionCode = (standard * 10 + curType) * 100 + build
-        if (type == "release") versionName = "$major.$minor.$patch"
-        else if (build == 0) versionName = "$major.$minor.$patch-$type"
-        else if (build < 10) versionName = "$major.$minor.$patch-${type}0${build}"
-        else versionName = "$major.$minor.$patch-$type$build"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        multiDexEnabled true
+        applicationId = "com.yashovardhan99.healersdiary"
+        minSdkVersion = Version.AppVersion.minSdk
+        targetSdkVersion = Version.AppVersion.targetSdk
+        versionCode = Version.AppVersion.versionCode
+        versionName = Version.AppVersion.versionName
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled = true
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
@@ -83,7 +73,6 @@ android {
     }
     dynamicFeatures = [':online']
 }
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.2.0'
