@@ -1,3 +1,1 @@
-include(":online")
-include(":app")
-
+include(":online",":app")

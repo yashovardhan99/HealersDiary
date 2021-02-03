@@ -5,6 +5,7 @@ import dependencies.Version.Dependencies as Versions
 @Suppress("SpellCheckingInspection")
 object Dependencies {
     const val timber = "com.jakewharton.timber:timber:${Versions.timber}"
+    const val kotlin_gradle = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}"
 
     object Android {
         const val app_compat = "androidx.appcompat:appcompat:${Versions.Androidx.app_compat}"
@@ -16,6 +17,7 @@ object Dependencies {
         const val datastore = "androidx.datastore:datastore-preferences:${Versions.Androidx.datastore}"
         const val activity_ktx = "androidx.activity:activity-ktx:${Versions.Androidx.activity}"
         const val fragment_ktx = "androidx.fragment:fragment-ktx:${Versions.Androidx.fragment}"
+        const val build_gradle = "com.android.tools.build:gradle:${Versions.gradle}"
 
         object Lifecycle {
             const val extensions = "androidx.lifecycle:lifecycle-extensions:${Versions.Androidx.lifecycle}"
@@ -32,10 +34,13 @@ object Dependencies {
         const val crashlytics = "com.google.firebase:firebase-crashlytics-ktx"
         const val auth = "com.google.firebase:firebase-auth-ktx"
         const val play_services_auth = "com.google.android.gms:play-services-auth:${Versions.play_services_auth}"
+        const val google_services = "com.google.gms:google-services:${Versions.google_services}"
+        const val crashlytics_gradle = "com.google.firebase:firebase-crashlytics-gradle:${Versions.crashlytics}"
     }
 
     object OssLicenses {
         const val oss_app = "com.google.android.gms:play-services-oss-licenses:${Versions.oss_app}"
+        const val oss_gradle = "com.google.android.gms:oss-licenses-plugin:${Versions.oss_root}"
     }
 
     object Room {
@@ -50,6 +55,7 @@ object Dependencies {
         const val ui = "androidx.navigation:navigation-ui-ktx:${Versions.Androidx.navigation}"
         const val dynamic_features = "androidx.navigation:navigation-dynamic-features-fragment:${Versions.Androidx.navigation}"
         const val testing = "androidx.navigation:navigation-testing:${Versions.Androidx.navigation}"
+        const val safe_args_plugin = "androidx.navigation:navigation-safe-args-gradle-plugin:${Versions.Androidx.navigation}"
     }
 
     object Paging {
@@ -62,5 +68,6 @@ object Dependencies {
         const val android_compiler = "com.google.dagger:hilt-android-compiler:${Versions.hilt_android}"
         const val compiler = "androidx.hilt:hilt-compiler:${Versions.hilt}"
         const val view_model = "androidx.hilt:hilt-lifecycle-viewmodel:${Versions.hilt}"
+        const val gradle_plugin = "com.google.dagger:hilt-android-gradle-plugin:${Versions.hilt_android}"
     }
 }
