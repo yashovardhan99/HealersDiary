@@ -35,7 +35,7 @@ class OnboardingFragment : Fragment() {
         return binding.root
     }
 
-    fun importOnline() {
+    private fun importOnline() {
         findNavController().navigate(OnboardingFragmentDirections.actionOnboardingFragmentToImportFirebaseFragment())
     }
 }
