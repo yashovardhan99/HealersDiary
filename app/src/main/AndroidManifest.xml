@@ -2,7 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.yashovardhan99.healersdiary">
-
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    
     <application
         android:name=".HealersApp"
         android:allowBackup="true"
@@ -10,8 +11,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        tools:node="merge">
+        android:theme="@style/AppTheme">
         <activity android:name=".onboarding.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

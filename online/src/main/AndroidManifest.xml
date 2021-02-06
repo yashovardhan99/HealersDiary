@@ -4,6 +4,13 @@
     package="com.yashovardhan99.healersdiary.online">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <application>
+        <service
+            android:name="androidx.work.impl.foreground.SystemForegroundService"
+            android:foregroundServiceType="dataSync" />
+    </application>
     <dist:module
         dist:instant="false"
         dist:title="@string/title_online">
