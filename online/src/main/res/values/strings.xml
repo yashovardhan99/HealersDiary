@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="login">Login</string>
-    <string name="backup_sync_group_name"><![CDATA[Backup & Sync]]></string>
+    <string name="backup_sync_group_name">Backup &amp; Sync</string>
     <string name="import_channel_name">Import</string>
+    <string name="patients_found">%d Patients found</string>
+    <string name="importing_of">Importing %d of %d patients</string>
+    <string name="looking_for_patients">Looking for your patients</string>
 </resources>

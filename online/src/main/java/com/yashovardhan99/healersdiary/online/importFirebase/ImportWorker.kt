@@ -1,11 +1,14 @@
 package com.yashovardhan99.healersdiary.online.importFirebase
 
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationChannelGroup
 import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.ServiceInfo
 import android.os.Build
+import androidx.annotation.FloatRange
+import androidx.annotation.IntRange
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.CoroutineWorker
@@ -19,8 +22,8 @@ import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.firestoreSettings
 import com.google.firebase.ktx.Firebase
-import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.database.*
+import com.yashovardhan99.healersdiary.online.R
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import java.math.BigDecimal
@@ -44,7 +47,7 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
             if (result.isEmpty()) {
                 return Result.failure()
             }
-            setProgress(0, result.size)
+            setProgress(0, result.size, 0f)
             processPatients(result)
         } catch (e: Exception) {
             handleException(e)
@@ -90,13 +93,14 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
                     patient.getDate(Firestore.CREATED_KEY) ?: Date())
             val id = dao.insertPatient(dbPatient)
             Timber.d("Inserted $dbPatient for id = $id")
-            with(dao) { getPatientData(patient.id, id, dbPatient.charge) }
-            setProgress(index + 1, patients.size)
+            setProgress(index + 1, patients.size, INITIAL_PROGRESS_FLOAT)
+            with(dao) { getPatientData(patient.id, id, dbPatient.charge, index + 1, patients.size) }
+            setProgress(index + 1, patients.size, 1f)
         }
         return Result.success()
     }
 
-    private suspend fun HealersDao.getPatientData(patientUid: String, id: Long, charge: Long) {
+    private suspend fun HealersDao.getPatientData(patientUid: String, id: Long, charge: Long, curIndex: Int, maxPatients: Int) {
         val uid = Firebase.auth.uid ?: throw IllegalStateException("Not authenticated")
         val healings = Firebase.firestore.collection(Firestore.USER_KEY)
                 .document(uid)
@@ -104,50 +108,60 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
                 .document(patientUid)
                 .collection(Firestore.HEALINGS_KEY)
                 .get().await().documents
-        for (healing in healings) {
-            val dbHealing = Healing(0,
-                    healing.getDate(Firestore.CREATED_KEY) ?: Date(),
-                    charge, "", id)
-            insertHealing(dbHealing)
-        }
         val payments = Firebase.firestore.collection(Firestore.USER_KEY)
                 .document(uid)
                 .collection(Firestore.PATIENTS_KEY)
                 .document(patientUid)
                 .collection(Firestore.PAYMENTS_KEY)
                 .get().await().documents
-        for (payment in payments) {
+        val total = healings.size + payments.size
+        healings.forEachIndexed { index, healing ->
+            val dbHealing = Healing(0,
+                    healing.getDate(Firestore.CREATED_KEY) ?: Date(),
+                    charge, "", id)
+            insertHealing(dbHealing)
+            setProgress(curIndex, maxPatients, INITIAL_PROGRESS_FLOAT + (1 - INITIAL_PROGRESS_FLOAT) * (index + 1).toFloat() / total)
+        }
+        payments.forEachIndexed { index, payment ->
             val dbPayment = Payment(
                     0,
                     payment.getDate(Firestore.CREATED_KEY) ?: Date(),
                     payment.getAmount(Firestore.AMOUNT_KEY),
                     "", id)
             insertPayment(dbPayment)
+            setProgress(curIndex, maxPatients, INITIAL_PROGRESS_FLOAT + (1 - INITIAL_PROGRESS_FLOAT) * (healings.size + (index + 1).toFloat()) / total)
         }
     }
 
     private suspend fun setProgress(patientsFound: Int) {
         if (patientsFound == 0) {
-            setForegroundInfo(0)
+            setForegroundInfo(0, applicationContext.getString(R.string.looking_for_patients))
             setProgress(workDataOf(
                     OVERALL_PROGRESS to 0,
                     PATIENTS_FOUND to false))
         }
     }
 
-    private suspend fun setProgress(patientsDone: Int, maxPatients: Int) {
-        val progress = ((MAX_PROGRESS - INITIAL_PROGRESS) * patientsDone.toFloat() / maxPatients).roundToInt() + INITIAL_PROGRESS
-        setForegroundInfo(progress)
+    private suspend fun setProgress(currentPatient: Int, maxPatients: Int, @FloatRange(from = 0.0, to = 1.0) curPercent: Float) {
+        val progress = if (currentPatient == 0) INITIAL_PROGRESS
+        else {
+            val contribution = (MAX_PROGRESS - INITIAL_PROGRESS).toFloat() / maxPatients
+            (contribution * (currentPatient - 1) + contribution * curPercent + INITIAL_PROGRESS).roundToInt()
+        }
+        val message = if (currentPatient == 0) applicationContext.getString(R.string.patients_found, maxPatients)
+        else applicationContext.getString(R.string.importing_of, currentPatient, maxPatients)
+        setForegroundInfo(progress, message)
         val workData = workDataOf(OVERALL_PROGRESS to progress,
-                PATIENTS_DONE to patientsDone,
+                CURRENT_PATIENT to currentPatient,
                 MAX_PATIENTS to maxPatients,
                 PATIENTS_FOUND to true)
         setProgress(workData)
     }
 
-    private suspend fun setForegroundInfo(progress: Int) {
+    private suspend fun setForegroundInfo(@IntRange(from = 0, to = MAX_PROGRESS.toLong()) progress: Int, message: String) {
         val notification = getNotificationBuilder()
                 .setProgress(MAX_PROGRESS, progress, false)
+                .setContentText(message)
                 .build()
         val foregroundInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             ForegroundInfo(1, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
@@ -158,8 +172,11 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
     }
 
     private fun getNotificationBuilder() = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(com.yashovardhan99.healersdiary.R.mipmap.ic_launcher)
             .setContentTitle("Import from v1.0")
+            .setCategory(Notification.CATEGORY_PROGRESS)
+            .setOngoing(true)
+            .setOnlyAlertOnce(true)
 
     private fun buildNotificationChannels() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -174,11 +191,12 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
     companion object {
         const val MAX_PROGRESS = 100
         const val INITIAL_PROGRESS = 10
+        const val INITIAL_PROGRESS_FLOAT = 0.1f
         const val GROUP_ID = "online"
-        const val GROUP_NAME = com.yashovardhan99.healersdiary.online.R.string.backup_sync_group_name
+        const val GROUP_NAME = R.string.backup_sync_group_name
         const val CHANNEL_ID = "online_import"
-        const val CHANNEL_NAME = com.yashovardhan99.healersdiary.online.R.string.import_channel_name
-        const val PATIENTS_DONE = "patients_done"
+        const val CHANNEL_NAME = R.string.import_channel_name
+        const val CURRENT_PATIENT = "patients_done"
         const val MAX_PATIENTS = "max_patients"
         const val OVERALL_PROGRESS = "progress"
         const val PATIENTS_FOUND = "patients_found"
