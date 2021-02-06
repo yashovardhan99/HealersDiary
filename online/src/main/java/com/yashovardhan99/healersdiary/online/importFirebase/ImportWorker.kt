@@ -33,6 +33,14 @@ import java.util.*
 import kotlin.math.roundToInt
 
 class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
+
+    private val notificationBuilder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
+            .setSmallIcon(com.yashovardhan99.healersdiary.R.drawable.ic_launcher_foreground)
+            .setContentTitle("Import from v1.0")
+            .setCategory(Notification.CATEGORY_PROGRESS)
+            .setOngoing(true)
+            .setOnlyAlertOnce(true)
+
     override suspend fun doWork(): Result {
         updatePreferences(false)
         buildNotificationChannels()
@@ -170,7 +178,7 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
     }
 
     private suspend fun setForegroundInfo(@IntRange(from = 0, to = MAX_PROGRESS.toLong()) progress: Int, message: String) {
-        val notification = getNotificationBuilder()
+        val notification = notificationBuilder
                 .setProgress(MAX_PROGRESS, progress, false)
                 .setContentText(message)
                 .build()
@@ -181,13 +189,6 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         }
         setForeground(foregroundInfo)
     }
-
-    private fun getNotificationBuilder() = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
-            .setSmallIcon(com.yashovardhan99.healersdiary.R.mipmap.ic_launcher)
-            .setContentTitle("Import from v1.0")
-            .setCategory(Notification.CATEGORY_PROGRESS)
-            .setOngoing(true)
-            .setOnlyAlertOnce(true)
 
     private fun buildNotificationChannels() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

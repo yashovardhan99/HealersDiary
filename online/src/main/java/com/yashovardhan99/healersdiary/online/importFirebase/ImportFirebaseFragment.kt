@@ -30,7 +30,7 @@ class ImportFirebaseFragment : Fragment() {
     @Inject
     lateinit var viewModel: ImportFirebaseViewModel
     private val contract = ActivityResultContracts.StartActivityForResult()
-    val launcher = registerForActivityResult(contract, ::onSignIn)
+    private val launcher = registerForActivityResult(contract, ::onSignIn)
     override fun onCreate(savedInstanceState: Bundle?) {
         val coreModuleDependencies = EntryPointAccessors.fromApplication(
                 requireActivity().applicationContext,
