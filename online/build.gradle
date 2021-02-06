@@ -1,5 +1,6 @@
-import dependencies.Version
 import dependencies.Dependencies
+import dependencies.Version
+
 plugins {
     id 'com.android.dynamic-feature'
     id 'kotlin-android'
@@ -83,6 +84,7 @@ dependencies {
     implementation(Dependencies.Firebase.auth)
     implementation(Dependencies.Firebase.play_services_auth)
     implementation(Dependencies.Firebase.firestore)
+    implementation(Dependencies.Firebase.coroutines)
 
     implementation(Dependencies.Android.workmanager)
 }

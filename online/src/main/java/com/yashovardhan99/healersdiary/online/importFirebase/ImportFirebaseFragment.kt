@@ -11,7 +11,6 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -94,13 +93,13 @@ class ImportFirebaseFragment : Fragment() {
         lifecycleScope.launchWhenStarted {
             viewModel.user.collect { user ->
                 Timber.d("User = $user")
-                if (user != null) startImport(user)
+                if (user != null) startImport()
             }
         }
         return binding.root
     }
 
-    private fun startImport(user: FirebaseUser) {
-        viewModel.startImport(user)
+    private fun startImport() {
+        viewModel.startImport()
     }
 }

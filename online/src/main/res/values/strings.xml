@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="login">Login</string>
+    <string name="backup_sync_group_name"><![CDATA[Backup & Sync]]></string>
+    <string name="import_channel_name">Import</string>
 </resources>

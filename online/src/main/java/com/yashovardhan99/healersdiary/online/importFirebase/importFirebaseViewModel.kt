@@ -53,7 +53,7 @@ class ImportFirebaseViewModel @Inject constructor(
         }
     }
 
-    fun startImport(user: FirebaseUser) {
+    fun startImport() {
         workManager.enqueueUniqueWork(
                 "importFirebase",
                 ExistingWorkPolicy.KEEP,

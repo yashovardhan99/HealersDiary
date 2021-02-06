@@ -38,6 +38,7 @@ object Dependencies {
         const val google_services = "com.google.gms:google-services:${Versions.google_services}"
         const val crashlytics_gradle = "com.google.firebase:firebase-crashlytics-gradle:${Versions.crashlytics}"
         const val firestore = "com.google.firebase:firebase-firestore-ktx"
+        const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:${Versions.play_services_coroutines}"
     }
 
     object OssLicenses {
