@@ -1,9 +1,11 @@
 import dependencies.Version
+import dependencies.Dependencies
 plugins {
     id 'com.android.dynamic-feature'
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id "com.google.gms.google-services"
 }
 def build_param = "${build}"
 // Needed for CI
@@ -76,4 +78,8 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     androidTestImplementation 'androidx.annotation:annotation:1.1.0'
+
+    implementation(Dependencies.Firebase.bom)
+    implementation(Dependencies.Firebase.auth)
+    implementation(Dependencies.Firebase.play_services_auth)
 }

@@ -5,6 +5,12 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.ktx.initialize
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.dashboard.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,6 +33,18 @@ class SplashActivity : AppCompatActivity() {
                     finish()
                 }
             }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Timber.d("Auth = ${FirebaseAuth.getInstance()}")
+        Timber.d("Analytics = ${Firebase.analytics}")
+        Timber.d("Crashlytics = ${Firebase.crashlytics}")
+        val app = Firebase.initialize(this)
+        Timber.d("App = $app")
+        if (app != null) {
+            Timber.d("Auth new = ${Firebase.auth(app)}")
         }
     }
 }

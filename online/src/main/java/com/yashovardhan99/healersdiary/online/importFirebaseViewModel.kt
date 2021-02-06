@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseUser
 import com.yashovardhan99.healersdiary.AppDataStore
 import com.yashovardhan99.healersdiary.onboarding.OnboardingViewModel
 import kotlinx.coroutines.launch
@@ -23,7 +24,7 @@ class ImportFirebaseViewModel @Inject constructor(
         }
     }
 
-//    fun setUser(currentUser: FirebaseUser) {
-//        Timber.d("Found user = $currentUser")
-//    }
+    fun setUser(currentUser: FirebaseUser) {
+        Timber.d("Found user = $currentUser")
+    }
 }
