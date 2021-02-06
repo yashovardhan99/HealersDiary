@@ -2,6 +2,7 @@ package com.yashovardhan99.healersdiary.online
 
 import android.content.Context
 import com.yashovardhan99.healersdiary.OnlineModuleDependencies
+import com.yashovardhan99.healersdiary.online.importFirebase.ImportFirebaseFragment
 import dagger.BindsInstance
 import dagger.Component
 

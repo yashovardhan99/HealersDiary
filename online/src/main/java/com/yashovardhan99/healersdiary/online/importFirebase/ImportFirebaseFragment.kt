@@ -1,4 +1,4 @@
-package com.yashovardhan99.healersdiary.online
+package com.yashovardhan99.healersdiary.online.importFirebase
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,16 +7,20 @@ import android.view.ViewGroup
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.yashovardhan99.healersdiary.OnlineModuleDependencies
 import com.yashovardhan99.healersdiary.R
+import com.yashovardhan99.healersdiary.online.DaggerOnlineComponent
 import com.yashovardhan99.healersdiary.online.databinding.FragmentImportFirebaseBinding
 import dagger.hilt.android.EntryPointAccessors
+import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -81,8 +85,22 @@ class ImportFirebaseFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val binding = FragmentImportFirebaseBinding.inflate(inflater, container, false)
         binding.login.setOnClickListener {
-            viewModel.importCompleted()
+            signIn()
+        }
+        viewModel.workObserver.observe(viewLifecycleOwner) { workInfo ->
+            Timber.d("Work info = $workInfo")
+            Timber.d("Progress = ${workInfo.progress}")
+        }
+        lifecycleScope.launchWhenStarted {
+            viewModel.user.collect { user ->
+                Timber.d("User = $user")
+                if (user != null) startImport(user)
+            }
         }
         return binding.root
+    }
+
+    private fun startImport(user: FirebaseUser) {
+        viewModel.startImport(user)
     }
 }

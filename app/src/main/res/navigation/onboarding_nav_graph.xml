@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/importFirebaseFragment"
-        android:name="com.yashovardhan99.healersdiary.online.ImportFirebaseFragment"
+        android:name="com.yashovardhan99.healersdiary.online.importFirebase.ImportFirebaseFragment"
         android:label="ImportFirebaseFragment"
         app:moduleName="online"
         tools:layout="@layout/fragment_import_firebase" />
