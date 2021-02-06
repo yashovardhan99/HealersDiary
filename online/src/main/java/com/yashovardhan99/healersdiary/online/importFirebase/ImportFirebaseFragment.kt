@@ -8,6 +8,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.work.WorkInfo
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
@@ -62,9 +63,9 @@ class ImportFirebaseFragment : Fragment() {
 
     private fun onSignIn(result: ActivityResult?) {
         if (result != null) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            val signInTask = GoogleSignIn.getSignedInAccountFromIntent(result.data)
             try {
-                val account = task.getResult(ApiException::class.java)
+                val account = signInTask.getResult(ApiException::class.java)
                 Timber.d("Signed in : ${account?.id}")
                 val credential = GoogleAuthProvider.getCredential(account?.idToken, null)
                 Firebase.auth.signInWithCredential(credential).addOnCompleteListener { task ->
@@ -89,6 +90,19 @@ class ImportFirebaseFragment : Fragment() {
         viewModel.workObserver.observe(viewLifecycleOwner) { workInfo ->
             Timber.d("Work info = $workInfo")
             Timber.d("Progress = ${workInfo.progress}")
+            when (workInfo.state) {
+                WorkInfo.State.ENQUEUED -> {
+                }
+                WorkInfo.State.RUNNING -> {
+                }
+                WorkInfo.State.SUCCEEDED -> viewModel.importCompleted()
+                WorkInfo.State.FAILED -> {
+                }
+                WorkInfo.State.BLOCKED -> {
+                }
+                WorkInfo.State.CANCELLED -> {
+                }
+            }
         }
         lifecycleScope.launchWhenStarted {
             viewModel.user.collect { user ->

@@ -20,11 +20,10 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.firestoreSettings
 import com.google.firebase.ktx.Firebase
 import com.yashovardhan99.healersdiary.R
-import com.yashovardhan99.healersdiary.database.DatabaseModule
-import com.yashovardhan99.healersdiary.database.Patient
-import kotlinx.coroutines.delay
+import com.yashovardhan99.healersdiary.database.*
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
+import java.math.BigDecimal
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -33,12 +32,11 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         buildNotificationChannels()
         setProgress(0)
         val uid = Firebase.auth.currentUser?.uid ?: return Result.failure()
-        val firestore = Firebase.firestore
-        firestore.firestoreSettings = firestoreSettings {
+        Firebase.firestore.firestoreSettings = firestoreSettings {
             isPersistenceEnabled = false
         }
         return try {
-            val result = firestore.collection(Firestore.USER_KEY)
+            val result = Firebase.firestore.collection(Firestore.USER_KEY)
                     .document(uid)
                     .collection(Firestore.PATIENTS_KEY)
                     .get().await().documents
@@ -47,44 +45,85 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
                 return Result.failure()
             }
             setProgress(0, result.size)
-            delay(1000)
             processPatients(result)
-        } catch (e: FirebaseFirestoreException) {
-            Timber.e(e)
-            when (e.code) {
-                FirebaseFirestoreException.Code.CANCELLED -> Result.retry()
-                FirebaseFirestoreException.Code.UNKNOWN -> Result.retry()
-                FirebaseFirestoreException.Code.INTERNAL -> Result.retry()
-                FirebaseFirestoreException.Code.UNAVAILABLE -> Result.retry()
-                FirebaseFirestoreException.Code.UNAUTHENTICATED -> Result.failure()
-                else -> Result.failure()
-            }
         } catch (e: Exception) {
-            Timber.e(e)
-            if (e is FirebaseNetworkException) Result.retry()
-            else Result.failure()
+            handleException(e)
+        }
+    }
+
+    private fun handleException(e: Exception): Result {
+        Timber.e(e)
+        return when (e) {
+            is FirebaseFirestoreException -> {
+                when (e.code) {
+                    FirebaseFirestoreException.Code.CANCELLED -> Result.retry()
+                    FirebaseFirestoreException.Code.UNKNOWN -> Result.retry()
+                    FirebaseFirestoreException.Code.INTERNAL -> Result.retry()
+                    FirebaseFirestoreException.Code.UNAVAILABLE -> Result.retry()
+                    FirebaseFirestoreException.Code.UNAUTHENTICATED -> Result.failure()
+                    else -> Result.failure()
+                }
+            }
+            is FirebaseNetworkException -> {
+                Result.retry()
+            }
+            else -> {
+                Result.failure()
+            }
         }
     }
 
     private suspend fun processPatients(patients: List<DocumentSnapshot>): Result {
         val database = DatabaseModule.provideHealersDatabase(applicationContext)
         val dao = DatabaseModule.provideHealersDao(database)
+        dao.deleteAllHealings()
+        dao.deleteAllPayments()
+        dao.deleteAllPatients()
         patients.forEachIndexed { index, patient ->
-            delay(500)
-            Timber.d("$patient")
             val dbPatient = Patient(
                     0,
                     patient.getString(Firestore.NAME_KEY) ?: "ERROR",
-                    patient.getLong(Firestore.CHARGE_KEY) ?: 0,
-                    patient.getLong(Firestore.DUE_KEY) ?: 0,
+                    patient.getAmount(Firestore.CHARGE_KEY),
+                    patient.getAmount(Firestore.DUE_KEY),
                     patient.getString(Firestore.NOTES_KEY) ?: "",
                     Date(),
                     patient.getDate(Firestore.CREATED_KEY) ?: Date())
             val id = dao.insertPatient(dbPatient)
             Timber.d("Inserted $dbPatient for id = $id")
+            with(dao) { getPatientData(patient.id, id, dbPatient.charge) }
             setProgress(index + 1, patients.size)
         }
         return Result.success()
+    }
+
+    private suspend fun HealersDao.getPatientData(patientUid: String, id: Long, charge: Long) {
+        val uid = Firebase.auth.uid ?: throw IllegalStateException("Not authenticated")
+        val healings = Firebase.firestore.collection(Firestore.USER_KEY)
+                .document(uid)
+                .collection(Firestore.PATIENTS_KEY)
+                .document(patientUid)
+                .collection(Firestore.HEALINGS_KEY)
+                .get().await().documents
+        for (healing in healings) {
+            val dbHealing = Healing(0,
+                    healing.getDate(Firestore.CREATED_KEY) ?: Date(),
+                    charge, "", id)
+            insertHealing(dbHealing)
+        }
+        val payments = Firebase.firestore.collection(Firestore.USER_KEY)
+                .document(uid)
+                .collection(Firestore.PATIENTS_KEY)
+                .document(patientUid)
+                .collection(Firestore.PAYMENTS_KEY)
+                .get().await().documents
+        for (payment in payments) {
+            val dbPayment = Payment(
+                    0,
+                    payment.getDate(Firestore.CREATED_KEY) ?: Date(),
+                    payment.getAmount(Firestore.AMOUNT_KEY),
+                    "", id)
+            insertPayment(dbPayment)
+        }
     }
 
     private suspend fun setProgress(patientsFound: Int) {
@@ -147,11 +186,19 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         object Firestore {
             const val USER_KEY = "users"
             const val PATIENTS_KEY = "patients"
+            const val HEALINGS_KEY = "healings"
+            const val PAYMENTS_KEY = "payments"
             const val NAME_KEY = "Name"
             const val CHARGE_KEY = "Rate"
             const val DUE_KEY = "Due"
             const val NOTES_KEY = "Disease"
             const val CREATED_KEY = "Date"
+            const val AMOUNT_KEY = "Amount"
         }
     }
+}
+
+private fun DocumentSnapshot.getAmount(key: String): Long {
+    val amount = getDouble(key)?.toBigDecimal()?.multiply(BigDecimal(100))
+    return amount?.toLong() ?: 0
 }

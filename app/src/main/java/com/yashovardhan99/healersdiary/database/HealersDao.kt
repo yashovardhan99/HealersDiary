@@ -89,4 +89,13 @@ abstract class HealersDao {
 
     @Query("DELETE FROM payments WHERE patient_id=:patientId")
     abstract suspend fun deletePayments(patientId: Long)
+
+    @Query("DELETE FROM patients")
+    abstract suspend fun deleteAllPatients()
+
+    @Query("DELETE FROM healings")
+    abstract suspend fun deleteAllHealings()
+
+    @Query("DELETE FROM payments")
+    abstract suspend fun deleteAllPayments()
 }

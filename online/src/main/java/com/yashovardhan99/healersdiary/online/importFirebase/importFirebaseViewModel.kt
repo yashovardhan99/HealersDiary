@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class ImportFirebaseViewModel @Inject constructor(
-        private val context: Context,
+        context: Context,
         @AppDataStore private val dataStore: DataStore<Preferences>) : ViewModel() {
 
     private val _user = MutableStateFlow<FirebaseUser?>(null)
