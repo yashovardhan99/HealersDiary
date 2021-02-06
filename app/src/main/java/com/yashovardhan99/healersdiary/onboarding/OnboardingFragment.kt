@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.FragmentOnboardingBinding
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -20,12 +21,21 @@ class OnboardingFragment : Fragment() {
         binding.disclaimer.movementMethod = LinkMovementMethod.getInstance()
         viewModel.onboardingPrefs.observe(viewLifecycleOwner) { preferences ->
             Timber.d("Onboarding pref = $preferences")
-            if (preferences.onboardingComplete) {
-                binding.importOnline.visibility = View.GONE
-                binding.getStarted.visibility = View.GONE
-            } else {
-                binding.importOnline.visibility = View.VISIBLE
-                binding.getStarted.visibility = View.VISIBLE
+            when {
+                preferences.onboardingComplete -> {
+                    binding.importOnline.visibility = View.GONE
+                    binding.getStarted.visibility = View.GONE
+                }
+                preferences.importComplete -> {
+                    binding.getStarted.visibility = View.VISIBLE
+                    binding.importOnline.setText(R.string.import_completed)
+                    binding.importOnline.isEnabled = false
+                    binding.importOnline.visibility = View.VISIBLE
+                }
+                else -> {
+                    binding.importOnline.visibility = View.VISIBLE
+                    binding.getStarted.visibility = View.VISIBLE
+                }
             }
         }
         binding.getStarted.setOnClickListener {

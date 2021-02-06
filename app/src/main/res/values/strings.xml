@@ -145,6 +145,7 @@
     <string name="back">back</string>
     <string name="loading">Loading!</string>
     <string name="title_online">Backup &amp; Sync</string>
-  <string name="import_from_v1_0">Import from v1.0</string>
+    <string name="import_from_v1_0">Import from v1.0</string>
+    <string name="import_completed">Import completed</string>
 </resources>
 

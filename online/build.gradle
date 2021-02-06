@@ -87,4 +87,8 @@ dependencies {
     implementation(Dependencies.Firebase.coroutines)
 
     implementation(Dependencies.Android.workmanager)
+
+    implementation(Dependencies.Navigation.fragment)
+    implementation(Dependencies.Navigation.ui)
+    implementation(Dependencies.Navigation.dynamic_features)
 }

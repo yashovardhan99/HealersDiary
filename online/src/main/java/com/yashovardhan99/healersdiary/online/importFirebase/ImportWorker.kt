@@ -11,6 +11,7 @@ import androidx.annotation.FloatRange
 import androidx.annotation.IntRange
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.datastore.preferences.core.edit
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
@@ -23,6 +24,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.firestoreSettings
 import com.google.firebase.ktx.Firebase
 import com.yashovardhan99.healersdiary.database.*
+import com.yashovardhan99.healersdiary.onboarding.OnboardingViewModel
 import com.yashovardhan99.healersdiary.online.R
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
@@ -32,6 +34,7 @@ import kotlin.math.roundToInt
 
 class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
     override suspend fun doWork(): Result {
+        updatePreferences(false)
         buildNotificationChannels()
         setProgress(0)
         val uid = Firebase.auth.currentUser?.uid ?: return Result.failure()
@@ -97,7 +100,15 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
             with(dao) { getPatientData(patient.id, id, dbPatient.charge, index + 1, patients.size) }
             setProgress(index + 1, patients.size, 1f)
         }
+        updatePreferences(true)
+        Firebase.auth.signOut()
         return Result.success()
+    }
+
+    private suspend fun updatePreferences(importCompleted: Boolean) {
+        DatabaseModule.provideAppDatastore(applicationContext).edit { preferences ->
+            preferences[OnboardingViewModel.Companion.PreferencesKey.importComplete] = importCompleted
+        }
     }
 
     private suspend fun HealersDao.getPatientData(patientUid: String, id: Long, charge: Long, curIndex: Int, maxPatients: Int) {
@@ -201,7 +212,7 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         const val OVERALL_PROGRESS = "progress"
         const val PATIENTS_FOUND = "patients_found"
 
-        object Firestore {
+        private object Firestore {
             const val USER_KEY = "users"
             const val PATIENTS_KEY = "patients"
             const val HEALINGS_KEY = "healings"

@@ -23,10 +23,12 @@ class OnboardingViewModel @Inject constructor(@ApplicationContext application: C
                                               @AppDataStore private val dataStore: DataStore<Preferences>) : ViewModel() {
 
     companion object {
+        data class OnboardingPreferences(val onboardingComplete: Boolean,
+                                         val importComplete: Boolean)
 
-        data class OnboardingPreferences(val onboardingComplete: Boolean)
         object PreferencesKey {
             val onboardingComplete = booleanPreferencesKey("onboarding_completed")
+            val importComplete = booleanPreferencesKey("onboarding_import_completed")
         }
     }
 
@@ -39,7 +41,9 @@ class OnboardingViewModel @Inject constructor(@ApplicationContext application: C
             dataStore.data.onEach { Timber.d("Pref = $it") }.collect { preferences ->
                 val onboardingCompleted = preferences[PreferencesKey.onboardingComplete]
                         ?: false
-                _onboardingPrefs.value = OnboardingPreferences(onboardingCompleted)
+                val importCompleted = preferences[PreferencesKey.importComplete]
+                        ?: false
+                _onboardingPrefs.value = OnboardingPreferences(onboardingCompleted, importCompleted)
             }
         }
     }

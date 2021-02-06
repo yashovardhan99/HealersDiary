@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -31,6 +32,10 @@ class SplashActivity : AppCompatActivity() {
                     startActivity(Intent(this@SplashActivity, MainActivity::class.java)
                             .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK))
                     finish()
+                } else if (preferences.importComplete) {
+                    findNavController(R.id.nav_host_fragment_container).apply {
+                        popBackStack(R.id.onboardingFragment, false)
+                    }
                 }
             }
         }

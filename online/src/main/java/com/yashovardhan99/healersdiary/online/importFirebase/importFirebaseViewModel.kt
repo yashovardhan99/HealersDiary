@@ -40,8 +40,7 @@ class ImportFirebaseViewModel @Inject constructor(
     fun importCompleted() {
         viewModelScope.launch {
             dataStore.edit { preferences ->
-                preferences[OnboardingViewModel.Companion.PreferencesKey.onboardingComplete] = true
-                Timber.d("Preferences changed $preferences $dataStore")
+                preferences[OnboardingViewModel.Companion.PreferencesKey.importComplete] = true
             }
         }
     }

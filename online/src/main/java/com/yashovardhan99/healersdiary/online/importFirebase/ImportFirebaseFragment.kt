@@ -8,10 +8,12 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.work.WorkInfo
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -95,7 +97,12 @@ class ImportFirebaseFragment : Fragment() {
                 }
                 WorkInfo.State.RUNNING -> {
                 }
-                WorkInfo.State.SUCCEEDED -> viewModel.importCompleted()
+                WorkInfo.State.SUCCEEDED -> {
+                    Snackbar.make(binding.root, R.string.import_completed, Snackbar.LENGTH_LONG).show()
+                    Firebase.auth.signOut()
+                    findNavController().popBackStack(R.id.onboardingFragment, false)
+                    viewModel.importCompleted()
+                }
                 WorkInfo.State.FAILED -> {
                 }
                 WorkInfo.State.BLOCKED -> {
