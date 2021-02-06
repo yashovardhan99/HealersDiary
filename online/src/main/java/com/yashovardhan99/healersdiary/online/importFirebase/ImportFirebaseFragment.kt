@@ -23,6 +23,7 @@ import com.yashovardhan99.healersdiary.online.DaggerOnlineComponent
 import com.yashovardhan99.healersdiary.online.databinding.FragmentImportFirebaseBinding
 import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -63,23 +64,25 @@ class ImportFirebaseFragment : Fragment() {
         launcher.launch(intent)
     }
 
-    private fun onSignIn(result: ActivityResult?) {
-        if (result != null) {
-            val signInTask = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-            try {
-                val account = signInTask.getResult(ApiException::class.java)
-                Timber.d("Signed in : ${account?.id}")
-                val credential = GoogleAuthProvider.getCredential(account?.idToken, null)
-                Firebase.auth.signInWithCredential(credential).addOnCompleteListener { task ->
-                    val user = task.result?.user
-                    if (task.isSuccessful && user != null) {
+    private fun onSignIn(signInResult: ActivityResult?) {
+        if (signInResult != null) {
+            lifecycleScope.launchWhenStarted {
+
+                try {
+                    val signInTask = GoogleSignIn.getSignedInAccountFromIntent(signInResult.data)
+                    val account = signInTask.getResult(ApiException::class.java)
+                    Timber.d("Signed in : ${account?.id}")
+                    val credential = GoogleAuthProvider.getCredential(account?.idToken, null)
+                    val result = Firebase.auth.signInWithCredential(credential).await()
+                    val user = result?.user
+                    if (user != null) {
                         viewModel.setUser(user)
                     } else {
-                        Timber.w(task.exception, "Sign In failed")
+                        Timber.w("Sign In failed: $result")
                     }
+                } catch (e: Exception) {
+                    Timber.e(e, "Sign in error")
                 }
-            } catch (e: Exception) {
-                Timber.e(e, "Sign in error")
             }
         }
     }

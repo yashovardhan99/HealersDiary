@@ -1,16 +1,15 @@
 package com.yashovardhan99.healersdiary.online.importFirebase
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationChannelGroup
-import android.app.NotificationManager
+import android.app.*
 import android.content.Context
+import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
 import androidx.annotation.FloatRange
 import androidx.annotation.IntRange
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.datastore.preferences.core.edit
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
@@ -25,6 +24,7 @@ import com.google.firebase.firestore.ktx.firestoreSettings
 import com.google.firebase.ktx.Firebase
 import com.yashovardhan99.healersdiary.database.*
 import com.yashovardhan99.healersdiary.onboarding.OnboardingViewModel
+import com.yashovardhan99.healersdiary.onboarding.SplashActivity
 import com.yashovardhan99.healersdiary.online.R
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
@@ -36,8 +36,9 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
 
     private val notificationBuilder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
             .setSmallIcon(com.yashovardhan99.healersdiary.R.drawable.ic_launcher_foreground)
-            .setContentTitle("Import from v1.0")
+            .setContentTitle(context.getString(R.string.import_v1))
             .setCategory(Notification.CATEGORY_PROGRESS)
+            .setColor(ContextCompat.getColor(applicationContext, com.yashovardhan99.healersdiary.R.color.colorPrimaryDark))
             .setOngoing(true)
             .setOnlyAlertOnce(true)
 
@@ -45,7 +46,11 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         updatePreferences(false)
         buildNotificationChannels()
         setProgress(0)
-        val uid = Firebase.auth.currentUser?.uid ?: return Result.failure()
+        val uid = Firebase.auth.currentUser?.uid
+        if (uid == null) {
+            showDoneNotification(isSuccessful = false, willRetry = false)
+            return Result.failure()
+        }
         Firebase.firestore.firestoreSettings = firestoreSettings {
             isPersistenceEnabled = false
         }
@@ -56,6 +61,7 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
                     .get().await().documents
             Timber.d("$result")
             if (result.isEmpty()) {
+                showDoneNotification(isSuccessful = false, willRetry = false)
                 return Result.failure()
             }
             setProgress(0, result.size, 0f)
@@ -67,15 +73,13 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
 
     private fun handleException(e: Exception): Result {
         Timber.e(e)
-        return when (e) {
+        val status = when (e) {
             is FirebaseFirestoreException -> {
                 when (e.code) {
-                    FirebaseFirestoreException.Code.CANCELLED -> Result.retry()
-                    FirebaseFirestoreException.Code.UNKNOWN -> Result.retry()
-                    FirebaseFirestoreException.Code.INTERNAL -> Result.retry()
-                    FirebaseFirestoreException.Code.UNAVAILABLE -> Result.retry()
+                    FirebaseFirestoreException.Code.NOT_FOUND -> Result.failure()
+                    FirebaseFirestoreException.Code.PERMISSION_DENIED -> Result.failure()
                     FirebaseFirestoreException.Code.UNAUTHENTICATED -> Result.failure()
-                    else -> Result.failure()
+                    else -> Result.retry()
                 }
             }
             is FirebaseNetworkException -> {
@@ -85,6 +89,9 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
                 Result.failure()
             }
         }
+        if (status == Result.retry()) showDoneNotification(isSuccessful = false, willRetry = true)
+        else showDoneNotification(isSuccessful = false, willRetry = false)
+        return status
     }
 
     private suspend fun processPatients(patients: List<DocumentSnapshot>): Result {
@@ -109,7 +116,7 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
             setProgress(index + 1, patients.size, 1f)
         }
         updatePreferences(true)
-        Firebase.auth.signOut()
+        showDoneNotification(isSuccessful = true, willRetry = false)
         return Result.success()
     }
 
@@ -183,11 +190,36 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
                 .setContentText(message)
                 .build()
         val foregroundInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            ForegroundInfo(1, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+            ForegroundInfo(PROGRESS_NOTIF_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
         } else {
-            ForegroundInfo(1, notification)
+            ForegroundInfo(PROGRESS_NOTIF_ID, notification)
         }
         setForeground(foregroundInfo)
+    }
+
+    private fun showDoneNotification(isSuccessful: Boolean, willRetry: Boolean) {
+        if (!willRetry) Firebase.auth.signOut()
+        val intent = Intent(applicationContext, SplashActivity::class.java)
+        val pendingIntent = TaskStackBuilder.create(applicationContext).run {
+            addNextIntentWithParentStack(intent)
+            getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+        }
+        val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
+                .setSmallIcon(com.yashovardhan99.healersdiary.R.drawable.ic_launcher_foreground)
+                .setContentTitle(applicationContext.getString(R.string.import_v1))
+                .setContentText(applicationContext.getString(
+                        when {
+                            isSuccessful -> com.yashovardhan99.healersdiary.R.string.import_completed
+                            willRetry -> R.string.import_retry
+                            else -> R.string.import_failed
+                        })
+                )
+                .setCategory(Notification.CATEGORY_PROGRESS)
+                .setColor(ContextCompat.getColor(applicationContext, com.yashovardhan99.healersdiary.R.color.colorPrimaryDark))
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .build()
+        NotificationManagerCompat.from(applicationContext).notify(COMPLETE_NOTIF_ID, notification)
     }
 
     private fun buildNotificationChannels() {
@@ -201,6 +233,8 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
     }
 
     companion object {
+        private const val PROGRESS_NOTIF_ID = 100
+        private const val COMPLETE_NOTIF_ID = 200
         const val MAX_PROGRESS = 100
         const val INITIAL_PROGRESS = 10
         const val INITIAL_PROGRESS_FLOAT = 0.1f

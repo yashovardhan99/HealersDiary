@@ -6,4 +6,7 @@
     <string name="patients_found">%d Patients found</string>
     <string name="importing_of">Importing %d of %d patients</string>
     <string name="looking_for_patients">Looking for your patients</string>
+    <string name="import_v1">Import from v1.0</string>
+    <string name="import_retry">Something went wrong! We will retry importing in a while</string>
+    <string name="import_failed">Import Failed! Please try again.</string>
 </resources>
