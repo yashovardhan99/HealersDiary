@@ -86,10 +86,10 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
                 Result.retry()
             }
             else -> {
-                Result.failure()
+                Result.retry()
             }
         }
-        if (status == Result.retry()) showDoneNotification(isSuccessful = false, willRetry = true)
+        if (status is Result.Retry) showDoneNotification(isSuccessful = false, willRetry = true)
         else showDoneNotification(isSuccessful = false, willRetry = false)
         return status
     }
