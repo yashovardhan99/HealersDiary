@@ -18,6 +18,7 @@ object Dependencies {
         const val activity_ktx = "androidx.activity:activity-ktx:${Versions.Androidx.activity}"
         const val fragment_ktx = "androidx.fragment:fragment-ktx:${Versions.Androidx.fragment}"
         const val build_gradle = "com.android.tools.build:gradle:${Versions.gradle}"
+        const val workmanager = "androidx.work:work-runtime-ktx:${Versions.Androidx.workmanager}"
 
         object Lifecycle {
             const val extensions = "androidx.lifecycle:lifecycle-extensions:${Versions.Androidx.lifecycle}"
@@ -36,6 +37,7 @@ object Dependencies {
         const val play_services_auth = "com.google.android.gms:play-services-auth:${Versions.play_services_auth}"
         const val google_services = "com.google.gms:google-services:${Versions.google_services}"
         const val crashlytics_gradle = "com.google.firebase:firebase-crashlytics-gradle:${Versions.crashlytics}"
+        const val firestore = "com.google.firebase:firebase-firestore-ktx"
     }
 
     object OssLicenses {

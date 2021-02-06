@@ -82,4 +82,7 @@ dependencies {
     implementation(Dependencies.Firebase.bom)
     implementation(Dependencies.Firebase.auth)
     implementation(Dependencies.Firebase.play_services_auth)
+    implementation(Dependencies.Firebase.firestore)
+
+    implementation(Dependencies.Android.workmanager)
 }

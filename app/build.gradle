@@ -86,6 +86,7 @@ dependencies {
     implementation(Dependencies.Android.fragment_ktx)
     implementation(Dependencies.Android.multidex)
     api(Dependencies.Android.datastore)
+    implementation(Dependencies.Android.workmanager)
 
     implementation(Dependencies.Android.Lifecycle.extensions)
     implementation(Dependencies.Android.Lifecycle.view_model)
@@ -98,6 +99,7 @@ dependencies {
     implementation(Dependencies.Firebase.crashlytics)
     implementation(Dependencies.Firebase.auth)
     implementation(Dependencies.Firebase.play_services_auth)
+    implementation(Dependencies.Firebase.firestore)
 
     implementation(Dependencies.OssLicenses.oss_app)
 

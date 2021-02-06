@@ -66,6 +66,7 @@ object Version {
             const val datastore = "1.0.0-alpha06"
             const val activity = "1.2.0-rc01"
             const val fragment = "1.3.0-rc02"
+            const val workmanager = "2.5.0"
         }
     }
 }
