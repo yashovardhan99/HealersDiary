@@ -14,9 +14,9 @@
             android:id="@+id/action_choosePatientFragment_to_chooseActivityFragment"
             app:destination="@id/chooseActivityFragment"
             app:popUpToInclusive="false" />
-        <deepLink
-            android:id="@+id/deepLink4"
-            app:uri="healersdiary://com.yashovardhan99.healersdiary/activities/new_activity" />
+        <!--        <deepLink-->
+        <!--            android:id="@+id/deepLink4"-->
+        <!--            app:uri="healersdiary://com.yashovardhan99.healersdiary/activities/new_activity" />-->
     </fragment>
     <fragment
         android:id="@+id/chooseActivityFragment"
@@ -41,9 +41,9 @@
         <argument
             android:name="amount_due"
             app:argType="long" />
-        <deepLink
-            android:id="@+id/deepLink3"
-            app:uri="healersdiary://com.yashovardhan99.healersdiary/activities/new_activity?patient_id={patient_id}" />
+        <!--        <deepLink-->
+        <!--            android:id="@+id/deepLink3"-->
+        <!--            app:uri="healersdiary://com.yashovardhan99.healersdiary/activities/new_activity?patient_id={patient_id}" />-->
     </fragment>
     <fragment
         android:id="@+id/newHealingFragment"
@@ -61,10 +61,10 @@
             app:argType="long" />
     </fragment>
     <fragment
-        tools:layout="@layout/fragment_new_payment"
         android:id="@+id/newPaymentFragment"
         android:name="com.yashovardhan99.healersdiary.create.NewPaymentFragment"
-        android:label="NewPaymentFragment">
+        android:label="NewPaymentFragment"
+        tools:layout="@layout/fragment_new_payment">
         <argument
             android:name="patient_id"
             app:argType="long" />

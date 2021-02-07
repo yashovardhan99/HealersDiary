@@ -62,7 +62,7 @@ object Version {
             const val ktx_core = "1.3.2"
             const val lifecycle = "2.2.0"
             const val room = "2.3.0-beta01"
-            const val navigation = "2.3.0"
+            const val navigation = "2.3.1"
             const val paging = "3.0.0-alpha13"
             const val datastore = "1.0.0-alpha06"
             const val activity = "1.2.0-rc01"

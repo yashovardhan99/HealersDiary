@@ -20,6 +20,7 @@ class CreateNewActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_new)
         val request = intent.data?.let { uri ->
+            Timber.d("Request = $uri")
             fromUri(uri)
         }
         handleRequest(request)
