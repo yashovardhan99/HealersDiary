@@ -24,11 +24,13 @@ class OnboardingViewModel @Inject constructor(@ApplicationContext application: C
 
     companion object {
         data class OnboardingPreferences(val onboardingComplete: Boolean,
-                                         val importComplete: Boolean)
+                                         val importComplete: Boolean,
+                                         val importRequest: Boolean)
 
         object PreferencesKey {
             val onboardingComplete = booleanPreferencesKey("onboarding_completed")
             val importComplete = booleanPreferencesKey("onboarding_import_completed")
+            val importRequested = booleanPreferencesKey("onboarding_import_requested")
         }
     }
 
@@ -43,7 +45,10 @@ class OnboardingViewModel @Inject constructor(@ApplicationContext application: C
                         ?: false
                 val importCompleted = preferences[PreferencesKey.importComplete]
                         ?: false
-                _onboardingPrefs.value = OnboardingPreferences(onboardingCompleted, importCompleted)
+                val importRequest = preferences[PreferencesKey.importRequested]
+                        ?: false
+                _onboardingPrefs.value = OnboardingPreferences(onboardingCompleted,
+                        importCompleted, importRequest)
             }
         }
     }
@@ -52,6 +57,24 @@ class OnboardingViewModel @Inject constructor(@ApplicationContext application: C
         viewModelScope.launch {
             dataStore.edit { preferences ->
                 preferences[PreferencesKey.onboardingComplete] = true
+            }
+        }
+    }
+
+    fun startImport() {
+        viewModelScope.launch {
+            dataStore.edit { preferences ->
+                preferences[PreferencesKey.importRequested] = true
+                preferences[PreferencesKey.onboardingComplete] = false
+                preferences[PreferencesKey.importComplete] = false
+            }
+        }
+    }
+
+    fun resetImportPrefs() {
+        viewModelScope.launch {
+            dataStore.edit { preferences ->
+                preferences[PreferencesKey.importRequested] = false
             }
         }
     }

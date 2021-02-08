@@ -22,6 +22,7 @@ class OnboardingFragment : Fragment() {
         viewModel.onboardingPrefs.observe(viewLifecycleOwner) { preferences ->
             Timber.d("Onboarding pref = $preferences")
             when {
+                preferences.importRequest -> importOnline()
                 preferences.onboardingComplete -> {
                     binding.importOnline.visibility = View.GONE
                     binding.getStarted.visibility = View.GONE
@@ -45,7 +46,12 @@ class OnboardingFragment : Fragment() {
         return binding.root
     }
 
+    override fun onStart() {
+        super.onStart()
+    }
+
     private fun importOnline() {
         findNavController().navigate(OnboardingFragmentDirections.actionOnboardingFragmentToImportFirebaseFragment())
+        viewModel.resetImportPrefs()
     }
 }

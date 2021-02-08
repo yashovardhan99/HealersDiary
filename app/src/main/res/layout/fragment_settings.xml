@@ -11,88 +11,114 @@
             type="com.yashovardhan99.healersdiary.utils.Header" />
     </data>
 
-    <ScrollView
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <include
+            android:id="@+id/heading"
+            layout="@layout/header"
+            bind:header="@{header}" />
+
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/icon">
 
-            <include
-                android:id="@+id/heading"
-                layout="@layout/header"
-                bind:header="@{header}" />
-
-            <ImageView
-                android:id="@+id/logo"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:contentDescription="@string/healers_diary_logo"
-                android:padding="12dp"
-                android:src="@drawable/ic_full_logo"
-                app:layout_constraintTop_toBottomOf="@id/icon" />
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/version"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="12dp"
-                android:textAlignment="center"
-                android:textAppearance="@style/h1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/logo"
-                bind:showDebugVersion="@{true}"
-                tools:text="@string/version_s" />
+                <ImageView
+                    android:id="@+id/logo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:contentDescription="@string/healers_diary_logo"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_full_logo" />
 
-            <TextView
-                android:id="@+id/author"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="32dp"
-                android:text="@string/made_with_yashovardhan_dhanania"
-                android:textAlignment="center"
-                android:textAppearance="@style/h1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/version" />
+                <TextView
+                    android:id="@+id/version"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="12dp"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/h1"
+                    bind:showDebugVersion="@{true}"
+                    tools:text="@string/version_s" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/open_source"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="12dp"
-                android:text="@string/open_source_licenses"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/author" />
+                <TextView
+                    android:id="@+id/author"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="32dp"
+                    android:text="@string/made_with_yashovardhan_dhanania"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/h1" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/privacy_policy"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="12dp"
-                android:text="@string/privacy_policy"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/open_source" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/open_source"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/open_source_licenses" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/eula"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="12dp"
-                android:text="@string/end_user_license_agreement"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/privacy_policy" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/privacy_policy"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/privacy_policy" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/eula"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/end_user_license_agreement" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/colorControlHighlight"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_margin="16dp"
+                        android:text="@string/dangerous_settings"
+                        android:textAppearance="@style/subtitle"
+                        android:textColor="?attr/colorError" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/import_from_v1"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="@string/import_from_v1_0"
+                        android:textColor="?attr/colorError" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/reset_all"
+                        style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/reset_data"
+                        android:textColor="?attr/colorError" />
+
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

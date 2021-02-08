@@ -1,5 +1,6 @@
 package com.yashovardhan99.healersdiary.settings
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -9,11 +10,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.dashboard.DashboardViewModel
 import com.yashovardhan99.healersdiary.databinding.FragmentSettingsBinding
+import com.yashovardhan99.healersdiary.onboarding.SplashActivity
 import com.yashovardhan99.healersdiary.utils.buildHeader
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class SettingsFragment : Fragment() {
@@ -34,6 +38,35 @@ class SettingsFragment : Fragment() {
             startActivity(Intent(Intent.ACTION_VIEW).apply {
                 data = Uri.parse(resources.getString(R.string.eula_link))
             })
+        }
+        binding.importFromV1.setOnClickListener {
+            MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(R.string.are_you_sure)
+                    .setMessage(R.string.overrides_all_data)
+                    .setPositiveButton(R.string.confirm) { _, _ ->
+                        Timber.d("Confirming override")
+                        val intent = Intent(activity, SplashActivity::class.java).apply {
+                            putExtra(SplashActivity.OPEN_IMPORT, true)
+                            flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        }
+                        startActivity(intent)
+                        activity?.finish()
+                    }.setNegativeButton(R.string.cancel) { dialog: DialogInterface, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
+        }
+        binding.resetAll.setOnClickListener {
+            MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(R.string.are_you_sure)
+                    .setMessage(R.string.delete_warning_message)
+                    .setPositiveButton(R.string.delete) { _, _ ->
+                        Timber.d("Confirming delete")
+                        // TODO: 8/2/21 Navigate to splash with some args
+                    }.setNegativeButton(R.string.cancel) { dialog: DialogInterface, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
         }
         return binding.root
     }

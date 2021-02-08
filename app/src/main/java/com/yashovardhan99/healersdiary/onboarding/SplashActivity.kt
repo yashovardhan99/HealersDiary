@@ -6,12 +6,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.crashlytics.ktx.crashlytics
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.ktx.initialize
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.dashboard.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,7 +22,7 @@ class SplashActivity : AppCompatActivity() {
             delay(1000)
             viewModel.onboardingPrefs.observe(this@SplashActivity) { preferences ->
                 Timber.d("Pref at activity = $preferences")
-                if (preferences.onboardingComplete) {
+                if (preferences.onboardingComplete && !preferences.importRequest) {
                     startActivity(Intent(this@SplashActivity, MainActivity::class.java)
                             .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK))
                     finish()
@@ -43,13 +37,12 @@ class SplashActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        Timber.d("Auth = ${FirebaseAuth.getInstance()}")
-        Timber.d("Analytics = ${Firebase.analytics}")
-        Timber.d("Crashlytics = ${Firebase.crashlytics}")
-        val app = Firebase.initialize(this)
-        Timber.d("App = $app")
-        if (app != null) {
-            Timber.d("Auth new = ${Firebase.auth(app)}")
+        if (intent.getBooleanExtra(OPEN_IMPORT, false)) {
+            viewModel.startImport()
         }
+    }
+
+    companion object {
+        const val OPEN_IMPORT = "open_import"
     }
 }

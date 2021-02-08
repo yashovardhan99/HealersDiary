@@ -147,5 +147,10 @@
     <string name="title_online">Backup &amp; Sync</string>
     <string name="import_from_v1_0">Import from v1.0</string>
     <string name="import_completed">Import completed</string>
+    <string name="dangerous_settings">Dangerous settings</string>
+  <string name="reset_data">Reset Data</string>
+  <string name="are_you_sure">Are you sure</string>
+  <string name="overrides_all_data">This action will override all existing records. Are you sure you want to continue?</string>
+  <string name="confirm">Confirm</string>
 </resources>
 
