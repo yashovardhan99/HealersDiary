@@ -4,7 +4,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-# [Unreleased]
+## [Unreleased]
+### Added
+- Import from v1.0 and Clear all options in Settings
+
+## [2.0.0-alpha02] - 2020-02-08
+### Added
+- Individual healings can now be customized to include a different price
+- Migration option from v1.0
+- New local database
+
+### Changed
+- Migrated to local database
+- A completely new design
+
+### Removed
+- Authentication requirement
+- Online database support
+- Patient feedbacks
+
+### Security
+- Data now does not leave user's device
 
 ## [1.0.0] - 2019-08-16
 ### Added
@@ -114,3 +134,21 @@ See Pull Request #5
 - View patient info
 - Add new healing record for patient
 - View healing logs
+
+[Unreleased]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-alpha02...HEAD
+[2.0.0-alpha02]: https://github.com/yashovardhan99/HealersDiary/compare/v1.0.0...v2.0.0-alpha02
+[1.0.0]: https://github.com/yashovardhan99/HealersDiary/compare/v0.10.0...v1.0.0
+[0.10.0]: https://github.com/yashovardhan99/HealersDiary/compare/v0.9.0...v0.10.0
+[0.9.0]: https://github.com/yashovardhan99/HealersDiary/compare/v0.8.2...v0.9.0
+[0.8.2]: https://github.com/yashovardhan99/HealersDiary/compare/v0.8.1...v0.8.2
+[0.8.1]: https://github.com/yashovardhan99/HealersDiary/compare/v0.8.0...v0.8.1
+[0.8.0]: https://github.com/yashovardhan99/HealersDiary/compare/v0.7.0...v0.8.0
+[0.7.0]: https://github.com/yashovardhan99/HealersDiary/compare/v0.6.2...v0.7.0
+[0.6.2]: https://github.com/yashovardhan99/HealersDiary/compare/v0.6.1...v0.6.2
+[0.6.1]: https://github.com/yashovardhan99/HealersDiary/compare/v0.6.0...v0.6.1
+[0.6.0]: https://github.com/yashovardhan99/HealersDiary/compare/v0.5.0...v0.6.0
+[0.5.0]: https://github.com/yashovardhan99/HealersDiary/compare/v0.4.0...v0.5.0
+[0.4.0]: https://github.com/yashovardhan99/HealersDiary/compare/v0.3.0...v0.4.0
+[0.3.0]: https://github.com/yashovardhan99/HealersDiary/compare/v0.2.0...v0.3.0
+[0.2.0]: https://github.com/yashovardhan99/HealersDiary/compare/v0.1.0...v0.2.0
+[0.1.0]: https://github.com/yashovardhan99/HealersDiary/releases/tag/v0.1.0
