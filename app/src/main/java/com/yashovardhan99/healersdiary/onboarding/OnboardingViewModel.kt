@@ -20,7 +20,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class OnboardingViewModel @Inject constructor(@ApplicationContext application: Context,
-                                              @AppDataStore private val dataStore: DataStore<Preferences>) : ViewModel() {
+                                              @AppDataStore private val dataStore: DataStore<Preferences>,
+                                              private val repository: OnboardingRepository) : ViewModel() {
 
     companion object {
         data class OnboardingPreferences(val onboardingComplete: Boolean,
@@ -75,6 +76,17 @@ class OnboardingViewModel @Inject constructor(@ApplicationContext application: C
         viewModelScope.launch {
             dataStore.edit { preferences ->
                 preferences[PreferencesKey.importRequested] = false
+            }
+        }
+    }
+
+    fun clearAll() {
+        viewModelScope.launch {
+            dataStore.edit { preferences ->
+                preferences[PreferencesKey.onboardingComplete] = false
+                preferences[PreferencesKey.importComplete] = false
+                preferences[PreferencesKey.importRequested] = false
+                repository.deleteAll()
             }
         }
     }

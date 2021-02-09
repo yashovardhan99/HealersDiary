@@ -62,7 +62,12 @@ class SettingsFragment : Fragment() {
                     .setMessage(R.string.delete_warning_message)
                     .setPositiveButton(R.string.delete) { _, _ ->
                         Timber.d("Confirming delete")
-                        // TODO: 8/2/21 Navigate to splash with some args
+                        val intent = Intent(activity, SplashActivity::class.java).apply {
+                            putExtra(SplashActivity.CLEAR_ALL, true)
+                            flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        }
+                        startActivity(intent)
+                        activity?.finish()
                     }.setNegativeButton(R.string.cancel) { dialog: DialogInterface, _ ->
                         dialog.dismiss()
                     }

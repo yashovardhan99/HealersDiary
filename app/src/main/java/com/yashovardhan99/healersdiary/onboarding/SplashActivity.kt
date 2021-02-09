@@ -6,6 +6,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
+import com.google.android.material.snackbar.Snackbar
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.dashboard.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -40,9 +41,14 @@ class SplashActivity : AppCompatActivity() {
         if (intent.getBooleanExtra(OPEN_IMPORT, false)) {
             viewModel.startImport()
         }
+        if (intent.getBooleanExtra(CLEAR_ALL, false)) {
+            viewModel.clearAll()
+            Snackbar.make(findViewById(R.id.nav_host_fragment_container), R.string.data_cleared, Snackbar.LENGTH_LONG).show()
+        }
     }
 
     companion object {
         const val OPEN_IMPORT = "open_import"
+        const val CLEAR_ALL = "clear_all"
     }
 }

@@ -77,10 +77,6 @@
     <string name="home">Home</string>
     <string name="version_s">Version : %s</string>
     <string name="made_with_yashovardhan_dhanania">Made with ❤ Yashovardhan Dhanania</string>
-    <string name="logo_courtesy_yasujizr_on_github">
-    Logo courtesy
-    <a href="https://github.com/Yasujizr">Yasujizr</a>
-  </string>
     <string name="about">About</string>
     <string name="main_list_extra_choice">Main List Extra Choice :</string>
     <string name="settings">Settings</string>
@@ -115,7 +111,7 @@
     <string name="earned_last_month">Earned last month</string>
     <string name="recent_activity">Recent Activity</string>
     <string name="sample_money">$500.00</string>
-    <string name="not_much_to_show_here">Not much to show here...</string>
+    <string name="not_much_to_show_here">Not much to show here…</string>
     <string name="add_some_healings_to_get_started">Add some healings to get started</string>
     <string name="total_amount_due">Total amount due</string>
     <string name="number_this_month_text">%d this month</string>
@@ -148,9 +144,10 @@
     <string name="import_from_v1_0">Import from v1.0</string>
     <string name="import_completed">Import completed</string>
     <string name="dangerous_settings">Dangerous settings</string>
-  <string name="reset_data">Reset Data</string>
-  <string name="are_you_sure">Are you sure</string>
-  <string name="overrides_all_data">This action will override all existing records. Are you sure you want to continue?</string>
-  <string name="confirm">Confirm</string>
+    <string name="reset_data">Reset Data</string>
+    <string name="are_you_sure">Are you sure</string>
+    <string name="overrides_all_data">This action will override all existing records. Are you sure you want to continue?</string>
+    <string name="confirm">Confirm</string>
+    <string name="data_cleared">Data Cleared</string>
 </resources>
 
