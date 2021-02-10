@@ -30,11 +30,6 @@ This new version uses the latest Jetpack libraries.
     <img src=".github/screenshot_5.png" width=150/>
 </p>
 
-## Contributing
-* Clone the repo and set up a project in firebase.
-* Make relevant changes and make a pull request in the master (dev) branch.
-A contributing guide will be up here soon.
-
 ## Dev Bytes
 * Uses latest Jetpack libraries
 * Room for local persistence
@@ -50,6 +45,5 @@ A contributing guide will be up here soon.
 * Public Stable - *tentative* ~~December~~ *July* 2021,
 * Firestore access and all user data on Firebase will be deleted ~~within a few months of stable release~~ starting 2022 in a phased manner.
 
-## Support
-* Support the development by cloning this repo and helping me fix any issues
-* [Pay me on PayPal!](https://paypal.me/yashovardhan99) to help fund my project, google play fees and other fees and expenses.
+## Contributing and Support
+Read the [Contributing guide](CONTRIBUTING.md) to learn how you can help this project.
