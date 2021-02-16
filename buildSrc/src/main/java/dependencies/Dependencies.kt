@@ -1,12 +1,27 @@
 package dependencies
 
+import dependencies.Dependencies.Android.Lifecycle
 import dependencies.Version.Dependencies as Versions
 
+/**
+ * This is a collection of all dependencies used in the project.
+ * @since v2.0.0-alpha02
+ * @see Version
+ * @suppress SpellCheckingInspection
+ */
 @Suppress("SpellCheckingInspection")
 object Dependencies {
     const val timber = "com.jakewharton.timber:timber:${Versions.timber}"
     const val kotlin_gradle = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}"
 
+    /**
+     * Contains common android dependencies
+     * @see Lifecycle
+     * @see Room
+     * @see Navigation
+     * @see Hilt
+     * @see Versions.Androidx
+     */
     object Android {
         const val app_compat = "androidx.appcompat:appcompat:${Versions.Androidx.app_compat}"
         const val material = "com.google.android.material:material:${Versions.material}"
@@ -20,6 +35,10 @@ object Dependencies {
         const val build_gradle = "com.android.tools.build:gradle:${Versions.gradle}"
         const val workmanager = "androidx.work:work-runtime-ktx:${Versions.Androidx.workmanager}"
 
+        /**
+         * Dependencies for lifecycle methods and extensions
+         * @see Versions.Androidx.lifecycle
+         */
         object Lifecycle {
             const val extensions = "androidx.lifecycle:lifecycle-extensions:${Versions.Androidx.lifecycle}"
             const val view_model = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.Androidx.lifecycle}"
@@ -29,6 +48,10 @@ object Dependencies {
         }
     }
 
+    /**
+     * All Firebase Dependencies
+     * @see Versions.firebase_bom
+     */
     object Firebase {
         const val bom = "com.google.firebase:firebase-bom:${Versions.firebase_bom}"
         const val analytics = "com.google.firebase:firebase-analytics-ktx"
@@ -41,11 +64,20 @@ object Dependencies {
         const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:${Versions.play_services_coroutines}"
     }
 
+    /**
+     * Open source licenses dependencies.
+     * This is used to get a list of all OSS licenses for the dependencies used by the project.
+     * @see com.google.android.gms.oss.licenses
+     */
     object OssLicenses {
         const val oss_app = "com.google.android.gms:play-services-oss-licenses:${Versions.oss_app}"
         const val oss_gradle = "com.google.android.gms:oss-licenses-plugin:${Versions.oss_root}"
     }
 
+    /**
+     * Room dependencies
+     * @see androidx.room
+     */
     object Room {
         const val runtime = "androidx.room:room-runtime:${Versions.Androidx.room}"
         const val compiler = "androidx.room:room-compiler:${Versions.Androidx.room}"
@@ -53,6 +85,11 @@ object Dependencies {
         const val testing = "androidx.room:room-testing:${Versions.Androidx.room}"
     }
 
+    /**
+     * All navigation framework dependencies
+     * @see Android
+     * @see androidx.navigation
+     */
     object Navigation {
         const val fragment = "androidx.navigation:navigation-fragment-ktx:${Versions.Androidx.navigation}"
         const val ui = "androidx.navigation:navigation-ui-ktx:${Versions.Androidx.navigation}"
@@ -61,11 +98,19 @@ object Dependencies {
         const val safe_args_plugin = "androidx.navigation:navigation-safe-args-gradle-plugin:${Versions.Androidx.navigation}"
     }
 
+    /**
+     * All paging 3.0 dependencies
+     * @see Versions.Androidx.paging
+     */
     object Paging {
         const val runtime = "androidx.paging:paging-runtime-ktx:${Versions.Androidx.paging}"
         const val common_testing = "androidx.paging:paging-common-ktx:${Versions.Androidx.paging}"
     }
 
+    /**
+     * Hilt and dagger dependencies
+     * @see dagger.hilt.android
+     */
     object Hilt {
         const val android = "com.google.dagger:hilt-android:${Versions.hilt_android}"
         const val android_compiler = "com.google.dagger:hilt-android-compiler:${Versions.hilt_android}"

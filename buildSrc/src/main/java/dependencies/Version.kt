@@ -1,9 +1,17 @@
 package dependencies
 
+import dependencies.Version.Dependencies
 import java.text.NumberFormat
 
+/**
+ * A repository of Versions used by the project
+ * @see Dependencies
+ */
 object Version {
 
+    /**
+     * App versions such as minSdk, version code etc.
+     */
     object AppVersion {
         const val minSdk = 21
         const val targetSdk = 30
@@ -18,6 +26,10 @@ object Version {
         private const val standard = (major * 100 + minor) * 100 + patch
         val versionCode = (standard * 10 + buildType.typeCode) * 100 + buildCode
         val versionName = buildVersionName()
+
+        /**
+         * Builds a version name string such as "2.0.1-beta-01"
+         */
         private fun buildVersionName(): String {
             val builder = StringBuilder("$major.$minor.$patch")
             return when {
@@ -30,6 +42,11 @@ object Version {
             }
         }
 
+        /**
+         * A sealed class for all build types
+         * @param typeCode Integer between 0 and 3 representing different types
+         * @param typeString String representing different types
+         */
         @Suppress("unused")
         private sealed class BuildType(val typeCode: Int, val typeString: String) {
             object ALPHA : BuildType(0, "alpha")
@@ -39,6 +56,10 @@ object Version {
         }
     }
 
+    /**
+     * Container for version codes used in gradle dependencies.
+     * @see dependencies.Dependencies
+     */
     object Dependencies {
         const val play_services_coroutines = "1.4.1"
         const val kotlin = "1.4.21"
@@ -54,6 +75,10 @@ object Version {
         const val play_services_auth = "19.0.0"
         const val firebase_bom = "26.4.0"
 
+        /**
+         * AndroidX dependency codes
+         * @see dependencies.Dependencies.Android
+         */
         object Androidx {
             const val app_compat = "1.2.0"
             const val constraint_layout = "2.0.4"
