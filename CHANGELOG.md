@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [2.0.0-alpha03] - 2020-02-16
 ### Added
 - Import from v1.0 and Clear all options in Settings
 
@@ -136,6 +138,7 @@ See Pull Request #5
 - View healing logs
 
 [Unreleased]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-alpha02...HEAD
+[2.0.0-alpha03]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-alpha02...v2.0.0-alpha03
 [2.0.0-alpha02]: https://github.com/yashovardhan99/HealersDiary/compare/v1.0.0...v2.0.0-alpha02
 [1.0.0]: https://github.com/yashovardhan99/HealersDiary/compare/v0.10.0...v1.0.0
 [0.10.0]: https://github.com/yashovardhan99/HealersDiary/compare/v0.9.0...v0.10.0
