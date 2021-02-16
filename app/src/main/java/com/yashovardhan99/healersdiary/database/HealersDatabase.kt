@@ -6,7 +6,7 @@ import androidx.room.TypeConverters
 
 @Database(entities = [Patient::class, Healing::class, Payment::class],
         views = [Activity::class],
-        version = 1)
+        version = 2)
 @TypeConverters(DateConverter::class, ActivityTypeConverter::class)
 abstract class HealersDatabase : RoomDatabase() {
     abstract fun healersDao(): HealersDao

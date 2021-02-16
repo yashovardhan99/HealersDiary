@@ -4,7 +4,7 @@ import androidx.room.*
 import java.util.*
 
 @TypeConverters(DateConverter::class)
-@Entity(tableName = "healings")
+@Entity(tableName = "healings", indices = [Index("time"), Index("patient_id")])
 data class Healing(
         @PrimaryKey(autoGenerate = true) val id: Long,
         val time: Date,
