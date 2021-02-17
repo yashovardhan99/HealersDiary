@@ -62,7 +62,7 @@ object Version {
      */
     object Dependencies {
         const val play_services_coroutines = "1.4.1"
-        const val kotlin = "1.4.21"
+        const val kotlin = "1.4.30"
         const val material = "1.2.1"
         const val hilt = "1.0.0-alpha03"
         const val hilt_android = "2.31.2-alpha"
@@ -91,7 +91,7 @@ object Version {
             const val paging = "3.0.0-alpha13"
             const val datastore = "1.0.0-alpha06"
             const val activity = "1.2.0-rc01"
-            const val fragment = "1.3.0-rc02"
+            const val fragment = "1.3.0"
             const val workmanager = "2.5.0"
         }
     }
