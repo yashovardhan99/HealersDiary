@@ -27,6 +27,7 @@ class ImportFirebaseViewModel @Inject constructor(
             .setRequiresBatteryNotLow(true)
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
+
     private val importWorkRequest = OneTimeWorkRequestBuilder<ImportWorker>()
             .setConstraints(constraints)
             .setBackoffCriteria(BackoffPolicy.LINEAR,

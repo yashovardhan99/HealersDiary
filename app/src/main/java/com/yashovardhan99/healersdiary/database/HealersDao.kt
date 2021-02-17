@@ -2,6 +2,7 @@ package com.yashovardhan99.healersdiary.database
 
 import androidx.paging.PagingSource
 import androidx.room.*
+import com.yashovardhan99.healersdiary.utils.DangerousDatabase
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 
@@ -90,12 +91,15 @@ abstract class HealersDao {
     @Query("DELETE FROM payments WHERE patient_id=:patientId")
     abstract suspend fun deletePayments(patientId: Long)
 
+    @DangerousDatabase
     @Query("DELETE FROM patients")
     abstract suspend fun deleteAllPatients()
 
+    @DangerousDatabase
     @Query("DELETE FROM healings")
     abstract suspend fun deleteAllHealings()
 
+    @DangerousDatabase
     @Query("DELETE FROM payments")
     abstract suspend fun deleteAllPayments()
 }

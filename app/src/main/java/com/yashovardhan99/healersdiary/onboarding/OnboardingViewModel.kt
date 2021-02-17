@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yashovardhan99.healersdiary.AppDataStore
+import com.yashovardhan99.healersdiary.utils.DangerousDatabase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.collect
@@ -18,16 +19,28 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
+/**
+ * Viewmodel used by Splash screen in onboarding flow
+ */
 @HiltViewModel
 class OnboardingViewModel @Inject constructor(@ApplicationContext application: Context,
                                               @AppDataStore private val dataStore: DataStore<Preferences>,
                                               private val repository: OnboardingRepository) : ViewModel() {
 
     companion object {
+        /**
+         * Onboarding preferences for datastore.
+         * @param onboardingComplete Used to indicate whether onboarding has been completed
+         * @param importComplete Used to indicate import from v1 is complete
+         * @param importRequest Used to indicate import from v1 is requested
+         */
         data class OnboardingPreferences(val onboardingComplete: Boolean,
                                          val importComplete: Boolean,
                                          val importRequest: Boolean)
 
+        /**
+         * Wrapper over preferences stored in datastore
+         */
         object PreferencesKey {
             val onboardingComplete = booleanPreferencesKey("onboarding_completed")
             val importComplete = booleanPreferencesKey("onboarding_import_completed")
@@ -36,11 +49,15 @@ class OnboardingViewModel @Inject constructor(@ApplicationContext application: C
     }
 
     private val _onboardingPrefs = MutableLiveData<OnboardingPreferences>()
+
+    /**
+     * Live data of onboarding preferences fetched from datastore
+     */
     val onboardingPrefs: LiveData<OnboardingPreferences> = _onboardingPrefs
 
     init {
-        Timber.d(application.packageName)
         viewModelScope.launch {
+            // collecting from datastore and sending it via livedata using our wrapper class
             dataStore.data.onEach { Timber.d("Pref = $it") }.collect { preferences ->
                 val onboardingCompleted = preferences[PreferencesKey.onboardingComplete]
                         ?: false
@@ -54,6 +71,9 @@ class OnboardingViewModel @Inject constructor(@ApplicationContext application: C
         }
     }
 
+    /**
+     * User has pressed getStarted, onboarding completed
+     */
     fun getStarted() {
         viewModelScope.launch {
             dataStore.edit { preferences ->
@@ -62,6 +82,9 @@ class OnboardingViewModel @Inject constructor(@ApplicationContext application: C
         }
     }
 
+    /**
+     * Sets preferences to indicate import is requested
+     */
     fun startImport() {
         viewModelScope.launch {
             dataStore.edit { preferences ->
@@ -72,6 +95,9 @@ class OnboardingViewModel @Inject constructor(@ApplicationContext application: C
         }
     }
 
+    /**
+     * Reset import preferences
+     */
     fun resetImportPrefs() {
         viewModelScope.launch {
             dataStore.edit { preferences ->
@@ -80,6 +106,10 @@ class OnboardingViewModel @Inject constructor(@ApplicationContext application: C
         }
     }
 
+    /**
+     * Clear all data from the database
+     */
+    @DangerousDatabase
     fun clearAll() {
         viewModelScope.launch {
             dataStore.edit { preferences ->

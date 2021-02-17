@@ -13,27 +13,38 @@ import com.yashovardhan99.healersdiary.databinding.FragmentOnboardingBinding
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
+/**
+ * Fragment for displaying either Splash screen or Getting started and import options
+ * @see OnboardingViewModel
+ * @see com.yashovardhan99.healersdiary.online.importFirebase.ImportFirebaseFragment
+ */
 @AndroidEntryPoint
 class OnboardingFragment : Fragment() {
+    /**
+     * View model shared across activity
+     */
     val viewModel: OnboardingViewModel by activityViewModels()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        // data binding
         val binding = FragmentOnboardingBinding.inflate(inflater, container, false)
+        // Setting link for disclaimer
         binding.disclaimer.movementMethod = LinkMovementMethod.getInstance()
+
         viewModel.onboardingPrefs.observe(viewLifecycleOwner) { preferences ->
             Timber.d("Onboarding pref = $preferences")
             when {
-                preferences.importRequest -> importOnline()
-                preferences.onboardingComplete -> {
+                preferences.importRequest -> importOnline() //start import
+                preferences.onboardingComplete -> { //onboarding is completed/already completed, no need to show any options
                     binding.importOnline.visibility = View.GONE
                     binding.getStarted.visibility = View.GONE
                 }
-                preferences.importComplete -> {
+                preferences.importComplete -> { // import is complete -> disable import option
                     binding.getStarted.visibility = View.VISIBLE
                     binding.importOnline.setText(R.string.import_completed)
                     binding.importOnline.isEnabled = false
                     binding.importOnline.visibility = View.VISIBLE
                 }
-                else -> {
+                else -> { //default - all options available
                     binding.importOnline.visibility = View.VISIBLE
                     binding.getStarted.visibility = View.VISIBLE
                 }
@@ -46,10 +57,12 @@ class OnboardingFragment : Fragment() {
         return binding.root
     }
 
-    override fun onStart() {
-        super.onStart()
-    }
-
+    /**
+     * Used to navigate to Import fragment (download module if not available)
+     * Also resets import preferences using viewModel
+     * @see OnboardingViewModel.startImport
+     * @see OnboardingViewModel.resetImportPrefs
+     */
     private fun importOnline() {
         findNavController().navigate(OnboardingFragmentDirections.actionOnboardingFragmentToImportFirebaseFragment())
         viewModel.resetImportPrefs()

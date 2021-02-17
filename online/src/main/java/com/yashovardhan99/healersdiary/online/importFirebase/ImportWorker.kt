@@ -26,6 +26,7 @@ import com.yashovardhan99.healersdiary.database.*
 import com.yashovardhan99.healersdiary.onboarding.OnboardingViewModel
 import com.yashovardhan99.healersdiary.onboarding.SplashActivity
 import com.yashovardhan99.healersdiary.online.R
+import com.yashovardhan99.healersdiary.utils.DangerousDatabase
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import java.math.BigDecimal
@@ -42,6 +43,7 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
             .setOngoing(true)
             .setOnlyAlertOnce(true)
 
+    @OptIn(DangerousDatabase::class)
     override suspend fun doWork(): Result {
         updatePreferences(false)
         buildNotificationChannels()
@@ -94,6 +96,7 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         return status
     }
 
+    @DangerousDatabase
     private suspend fun processPatients(patients: List<DocumentSnapshot>): Result {
         val database = DatabaseModule.provideHealersDatabase(applicationContext)
         val dao = DatabaseModule.provideHealersDao(database)

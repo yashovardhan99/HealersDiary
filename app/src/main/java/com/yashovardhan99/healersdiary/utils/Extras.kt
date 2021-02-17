@@ -16,3 +16,8 @@ fun Context.getColorFromAttr(
 }
 
 const val transitionDurationLarge = 300L
+
+@RequiresOptIn("This API is performing dangerous database operations!", RequiresOptIn.Level.ERROR)
+@Retention(AnnotationRetention.BINARY)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
+public annotation class DangerousDatabase
