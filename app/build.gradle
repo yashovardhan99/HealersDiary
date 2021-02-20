@@ -73,6 +73,33 @@ android {
     lintOptions {
         abortOnError false
     }
+    task generateDependencyListFile {
+        configurations.implementation.setCanBeResolved(true)
+        configurations.androidTestImplementation.setCanBeResolved(true)
+        configurations.api.setCanBeResolved(true)
+
+        doLast {
+            def str = "# auto-generated from ${this.name}; this file should be checked into version control\n"
+            def resolvedImplementationConfig = configurations.implementation.resolvedConfiguration
+            def resolvedAndroidTestImplementationConfig = configurations.androidTestImplementation.resolvedConfiguration
+            def resolvedApiConfig = configurations.api.resolvedConfiguration
+
+            resolvedImplementationConfig.firstLevelModuleDependencies.each { dep ->
+                str += "${dep.moduleGroup}:${dep.moduleName}:${dep.moduleVersion}\n"
+            }
+
+            resolvedAndroidTestImplementationConfig.firstLevelModuleDependencies.each { dep ->
+                str += "${dep.moduleGroup}:${dep.moduleName}:${dep.moduleVersion}\n"
+            }
+
+            resolvedApiConfig.firstLevelModuleDependencies.each { dep ->
+                str += "${dep.moduleGroup}:${dep.moduleName}:${dep.moduleVersion}\n"
+            }
+
+            new File(projectDir, "deps.list.txt").text = str
+        }
+    }
+    preBuild.dependsOn(generateDependencyListFile)
     dynamicFeatures = [':online']
 }
 dependencies {
@@ -88,7 +115,7 @@ dependencies {
     implementation(Dependencies.Android.multidex)
     api(Dependencies.Android.datastore)
     implementation(Dependencies.Android.workmanager)
-    
+
     implementation(Dependencies.Android.Lifecycle.view_model)
     implementation(Dependencies.Android.Lifecycle.view_model_saved_state)
     implementation(Dependencies.Android.Lifecycle.live_data)
