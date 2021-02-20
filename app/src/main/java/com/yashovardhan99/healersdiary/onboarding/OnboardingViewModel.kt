@@ -85,13 +85,11 @@ class OnboardingViewModel @Inject constructor(@ApplicationContext application: C
     /**
      * Sets preferences to indicate import is requested
      */
-    fun startImport() {
-        viewModelScope.launch {
-            dataStore.edit { preferences ->
-                preferences[PreferencesKey.importRequested] = true
-                preferences[PreferencesKey.onboardingComplete] = false
-                preferences[PreferencesKey.importComplete] = false
-            }
+    suspend fun startImport() {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKey.importRequested] = true
+            preferences[PreferencesKey.onboardingComplete] = false
+            preferences[PreferencesKey.importComplete] = false
         }
     }
 
@@ -110,14 +108,12 @@ class OnboardingViewModel @Inject constructor(@ApplicationContext application: C
      * Clear all data from the database
      */
     @DangerousDatabase
-    fun clearAll() {
-        viewModelScope.launch {
-            dataStore.edit { preferences ->
-                preferences[PreferencesKey.onboardingComplete] = false
-                preferences[PreferencesKey.importComplete] = false
-                preferences[PreferencesKey.importRequested] = false
-                repository.deleteAll()
-            }
+    suspend fun clearAll() {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKey.onboardingComplete] = false
+            preferences[PreferencesKey.importComplete] = false
+            preferences[PreferencesKey.importRequested] = false
+            repository.deleteAll()
         }
     }
 }

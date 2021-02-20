@@ -1,5 +1,9 @@
 <resources>
 
+    <style name="AppTheme.Splash" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/app_logo_background</item>
+        <item name="android:statusBarColor">@android:color/white</item>
+    </style>
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->

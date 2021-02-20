@@ -33,13 +33,18 @@ class OnboardingFragment : Fragment() {
         viewModel.onboardingPrefs.observe(viewLifecycleOwner) { preferences ->
             Timber.d("Onboarding pref = $preferences")
             when {
-                preferences.importRequest -> importOnline() //start import
+                preferences.importRequest -> {
+                    importOnline() //start import
+                    binding.disclaimer.visibility = View.VISIBLE
+                }
                 preferences.onboardingComplete -> { //onboarding is completed/already completed, no need to show any options
                     binding.importOnline.visibility = View.GONE
                     binding.getStarted.visibility = View.GONE
+                    binding.disclaimer.visibility = View.GONE
                 }
                 preferences.importComplete -> { // import is complete -> disable import option
                     binding.getStarted.visibility = View.VISIBLE
+                    binding.disclaimer.visibility = View.VISIBLE
                     binding.importOnline.setText(R.string.import_completed)
                     binding.importOnline.isEnabled = false
                     binding.importOnline.visibility = View.VISIBLE
@@ -47,6 +52,7 @@ class OnboardingFragment : Fragment() {
                 else -> { //default - all options available
                     binding.importOnline.visibility = View.VISIBLE
                     binding.getStarted.visibility = View.VISIBLE
+                    binding.disclaimer.visibility = View.VISIBLE
                 }
             }
         }
