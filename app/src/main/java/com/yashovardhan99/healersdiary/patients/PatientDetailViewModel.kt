@@ -10,6 +10,7 @@ import com.yashovardhan99.healersdiary.database.Patient
 import com.yashovardhan99.healersdiary.database.Payment
 import com.yashovardhan99.healersdiary.utils.*
 import com.yashovardhan99.healersdiary.utils.HealingParent.Healing.Companion.toUiHealing
+import com.yashovardhan99.healersdiary.utils.PaymentParent.Payment.Companion.toUiPayment
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.earnedLastMonth
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.earnedThisMonth
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.healingsLastMonth
@@ -87,8 +88,18 @@ class PatientDetailViewModel @Inject constructor(
         }
     }
 
-    fun getPayments(patientId: Long): Flow<PagingData<Payment>> {
-        return repository.getAllPayments(patientId)
+    fun getPayments(patientId: Long): Flow<PagingData<PaymentParent>> {
+        return repository.getAllPayments(patientId).map { data ->
+            data.map { it.toUiPayment() }
+                    .insertSeparators { before, after ->
+                        if (before == null && after == null) null
+                        else if (before == null && after != null) PaymentParent.PaymentSeparator(getHeading(after.time))
+                        else if (before != null && after != null) {
+                            if (getHeading(before.time) != getHeading(after.time)) PaymentParent.PaymentSeparator(getHeading(after.time))
+                            else null
+                        } else null
+                    }
+        }
     }
 
     fun deleteHealing(healing: Healing) {

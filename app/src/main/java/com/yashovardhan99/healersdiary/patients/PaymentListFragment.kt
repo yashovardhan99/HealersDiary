@@ -14,9 +14,9 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.dashboard.DashboardViewModel
-import com.yashovardhan99.healersdiary.database.Payment
 import com.yashovardhan99.healersdiary.databinding.FragmentHealingListBinding
 import com.yashovardhan99.healersdiary.utils.Icons
+import com.yashovardhan99.healersdiary.utils.PaymentParent
 import com.yashovardhan99.healersdiary.utils.buildHeader
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -46,12 +46,12 @@ class PaymentListFragment : Fragment() {
         return binding.root
     }
 
-    private fun editPayment(payment: Payment) {
+    private fun editPayment(payment: PaymentParent.Payment) {
         // TODO: 31/1/21 Edit Payment
         Toast.makeText(context, R.string.not_yet_implemented, Toast.LENGTH_SHORT).show()
     }
 
-    private fun deletePayment(payment: Payment) {
-        viewModel.deletePayment(payment)
+    private fun deletePayment(payment: PaymentParent.Payment) {
+        viewModel.deletePayment(payment.toDatabasePayment())
     }
 }
