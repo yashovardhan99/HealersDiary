@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - Changed splash screen behaviour
 - Updated dependencies
+- Added separators for Healings and Payment list
 
 ## [2.0.0-alpha03] - 2020-02-16
 ### Added

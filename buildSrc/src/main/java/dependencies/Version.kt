@@ -86,7 +86,7 @@ object Version {
             const val multidex = "2.0.1"
             const val ktx_core = "1.3.2"
             const val lifecycle = "2.3.0"
-            const val room = "2.3.0-beta01"
+            const val room = "2.3.0-beta02"
             const val navigation = "2.3.1"
             const val paging = "3.0.0-beta01"
             const val datastore = "1.0.0-alpha06"
