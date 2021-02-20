@@ -88,8 +88,7 @@ dependencies {
     implementation(Dependencies.Android.multidex)
     api(Dependencies.Android.datastore)
     implementation(Dependencies.Android.workmanager)
-
-    implementation(Dependencies.Android.Lifecycle.extensions)
+    
     implementation(Dependencies.Android.Lifecycle.view_model)
     implementation(Dependencies.Android.Lifecycle.view_model_saved_state)
     implementation(Dependencies.Android.Lifecycle.live_data)

@@ -40,7 +40,6 @@ object Dependencies {
          * @see Versions.Androidx.lifecycle
          */
         object Lifecycle {
-            const val extensions = "androidx.lifecycle:lifecycle-extensions:${Versions.Androidx.lifecycle}"
             const val view_model = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.Androidx.lifecycle}"
             const val view_model_saved_state = "androidx.lifecycle:lifecycle-viewmodel-savedstate:${Versions.Androidx.lifecycle}"
             const val live_data = "androidx.lifecycle:lifecycle-livedata-ktx:${Versions.Androidx.lifecycle}"
