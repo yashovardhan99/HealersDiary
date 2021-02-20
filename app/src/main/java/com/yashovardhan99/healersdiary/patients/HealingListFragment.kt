@@ -14,8 +14,8 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.dashboard.DashboardViewModel
-import com.yashovardhan99.healersdiary.database.Healing
 import com.yashovardhan99.healersdiary.databinding.FragmentHealingListBinding
+import com.yashovardhan99.healersdiary.utils.HealingParent
 import com.yashovardhan99.healersdiary.utils.Icons
 import com.yashovardhan99.healersdiary.utils.buildHeader
 import dagger.hilt.android.AndroidEntryPoint
@@ -46,13 +46,13 @@ class HealingListFragment : Fragment() {
         return binding.root
     }
 
-    private fun editHealing(healing: Healing) {
+    private fun editHealing(healing: HealingParent.Healing) {
         // TODO: 1/2/21 Edit healing
         Toast.makeText(context, R.string.not_yet_implemented, Toast.LENGTH_SHORT).show()
     }
 
-    private fun deleteHealing(healing: Healing) {
+    private fun deleteHealing(healing: HealingParent.Healing) {
         Timber.d("Delete healing $healing")
-        viewModel.deleteHealing(healing)
+        viewModel.deleteHealing(healing.toDatabaseHealing())
     }
 }

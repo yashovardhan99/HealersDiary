@@ -3,22 +3,23 @@ package com.yashovardhan99.healersdiary.patients
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.paging.insertSeparators
+import androidx.paging.map
 import com.yashovardhan99.healersdiary.database.Healing
 import com.yashovardhan99.healersdiary.database.Patient
 import com.yashovardhan99.healersdiary.database.Payment
 import com.yashovardhan99.healersdiary.utils.*
+import com.yashovardhan99.healersdiary.utils.HealingParent.Healing.Companion.toUiHealing
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.earnedLastMonth
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.earnedThisMonth
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.healingsLastMonth
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.healingsThisMonth
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.healingsToday
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.paymentDue
+import com.yashovardhan99.healersdiary.utils.Utils.getHeading
 import com.yashovardhan99.healersdiary.utils.Utils.insertSeparators
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -73,8 +74,17 @@ class PatientDetailViewModel @Inject constructor(
         }
     }
 
-    fun getHealings(patientId: Long): Flow<PagingData<Healing>> {
-        return repository.getAllHealings(patientId)
+    fun getHealings(patientId: Long): Flow<PagingData<HealingParent>> {
+        return repository.getAllHealings(patientId).map { data ->
+            data.map { healing -> healing.toUiHealing() }.insertSeparators { before: HealingParent.Healing?, after: HealingParent.Healing? ->
+                if (before == null && after == null) null
+                else if (before == null && after != null) HealingParent.HealingSeparator(getHeading(after.time))
+                else if (before != null && after != null) {
+                    if (getHeading(before.time) != getHeading(after.time)) HealingParent.HealingSeparator(getHeading(after.time))
+                    else null
+                } else null
+            }
+        }
     }
 
     fun getPayments(patientId: Long): Flow<PagingData<Payment>> {
