@@ -10,8 +10,8 @@
     <string name="import_retry">Something went wrong! We will retry importing in a while</string>
     <string name="import_failed">Import Failed! Please try again.</string>
     <string name="login_to_continue">Please login with the Google account you have used earlier</string>
-    <string name="connecting">Connecting</string>
+    <string name="connecting">Connecting… Make sure you are connected to the internet.</string>
     <string name="importing">Importing…</string>
-    <string name="waiting_for_constraints">Waiting for network or battery…</string>
+    <string name="waiting_for_constraints">Waiting for network…</string>
     <string name="import_done_message">All your data has been imported and is ready to use!</string>
 </resources>

@@ -57,7 +57,6 @@ class ImportFirebaseFragment : Fragment() {
     private fun signIn() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(com.yashovardhan99.healersdiary.R.string.default_web_client_id))
-                .requestIdToken(getString(com.yashovardhan99.healersdiary.R.string.default_web_client_id))
                 .requestEmail()
                 .build()
         val client = GoogleSignIn.getClient(requireContext(), gso)
@@ -144,6 +143,7 @@ class ImportFirebaseFragment : Fragment() {
                 }
                 WorkInfo.State.BLOCKED -> {
                     binding.pageTitle.setText(R.string.import_v1)
+                    binding.progressText.setText(R.string.waiting_for_constraints)
                     binding.progressHorizontal.isIndeterminate = true
                     binding.login.visibility = View.GONE
                     binding.illustration.visibility = View.VISIBLE

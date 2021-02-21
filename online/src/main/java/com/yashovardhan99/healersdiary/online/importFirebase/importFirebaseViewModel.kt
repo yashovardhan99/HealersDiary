@@ -24,7 +24,6 @@ class ImportFirebaseViewModel @Inject constructor(
     private val _user = MutableStateFlow<FirebaseUser?>(null)
     val user: StateFlow<FirebaseUser?> = _user
     private val constraints = Constraints.Builder()
-            .setRequiresBatteryNotLow(true)
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
