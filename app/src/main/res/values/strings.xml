@@ -149,5 +149,6 @@
     <string name="overrides_all_data">This action will override all existing records. Are you sure you want to continue?</string>
     <string name="confirm">Confirm</string>
     <string name="data_cleared">Data Cleared</string>
+  <string name="undo">Undo</string>
 </resources>
 
