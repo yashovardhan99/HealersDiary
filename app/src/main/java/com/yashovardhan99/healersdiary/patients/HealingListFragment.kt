@@ -58,7 +58,7 @@ class HealingListFragment : Fragment() {
         Timber.d("Delete healing $healing")
         viewModel.deleteHealing(healing.toDatabaseHealing())
         Snackbar.make(binding.root, R.string.deleted, Snackbar.LENGTH_LONG)
-                .setActionTextColor(ContextCompat.getColor(binding.root.context, R.color.colorPrimary))
+                .setActionTextColor(ContextCompat.getColor(binding.root.context, R.color.colorSecondary))
                 .setAction(R.string.undo) {
                     val done = viewModel.undoDeleteHealing()
                     Timber.d("Undo = $done")

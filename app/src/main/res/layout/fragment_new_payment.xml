@@ -112,7 +112,7 @@
                     app:hintEnabled="true"
                     app:hintTextAppearance="@style/subtitle2"
                     app:prefixTextAppearance="@style/h2"
-                    app:prefixTextColor="@color/colorPrimaryDark"
+                    app:prefixTextColor="@color/colorPrimary"
                     tools:prefixText="$">
 
                     <com.google.android.material.textfield.TextInputEditText

@@ -7,9 +7,9 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorSecondary">@color/colorPrimary</item>
-        <item name="colorPrimary">@color/colorPrimaryDark</item>
-        <item name="colorPrimaryDark">#FF454791</item>
+        <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="android:titleTextStyle">@style/h1</item>
         <item name="android:subtitleTextStyle">@style/subtitle</item>
         <item name="android:windowActivityTransitions">true</item>
@@ -39,7 +39,7 @@
     </style>
 
     <style name="h2" parent="h1">
-        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:textSize">18sp</item>
     </style>
 </resources>

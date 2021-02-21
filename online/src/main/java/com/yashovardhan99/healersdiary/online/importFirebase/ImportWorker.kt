@@ -39,7 +39,7 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
             .setSmallIcon(com.yashovardhan99.healersdiary.R.drawable.ic_launcher_foreground)
             .setContentTitle(context.getString(R.string.import_v1))
             .setCategory(Notification.CATEGORY_PROGRESS)
-            .setColor(ContextCompat.getColor(applicationContext, com.yashovardhan99.healersdiary.R.color.colorPrimaryDark))
+            .setColor(ContextCompat.getColor(applicationContext, com.yashovardhan99.healersdiary.R.color.colorPrimary))
             .setOngoing(true)
             .setOnlyAlertOnce(true)
 
@@ -218,7 +218,7 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
                         })
                 )
                 .setCategory(Notification.CATEGORY_PROGRESS)
-                .setColor(ContextCompat.getColor(applicationContext, com.yashovardhan99.healersdiary.R.color.colorPrimaryDark))
+                .setColor(ContextCompat.getColor(applicationContext, com.yashovardhan99.healersdiary.R.color.colorPrimary))
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
                 .build()
