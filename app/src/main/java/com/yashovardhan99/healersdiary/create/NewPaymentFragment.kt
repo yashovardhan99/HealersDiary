@@ -5,18 +5,19 @@ import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointBackward
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.FragmentNewPaymentBinding
-import com.yashovardhan99.healersdiary.utils.DatePickerFragment
 import com.yashovardhan99.healersdiary.utils.Icons
 import com.yashovardhan99.healersdiary.utils.buildHeader
 import dagger.hilt.android.AndroidEntryPoint
@@ -60,17 +61,9 @@ class NewPaymentFragment : Fragment() {
         }
         binding.heading.icon.setOnClickListener { findNavController().navigateUp() }
 
-        val datePicker = DatePickerFragment { calendar ->
-            viewModel.setActivityCalendar(calendar)
-            showTimePicker()
-        }
-        binding.dateEdit.setOnClickListener {
-            datePicker.arguments = bundleOf(Pair(DatePickerFragment.DateKey,
-                    viewModel.activityCalendar.value.timeInMillis))
-            datePicker.show(parentFragmentManager, "datePicker")
-        }
         binding.heading.optionsIcon.setOnClickListener { save(binding) }
         binding.newPayment.setOnClickListener { save(binding) }
+        binding.dateEdit.setOnClickListener { showDatePicker() }
         binding.timeEdit.setOnClickListener { showTimePicker() }
         viewModel.error.asLiveData().observe(viewLifecycleOwner) { error ->
             if (error) {
@@ -107,5 +100,33 @@ class NewPaymentFragment : Fragment() {
             if (setCalendar > cur) viewModel.setActivityCalendar(cur)
             else viewModel.setActivityCalendar(setCalendar)
         }
+    }
+
+    private fun showDatePicker() {
+        val constraints = CalendarConstraints.Builder()
+                .setEnd(Calendar.getInstance().timeInMillis)
+                .setValidator(DateValidatorPointBackward.now())
+                .build()
+        val setCalendar = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
+            val calendar = viewModel.activityCalendar.value
+            set(Calendar.DATE, calendar.get(Calendar.DATE))
+            set(Calendar.MONTH, calendar.get(Calendar.MONTH))
+            set(Calendar.YEAR, calendar.get(Calendar.YEAR))
+        }
+        val datePicker = MaterialDatePicker.Builder.datePicker()
+                .setCalendarConstraints(constraints)
+                .setSelection(setCalendar.timeInMillis)
+                .build()
+        datePicker.addOnPositiveButtonClickListener {
+            val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+                    .apply { timeInMillis = it }
+            viewModel.setActivityCalendar(Calendar.getInstance().apply {
+                set(Calendar.YEAR, calendar.get(Calendar.YEAR))
+                set(Calendar.MONTH, calendar.get(Calendar.MONTH))
+                set(Calendar.DATE, calendar.get(Calendar.DATE))
+            })
+            showTimePicker()
+        }
+        datePicker.show(childFragmentManager, "datePicker")
     }
 }
