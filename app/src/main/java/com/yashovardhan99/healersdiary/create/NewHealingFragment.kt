@@ -1,6 +1,7 @@
 package com.yashovardhan99.healersdiary.create
 
 import android.os.Bundle
+import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,11 +12,12 @@ import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.timepicker.MaterialTimePicker
+import com.google.android.material.timepicker.TimeFormat
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.FragmentNewHealingBinding
 import com.yashovardhan99.healersdiary.utils.DatePickerFragment
 import com.yashovardhan99.healersdiary.utils.Icons
-import com.yashovardhan99.healersdiary.utils.TimePickerFragment
 import com.yashovardhan99.healersdiary.utils.buildHeader
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -23,6 +25,7 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
+import java.util.*
 
 @AndroidEntryPoint
 class NewHealingFragment : Fragment() {
@@ -85,11 +88,24 @@ class NewHealingFragment : Fragment() {
     }
 
     private fun showTimePicker() {
-        val timePicker = TimePickerFragment { calendar ->
-            viewModel.setActivityCalendar(calendar)
+        val calendar = viewModel.activityCalendar.value
+        val timePicker = MaterialTimePicker.Builder()
+                .setTimeFormat(if (DateFormat.is24HourFormat(context)) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H)
+                .setHour(calendar.get(Calendar.HOUR_OF_DAY))
+                .setMinute(calendar.get(Calendar.MINUTE))
+                .build()
+        timePicker.show(childFragmentManager, "timePicker")
+        timePicker.addOnPositiveButtonClickListener {
+            val setCalendar = Calendar.getInstance().apply {
+                timeInMillis = viewModel.activityCalendar.value.timeInMillis
+                set(Calendar.HOUR_OF_DAY, timePicker.hour)
+                set(Calendar.MINUTE, timePicker.minute)
+                set(Calendar.SECOND, 0)
+            }
+            val cur = Calendar.getInstance()
+            Timber.d("Calendar set = ${setCalendar.time}")
+            if (setCalendar > cur) viewModel.setActivityCalendar(cur)
+            else viewModel.setActivityCalendar(setCalendar)
         }
-        timePicker.arguments = bundleOf(Pair(TimePickerFragment.TimeKey,
-                viewModel.activityCalendar.value.timeInMillis))
-        timePicker.show(parentFragmentManager, "timePicker")
     }
 }
