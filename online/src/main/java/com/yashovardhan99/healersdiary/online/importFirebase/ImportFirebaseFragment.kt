@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -22,7 +23,10 @@ import com.yashovardhan99.healersdiary.online.DaggerOnlineComponent
 import com.yashovardhan99.healersdiary.online.R
 import com.yashovardhan99.healersdiary.online.databinding.FragmentImportFirebaseBinding
 import dagger.hilt.android.EntryPointAccessors
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.android.awaitFrame
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import javax.inject.Inject
@@ -32,6 +36,14 @@ class ImportFirebaseFragment : Fragment() {
     lateinit var viewModel: ImportFirebaseViewModel
     private val contract = ActivityResultContracts.StartActivityForResult()
     private val launcher = registerForActivityResult(contract, ::onSignIn)
+    private var indeterminateProgressJob: Job? = null
+    private val gso by lazy {
+        GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(com.yashovardhan99.healersdiary.R.string.default_web_client_id))
+                .requestEmail()
+                .build()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         val coreModuleDependencies = EntryPointAccessors.fromApplication(
                 requireActivity().applicationContext,
@@ -55,13 +67,16 @@ class ImportFirebaseFragment : Fragment() {
     }
 
     private fun signIn() {
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(com.yashovardhan99.healersdiary.R.string.default_web_client_id))
-                .requestEmail()
-                .build()
         val client = GoogleSignIn.getClient(requireContext(), gso)
+        client.signOut()
         val intent = client.signInIntent
         launcher.launch(intent)
+    }
+
+    private fun signOut() {
+        val client = GoogleSignIn.getClient(requireContext(), gso)
+        Firebase.auth.signOut()
+        client.signOut()
     }
 
     private fun onSignIn(signInResult: ActivityResult?) {
@@ -90,7 +105,8 @@ class ImportFirebaseFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val binding = FragmentImportFirebaseBinding.inflate(inflater, container, false)
         binding.pageTitle.setText(R.string.import_v1)
-        binding.progressHorizontal.progress = 0
+        binding.progressHorizontal.setProgressCompat(0, true)
+        binding.progressHorizontal.max = ImportWorker.MAX_PROGRESS
         binding.progressText.setText(R.string.login_to_continue)
         binding.login.visibility = View.VISIBLE
         binding.login.setOnClickListener {
@@ -103,7 +119,7 @@ class ImportFirebaseFragment : Fragment() {
                 WorkInfo.State.ENQUEUED -> {
                     binding.pageTitle.setText(R.string.import_v1)
                     binding.progressText.setText(R.string.connecting)
-                    binding.progressHorizontal.isIndeterminate = true
+                    setProgressIndeterminate(binding)
                     binding.login.visibility = View.GONE
                     binding.illustration.visibility = View.GONE
                 }
@@ -117,9 +133,8 @@ class ImportFirebaseFragment : Fragment() {
                         if (current == 0) binding.progressText.text = getString(R.string.patients_found, patients)
                         else binding.progressText.text = getString(R.string.importing_of, current, patients)
                     }
-                    binding.progressHorizontal.isIndeterminate = false
-                    binding.progressHorizontal.max = ImportWorker.MAX_PROGRESS
-                    binding.progressHorizontal.progress = workInfo.progress.getInt(ImportWorker.OVERALL_PROGRESS, 0)
+                    indeterminateProgressJob?.cancel()
+                    binding.progressHorizontal.setProgressCompat(workInfo.progress.getInt(ImportWorker.OVERALL_PROGRESS, 0), true)
 
                     binding.login.visibility = View.GONE
                     binding.illustration.visibility = View.VISIBLE
@@ -127,32 +142,33 @@ class ImportFirebaseFragment : Fragment() {
                 WorkInfo.State.SUCCEEDED -> {
                     binding.pageTitle.setText(com.yashovardhan99.healersdiary.R.string.import_completed)
                     binding.progressText.setText(R.string.import_done_message)
-                    binding.progressHorizontal.progress = ImportWorker.MAX_PROGRESS
+                    indeterminateProgressJob?.cancel()
+                    binding.progressHorizontal.setProgressCompat(ImportWorker.MAX_PROGRESS, true)
                     Snackbar.make(binding.root, com.yashovardhan99.healersdiary.R.string.import_completed, Snackbar.LENGTH_LONG).show()
-                    Firebase.auth.signOut()
+                    signOut()
                     findNavController().popBackStack(com.yashovardhan99.healersdiary.R.id.onboardingFragment, false)
                     viewModel.importCompleted()
                 }
                 WorkInfo.State.FAILED -> {
                     binding.pageTitle.setText(R.string.import_v1)
                     binding.progressText.setText(R.string.import_failed)
-                    binding.progressHorizontal.progress = 0
-                    binding.progressHorizontal.isIndeterminate = false
+                    indeterminateProgressJob?.cancel()
+                    binding.progressHorizontal.setProgressCompat(0, true)
                     binding.login.visibility = View.VISIBLE
                     binding.illustration.visibility = View.GONE
                 }
                 WorkInfo.State.BLOCKED -> {
                     binding.pageTitle.setText(R.string.import_v1)
                     binding.progressText.setText(R.string.waiting_for_constraints)
-                    binding.progressHorizontal.isIndeterminate = true
+                    setProgressIndeterminate(binding)
                     binding.login.visibility = View.GONE
                     binding.illustration.visibility = View.VISIBLE
                 }
                 WorkInfo.State.CANCELLED -> {
                     binding.pageTitle.setText(R.string.import_v1)
                     binding.progressText.setText(R.string.import_failed)
-                    binding.progressHorizontal.progress = 0
-                    binding.progressHorizontal.isIndeterminate = false
+                    indeterminateProgressJob?.cancel()
+                    binding.progressHorizontal.setProgressCompat(0, true)
                     binding.login.visibility = View.VISIBLE
                     binding.illustration.visibility = View.GONE
                 }
@@ -166,17 +182,30 @@ class ImportFirebaseFragment : Fragment() {
                     binding.login.visibility = View.VISIBLE
                     binding.progressText.setText(R.string.login_to_continue)
                     binding.illustration.visibility = View.GONE
-                    binding.progressHorizontal.progress = 0
+                    indeterminateProgressJob?.cancel()
+                    binding.progressHorizontal.setProgressCompat(0, true)
                 }
             }
         }
         return binding.root
     }
 
+    private fun setProgressIndeterminate(binding: FragmentImportFirebaseBinding) {
+        indeterminateProgressJob?.cancel()
+        binding.progressHorizontal.hide()
+        indeterminateProgressJob = lifecycleScope.launchWhenStarted {
+            while (binding.progressHorizontal.isVisible && isActive) {
+                awaitFrame()
+            }
+            if (isActive) binding.progressHorizontal.isIndeterminate = true
+            binding.progressHorizontal.show()
+        }
+    }
+
     private fun startImport(binding: FragmentImportFirebaseBinding) {
         viewModel.startImport()
         binding.login.visibility = View.GONE
-        binding.progressHorizontal.isIndeterminate = true
+        setProgressIndeterminate(binding)
         binding.progressText.setText(R.string.connecting)
     }
 }
