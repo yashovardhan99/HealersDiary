@@ -5,15 +5,17 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.yashovardhan99.healersdiary.R
 
-data class Header(val icon: Icons, val title: String, val optionIcon: Icons?)
-
-fun buildHeader(icon: Icons, title: String, optionIcon: Icons? = null): Header {
-    return Header(icon, title, optionIcon)
+class Header private constructor(val icon: Icons, val title: String, val optionIcon: Icons?) {
+    companion object {
+        fun buildHeader(icon: Icons, title: String, optionIcon: Icons? = null): Header {
+            return Header(icon, title, optionIcon)
+        }
+    }
 }
 
-fun Context.buildHeader(icon: Icons, @StringRes title: Int, optionIcon: Icons? = null) = buildHeader(icon, getString(title), optionIcon)
+fun Context.buildHeader(icon: Icons, @StringRes title: Int, optionIcon: Icons? = null) = Header.buildHeader(icon, getString(title), optionIcon)
 
-fun Context.buildHeader(@DrawableRes icon: Int, @StringRes title: Int, optionIcon: Icons? = null) = buildHeader(Icons.CustomStatic(icon), getString(title), optionIcon)
+fun Context.buildHeader(@DrawableRes icon: Int, @StringRes title: Int, optionIcon: Icons? = null) = Header.buildHeader(Icons.CustomStatic(icon), getString(title), optionIcon)
 
 sealed class Icons(@DrawableRes val drawable: Int, @StringRes val description: Int?, val clickable: Boolean) {
     object Add : Icons(R.drawable.add, R.string.add_new_record, true)

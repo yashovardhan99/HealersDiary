@@ -20,6 +20,7 @@ import com.yashovardhan99.healersdiary.dashboard.DashboardViewModel
 import com.yashovardhan99.healersdiary.database.ActivityType
 import com.yashovardhan99.healersdiary.databinding.FragmentPatientDetailBinding
 import com.yashovardhan99.healersdiary.utils.*
+import com.yashovardhan99.healersdiary.utils.Header.Companion.buildHeader
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
@@ -51,7 +52,8 @@ class PatientDetailFragment : Fragment() {
         dashboardViewModel.setPatientId(args.patientId)
         viewModel.patient.asLiveData().observe(viewLifecycleOwner) { patient ->
             Timber.d("Patient = $patient")
-            binding.header = binding.header?.copy(title = patient?.name ?: "")
+            binding.header = buildHeader(Icons.Close, patient?.name ?: "",
+                    Icons.CustomButton(R.drawable.edit, R.string.edit_patient))
         }
         val statAdapter = StatAdapter { stat ->
             when (stat.type) {
