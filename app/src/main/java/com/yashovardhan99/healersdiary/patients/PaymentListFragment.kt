@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.asLiveData
@@ -12,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.dashboard.DashboardViewModel
 import com.yashovardhan99.healersdiary.databinding.FragmentHealingListBinding
@@ -20,14 +22,16 @@ import com.yashovardhan99.healersdiary.utils.PaymentParent
 import com.yashovardhan99.healersdiary.utils.buildHeader
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
+import timber.log.Timber
 
 @AndroidEntryPoint
 class PaymentListFragment : Fragment() {
     private val viewModel: PatientDetailViewModel by activityViewModels()
     private val dashboardViewModel: DashboardViewModel by activityViewModels()
     private val args: PaymentListFragmentArgs by navArgs()
+    private lateinit var binding: FragmentHealingListBinding
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val binding = FragmentHealingListBinding.inflate(inflater, container, false)
+        binding = FragmentHealingListBinding.inflate(inflater, container, false)
         viewModel.setPatientId(args.patientId)
         viewModel.patient.asLiveData().observe(viewLifecycleOwner) { patient ->
             binding.header = buildHeader(Icons.Back, resources.getString(R.string.patient_all_payments, patient?.name.orEmpty()), Icons.Add)
@@ -53,5 +57,12 @@ class PaymentListFragment : Fragment() {
 
     private fun deletePayment(payment: PaymentParent.Payment) {
         viewModel.deletePayment(payment.toDatabasePayment())
+        Snackbar.make(binding.root, R.string.deleted, Snackbar.LENGTH_LONG)
+                .setActionTextColor(ContextCompat.getColor(binding.root.context, R.color.colorSecondary))
+                .setAction(R.string.undo) {
+                    val done = viewModel.undoDeletePayment()
+                    Timber.d("Undo = $done")
+                }
+                .show()
     }
 }

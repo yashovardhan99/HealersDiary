@@ -140,7 +140,8 @@ class PatientDetailViewModel @Inject constructor(
     }
 
     fun undoDeleteHealing(): Boolean {
-        val healing = savedStateHandle.get<Bundle>("deleted_healing")?.toHealing() ?: return false
+        val healing = savedStateHandle.remove<Bundle>("deleted_healing")?.toHealing()
+                ?: return false
         viewModelScope.launch {
             createRepository.insertNewHealing(healing)
         }
@@ -151,9 +152,39 @@ class PatientDetailViewModel @Inject constructor(
         val updatedPatient = patient.value?.let {
             it.copy(due = it.due + payment.amount)
         }
+        savedStateHandle["deleted_payment"] = payment.toBundle()
         viewModelScope.launch {
             repository.deletePayment(payment)
             updatedPatient?.let { repository.updatePatient(it) }
         }
+    }
+
+    private fun Payment.toBundle() = bundleOf(
+            "id" to id,
+            "time" to time.time,
+            "amount" to amount,
+            "notes" to notes,
+            "pid" to patientId)
+
+    private fun Bundle.toPayment(): Payment {
+        val date = getLong("time", -1).let {
+            if (it == -1L) Date()
+            else Date(it)
+        }
+        return Payment(
+                getLong("id"),
+                date,
+                getLong("amount"),
+                getString("notes", ""),
+                getLong("pid", patient.value?.id ?: 0))
+    }
+
+    fun undoDeletePayment(): Boolean {
+        val payment = savedStateHandle.remove<Bundle>("deleted_payment")?.toPayment()
+                ?: return false
+        viewModelScope.launch {
+            createRepository.insertNewPayment(payment)
+        }
+        return true
     }
 }
