@@ -22,34 +22,46 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
+/**
+ * The home page (dashboard) fragment
+ * @see DashboardViewModel
+ * @see MainActivity
+ */
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
     private val viewModel: DashboardViewModel by activityViewModels()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val binding = FragmentHomeBinding.inflate(inflater, container, false)
+        // build and attach header
         binding.header = context?.run {
             buildHeader(R.drawable.home, R.string.app_name, Icons.Settings)
         }
+        // On settings icon click
         binding.toolbar.optionsIcon.setOnClickListener {
             Timber.d("Options icon press")
             findNavController().navigate(R.id.settings)
         }
+        // Creating different adapters
         val statAdapter = StatAdapter().apply { stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY }
         val headerAdapter = HeaderAdapter(false)
         val activityAdapter = ActivityAdapter(::goToPatient).apply { stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY }
         val emptyStateAdapter = EmptyStateAdapter(false, EmptyState.DASHBOARD)
+        // concatting all adapters
         binding.recycler.adapter = ConcatAdapter(statAdapter, headerAdapter, activityAdapter, emptyStateAdapter)
         lifecycleScope.launchWhenStarted {
-            viewModel.dashboardFlow.collectLatest { statWithActivity ->
-                Timber.d("${statWithActivity.second}")
-                statAdapter.submitList(statWithActivity.first)
-                headerAdapter.isVisible = statWithActivity.second != null
-                emptyStateAdapter.isVisible = statWithActivity.second == null
+            // collect latest stats and activities
+            viewModel.dashboardFlow.collectLatest { (stats, activities) ->
+                Timber.d("$activities")
+                statAdapter.submitList(stats)
+                headerAdapter.isVisible = activities != null
+                emptyStateAdapter.isVisible = activities == null
                 headerAdapter.notifyDataSetChanged()
                 emptyStateAdapter.notifyDataSetChanged()
-                activityAdapter.submitList(statWithActivity.second)
+                activityAdapter.submitList(activities)
             }
         }
+        // Using grid layout to allow stats on top.
+        // After first 4 (index 3), we use the full row for each span
         val layoutManager = GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
@@ -74,6 +86,11 @@ class HomeFragment : Fragment() {
         viewModel.resetPatientId()
     }
 
+    /**
+     * Go to a particular patient page with animation
+     * @param activity The activity the user clicked
+     * @param view The view to apply the animation
+     */
     private fun goToPatient(activity: ActivityParent, view: View) {
         if (activity !is ActivityParent.Activity) return
         exitTransition = MaterialElevationScale(true).apply {

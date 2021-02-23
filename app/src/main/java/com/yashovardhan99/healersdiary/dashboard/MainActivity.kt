@@ -16,15 +16,47 @@ import com.yashovardhan99.healersdiary.utils.RequestContract
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
+/**
+ * The main entry point for the app after SplashActivity
+ * Houses the following:-
+ * - Dashboard, patients list, analytics and settings
+ * - Patient detail page, healing and payment logs
+ *
+ * Creation pipeline has a different activity
+ * @see DashboardViewModel
+ * @see HomeFragment
+ * @see com.yashovardhan99.healersdiary.patients.PatientsListFragment
+ * @see com.yashovardhan99.healersdiary.analytics.AnalyticsFragment
+ * @see com.yashovardhan99.healersdiary.settings.SettingsFragment
+ * @see com.yashovardhan99.healersdiary.patients.PatientDetailFragment
+ * @see com.yashovardhan99.healersdiary.patients.HealingListFragment
+ * @see com.yashovardhan99.healersdiary.patients.PaymentListFragment
+ */
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private val viewModel: DashboardViewModel by viewModels()
     private lateinit var navController: NavController
+
+    /**
+     * The request contract registered for this activity.
+     * It receives requests for navigation.
+     * This also receives back navigation requests such as:-
+     * - Navigating to a specific patient page (requested by creation pipeline)
+     * @see handleRequest
+     * @see Request
+     * @see RequestContract
+     */
     private val getRequestContract = registerForActivityResult(RequestContract()) { request ->
         Timber.d("Result received; Request = $request")
         if (request != null) handleRequest(request)
     }
 
+    /**
+     * Handles a request by navigating to the correct fragment/activity
+     * @param request The request to handle
+     * @see Request
+     * @see RequestContract
+     */
     private fun handleRequest(request: Request) {
         Timber.d("Handling request = $request")
         when (request) {
@@ -49,10 +81,12 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
             Timber.d("$controller Dest = $destination args = $arguments")
         }
+        // new record -> Launch  new activity with patient id (if a patient page is open)
         binding.newRecord.setOnClickListener {
             Timber.d("New record")
             getRequestContract.launch(Request.NewActivity(viewModel.getPatientId()))
         }
+        // internal requests from fragments
         viewModel.requests.asLiveData().observe(this) { request ->
             if (request != null) {
                 handleRequest(request)

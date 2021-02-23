@@ -18,18 +18,35 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
+/**
+ * Viewmodel shared between all top level destinations and some inner destinations
+ * @param repository The dashboard repository consumed
+ * @see MainActivity
+ * @see DashboardRepository
+ */
 @HiltViewModel
 class DashboardViewModel @Inject constructor(repository: DashboardRepository) : ViewModel() {
-    private val patientsFlow = repository.patients
+    private val patientsFlow = repository.patients // just a list of all patients
+
+    // get dates for starting today, this month and last month
+    // used in calculations for stats
     private val today = Calendar.getInstance().apply {
         setToStartOfDay()
     }
     private val thisMonth = Calendar.getInstance().apply { setToStartOfMonth() }
     private val lastMonth = Calendar.getInstance().apply { setToStartOfLastMonth() }
+
+    // healing and payments flow starting last month (eg. If it's february, include all activity starting January
     private val healings = repository.getHealingsStarting(lastMonth.time)
     private val payments = repository.getPaymentsStarting(lastMonth.time)
 
+    // current selected patient (for inner pages)
     private var currentPatientId = -1L
+
+    /**
+     * Patients list sorted by last modified
+     * Includes - associated healings and payments done
+     */
     val patientsList = healings.combine(patientsFlow) { healings, patients ->
         val patientsMap = patients.associateBy { it.id }
         Timber.d(patientsMap.toString())
@@ -37,6 +54,7 @@ class DashboardViewModel @Inject constructor(repository: DashboardRepository) : 
         val patientWithHealings = healings.groupBy {
             patientsMap[it.patientId] ?: Patient.MissingPatient
         }
+        // setting no. of healings today and this month for patients list page
         patients.map { patient ->
             val today = patientWithHealings[patient]?.count { it.time >= today.time } ?: 0
             val thisMonth = patientWithHealings[patient]?.count { it.time >= thisMonth.time } ?: 0
@@ -44,6 +62,11 @@ class DashboardViewModel @Inject constructor(repository: DashboardRepository) : 
         }.sortedByDescending { it.lastModified }
     }
 
+    // TODO: 23/2/21 single combine Eg. -> combine(healings, payments, patientsFlow) { _, _, _ -> }
+    /**
+     * Dashboard flow for all stats and activities
+     * This takes in all the flows, combines them and produces a flow of stats and activities
+     */
     val dashboardFlow = healings
             .combine(patientsFlow) { healings, patients ->
                 Pair(healings, patients)

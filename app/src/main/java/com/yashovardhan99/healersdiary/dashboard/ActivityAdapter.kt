@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.yashovardhan99.healersdiary.dashboard.ActivityAdapter.ActivityParentViewHolder
 import com.yashovardhan99.healersdiary.databinding.ActivityCardBinding
 import com.yashovardhan99.healersdiary.databinding.ActivitySeparatorBinding
 import com.yashovardhan99.healersdiary.utils.ActivityParent
@@ -13,9 +14,28 @@ import com.yashovardhan99.healersdiary.utils.ActivityParent
 private const val VIEW_TYPE_ACTIVITY = 0
 private const val VIEW_TYPE_SEPARATOR = 1
 
+/**
+ * Adapter for Activities (healings and payments)
+ * @param onClick The onClick event when a view is clicked
+ * @see ActivityParentViewHolder
+ * @see ActivityParent
+ * @see ActivityDiffUtils
+ */
 class ActivityAdapter(private val onClick: (ActivityParent, View) -> Unit) : ListAdapter<ActivityParent, ActivityAdapter.ActivityParentViewHolder>(ActivityDiffUtils()) {
+    /**
+     * The viewholders used for activity and separators
+     * @param view The inflated view
+     */
     sealed class ActivityParentViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+        /**
+         * bind the viewholder with click listener and data
+         */
         abstract fun bind(activity: ActivityParent, onClick: (ActivityParent, View) -> Unit)
+
+        /**
+         * View holder for an activity
+         * @param binding The activity card binding inflated
+         */
         class ActivityViewHolder(val binding: ActivityCardBinding) : ActivityParentViewHolder(binding.root) {
             override fun bind(activity: ActivityParent, onClick: (ActivityParent, View) -> Unit) {
                 if (activity !is ActivityParent.Activity) throw IllegalArgumentException()
@@ -25,6 +45,10 @@ class ActivityAdapter(private val onClick: (ActivityParent, View) -> Unit) : Lis
             }
         }
 
+        /**
+         * View holder for holding separators (headings)
+         * @param binding an inflated ActivitySeparatorBinding
+         */
         class SeparatorViewHolder(val binding: ActivitySeparatorBinding) : ActivityParentViewHolder(binding.root) {
             override fun bind(activity: ActivityParent, onClick: (ActivityParent, View) -> Unit) {
                 if (activity !is ActivityParent.ActivitySeparator) throw IllegalArgumentException()
@@ -55,9 +79,18 @@ class ActivityAdapter(private val onClick: (ActivityParent, View) -> Unit) : Lis
     }
 }
 
+/**
+ * Comparison diff utils for ActivityParent items
+ */
 class ActivityDiffUtils : DiffUtil.ItemCallback<ActivityParent>() {
     override fun areItemsTheSame(oldItem: ActivityParent, newItem: ActivityParent): Boolean {
-        return oldItem == newItem
+        return when {
+            oldItem is ActivityParent.Activity && newItem is ActivityParent.Activity ->
+                oldItem.id == newItem.id
+            oldItem is ActivityParent.ActivitySeparator && newItem is ActivityParent.ActivitySeparator ->
+                oldItem.heading == newItem.heading
+            else -> false
+        }
     }
 
     override fun areContentsTheSame(oldItem: ActivityParent, newItem: ActivityParent): Boolean {
