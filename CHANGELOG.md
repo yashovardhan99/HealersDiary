@@ -5,8 +5,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [2.0.0-alpha05] - 2020-02-28
 ### Added
-- Added Undo action for Snackbar on deleting Healing (and Payment)
+- Added Undo action for Snackbar on deleting Healing and Payment
+- A new material design for Progressbar, TimePicker, DatePicker
 
 ## [2.0.0-alpha04] - 2020-02-21
 ### Changed
@@ -145,7 +148,8 @@ See Pull Request #5
 - Add new healing record for patient
 - View healing logs
 
-[Unreleased]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-alpha04...HEAD
+[Unreleased]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-alpha05...HEAD
+[2.0.0-alpha05]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-alpha04...v2.0.0-alpha05
 [2.0.0-alpha04]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-alpha03...v2.0.0-alpha04
 [2.0.0-alpha03]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-alpha02...v2.0.0-alpha03
 [2.0.0-alpha02]: https://github.com/yashovardhan99/HealersDiary/compare/v1.0.0...v2.0.0-alpha02
