@@ -1,7 +1,6 @@
 package com.yashovardhan99.healersdiary.patients
 
 import android.os.Bundle
-import androidx.core.os.bundleOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,9 +8,7 @@ import androidx.paging.PagingData
 import androidx.paging.insertSeparators
 import androidx.paging.map
 import com.yashovardhan99.healersdiary.create.CreateRepository
-import com.yashovardhan99.healersdiary.database.Healing
-import com.yashovardhan99.healersdiary.database.Patient
-import com.yashovardhan99.healersdiary.database.Payment
+import com.yashovardhan99.healersdiary.database.*
 import com.yashovardhan99.healersdiary.utils.*
 import com.yashovardhan99.healersdiary.utils.HealingParent.Healing.Companion.toUiHealing
 import com.yashovardhan99.healersdiary.utils.PaymentParent.Payment.Companion.toUiPayment
@@ -119,26 +116,6 @@ class PatientDetailViewModel @Inject constructor(
         }
     }
 
-    private fun Healing.toBundle() = bundleOf(
-            "id" to id,
-            "time" to time.time,
-            "charge" to charge,
-            "notes" to notes,
-            "pid" to patientId)
-
-    private fun Bundle.toHealing(): Healing {
-        val date = getLong("time", -1).let {
-            if (it == -1L) Date()
-            else Date(it)
-        }
-        return Healing(
-                getLong("id"),
-                date,
-                getLong("charge"),
-                getString("notes", ""),
-                getLong("pid", patient.value?.id ?: 0))
-    }
-
     fun undoDeleteHealing(): Boolean {
         val healing = savedStateHandle.remove<Bundle>("deleted_healing")?.toHealing()
                 ?: return false
@@ -157,26 +134,6 @@ class PatientDetailViewModel @Inject constructor(
             repository.deletePayment(payment)
             updatedPatient?.let { repository.updatePatient(it) }
         }
-    }
-
-    private fun Payment.toBundle() = bundleOf(
-            "id" to id,
-            "time" to time.time,
-            "amount" to amount,
-            "notes" to notes,
-            "pid" to patientId)
-
-    private fun Bundle.toPayment(): Payment {
-        val date = getLong("time", -1).let {
-            if (it == -1L) Date()
-            else Date(it)
-        }
-        return Payment(
-                getLong("id"),
-                date,
-                getLong("amount"),
-                getString("notes", ""),
-                getLong("pid", patient.value?.id ?: 0))
     }
 
     fun undoDeletePayment(): Boolean {
