@@ -21,8 +21,8 @@ fun Calendar.setToStartOfLastMonth() {
     add(Calendar.MONTH, -1)
 }
 
-fun Date.toLocalDateTime(): LocalDateTime = toInstant()
-        .atZone(ZoneId.systemDefault()).toLocalDateTime()
+fun Date.toLocalDateTime(zoneId: ZoneId = ZoneId.systemDefault()): LocalDateTime = toInstant()
+        .atZone(zoneId).toLocalDateTime()
 
-fun LocalDateTime.toDate(): Date = Date.from(atZone(ZoneId.systemDefault())
+fun LocalDateTime.toDate(zoneId: ZoneId = ZoneId.systemDefault()): Date = Date.from(atZone(zoneId)
         .toInstant())
