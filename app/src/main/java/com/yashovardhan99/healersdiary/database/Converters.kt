@@ -1,6 +1,9 @@
 package com.yashovardhan99.healersdiary.database
 
 import androidx.room.TypeConverter
+import com.yashovardhan99.healersdiary.utils.toLocalDateTime
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.*
 
 class DateConverter {
@@ -12,6 +15,16 @@ class DateConverter {
     @TypeConverter
     fun dateToTimestamp(date: Date?): Long? {
         return date?.time
+    }
+
+    @TypeConverter
+    fun timestampToLocalDateTime(value: Long?): LocalDateTime? {
+        return fromTimestamp(value)?.toLocalDateTime()
+    }
+
+    @TypeConverter
+    fun localDateTimeToTimestamp(dateTime: LocalDateTime?): Long? {
+        return dateTime?.atZone(ZoneId.systemDefault())?.toInstant()?.toEpochMilli()
     }
 }
 

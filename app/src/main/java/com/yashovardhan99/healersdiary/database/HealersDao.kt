@@ -177,7 +177,7 @@ abstract class HealersDao {
      * Get all activities.
      * @return A paging source with all activities sorted by time
      */
-    @Query("SELECT * FROM activity ORDER BY time")
+    @Query("SELECT * FROM activity")
     abstract fun getAllActivities(): PagingSource<Int, Activity>
 
     /**
@@ -185,7 +185,7 @@ abstract class HealersDao {
      * @param patientId The id of the patient
      * @return A paging source with all activities sorted by time
      */
-    @Query("SELECT * FROM activity  WHERE patient_id=:patientId ORDER BY time")
+    @Query("SELECT * FROM activity  WHERE patient_id=:patientId")
     abstract fun getActivities(patientId: Long): PagingSource<Int, Activity>
 
     /**

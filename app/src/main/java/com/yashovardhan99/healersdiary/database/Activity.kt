@@ -2,16 +2,17 @@ package com.yashovardhan99.healersdiary.database
 
 import androidx.room.ColumnInfo
 import androidx.room.DatabaseView
-import java.util.*
+import java.time.LocalDateTime
 
 @DatabaseView("SELECT id, time, charge AS amount, notes, patient_id, 'healing' as type " +
         "FROM healings " +
         "UNION " +
         "SELECT id, time, amount, notes, patient_id, 'payment' as type " +
-        "FROM payments")
+        "FROM payments " +
+        "ORDER BY time DESC")
 data class Activity(
         val id: Long,
-        val time: Date,
+        val time: LocalDateTime,
         val amount: Long,
         val notes: String,
         @ColumnInfo(name = "patient_id") val patientId: Long,
