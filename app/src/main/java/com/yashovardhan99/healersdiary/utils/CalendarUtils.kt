@@ -1,5 +1,7 @@
 package com.yashovardhan99.healersdiary.utils
 
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.*
 
 fun Calendar.setToStartOfDay() {
@@ -18,3 +20,9 @@ fun Calendar.setToStartOfLastMonth() {
     setToStartOfMonth()
     add(Calendar.MONTH, -1)
 }
+
+fun Date.toLocalDateTime(): LocalDateTime = toInstant()
+        .atZone(ZoneId.systemDefault()).toLocalDateTime()
+
+fun LocalDateTime.toDate(): Date = Date.from(atZone(ZoneId.systemDefault())
+        .toInstant())
