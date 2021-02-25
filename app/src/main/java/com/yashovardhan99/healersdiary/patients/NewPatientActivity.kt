@@ -14,6 +14,7 @@ import androidx.lifecycle.asLiveData
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.yashovardhan99.healersdiary.R
+import com.yashovardhan99.healersdiary.create.CreateNewActivity
 import com.yashovardhan99.healersdiary.databinding.ActivityNewPatientBinding
 import com.yashovardhan99.healersdiary.utils.Icons
 import com.yashovardhan99.healersdiary.utils.Request
@@ -24,17 +25,33 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.NumberFormat
 
+/**
+ * Activity to create/edit a patient
+ *
+ * To launch this activity, use [RequestContract][com.yashovardhan99.healersdiary.utils.RequestContract] and pass in either [Request.NewPatient] or [Request.UpdatePatient].
+ * Alternatively, if you must create an explicit intent yourself, make sure to pass the URI from the [Request] object
+ *
+ * If a patient is successfully created/modified, this launches a [Request.ViewPatient] with [Intent.ACTION_VIEW] and the patient id.
+ * If a patient is deleted, this launches a [Request.ViewDashboard] with [Intent.ACTION_VIEW].
+ * In both cases, [setResult] will be called with [Activity.RESULT_OK].
+ * @see NewPatientViewModel
+ * @see CreateNewActivity
+ */
 @AndroidEntryPoint
 class NewPatientActivity : AppCompatActivity() {
     private val viewModel: NewPatientViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = DataBindingUtil.setContentView<ActivityNewPatientBinding>(this, R.layout.activity_new_patient)
+        // setting the request data in the ViewModel
         intent.data?.let {
             viewModel.setRequest(it)
         }
+        // to show the correct currency symbol as prefix
         binding.chargeBox.prefixText = NumberFormat.getCurrencyInstance().currency?.symbol
         binding.dueBox.prefixText = NumberFormat.getCurrencyInstance().currency?.symbol
+
+        // for displaying error and disabling the save button if name is blank
         binding.nameEdit.doAfterTextChanged { text ->
             if (text.isNullOrBlank()) {
                 binding.nameEdit.error = resources.getString(R.string.name_cannot_be_blank)
@@ -44,6 +61,11 @@ class NewPatientActivity : AppCompatActivity() {
                 binding.newPatient.isEnabled = true
             }
         }
+        /**
+         * This is used to format the amount entered by the user in both the currency editTexts.
+         *
+         * If the amount is not a number, the EditText is cleared off
+         */
         val amountFocusListener = View.OnFocusChangeListener { v, hasFocus ->
             val inputText = (v as TextInputEditText).text.toString()
             try {
@@ -60,14 +82,18 @@ class NewPatientActivity : AppCompatActivity() {
         }
         binding.chargeEdit.onFocusChangeListener = amountFocusListener
         binding.dueEdit.onFocusChangeListener = amountFocusListener
+
         binding.newPatient.setOnClickListener { save(binding) }
+        // If the patient is being edited, the top right icon is for delete, otherwise, it is for saving
         binding.heading.optionsIcon.setOnClickListener {
             if (viewModel.patient.value != null) delete()
             else save(binding)
         }
+        // Here, the result in ViewModel is observed to either indicate successful creation/editing or deletion
         viewModel.result.asLiveData().observe(this) { result ->
             when (result) {
                 is NewPatientViewModel.Companion.Result.Success -> {
+                    // On create/edit -> go to the patient detail fragment
                     Intent(Intent.ACTION_VIEW, Request.ViewPatient(result.patientId).getUri()).also { res ->
                         setResult(Activity.RESULT_OK, res)
                         Timber.d("Setting result = $res")
@@ -75,6 +101,7 @@ class NewPatientActivity : AppCompatActivity() {
                     }
                 }
                 NewPatientViewModel.Companion.Result.Deleted -> {
+                    // On deletion -> go to the dashboard
                     Intent(Intent.ACTION_VIEW, Request.ViewDashboard.getUri()).also {
                         setResult(Activity.RESULT_OK, it)
                         Timber.d("Patient deleted!")
@@ -85,12 +112,15 @@ class NewPatientActivity : AppCompatActivity() {
                 }
             }
         }
+        // For displaying errors
         viewModel.error.asLiveData().observe(this) { error ->
             if (error) {
                 Snackbar.make(binding.newPatient, R.string.error_creating_activity, Snackbar.LENGTH_LONG).show()
-                viewModel.resetError()
+                viewModel.resetError() // To avoid error re-propagating. TODO: Change this flow to a channel to avoid this
             }
         }
+        // Used for edit operations -> get the patient data and update UI
+        // TODO: 25/2/21 Will change this to a normal suspend call
         viewModel.patient.asLiveData().observe(this) { patient ->
             if (patient != null) {
                 binding.nameEdit.setText(patient.name)
@@ -105,9 +135,16 @@ class NewPatientActivity : AppCompatActivity() {
             }
 
         }
+        // headingIcon -> close button
         binding.heading.icon.setOnClickListener { finish() }
     }
 
+    /**
+     * Used to delete the current patient being edited.
+     *
+     * Shows an alert dialog asking for confirmation.
+     * On confirmation, all data relating to that patient is deleted.
+     */
     private fun delete() {
         AlertDialog.Builder(this)
                 .setTitle(R.string.delete)
@@ -122,6 +159,11 @@ class NewPatientActivity : AppCompatActivity() {
                 }.show()
     }
 
+    /**
+     * Save the patient data (either modify or create a new patient)
+     *
+     * Any error in the data is informed by the ViewModel
+     */
     private fun save(binding: ActivityNewPatientBinding) {
         val name = binding.nameEdit.text.toString()
         val charge = binding.chargeEdit.text.toString()
