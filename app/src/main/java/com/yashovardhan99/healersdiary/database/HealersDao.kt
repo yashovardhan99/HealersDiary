@@ -3,6 +3,7 @@ package com.yashovardhan99.healersdiary.database
 import androidx.paging.PagingSource
 import androidx.room.*
 import com.yashovardhan99.healersdiary.utils.DangerousDatabase
+import com.yashovardhan99.healersdiary.utils.InternalDatabase
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 
@@ -12,6 +13,7 @@ import java.util.*
  * @see HealersDatabase
  * @see DatabaseModule
  */
+@OptIn(InternalDatabase::class)
 @Dao
 abstract class HealersDao {
 
@@ -145,6 +147,7 @@ abstract class HealersDao {
      * Delete a patient row. Should not be used directly. Use deletePatientData instead
      * @param patient The patient to delete
      */
+    @InternalDatabase
     @Delete(entity = Patient::class)
     abstract suspend fun deletePatient(patient: Patient)
 
@@ -160,18 +163,48 @@ abstract class HealersDao {
     }
 
     /**
-     * Delete a single healing
+     * Delete a single healing. Internal use only
      * @param healing The healing to delete
      */
+    @InternalDatabase
     @Delete(entity = Healing::class)
-    abstract suspend fun deleteHealing(healing: Healing)
+    abstract suspend fun deleteHealingInternal(healing: Healing)
+
+    /**
+     * Delete a single healing and update the patient.
+     * @param healing The healing to delete.
+     */
+    @Transaction
+    open suspend fun deleteHealing(healing: Healing) {
+        val patient = getPatient(healing.patientId)
+        if (patient != null) {
+            val updatedDue = patient.due - healing.charge
+            updatePatient(patient.copy(due = updatedDue))
+        }
+        deleteHealingInternal(healing)
+    }
 
     /**
      * Delete a single payment
      * @param payment The payment to delete
      */
+    @InternalDatabase
     @Delete(entity = Payment::class)
-    abstract suspend fun deletePayment(payment: Payment)
+    abstract suspend fun deletePaymentInternal(payment: Payment)
+
+    /**
+     * Delete a single payment and update the patient.
+     * @param payment The payment to delete.
+     */
+    @Transaction
+    open suspend fun deletePayment(payment: Payment) {
+        val patient = getPatient(payment.patientId)
+        if (patient != null) {
+            val updatedDue = patient.due + payment.amount
+            updatePatient(patient.copy(due = updatedDue))
+        }
+        deletePaymentInternal(payment)
+    }
 
     /**
      * Get all activities.
@@ -193,6 +226,7 @@ abstract class HealersDao {
      * @param patientId The patient whose healings are to be deleted.
      * @see deletePatientData
      */
+    @InternalDatabase
     @Query("DELETE FROM healings WHERE patient_id=:patientId")
     abstract suspend fun deleteHealings(patientId: Long)
 
@@ -201,6 +235,7 @@ abstract class HealersDao {
      * @param patientId The patient whose payments are to be deleted.
      * @see deletePatientData
      */
+    @InternalDatabase
     @Query("DELETE FROM payments WHERE patient_id=:patientId")
     abstract suspend fun deletePayments(patientId: Long)
 

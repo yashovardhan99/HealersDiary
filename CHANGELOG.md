@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added Undo action for Snackbar on deleting Healing and Payment
 - A new material design for Progressbar, TimePicker, DatePicker
 
+### Changed
+- Switched to using transactions for deleting healings and payments.
+
+### Fixed
+- Fixed a bug where deleting multiple healings/payments did not correctly update the due amount.
+
 ## [2.0.0-alpha04] - 2020-02-21
 ### Changed
 - Changed splash screen behaviour
