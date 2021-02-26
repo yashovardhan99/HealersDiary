@@ -77,6 +77,8 @@ class PatientDetailFragment : Fragment() {
             }
         }
         binding.toolbar.optionsIcon.setOnClickListener {
+            AnalyticsEvent.Select(AnalyticsEvent.Content.Patient(args.patientId), AnalyticsEvent.Screen.PatientDetail,
+                    AnalyticsEvent.SelectReason.Edit).trackEvent()
             Timber.d("Request edit")
             dashboardViewModel.editPatient(args.patientId)
         }
@@ -96,14 +98,23 @@ class PatientDetailFragment : Fragment() {
     }
 
     private fun goToHealings() {
+        AnalyticsEvent.Select(AnalyticsEvent.Content.Healing, AnalyticsEvent.Screen.PatientDetail,
+                AnalyticsEvent.SelectReason.Open).trackEvent()
         val action = PatientDetailFragmentDirections
                 .actionPatientDetailFragmentToHealingListFragment(args.patientId)
         findNavController().navigate(action)
     }
 
     private fun goToPayments() {
+        AnalyticsEvent.Select(AnalyticsEvent.Content.Payment, AnalyticsEvent.Screen.PatientDetail,
+                AnalyticsEvent.SelectReason.Open).trackEvent()
         val action = PatientDetailFragmentDirections
                 .actionPatientDetailFragmentToPaymentListFragment(args.patientId)
         findNavController().navigate(action)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        AnalyticsEvent.ScreenView(AnalyticsEvent.Screen.PatientDetail).trackEvent()
     }
 }

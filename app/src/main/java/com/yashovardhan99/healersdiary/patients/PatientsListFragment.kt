@@ -46,6 +46,11 @@ class PatientsListFragment : Fragment() {
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        AnalyticsEvent.ScreenView(AnalyticsEvent.Screen.PatientList).trackEvent()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         postponeEnterTransition()
@@ -59,6 +64,8 @@ class PatientsListFragment : Fragment() {
     }
 
     private fun openPatientDetail(patient: Patient, view: View) {
+        AnalyticsEvent.Select(AnalyticsEvent.Content.Patient(patient.id), AnalyticsEvent.Screen.PatientList,
+                AnalyticsEvent.SelectReason.Open).trackEvent()
         exitTransition = MaterialElevationScale(false).apply {
             duration = transitionDurationLarge
         }

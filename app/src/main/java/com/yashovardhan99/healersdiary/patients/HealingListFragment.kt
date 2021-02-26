@@ -17,6 +17,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.dashboard.DashboardViewModel
 import com.yashovardhan99.healersdiary.databinding.FragmentHealingListBinding
+import com.yashovardhan99.healersdiary.utils.AnalyticsEvent
 import com.yashovardhan99.healersdiary.utils.Header.Companion.buildHeader
 import com.yashovardhan99.healersdiary.utils.HealingParent
 import com.yashovardhan99.healersdiary.utils.Icons
@@ -50,11 +51,15 @@ class HealingListFragment : Fragment() {
     }
 
     private fun editHealing(healing: HealingParent.Healing) {
+        AnalyticsEvent.Select(AnalyticsEvent.Content.Healing, AnalyticsEvent.Screen.HealingLog,
+                AnalyticsEvent.SelectReason.Edit).trackEvent()
         // TODO: 1/2/21 Edit healing
         Toast.makeText(context, R.string.not_yet_implemented, Toast.LENGTH_SHORT).show()
     }
 
     private fun deleteHealing(healing: HealingParent.Healing) {
+        AnalyticsEvent.Select(AnalyticsEvent.Content.Healing, AnalyticsEvent.Screen.HealingLog,
+                AnalyticsEvent.SelectReason.Delete).trackEvent()
         Timber.d("Delete healing $healing")
         viewModel.deleteHealing(healing.toDatabaseHealing())
         Snackbar.make(binding.root, R.string.deleted, Snackbar.LENGTH_LONG)
@@ -64,5 +69,10 @@ class HealingListFragment : Fragment() {
                     Timber.d("Undo = $done")
                 }
                 .show()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        AnalyticsEvent.ScreenView(AnalyticsEvent.Screen.HealingLog).trackEvent()
     }
 }

@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yashovardhan99.healersdiary.AppDataStore
+import com.yashovardhan99.healersdiary.utils.AnalyticsEvent
 import com.yashovardhan99.healersdiary.utils.DangerousDatabase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -75,6 +76,7 @@ class OnboardingViewModel @Inject constructor(@ApplicationContext application: C
      * User has pressed getStarted, onboarding completed
      */
     fun getStarted() {
+        AnalyticsEvent.Onboarding.Completed.trackEvent()
         viewModelScope.launch {
             dataStore.edit { preferences ->
                 preferences[PreferencesKey.onboardingComplete] = true
@@ -109,6 +111,7 @@ class OnboardingViewModel @Inject constructor(@ApplicationContext application: C
      */
     @DangerousDatabase
     suspend fun clearAll() {
+        AnalyticsEvent.Onboarding.ClearAll.trackEvent()
         dataStore.edit { preferences ->
             preferences[PreferencesKey.onboardingComplete] = false
             preferences[PreferencesKey.importComplete] = false

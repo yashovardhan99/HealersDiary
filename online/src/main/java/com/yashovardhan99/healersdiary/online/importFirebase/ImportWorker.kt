@@ -26,6 +26,7 @@ import com.yashovardhan99.healersdiary.database.*
 import com.yashovardhan99.healersdiary.onboarding.OnboardingViewModel
 import com.yashovardhan99.healersdiary.onboarding.SplashActivity
 import com.yashovardhan99.healersdiary.online.R
+import com.yashovardhan99.healersdiary.utils.AnalyticsEvent
 import com.yashovardhan99.healersdiary.utils.DangerousDatabase
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
@@ -45,6 +46,7 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
 
     @OptIn(DangerousDatabase::class)
     override suspend fun doWork(): Result {
+        AnalyticsEvent.Import.Started.trackEvent()
         updatePreferences(false)
         buildNotificationChannels()
         setProgress(0)
@@ -201,6 +203,7 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
     }
 
     private fun showDoneNotification(isSuccessful: Boolean, willRetry: Boolean) {
+        if (isSuccessful) AnalyticsEvent.Import.Completed(isSuccessful, willRetry).trackEvent()
         if (!willRetry) Firebase.auth.signOut()
         val intent = Intent(applicationContext, SplashActivity::class.java)
         val pendingIntent = TaskStackBuilder.create(applicationContext).run {

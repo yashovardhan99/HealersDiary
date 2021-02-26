@@ -17,6 +17,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.dashboard.DashboardViewModel
 import com.yashovardhan99.healersdiary.databinding.FragmentHealingListBinding
+import com.yashovardhan99.healersdiary.utils.AnalyticsEvent
 import com.yashovardhan99.healersdiary.utils.Header.Companion.buildHeader
 import com.yashovardhan99.healersdiary.utils.Icons
 import com.yashovardhan99.healersdiary.utils.PaymentParent
@@ -51,11 +52,15 @@ class PaymentListFragment : Fragment() {
     }
 
     private fun editPayment(payment: PaymentParent.Payment) {
+        AnalyticsEvent.Select(AnalyticsEvent.Content.Healing, AnalyticsEvent.Screen.PaymentLog,
+                AnalyticsEvent.SelectReason.Edit).trackEvent()
         // TODO: 31/1/21 Edit Payment
         Toast.makeText(context, R.string.not_yet_implemented, Toast.LENGTH_SHORT).show()
     }
 
     private fun deletePayment(payment: PaymentParent.Payment) {
+        AnalyticsEvent.Select(AnalyticsEvent.Content.Healing, AnalyticsEvent.Screen.PaymentLog,
+                AnalyticsEvent.SelectReason.Delete).trackEvent()
         viewModel.deletePayment(payment.toDatabasePayment())
         Snackbar.make(binding.root, R.string.deleted, Snackbar.LENGTH_LONG)
                 .setActionTextColor(ContextCompat.getColor(binding.root.context, R.color.colorSecondary))
@@ -64,5 +69,10 @@ class PaymentListFragment : Fragment() {
                     Timber.d("Undo = $done")
                 }
                 .show()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        AnalyticsEvent.ScreenView(AnalyticsEvent.Screen.PaymentLog).trackEvent()
     }
 }

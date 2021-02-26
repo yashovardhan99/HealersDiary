@@ -93,6 +93,10 @@ class HomeFragment : Fragment() {
      */
     private fun goToPatient(activity: ActivityParent, view: View) {
         if (activity !is ActivityParent.Activity) return
+        AnalyticsEvent.Select(when (activity.type) {
+            ActivityParent.Activity.Type.HEALING -> AnalyticsEvent.Content.Healing
+            ActivityParent.Activity.Type.PAYMENT -> AnalyticsEvent.Content.Payment
+        }, AnalyticsEvent.Screen.Dashboard, AnalyticsEvent.SelectReason.Open).trackEvent()
         exitTransition = MaterialElevationScale(true).apply {
             duration = transitionDurationLarge
         }
@@ -105,5 +109,10 @@ class HomeFragment : Fragment() {
         val direction = HomeFragmentDirections
                 .actionHomeToPatientDetailFragment(activity.patient.id)
         findNavController().navigate(direction, extras)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        AnalyticsEvent.ScreenView(AnalyticsEvent.Screen.Dashboard).trackEvent()
     }
 }

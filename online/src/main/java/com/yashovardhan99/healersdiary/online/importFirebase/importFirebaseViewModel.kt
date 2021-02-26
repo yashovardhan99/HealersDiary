@@ -10,6 +10,7 @@ import androidx.work.*
 import com.google.firebase.auth.FirebaseUser
 import com.yashovardhan99.healersdiary.AppDataStore
 import com.yashovardhan99.healersdiary.onboarding.OnboardingViewModel
+import com.yashovardhan99.healersdiary.utils.AnalyticsEvent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -53,6 +54,7 @@ class ImportFirebaseViewModel @Inject constructor(
     }
 
     fun startImport() {
+        AnalyticsEvent.Import.Requested.trackEvent()
         workManager.enqueueUniqueWork(
                 "importFirebase",
                 ExistingWorkPolicy.KEEP,
