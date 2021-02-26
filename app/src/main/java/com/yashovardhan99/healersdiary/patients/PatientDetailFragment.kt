@@ -115,6 +115,6 @@ class PatientDetailFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        AnalyticsEvent.ScreenView(AnalyticsEvent.Screen.PatientDetail).trackEvent()
+        AnalyticsEvent.Screen.PatientDetail.trackView()
     }
 }

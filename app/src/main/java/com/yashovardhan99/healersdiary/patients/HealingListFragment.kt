@@ -73,6 +73,6 @@ class HealingListFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        AnalyticsEvent.ScreenView(AnalyticsEvent.Screen.HealingLog).trackEvent()
+        AnalyticsEvent.Screen.HealingLog.trackView()
     }
 }

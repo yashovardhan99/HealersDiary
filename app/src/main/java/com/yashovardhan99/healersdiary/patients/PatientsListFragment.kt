@@ -48,7 +48,7 @@ class PatientsListFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        AnalyticsEvent.ScreenView(AnalyticsEvent.Screen.PatientList).trackEvent()
+        AnalyticsEvent.Screen.PatientList.trackView()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

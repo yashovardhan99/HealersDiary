@@ -73,6 +73,6 @@ class PaymentListFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        AnalyticsEvent.ScreenView(AnalyticsEvent.Screen.PaymentLog).trackEvent()
+        AnalyticsEvent.Screen.PaymentLog.trackView()
     }
 }

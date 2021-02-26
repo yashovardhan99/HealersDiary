@@ -113,6 +113,6 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        AnalyticsEvent.ScreenView(AnalyticsEvent.Screen.Dashboard).trackEvent()
+        AnalyticsEvent.Screen.Dashboard.trackView()
     }
 }

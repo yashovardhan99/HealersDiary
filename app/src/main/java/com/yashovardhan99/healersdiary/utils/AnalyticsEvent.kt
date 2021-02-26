@@ -41,6 +41,10 @@ sealed class AnalyticsEvent(private val name: String, private val params: Bundle
     }
 
     sealed class Screen(internal val name: String) {
+        fun trackView() {
+            ScreenView(this).trackEvent()
+        }
+
         object Dashboard : Screen("dashboard")
         object PatientList : Screen("patient_list")
         object PatientDetail : Screen("patient_detail")
@@ -57,7 +61,7 @@ sealed class AnalyticsEvent(private val name: String, private val params: Bundle
         object ImportV1 : Screen("import_from_v1")
     }
 
-    class ScreenView(screen: Screen) : AnalyticsEvent(FirebaseAnalytics.Event.SCREEN_VIEW,
+    private class ScreenView(screen: Screen) : AnalyticsEvent(FirebaseAnalytics.Event.SCREEN_VIEW,
             bundleOf(FirebaseAnalytics.Param.SCREEN_NAME to screen.name))
 
     sealed class SelectReason(internal val name: String) {
