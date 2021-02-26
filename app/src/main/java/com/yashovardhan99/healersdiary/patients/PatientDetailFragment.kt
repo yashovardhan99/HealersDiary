@@ -98,7 +98,7 @@ class PatientDetailFragment : Fragment() {
     }
 
     private fun goToHealings() {
-        AnalyticsEvent.Select(AnalyticsEvent.Content.Healing, AnalyticsEvent.Screen.PatientDetail,
+        AnalyticsEvent.Select(AnalyticsEvent.Content.Healing(args.patientId), AnalyticsEvent.Screen.PatientDetail,
                 AnalyticsEvent.SelectReason.Open).trackEvent()
         val action = PatientDetailFragmentDirections
                 .actionPatientDetailFragmentToHealingListFragment(args.patientId)
@@ -106,7 +106,7 @@ class PatientDetailFragment : Fragment() {
     }
 
     private fun goToPayments() {
-        AnalyticsEvent.Select(AnalyticsEvent.Content.Payment, AnalyticsEvent.Screen.PatientDetail,
+        AnalyticsEvent.Select(AnalyticsEvent.Content.Payment(args.patientId), AnalyticsEvent.Screen.PatientDetail,
                 AnalyticsEvent.SelectReason.Open).trackEvent()
         val action = PatientDetailFragmentDirections
                 .actionPatientDetailFragmentToPaymentListFragment(args.patientId)

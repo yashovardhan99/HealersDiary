@@ -21,7 +21,7 @@ object Version {
         private const val patch = 0
 
         private val buildType: BuildType = BuildType.ALPHA
-        private const val buildCode = 5
+        private const val buildCode = 6
 
         private const val standard = (major * 100 + minor) * 100 + patch
         val versionCode = (standard * 10 + buildType.typeCode) * 100 + buildCode

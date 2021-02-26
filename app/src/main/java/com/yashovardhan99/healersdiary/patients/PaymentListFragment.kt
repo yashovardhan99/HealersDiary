@@ -52,14 +52,14 @@ class PaymentListFragment : Fragment() {
     }
 
     private fun editPayment(payment: PaymentParent.Payment) {
-        AnalyticsEvent.Select(AnalyticsEvent.Content.Healing, AnalyticsEvent.Screen.PaymentLog,
+        AnalyticsEvent.Select(AnalyticsEvent.Content.Payment(payment.patientId), AnalyticsEvent.Screen.PaymentLog,
                 AnalyticsEvent.SelectReason.Edit).trackEvent()
         // TODO: 31/1/21 Edit Payment
         Toast.makeText(context, R.string.not_yet_implemented, Toast.LENGTH_SHORT).show()
     }
 
     private fun deletePayment(payment: PaymentParent.Payment) {
-        AnalyticsEvent.Select(AnalyticsEvent.Content.Healing, AnalyticsEvent.Screen.PaymentLog,
+        AnalyticsEvent.Select(AnalyticsEvent.Content.Payment(payment.patientId), AnalyticsEvent.Screen.PaymentLog,
                 AnalyticsEvent.SelectReason.Delete).trackEvent()
         viewModel.deletePayment(payment.toDatabasePayment())
         Snackbar.make(binding.root, R.string.deleted, Snackbar.LENGTH_LONG)

@@ -94,8 +94,8 @@ class HomeFragment : Fragment() {
     private fun goToPatient(activity: ActivityParent, view: View) {
         if (activity !is ActivityParent.Activity) return
         AnalyticsEvent.Select(when (activity.type) {
-            ActivityParent.Activity.Type.HEALING -> AnalyticsEvent.Content.Healing
-            ActivityParent.Activity.Type.PAYMENT -> AnalyticsEvent.Content.Payment
+            ActivityParent.Activity.Type.HEALING -> AnalyticsEvent.Content.Healing(activity.patient.id)
+            ActivityParent.Activity.Type.PAYMENT -> AnalyticsEvent.Content.Payment(activity.patient.id)
         }, AnalyticsEvent.Screen.Dashboard, AnalyticsEvent.SelectReason.Open).trackEvent()
         exitTransition = MaterialElevationScale(true).apply {
             duration = transitionDurationLarge

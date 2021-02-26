@@ -51,14 +51,14 @@ class HealingListFragment : Fragment() {
     }
 
     private fun editHealing(healing: HealingParent.Healing) {
-        AnalyticsEvent.Select(AnalyticsEvent.Content.Healing, AnalyticsEvent.Screen.HealingLog,
+        AnalyticsEvent.Select(AnalyticsEvent.Content.Healing(healing.patientId), AnalyticsEvent.Screen.HealingLog,
                 AnalyticsEvent.SelectReason.Edit).trackEvent()
         // TODO: 1/2/21 Edit healing
         Toast.makeText(context, R.string.not_yet_implemented, Toast.LENGTH_SHORT).show()
     }
 
     private fun deleteHealing(healing: HealingParent.Healing) {
-        AnalyticsEvent.Select(AnalyticsEvent.Content.Healing, AnalyticsEvent.Screen.HealingLog,
+        AnalyticsEvent.Select(AnalyticsEvent.Content.Healing(healing.patientId), AnalyticsEvent.Screen.HealingLog,
                 AnalyticsEvent.SelectReason.Delete).trackEvent()
         Timber.d("Delete healing $healing")
         viewModel.deleteHealing(healing.toDatabaseHealing())
