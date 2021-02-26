@@ -17,7 +17,8 @@
             android:id="@+id/action_home_to_patientDetailFragment"
             app:destination="@id/patientDetailFragment"
             app:launchSingleTop="true"
-            app:popUpTo="@id/home" />
+            app:popUpTo="@id/home"
+            app:popUpToInclusive="false" />
     </fragment>
     <fragment
         android:id="@+id/patients"
@@ -28,7 +29,8 @@
             android:id="@+id/action_patients_to_patientDetailFragment"
             app:destination="@id/patientDetailFragment"
             app:launchSingleTop="true"
-            app:popUpTo="@id/patients" />
+            app:popUpTo="@id/patients"
+            app:popUpToInclusive="false" />
     </fragment>
     <fragment
         android:id="@+id/analytics"

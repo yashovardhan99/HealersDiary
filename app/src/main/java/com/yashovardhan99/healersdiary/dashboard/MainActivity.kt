@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.asLiveData
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -64,11 +65,13 @@ class MainActivity : AppCompatActivity() {
             is Request.NewPayment -> getRequestContract.launch(request)
             Request.NewPatient -> getRequestContract.launch(request)
             is Request.NewActivity -> getRequestContract.launch(request)
-            is Request.ViewPatient -> findNavController(R.id.nav_host_fragment_container).navigate(request.getUri())
+            is Request.ViewPatient -> findNavController(R.id.nav_host_fragment_container)
+                    .navigate(request.getUri(), NavOptions.Builder().setLaunchSingleTop(true)
+                            .setPopUpTo(R.id.patientDetailFragment, true).build())
             is Request.UpdateHealing -> getRequestContract.launch(request)
             is Request.UpdatePayment -> getRequestContract.launch(request)
             is Request.UpdatePatient -> getRequestContract.launch(request)
-            Request.ViewDashboard -> findNavController(R.id.nav_host_fragment_container).navigate(R.id.home)
+            Request.ViewDashboard -> findNavController(R.id.nav_host_fragment_container).popBackStack(R.id.home, false)
         }
     }
 
