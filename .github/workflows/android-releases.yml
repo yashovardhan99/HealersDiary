@@ -23,9 +23,9 @@ jobs:
         run: echo $FIREBASE_CONFIG > ./app/google-services.json
 
       - name: Provide Firebase config to online module
-          env:
-            FIREBASE_CONFIG: ${{ secrets.FIREBASE_CONFIG }}
-          run: echo $FIREBASE_CONFIG > ./online/google-services.json
+        env:
+          FIREBASE_CONFIG: ${{ secrets.FIREBASE_CONFIG }}
+        run: echo $FIREBASE_CONFIG > ./online/google-services.json
 
       - name: Run tests
         run: ./gradlew testRelease
