@@ -2,6 +2,7 @@ package com.yashovardhan99.core
 
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 import java.util.*
 
 fun Calendar.setToStartOfDay() {
@@ -20,6 +21,8 @@ fun Calendar.setToStartOfLastMonth() {
     setToStartOfMonth()
     add(Calendar.MONTH, -1)
 }
+
+fun LocalDateTime.getStartOfDay() = truncatedTo(ChronoUnit.DAYS)
 
 fun Date.toLocalDateTime(zoneId: ZoneId = ZoneId.systemDefault()): LocalDateTime = toInstant()
         .atZone(zoneId).toLocalDateTime()
