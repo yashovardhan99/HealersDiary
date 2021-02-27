@@ -1,7 +1,7 @@
 package com.yashovardhan99.healersdiary.database
 
 import androidx.room.TypeConverter
-import com.yashovardhan99.healersdiary.utils.toLocalDateTime
+import com.yashovardhan99.core.toLocalDateTime
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.*

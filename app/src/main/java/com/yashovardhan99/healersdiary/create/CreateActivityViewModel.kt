@@ -8,7 +8,7 @@ import com.yashovardhan99.healersdiary.database.Healing
 import com.yashovardhan99.healersdiary.database.Patient
 import com.yashovardhan99.healersdiary.database.Payment
 import com.yashovardhan99.healersdiary.utils.Request
-import com.yashovardhan99.healersdiary.utils.setToStartOfDay
+import com.yashovardhan99.core.setToStartOfDay
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch

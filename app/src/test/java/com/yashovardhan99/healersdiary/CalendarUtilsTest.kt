@@ -1,7 +1,7 @@
 package com.yashovardhan99.healersdiary
 
 import com.google.common.truth.Truth.assertThat
-import com.yashovardhan99.healersdiary.utils.*
+import com.yashovardhan99.core.*
 import org.junit.Test
 import java.time.LocalDateTime
 import java.time.Month
