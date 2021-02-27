@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    compileSdkVersion = Version.AppVersion.compileSdk.toString()
+    compileSdkVersion(Version.AppVersion.compileSdk)
 //    buildToolsVersion "30.0.3"
 
     defaultConfig {
