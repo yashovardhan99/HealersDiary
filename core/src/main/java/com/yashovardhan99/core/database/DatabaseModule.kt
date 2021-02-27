@@ -1,4 +1,4 @@
-package com.yashovardhan99.healersdiary.database
+package com.yashovardhan99.core.database
 
 import android.content.Context
 import androidx.datastore.core.DataStore
@@ -7,7 +7,7 @@ import androidx.datastore.preferences.createDataStore
 import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.yashovardhan99.healersdiary.AppDataStore
+import com.yashovardhan99.core.AppDataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

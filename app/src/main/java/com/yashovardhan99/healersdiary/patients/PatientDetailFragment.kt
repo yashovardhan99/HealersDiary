@@ -20,7 +20,7 @@ import com.yashovardhan99.core.getColorFromAttr
 import com.yashovardhan99.core.transitionDurationLarge
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.dashboard.DashboardViewModel
-import com.yashovardhan99.healersdiary.database.ActivityType
+import com.yashovardhan99.core.database.ActivityType
 import com.yashovardhan99.healersdiary.databinding.FragmentPatientDetailBinding
 import com.yashovardhan99.healersdiary.utils.*
 import com.yashovardhan99.healersdiary.utils.Header.Companion.buildHeader

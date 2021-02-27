@@ -1,4 +1,4 @@
-package com.yashovardhan99.healersdiary
+package com.yashovardhan99.core
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences

@@ -5,6 +5,7 @@ plugins {
     id("com.android.library")
     kotlin("android")
     kotlin("kapt")
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -47,9 +48,27 @@ dependencies {
     implementation(Dependencies.Android.ktx_core)
     implementation(Dependencies.Android.app_compat)
     implementation(Dependencies.Android.material)
+
     implementation(platform(Dependencies.Firebase.bom))
     implementation(Dependencies.Firebase.analytics)
+
     implementation(Dependencies.timber)
+
+    implementation(Dependencies.Hilt.android)
+    kapt(Dependencies.Hilt.android_compiler)
+    kapt(Dependencies.Hilt.compiler)
+    implementation(Dependencies.Hilt.view_model)
+
+    implementation(Dependencies.Android.datastore)
+
+    implementation(Dependencies.Room.runtime)
+    kapt(Dependencies.Room.compiler)
+    implementation(Dependencies.Room.ktx)
+    testImplementation(Dependencies.Room.testing)
+
+    implementation(Dependencies.Paging.runtime)
+    testImplementation(Dependencies.Paging.common_testing)
+
     testImplementation("junit:junit:4.13.2")
     testImplementation("com.google.truth:truth:1.1.2")
     testImplementation("com.google.truth.extensions:truth-java8-extension:1.1.2")

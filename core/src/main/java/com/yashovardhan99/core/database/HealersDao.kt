@@ -1,4 +1,4 @@
-package com.yashovardhan99.healersdiary.database
+package com.yashovardhan99.core.database
 
 import androidx.paging.PagingSource
 import androidx.room.*

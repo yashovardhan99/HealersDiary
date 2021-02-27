@@ -7,7 +7,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.asLiveData
 import com.yashovardhan99.healersdiary.R
-import com.yashovardhan99.healersdiary.database.ActivityType
+import com.yashovardhan99.core.database.ActivityType
 import com.yashovardhan99.healersdiary.utils.Request
 import com.yashovardhan99.healersdiary.utils.Request.Companion.fromUri
 import dagger.hilt.android.AndroidEntryPoint

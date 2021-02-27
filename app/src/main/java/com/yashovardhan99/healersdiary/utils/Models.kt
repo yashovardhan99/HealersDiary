@@ -10,10 +10,10 @@ sealed class HealingParent {
             val charge: Long,
             val notes: String,
             val patientId: Long) : HealingParent() {
-        fun toDatabaseHealing() = com.yashovardhan99.healersdiary.database.Healing(id, time, charge, notes, patientId)
+        fun toDatabaseHealing() = com.yashovardhan99.core.database.Healing(id, time, charge, notes, patientId)
 
         companion object {
-            fun com.yashovardhan99.healersdiary.database.Healing.toUiHealing(): Healing {
+            fun com.yashovardhan99.core.database.Healing.toUiHealing(): Healing {
                 return Healing(id, time, charge, notes, patientId)
             }
         }
@@ -28,10 +28,10 @@ sealed class PaymentParent {
             val amount: Long,
             val notes: String,
             val patientId: Long) : PaymentParent() {
-        fun toDatabasePayment() = com.yashovardhan99.healersdiary.database.Payment(id, time, amount, notes, patientId)
+        fun toDatabasePayment() = com.yashovardhan99.core.database.Payment(id, time, amount, notes, patientId)
 
         companion object {
-            fun com.yashovardhan99.healersdiary.database.Payment.toUiPayment(): Payment {
+            fun com.yashovardhan99.core.database.Payment.toUiPayment(): Payment {
                 return Payment(id, time, amount, notes, patientId)
             }
         }

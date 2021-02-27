@@ -23,7 +23,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.firestoreSettings
 import com.google.firebase.ktx.Firebase
 import com.yashovardhan99.core.analytics.AnalyticsEvent
-import com.yashovardhan99.healersdiary.database.*
+import com.yashovardhan99.core.database.*
 import com.yashovardhan99.healersdiary.onboarding.OnboardingViewModel
 import com.yashovardhan99.healersdiary.onboarding.SplashActivity
 import com.yashovardhan99.healersdiary.online.R

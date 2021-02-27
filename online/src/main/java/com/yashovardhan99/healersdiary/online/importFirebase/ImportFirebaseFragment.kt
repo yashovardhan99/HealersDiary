@@ -18,7 +18,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.yashovardhan99.healersdiary.OnlineModuleDependencies
+import com.yashovardhan99.core.OnlineModuleDependencies
 import com.yashovardhan99.healersdiary.online.DaggerOnlineComponent
 import com.yashovardhan99.healersdiary.online.R
 import com.yashovardhan99.healersdiary.online.databinding.FragmentImportFirebaseBinding

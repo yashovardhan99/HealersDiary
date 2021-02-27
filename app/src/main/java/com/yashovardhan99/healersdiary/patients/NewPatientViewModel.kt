@@ -4,7 +4,7 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yashovardhan99.healersdiary.create.CreateRepository
-import com.yashovardhan99.healersdiary.database.Patient
+import com.yashovardhan99.core.database.Patient
 import com.yashovardhan99.healersdiary.utils.Request
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

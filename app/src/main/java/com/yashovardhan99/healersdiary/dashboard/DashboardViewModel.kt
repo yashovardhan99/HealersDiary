@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import com.yashovardhan99.core.setToStartOfDay
 import com.yashovardhan99.core.setToStartOfLastMonth
 import com.yashovardhan99.core.setToStartOfMonth
-import com.yashovardhan99.healersdiary.database.Healing
-import com.yashovardhan99.healersdiary.database.Patient
-import com.yashovardhan99.healersdiary.database.Payment
+import com.yashovardhan99.core.database.Healing
+import com.yashovardhan99.core.database.Patient
+import com.yashovardhan99.core.database.Payment
 import com.yashovardhan99.healersdiary.utils.*
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.earnedLastMonth
 import com.yashovardhan99.healersdiary.utils.Stat.Companion.earnedThisMonth

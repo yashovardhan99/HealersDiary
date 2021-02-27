@@ -8,7 +8,7 @@
 
         <variable
             name="patient"
-            type="com.yashovardhan99.healersdiary.database.Patient" />
+            type="com.yashovardhan99.core.database.Patient" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

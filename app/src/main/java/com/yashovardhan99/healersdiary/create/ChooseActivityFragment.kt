@@ -9,7 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.yashovardhan99.healersdiary.database.ActivityType
+import com.yashovardhan99.core.database.ActivityType
 import com.yashovardhan99.healersdiary.databinding.FragmentChooseActivityBinding
 import com.yashovardhan99.healersdiary.utils.Header.Companion.buildHeader
 import com.yashovardhan99.healersdiary.utils.Icons

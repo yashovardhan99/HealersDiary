@@ -9,7 +9,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.work.*
 import com.google.firebase.auth.FirebaseUser
 import com.yashovardhan99.core.analytics.AnalyticsEvent
-import com.yashovardhan99.healersdiary.AppDataStore
+import com.yashovardhan99.core.AppDataStore
 import com.yashovardhan99.healersdiary.onboarding.OnboardingViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
