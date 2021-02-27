@@ -2,5 +2,6 @@
 <resources>
     <plurals name="healing">
         <item quantity="other">%2$s <b>%1$d</b> उपचार</item>
+        <item quantity="one">%2$s <b>%1$d</b> उपचार</item>
     </plurals>
 </resources>

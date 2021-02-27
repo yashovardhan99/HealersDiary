@@ -20,7 +20,7 @@ import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.dashboard.DashboardViewModel
 import com.yashovardhan99.core.database.Patient
 import com.yashovardhan99.healersdiary.databinding.FragmentPatientsListBinding
-import com.yashovardhan99.healersdiary.utils.*
+import com.yashovardhan99.core.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber

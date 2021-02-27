@@ -1,11 +1,11 @@
-package com.yashovardhan99.healersdiary.utils
+package com.yashovardhan99.core.utils
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.yashovardhan99.healersdiary.R
-import com.yashovardhan99.healersdiary.databinding.HeaderLogsBinding
+import com.yashovardhan99.core.R
+import com.yashovardhan99.core.databinding.HeaderLogsBinding
 
 class HeaderAdapter(var isVisible: Boolean) : RecyclerView.Adapter<HeaderAdapter.HeaderViewHolder>() {
     class HeaderViewHolder(val context: Context, val binding: HeaderLogsBinding) : RecyclerView.ViewHolder(binding.root) {

@@ -19,7 +19,7 @@ import com.yashovardhan99.core.analytics.AnalyticsEvent
 import com.yashovardhan99.core.transitionDurationLarge
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.FragmentHomeBinding
-import com.yashovardhan99.healersdiary.utils.*
+import com.yashovardhan99.core.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber

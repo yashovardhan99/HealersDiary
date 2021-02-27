@@ -7,7 +7,7 @@
 
         <variable
             name="stat"
-            type="com.yashovardhan99.healersdiary.utils.Stat" />
+            type="com.yashovardhan99.core.utils.Stat" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

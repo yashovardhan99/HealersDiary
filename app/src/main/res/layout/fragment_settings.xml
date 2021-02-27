@@ -8,7 +8,7 @@
 
         <variable
             name="header"
-            type="com.yashovardhan99.healersdiary.utils.Header" />
+            type="com.yashovardhan99.core.utils.Header" />
     </data>
 
 

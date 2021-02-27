@@ -16,9 +16,9 @@ import com.google.android.material.textfield.TextInputEditText
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.create.CreateNewActivity
 import com.yashovardhan99.healersdiary.databinding.ActivityNewPatientBinding
-import com.yashovardhan99.healersdiary.utils.Icons
-import com.yashovardhan99.healersdiary.utils.Request
-import com.yashovardhan99.healersdiary.utils.buildHeader
+import com.yashovardhan99.core.utils.Icons
+import com.yashovardhan99.core.utils.Request
+import com.yashovardhan99.core.utils.buildHeader
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.math.BigDecimal
@@ -28,7 +28,7 @@ import java.text.NumberFormat
 /**
  * Activity to create/edit a patient
  *
- * To launch this activity, use [RequestContract][com.yashovardhan99.healersdiary.utils.RequestContract] and pass in either [Request.NewPatient] or [Request.UpdatePatient].
+ * To launch this activity, use [RequestContract][com.yashovardhan99.core.utils.RequestContract] and pass in either [Request.NewPatient] or [Request.UpdatePatient].
  * Alternatively, if you must create an explicit intent yourself, make sure to pass the URI from the [Request] object
  *
  * If a patient is successfully created/modified, this launches a [Request.ViewPatient] with [Intent.ACTION_VIEW] and the patient id.

@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.ActivitySeparatorBinding
 import com.yashovardhan99.healersdiary.databinding.ItemCardPaymentBinding
-import com.yashovardhan99.healersdiary.utils.PaymentParent
+import com.yashovardhan99.core.utils.PaymentParent
 
 
 private const val VIEW_TYPE_PAYMENT = R.layout.item_card_payment

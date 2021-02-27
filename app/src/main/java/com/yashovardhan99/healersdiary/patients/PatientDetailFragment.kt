@@ -22,8 +22,8 @@ import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.dashboard.DashboardViewModel
 import com.yashovardhan99.core.database.ActivityType
 import com.yashovardhan99.healersdiary.databinding.FragmentPatientDetailBinding
-import com.yashovardhan99.healersdiary.utils.*
-import com.yashovardhan99.healersdiary.utils.Header.Companion.buildHeader
+import com.yashovardhan99.core.utils.*
+import com.yashovardhan99.core.utils.Header.Companion.buildHeader
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber

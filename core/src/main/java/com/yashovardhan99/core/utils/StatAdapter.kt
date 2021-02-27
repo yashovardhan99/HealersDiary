@@ -1,11 +1,11 @@
-package com.yashovardhan99.healersdiary.utils
+package com.yashovardhan99.core.utils
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.yashovardhan99.healersdiary.databinding.LayoutStatBoxBinding
+import com.yashovardhan99.core.databinding.LayoutStatBoxBinding
 
 class StatAdapter(val onClick: (Stat) -> Unit = {}) : ListAdapter<Stat, StatAdapter.StatViewHolder>(StatDiffUtil()) {
     class StatViewHolder(val binding: LayoutStatBoxBinding) : RecyclerView.ViewHolder(binding.root) {

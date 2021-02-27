@@ -8,7 +8,7 @@
 
         <variable
             name="payment"
-            type="com.yashovardhan99.healersdiary.utils.PaymentParent.Payment" />
+            type="com.yashovardhan99.core.utils.PaymentParent.Payment" />
     </data>
 
     <com.google.android.material.card.MaterialCardView

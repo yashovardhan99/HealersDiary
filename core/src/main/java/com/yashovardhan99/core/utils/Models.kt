@@ -1,4 +1,4 @@
-package com.yashovardhan99.healersdiary.utils
+package com.yashovardhan99.core.utils
 
 import java.util.*
 

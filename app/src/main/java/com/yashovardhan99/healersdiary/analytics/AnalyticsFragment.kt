@@ -10,8 +10,8 @@ import androidx.fragment.app.activityViewModels
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.dashboard.DashboardViewModel
 import com.yashovardhan99.healersdiary.databinding.FragmentAnalyticsBinding
-import com.yashovardhan99.healersdiary.utils.EmptyState
-import com.yashovardhan99.healersdiary.utils.buildHeader
+import com.yashovardhan99.core.utils.EmptyState
+import com.yashovardhan99.core.utils.buildHeader
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

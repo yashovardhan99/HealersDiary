@@ -1,4 +1,4 @@
-package com.yashovardhan99.healersdiary.utils
+package com.yashovardhan99.core.utils
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,8 +6,8 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.yashovardhan99.healersdiary.R
-import com.yashovardhan99.healersdiary.databinding.EmptyDashboardBinding
+import com.yashovardhan99.core.R
+import com.yashovardhan99.core.databinding.EmptyDashboardBinding
 
 class EmptyStateAdapter(var isVisible: Boolean, private val emptyState: EmptyState) : RecyclerView.Adapter<EmptyStateAdapter.EmptyStateViewHolder>() {
     class EmptyStateViewHolder(val binding: EmptyDashboardBinding) : RecyclerView.ViewHolder(binding.root) {

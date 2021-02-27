@@ -1,4 +1,4 @@
-package com.yashovardhan99.healersdiary.utils
+package com.yashovardhan99.core.utils
 
 import android.text.format.DateUtils
 import com.yashovardhan99.core.setToStartOfMonth

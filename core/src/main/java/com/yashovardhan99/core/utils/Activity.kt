@@ -1,7 +1,7 @@
-package com.yashovardhan99.healersdiary.utils
+package com.yashovardhan99.core.utils
 
 import androidx.annotation.StringRes
-import com.yashovardhan99.healersdiary.R
+import com.yashovardhan99.core.R
 import com.yashovardhan99.core.database.Patient
 import java.util.*
 

@@ -15,7 +15,7 @@ import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.dashboard.DashboardViewModel
 import com.yashovardhan99.healersdiary.databinding.FragmentSettingsBinding
 import com.yashovardhan99.healersdiary.onboarding.SplashActivity
-import com.yashovardhan99.healersdiary.utils.buildHeader
+import com.yashovardhan99.core.utils.buildHeader
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 

@@ -18,9 +18,9 @@ import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.dashboard.DashboardViewModel
 import com.yashovardhan99.healersdiary.databinding.FragmentHealingListBinding
 import com.yashovardhan99.core.analytics.AnalyticsEvent
-import com.yashovardhan99.healersdiary.utils.Header.Companion.buildHeader
-import com.yashovardhan99.healersdiary.utils.HealingParent
-import com.yashovardhan99.healersdiary.utils.Icons
+import com.yashovardhan99.core.utils.Header.Companion.buildHeader
+import com.yashovardhan99.core.utils.HealingParent
+import com.yashovardhan99.core.utils.Icons
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
