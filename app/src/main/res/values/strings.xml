@@ -25,7 +25,6 @@
     <string name="view_patient_feedback">View Feedback logs</string>
     <string name="add_payment_detail">Add new payment</string>
     <string name="view_payment_logs">View Payment logs</string>
-    <string name="nothing_here">NOTHING HERE</string>
     <string name="date">Date</string>
     <string name="amount">Amount</string>
     <string name="tap_plus_to_get_started">Tap the + button to get started!</string>
