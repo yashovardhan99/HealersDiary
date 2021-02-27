@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.yashovardhan99.healersdiary.database.Patient
+import com.yashovardhan99.core.database.Patient
 import com.yashovardhan99.healersdiary.databinding.PatientListItemBinding
 
 class PatientListAdapter(private val onPatientSelected: (Patient, View) -> Unit) : ListAdapter<Patient, PatientListAdapter.PatientViewHolder>(PatientDiff()) {

@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yashovardhan99.healersdiary.dashboard.ActivityAdapter.ActivityParentViewHolder
 import com.yashovardhan99.healersdiary.databinding.ActivityCardBinding
 import com.yashovardhan99.healersdiary.databinding.ActivitySeparatorBinding
-import com.yashovardhan99.healersdiary.utils.ActivityParent
+import com.yashovardhan99.core.utils.ActivityParent
 
 private const val VIEW_TYPE_ACTIVITY = 0
 private const val VIEW_TYPE_SEPARATOR = 1

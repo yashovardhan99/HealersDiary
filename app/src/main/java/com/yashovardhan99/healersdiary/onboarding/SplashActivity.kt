@@ -9,7 +9,7 @@ import androidx.navigation.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.dashboard.MainActivity
-import com.yashovardhan99.healersdiary.utils.DangerousDatabase
+import com.yashovardhan99.core.DangerousDatabase
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 

@@ -12,8 +12,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.FragmentChoosePatientBinding
-import com.yashovardhan99.healersdiary.utils.Icons
-import com.yashovardhan99.healersdiary.utils.buildHeader
+import com.yashovardhan99.core.utils.Icons
+import com.yashovardhan99.core.utils.buildHeader
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 

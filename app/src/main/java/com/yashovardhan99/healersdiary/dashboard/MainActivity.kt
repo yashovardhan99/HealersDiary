@@ -12,8 +12,8 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.ActivityMainBinding
-import com.yashovardhan99.healersdiary.utils.Request
-import com.yashovardhan99.healersdiary.utils.RequestContract
+import com.yashovardhan99.core.utils.Request
+import com.yashovardhan99.healersdiary.RequestContract
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 

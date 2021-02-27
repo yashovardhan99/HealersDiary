@@ -18,8 +18,8 @@ import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.FragmentNewHealingBinding
-import com.yashovardhan99.healersdiary.utils.Icons
-import com.yashovardhan99.healersdiary.utils.buildHeader
+import com.yashovardhan99.core.utils.Icons
+import com.yashovardhan99.core.utils.buildHeader
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.math.BigDecimal

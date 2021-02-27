@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.ActivitySeparatorBinding
 import com.yashovardhan99.healersdiary.databinding.ItemCardHealingBinding
-import com.yashovardhan99.healersdiary.utils.HealingParent
+import com.yashovardhan99.core.utils.HealingParent
 
 private const val VIEW_TYPE_HEALING = R.layout.item_card_healing
 private const val VIEW_TYPE_SEPARATOR = R.layout.activity_separator

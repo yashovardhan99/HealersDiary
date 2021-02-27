@@ -14,11 +14,13 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialFadeThrough
+import com.yashovardhan99.core.analytics.AnalyticsEvent
+import com.yashovardhan99.core.transitionDurationLarge
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.dashboard.DashboardViewModel
-import com.yashovardhan99.healersdiary.database.Patient
+import com.yashovardhan99.core.database.Patient
 import com.yashovardhan99.healersdiary.databinding.FragmentPatientsListBinding
-import com.yashovardhan99.healersdiary.utils.*
+import com.yashovardhan99.core.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber

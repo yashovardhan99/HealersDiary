@@ -9,9 +9,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yashovardhan99.healersdiary.AppDataStore
-import com.yashovardhan99.healersdiary.utils.AnalyticsEvent
-import com.yashovardhan99.healersdiary.utils.DangerousDatabase
+import com.yashovardhan99.core.AppDataStore
+import com.yashovardhan99.core.analytics.AnalyticsEvent
+import com.yashovardhan99.core.DangerousDatabase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.collect

@@ -6,11 +6,11 @@
 
         <variable
             name="header"
-            type="com.yashovardhan99.healersdiary.utils.Header" />
+            type="com.yashovardhan99.core.utils.Header" />
 
         <variable
             name="emptyState"
-            type="com.yashovardhan99.healersdiary.utils.EmptyState" />
+            type="com.yashovardhan99.core.utils.EmptyState" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

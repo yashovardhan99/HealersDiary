@@ -67,6 +67,7 @@ android {
 
 dependencies {
     implementation project(":app")
+    implementation(project(":core"))
     implementation(Dependencies.Android.ktx_core)
     implementation(Dependencies.Android.app_compat)
     implementation(Dependencies.Android.constraint_layout)

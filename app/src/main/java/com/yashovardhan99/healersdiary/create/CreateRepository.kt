@@ -1,9 +1,9 @@
 package com.yashovardhan99.healersdiary.create
 
-import com.yashovardhan99.healersdiary.database.HealersDao
-import com.yashovardhan99.healersdiary.database.Healing
-import com.yashovardhan99.healersdiary.database.Patient
-import com.yashovardhan99.healersdiary.database.Payment
+import com.yashovardhan99.core.database.HealersDao
+import com.yashovardhan99.core.database.Healing
+import com.yashovardhan99.core.database.Patient
+import com.yashovardhan99.core.database.Payment
 import javax.inject.Inject
 import javax.inject.Singleton
 

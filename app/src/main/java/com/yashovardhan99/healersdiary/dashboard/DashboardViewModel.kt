@@ -1,15 +1,18 @@
 package com.yashovardhan99.healersdiary.dashboard
 
 import androidx.lifecycle.ViewModel
-import com.yashovardhan99.healersdiary.database.Healing
-import com.yashovardhan99.healersdiary.database.Patient
-import com.yashovardhan99.healersdiary.database.Payment
-import com.yashovardhan99.healersdiary.utils.*
-import com.yashovardhan99.healersdiary.utils.Stat.Companion.earnedLastMonth
-import com.yashovardhan99.healersdiary.utils.Stat.Companion.earnedThisMonth
-import com.yashovardhan99.healersdiary.utils.Stat.Companion.healingsThisMonth
-import com.yashovardhan99.healersdiary.utils.Stat.Companion.healingsToday
-import com.yashovardhan99.healersdiary.utils.Utils.insertSeparators
+import com.yashovardhan99.core.setToStartOfDay
+import com.yashovardhan99.core.setToStartOfLastMonth
+import com.yashovardhan99.core.setToStartOfMonth
+import com.yashovardhan99.core.database.Healing
+import com.yashovardhan99.core.database.Patient
+import com.yashovardhan99.core.database.Payment
+import com.yashovardhan99.core.utils.*
+import com.yashovardhan99.core.utils.Stat.Companion.earnedLastMonth
+import com.yashovardhan99.core.utils.Stat.Companion.earnedThisMonth
+import com.yashovardhan99.core.utils.Stat.Companion.healingsThisMonth
+import com.yashovardhan99.core.utils.Stat.Companion.healingsToday
+import com.yashovardhan99.core.utils.Utils.insertSeparators
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
