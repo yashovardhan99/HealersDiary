@@ -27,7 +27,7 @@ import com.yashovardhan99.healersdiary.database.*
 import com.yashovardhan99.healersdiary.onboarding.OnboardingViewModel
 import com.yashovardhan99.healersdiary.onboarding.SplashActivity
 import com.yashovardhan99.healersdiary.online.R
-import com.yashovardhan99.healersdiary.utils.DangerousDatabase
+import com.yashovardhan99.core.DangerousDatabase
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import java.math.BigDecimal

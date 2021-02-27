@@ -2,8 +2,8 @@ package com.yashovardhan99.healersdiary.database
 
 import androidx.paging.PagingSource
 import androidx.room.*
-import com.yashovardhan99.healersdiary.utils.DangerousDatabase
-import com.yashovardhan99.healersdiary.utils.InternalDatabase
+import com.yashovardhan99.core.DangerousDatabase
+import com.yashovardhan99.core.InternalDatabase
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 

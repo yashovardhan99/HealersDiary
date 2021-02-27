@@ -1,4 +1,4 @@
-package com.yashovardhan99.healersdiary.utils
+package com.yashovardhan99.core
 
 import android.content.Context
 import android.util.TypedValue
