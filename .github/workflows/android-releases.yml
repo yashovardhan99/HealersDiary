@@ -59,4 +59,7 @@ jobs:
           asset_path: ${{ steps.sign_app.outputs.signedReleaseFile }}
           asset_name: Healers-Diary-${{ steps.get_release.output.tag_name }}.apk
           asset_content_type: application/vnd.android.package-archive
-
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Healers-Diary-${{ steps.get_release.output.tag_name }}.apk
+          path: ${{steps.sign_app.outputs.signedReleaseFile}}
