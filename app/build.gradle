@@ -85,9 +85,9 @@ android {
             def resolvedAndroidTestImplementationConfig = configurations.androidTestImplementation.resolvedConfiguration
             def resolvedApiConfig = configurations.api.resolvedConfiguration
 
-            resolvedImplementationConfig.firstLevelModuleDependencies.each { dep ->
-                str += "${dep.moduleGroup}:${dep.moduleName}:${dep.moduleVersion}\n"
-            }
+//            resolvedImplementationConfig.firstLevelModuleDependencies.each { dep ->
+//                str += "${dep.moduleGroup}:${dep.moduleName}:${dep.moduleVersion}\n"
+//            }
 
             resolvedAndroidTestImplementationConfig.firstLevelModuleDependencies.each { dep ->
                 str += "${dep.moduleGroup}:${dep.moduleName}:${dep.moduleVersion}\n"
@@ -105,7 +105,7 @@ android {
 }
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
+    implementation(project(":core"))
     implementation(Dependencies.Android.app_compat)
     api(Dependencies.Android.material)
     implementation(Dependencies.Android.constraint_layout)

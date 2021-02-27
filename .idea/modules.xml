@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/HealersDiary.iml" filepath="$PROJECT_DIR$/HealersDiary.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/HealersDiary.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/HealersDiary.app.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/HealersDiary.buildSrc.iml" filepath="$PROJECT_DIR$/.idea/modules/HealersDiary.buildSrc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/HealersDiary.core.iml" filepath="$PROJECT_DIR$/.idea/modules/core/HealersDiary.core.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/online/HealersDiary.online.iml" filepath="$PROJECT_DIR$/.idea/modules/online/HealersDiary.online.iml" />
     </modules>
   </component>
