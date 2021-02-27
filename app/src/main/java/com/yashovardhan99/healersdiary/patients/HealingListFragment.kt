@@ -17,7 +17,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.dashboard.DashboardViewModel
 import com.yashovardhan99.healersdiary.databinding.FragmentHealingListBinding
-import com.yashovardhan99.healersdiary.utils.AnalyticsEvent
+import com.yashovardhan99.core.analytics.AnalyticsEvent
 import com.yashovardhan99.healersdiary.utils.Header.Companion.buildHeader
 import com.yashovardhan99.healersdiary.utils.HealingParent
 import com.yashovardhan99.healersdiary.utils.Icons

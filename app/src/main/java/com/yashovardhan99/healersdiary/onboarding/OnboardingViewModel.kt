@@ -10,7 +10,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yashovardhan99.healersdiary.AppDataStore
-import com.yashovardhan99.healersdiary.utils.AnalyticsEvent
+import com.yashovardhan99.core.analytics.AnalyticsEvent
 import com.yashovardhan99.healersdiary.utils.DangerousDatabase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext

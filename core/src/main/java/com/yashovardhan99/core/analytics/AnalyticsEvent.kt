@@ -1,17 +1,16 @@
-package com.yashovardhan99.healersdiary.utils
+package com.yashovardhan99.core.analytics
 
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
-import com.yashovardhan99.healersdiary.utils.AnalyticsEvent.Builder
-import com.yashovardhan99.healersdiary.utils.AnalyticsEvent.Import.Requested.trackEvent
-import com.yashovardhan99.healersdiary.utils.AnalyticsEvent.Import.Started.trackEvent
-import com.yashovardhan99.healersdiary.utils.AnalyticsEvent.Onboarding.ClearAll.trackEvent
-import com.yashovardhan99.healersdiary.utils.AnalyticsEvent.Onboarding.Completed.trackEvent
-import com.yashovardhan99.healersdiary.utils.AnalyticsEvent.SelectReason.Unknown
-import timber.log.Timber
+import com.yashovardhan99.core.analytics.AnalyticsEvent.Builder
+import com.yashovardhan99.core.analytics.AnalyticsEvent.Import.Requested.trackEvent
+import com.yashovardhan99.core.analytics.AnalyticsEvent.Import.Started.trackEvent
+import com.yashovardhan99.core.analytics.AnalyticsEvent.Onboarding.ClearAll.trackEvent
+import com.yashovardhan99.core.analytics.AnalyticsEvent.Onboarding.Completed.trackEvent
+import com.yashovardhan99.core.analytics.AnalyticsEvent.SelectReason.Unknown
 
 /**
  * Utility class to help track analytics events.
@@ -28,7 +27,7 @@ sealed class AnalyticsEvent(private val name: String, private val params: Bundle
      * Some classes might provide their own wrapper over this function.
      */
     fun trackEvent() {
-        Timber.d("Tracking event: $name with params: $params")
+        timber.log.Timber.d("Tracking event: $name with params: $params")
         Firebase.analytics.logEvent(name, params)
     }
 
@@ -195,11 +194,11 @@ sealed class AnalyticsEvent(private val name: String, private val params: Bundle
      * @param why The [reason][SelectReason] why the content was selected.
      * @see Content
      */
-    class Select(content: Content, where: Screen, why: SelectReason = Unknown) : AnalyticsEvent(
+    class Select(content: Content, where: Screen, why: SelectReason = SelectReason.Unknown) : AnalyticsEvent(
             FirebaseAnalytics.Event.SELECT_CONTENT,
             content.bundle.apply {
                 putString(FirebaseAnalytics.Param.SCREEN_NAME, where.name)
-                if (why !is Unknown) putString("action", why.name)
+                if (why !is SelectReason.Unknown) putString("action", why.name)
             }
     )
 

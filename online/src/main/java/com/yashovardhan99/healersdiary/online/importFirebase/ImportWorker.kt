@@ -22,11 +22,11 @@ import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.firestoreSettings
 import com.google.firebase.ktx.Firebase
+import com.yashovardhan99.core.analytics.AnalyticsEvent
 import com.yashovardhan99.healersdiary.database.*
 import com.yashovardhan99.healersdiary.onboarding.OnboardingViewModel
 import com.yashovardhan99.healersdiary.onboarding.SplashActivity
 import com.yashovardhan99.healersdiary.online.R
-import com.yashovardhan99.healersdiary.utils.AnalyticsEvent
 import com.yashovardhan99.healersdiary.utils.DangerousDatabase
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
