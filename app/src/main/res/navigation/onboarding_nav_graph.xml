@@ -19,5 +19,11 @@
         android:name="com.yashovardhan99.healersdiary.online.importFirebase.ImportFirebaseFragment"
         android:label="ImportFirebaseFragment"
         app:moduleName="online"
-        tools:layout="@layout/fragment_import_firebase" />
+        tools:layout="@layout/fragment_import_firebase" >
+        <action
+            android:id="@+id/action_importFirebaseFragment_to_onboardingFragment"
+            app:destination="@id/onboardingFragment"
+            app:popUpTo="@id/importFirebaseFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

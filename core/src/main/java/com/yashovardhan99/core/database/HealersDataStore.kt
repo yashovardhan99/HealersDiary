@@ -8,40 +8,41 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.createDataStore
 import com.yashovardhan99.core.database.OnboardingState.Companion.toOnboardingState
-import dagger.Binds
-import dagger.Module
-import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
-interface HealersDataStore {
-    fun getOnboardingState(): Flow<OnboardingState>
-    suspend fun updateOnboardingState(state: OnboardingState)
-}
+//interface HealersDataStore {
+//    fun getOnboardingState(): Flow<OnboardingState>
+//    suspend fun updateOnboardingState(state: OnboardingState)
+//}
 
 sealed class OnboardingState(internal val value: Int) {
     object OnboardingRequired : OnboardingState(0)
     object ImportCompleted : OnboardingState(1)
     object OnboardingCompleted : OnboardingState(2)
+    object Importing : OnboardingState(3)
     companion object {
         val PREF_KEY = intPreferencesKey("onboarding_state")
         fun Int.toOnboardingState(): OnboardingState = when (this) {
             0 -> OnboardingRequired
             1 -> ImportCompleted
             2 -> OnboardingCompleted
+            3 -> Importing
             else -> OnboardingRequired
         }
+
+        const val IMPORT_COMPLETE_NOTIF_ID = 200
     }
 }
 
-class HealersDataStoreImpl @Inject constructor(@ApplicationContext context: Context) : HealersDataStore {
+@Singleton
+class HealersDataStore @Inject constructor(@ApplicationContext context: Context) {
     private val dataStore: DataStore<Preferences> = context.createDataStore("healersDatastore")
 
-    override fun getOnboardingState(): Flow<OnboardingState> {
+    fun getOnboardingState(): Flow<OnboardingState> {
         return dataStore.data.map { preferences ->
             preferences[OnboardingState.PREF_KEY]?.toOnboardingState()
                     ?: migrateOnboardingDatastore(preferences)
@@ -58,7 +59,7 @@ class HealersDataStoreImpl @Inject constructor(@ApplicationContext context: Cont
         }
     }
 
-    override suspend fun updateOnboardingState(state: OnboardingState) {
+    suspend fun updateOnboardingState(state: OnboardingState) {
         dataStore.edit { preferences ->
             preferences[OnboardingState.PREF_KEY] = state.value
         }
@@ -84,11 +85,11 @@ class HealersDataStoreImpl @Inject constructor(@ApplicationContext context: Cont
     }
 }
 
-@Module
-@InstallIn(SingletonComponent::class)
-abstract class DatastoreModule {
-    @Binds
-    @Singleton
-    abstract fun provideAppDatastore(healersDataStoreImpl: HealersDataStoreImpl): HealersDataStore
-
-}
+//@Module
+//@InstallIn(SingletonComponent::class)
+//abstract class DatastoreModule {
+//    @Binds
+//    @Singleton
+//    abstract fun provideAppDatastore(healersDataStoreImpl: HealersDataStoreImpl): HealersDataStore
+//
+//}

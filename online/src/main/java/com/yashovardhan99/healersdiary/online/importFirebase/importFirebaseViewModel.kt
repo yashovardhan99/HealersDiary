@@ -1,23 +1,20 @@
 package com.yashovardhan99.healersdiary.online.importFirebase
 
 import android.content.Context
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import androidx.work.*
 import com.google.firebase.auth.FirebaseUser
 import com.yashovardhan99.core.analytics.AnalyticsEvent
-import com.yashovardhan99.core.database.HealersDataStore
-import com.yashovardhan99.core.database.OnboardingState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class ImportFirebaseViewModel @Inject constructor(
-        context: Context,
-        private val dataStore: HealersDataStore) : ViewModel() {
+        context: Context) : ViewModel() {
 
     private val _user = MutableStateFlow<FirebaseUser?>(null)
     val user: StateFlow<FirebaseUser?> = _user
@@ -33,12 +30,10 @@ class ImportFirebaseViewModel @Inject constructor(
             .addTag("importFirebase")
             .build()
     private val workManager = WorkManager.getInstance(context)
-    val workObserver = workManager.getWorkInfoByIdLiveData(importWorkRequest.id)
-
-    fun importCompleted() {
-        viewModelScope.launch {
-            dataStore.updateOnboardingState(OnboardingState.OnboardingCompleted)
-        }
+    private val _workObserver = MutableLiveData<UUID>()
+    val workObserver: LiveData<WorkInfo> = Transformations.switchMap(_workObserver) {
+        if (it != null) workManager.getWorkInfoByIdLiveData(it)
+        else null
     }
 
     fun setUser(currentUser: FirebaseUser) {
@@ -49,10 +44,20 @@ class ImportFirebaseViewModel @Inject constructor(
     }
 
     fun startImport() {
-        AnalyticsEvent.Import.Requested.trackEvent()
-        workManager.enqueueUniqueWork(
-                "importFirebase",
-                ExistingWorkPolicy.KEEP,
-                importWorkRequest)
+        viewModelScope.launch {
+            val workInfos = workManager.getWorkInfosForUniqueWork("importFirebase").await()
+            val activeWorker = workInfos.find { it.state == WorkInfo.State.RUNNING || it.state == WorkInfo.State.ENQUEUED }
+            if (activeWorker != null) {
+                _workObserver.value = activeWorker.id
+                Timber.d("Active worker = $activeWorker")
+            } else {
+                AnalyticsEvent.Import.Requested.trackEvent()
+                workManager.enqueueUniqueWork(
+                        "importFirebase",
+                        ExistingWorkPolicy.KEEP,
+                        importWorkRequest)
+                _workObserver.value = importWorkRequest.id
+            }
+        }
     }
 }

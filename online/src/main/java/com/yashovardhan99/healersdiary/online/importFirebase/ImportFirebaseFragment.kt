@@ -147,8 +147,8 @@ class ImportFirebaseFragment : Fragment() {
                     binding.progressHorizontal.setProgressCompat(ImportWorker.MAX_PROGRESS, true)
                     Snackbar.make(binding.root, com.yashovardhan99.healersdiary.R.string.import_completed, Snackbar.LENGTH_LONG).show()
                     signOut()
-                    findNavController().popBackStack(com.yashovardhan99.healersdiary.R.id.onboardingFragment, false)
-                    viewModel.importCompleted()
+                    findNavController().navigate(ImportFirebaseFragmentDirections.actionImportFirebaseFragmentToOnboardingFragment())
+//                    viewModel.importCompleted()
                 }
                 WorkInfo.State.FAILED -> {
                     binding.pageTitle.setText(R.string.import_v1)

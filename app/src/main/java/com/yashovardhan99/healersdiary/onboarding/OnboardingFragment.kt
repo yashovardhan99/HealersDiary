@@ -5,6 +5,7 @@ import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -51,6 +52,7 @@ class OnboardingFragment : Fragment() {
                         binding.getStarted.visibility = View.VISIBLE
                         binding.disclaimer.visibility = View.VISIBLE
                     }
+                    OnboardingState.Importing -> importOnline()
                 }
             }
         }
@@ -61,6 +63,7 @@ class OnboardingFragment : Fragment() {
         }
 
         binding.getStarted.setOnClickListener {
+            NotificationManagerCompat.from(requireContext()).cancel(OnboardingState.IMPORT_COMPLETE_NOTIF_ID)
             viewModel.getStarted()
         }
         binding.importOnline.setOnClickListener { importOnline() }

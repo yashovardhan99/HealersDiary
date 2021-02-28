@@ -65,7 +65,7 @@ class SplashActivity : AppCompatActivity() {
                                 .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK))
                         finish()
                     }
-                    OnboardingState.OnboardingRequired -> {
+                    else -> {
                     }
                 }
             }

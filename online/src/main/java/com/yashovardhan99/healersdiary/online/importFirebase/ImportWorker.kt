@@ -50,7 +50,6 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
 
     @OptIn(DangerousDatabase::class)
     override suspend fun doWork(): Result {
-
         val coreModuleDependencies = EntryPointAccessors.fromApplication(
                 applicationContext,
                 OnlineModuleDependencies::class.java
@@ -62,12 +61,14 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
                 .inject(this)
         Timber.d("Dagger injection successful")
         Timber.d("datastore = $dataStore")
+        dataStore.updateOnboardingState(OnboardingState.Importing)
         AnalyticsEvent.Import.Started.trackEvent()
         updatePreferences(false)
         buildNotificationChannels()
         setProgress(0)
         val uid = Firebase.auth.currentUser?.uid
         if (uid == null) {
+            updatePreferences(false)
             showDoneNotification(isSuccessful = false, willRetry = false)
             return Result.failure()
         }
@@ -81,12 +82,14 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
                     .get().await().documents
             Timber.d("$result")
             if (result.isEmpty()) {
+                updatePreferences(false)
                 showDoneNotification(isSuccessful = false, willRetry = false)
                 return Result.failure()
             }
             setProgress(0, result.size, 0f)
             processPatients(result)
         } catch (e: Exception) {
+            updatePreferences(false)
             handleException(e)
         }
     }
@@ -142,7 +145,12 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
     }
 
     private suspend fun updatePreferences(importCompleted: Boolean) {
-        if (importCompleted) dataStore.updateOnboardingState(OnboardingState.ImportCompleted)
+        if (importCompleted) {
+            dataStore.updateOnboardingState(OnboardingState.ImportCompleted)
+            Timber.d("Updated to ${OnboardingState.ImportCompleted}")
+        } else {
+            dataStore.updateOnboardingState(OnboardingState.OnboardingRequired)
+        }
     }
 
     private suspend fun HealersDao.getPatientData(patientUid: String, id: Long, charge: Long, curIndex: Int, maxPatients: Int) {
@@ -213,6 +221,7 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         } else {
             ForegroundInfo(PROGRESS_NOTIF_ID, notification)
         }
+        NotificationManagerCompat.from(applicationContext).cancel(OnboardingState.IMPORT_COMPLETE_NOTIF_ID)
         setForeground(foregroundInfo)
     }
 
@@ -239,7 +248,7 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
                 .build()
-        NotificationManagerCompat.from(applicationContext).notify(COMPLETE_NOTIF_ID, notification)
+        NotificationManagerCompat.from(applicationContext).notify(OnboardingState.IMPORT_COMPLETE_NOTIF_ID, notification)
     }
 
     private fun buildNotificationChannels() {
@@ -254,7 +263,6 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
 
     companion object {
         private const val PROGRESS_NOTIF_ID = 100
-        private const val COMPLETE_NOTIF_ID = 200
         const val MAX_PROGRESS = 100
         const val INITIAL_PROGRESS = 10
         const val INITIAL_PROGRESS_FLOAT = 0.1f

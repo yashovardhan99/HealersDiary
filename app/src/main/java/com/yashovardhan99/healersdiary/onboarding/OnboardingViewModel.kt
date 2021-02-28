@@ -9,6 +9,7 @@ import com.yashovardhan99.core.database.OnboardingState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -32,6 +33,7 @@ class OnboardingViewModel @Inject constructor(private val dataStore: HealersData
     init {
         viewModelScope.launch {
             dataStore.getOnboardingState().collect { onboardingState ->
+                Timber.d("Onboarding state = $onboardingState")
                 _onboardingPrefs.value = onboardingState
             }
         }
