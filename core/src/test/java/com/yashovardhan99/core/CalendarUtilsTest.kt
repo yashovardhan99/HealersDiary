@@ -157,4 +157,35 @@ class CalendarUtilsTest {
         val date = localDateTime.toDate(ZoneId.of("Asia/Kolkata"))
         assertThat(date.time).isEqualTo(1589271983000)
     }
+
+    @Test
+    fun localDateTime_startDate() {
+        val localDateTime = LocalDateTime.of(2021, Month.FEBRUARY, 28, 18, 31, 10, 100)
+        val startOfDay = localDateTime.getStartOfDay()
+        val time = startOfDay.toLocalTime()
+        assertThat(time.toNanoOfDay()).isEqualTo(0)
+        assertThat(startOfDay.dayOfMonth).isEqualTo(28)
+        assertThat(startOfDay.month).isEquivalentAccordingToCompareTo(Month.FEBRUARY)
+        assertThat(startOfDay.year).isEqualTo(2021)
+    }
+
+    @Test
+    fun localDateTime_startDate_endTime() {
+        val localDateTime = LocalDateTime.of(2021, Month.FEBRUARY, 28, 23, 59, 59, 999_999_999)
+        val startOfDay = localDateTime.getStartOfDay()
+        val time = startOfDay.toLocalTime()
+        assertThat(time.toNanoOfDay()).isEqualTo(0)
+        assertThat(startOfDay.dayOfMonth).isEqualTo(28)
+        assertThat(startOfDay.month).isEquivalentAccordingToCompareTo(Month.FEBRUARY)
+        assertThat(startOfDay.year).isEqualTo(2021)
+    }
+
+    @Test
+    fun localDateTime_startDate_startTime() {
+        val localDateTime = LocalDateTime.of(2021, Month.FEBRUARY, 28, 0, 0, 0)
+        val startOfDay = localDateTime.getStartOfDay()
+        val time = startOfDay.toLocalTime()
+        assertThat(time.toNanoOfDay()).isEqualTo(0)
+        assertThat(startOfDay).isEquivalentAccordingToCompareTo(localDateTime)
+    }
 }
