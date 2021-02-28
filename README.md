@@ -1,8 +1,7 @@
 <img src=".github/full_logo.png" alt="Healers Diary"/>
 
-<a href='https://play.google.com/store/apps/details?id=com.yashovardhan99.healersdiary&utm_source=github&utm_campaign=github&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'>  <img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png'  
-       height='90'/></a>
-![Android CI](https://github.com/yashovardhan99/HealersDiary/workflows/Android%20CI/badge.svg)
+| <a href='https://play.google.com/store/apps/details?id=com.yashovardhan99.healersdiary&utm_source=github&utm_campaign=github&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'>  <img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png'  height='50'/></a> | [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/yashovardhan99/healersdiary?include_prereleases)](https://github.com/yashovardhan99/HealersDiary/releases) | [![Android CI](https://github.com/yashovardhan99/HealersDiary/actions/workflows/android.yml/badge.svg)](https://github.com/yashovardhan99/HealersDiary/actions/workflows/android.yml) | [![Android Release Build](https://github.com/yashovardhan99/HealersDiary/actions/workflows/android-releases.yml/badge.svg?event=release)](https://github.com/yashovardhan99/HealersDiary/actions/workflows/android-releases.yml) | [![GitHub](https://img.shields.io/github/license/yashovardhan99/HealersDiary)](LICENSE) |
+| --- | --- | --- | --- | --- |
 
 An android app for professional healers to keep track of their patients and help in instant billing.
 
