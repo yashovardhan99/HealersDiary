@@ -1,3 +1,4 @@
 theme: jekyll-theme-cayman
-includes: [".github"]
+includes:
+  - .github
 markdown: gfm
