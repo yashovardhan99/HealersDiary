@@ -14,11 +14,6 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
-//interface HealersDataStore {
-//    fun getOnboardingState(): Flow<OnboardingState>
-//    suspend fun updateOnboardingState(state: OnboardingState)
-//}
-
 sealed class OnboardingState(internal val value: Int) {
     object OnboardingRequired : OnboardingState(0)
     object ImportCompleted : OnboardingState(1)
@@ -84,12 +79,3 @@ class HealersDataStore @Inject constructor(@ApplicationContext context: Context)
         }
     }
 }
-
-//@Module
-//@InstallIn(SingletonComponent::class)
-//abstract class DatastoreModule {
-//    @Binds
-//    @Singleton
-//    abstract fun provideAppDatastore(healersDataStoreImpl: HealersDataStoreImpl): HealersDataStore
-//
-//}

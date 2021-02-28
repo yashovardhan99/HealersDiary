@@ -88,7 +88,6 @@ dependencies {
     implementation(Dependencies.Android.activity_ktx)
     implementation(Dependencies.Android.fragment_ktx)
     implementation(Dependencies.Android.multidex)
-    api(Dependencies.Android.datastore)
     implementation(Dependencies.Android.workmanager)
 
     implementation(Dependencies.Android.Lifecycle.view_model)
