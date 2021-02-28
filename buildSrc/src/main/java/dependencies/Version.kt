@@ -73,7 +73,7 @@ object Version {
         const val crashlytics = "2.4.1"
         const val google_services = "4.3.5"
         const val play_services_auth = "19.0.0"
-        const val firebase_bom = "26.4.0"
+        const val firebase_bom = "26.5.0"
 
         /**
          * AndroidX dependency codes
