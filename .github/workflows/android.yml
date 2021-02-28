@@ -31,7 +31,7 @@ jobs:
   test:
     runs-on: macos-latest
     needs: setup
-    stratergy:
+    strategy:
       matrix:
         api_level: [21, 24, 27, 30]
         target: [default, google_apis]
