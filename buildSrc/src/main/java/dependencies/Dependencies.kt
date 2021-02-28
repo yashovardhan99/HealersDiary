@@ -116,5 +116,6 @@ object Dependencies {
         const val compiler = "androidx.hilt:hilt-compiler:${Versions.hilt}"
         const val view_model = "androidx.hilt:hilt-lifecycle-viewmodel:${Versions.hilt}"
         const val gradle_plugin = "com.google.dagger:hilt-android-gradle-plugin:${Versions.hilt_android}"
+        const val worker = "androidx.hilt:hilt-work:${Versions.hilt}"
     }
 }

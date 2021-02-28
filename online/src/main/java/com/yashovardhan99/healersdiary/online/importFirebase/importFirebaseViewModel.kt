@@ -1,16 +1,13 @@
 package com.yashovardhan99.healersdiary.online.importFirebase
 
 import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.*
 import com.google.firebase.auth.FirebaseUser
 import com.yashovardhan99.core.analytics.AnalyticsEvent
-import com.yashovardhan99.core.AppDataStore
-import com.yashovardhan99.healersdiary.onboarding.OnboardingViewModel
+import com.yashovardhan99.core.database.HealersDataStore
+import com.yashovardhan99.core.database.OnboardingState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -20,7 +17,7 @@ import javax.inject.Inject
 
 class ImportFirebaseViewModel @Inject constructor(
         context: Context,
-        @AppDataStore private val dataStore: DataStore<Preferences>) : ViewModel() {
+        private val dataStore: HealersDataStore) : ViewModel() {
 
     private val _user = MutableStateFlow<FirebaseUser?>(null)
     val user: StateFlow<FirebaseUser?> = _user
@@ -40,9 +37,7 @@ class ImportFirebaseViewModel @Inject constructor(
 
     fun importCompleted() {
         viewModelScope.launch {
-            dataStore.edit { preferences ->
-                preferences[OnboardingViewModel.Companion.PreferencesKey.importComplete] = true
-            }
+            dataStore.updateOnboardingState(OnboardingState.OnboardingCompleted)
         }
     }
 

@@ -10,7 +10,6 @@ import androidx.annotation.IntRange
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
-import androidx.datastore.preferences.core.edit
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
@@ -22,19 +21,24 @@ import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.firestoreSettings
 import com.google.firebase.ktx.Firebase
+import com.yashovardhan99.core.DangerousDatabase
+import com.yashovardhan99.core.OnlineModuleDependencies
 import com.yashovardhan99.core.analytics.AnalyticsEvent
 import com.yashovardhan99.core.database.*
-import com.yashovardhan99.healersdiary.onboarding.OnboardingViewModel
 import com.yashovardhan99.healersdiary.onboarding.SplashActivity
+import com.yashovardhan99.healersdiary.online.DaggerOnlineComponent
 import com.yashovardhan99.healersdiary.online.R
-import com.yashovardhan99.core.DangerousDatabase
+import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import java.math.BigDecimal
 import java.util.*
+import javax.inject.Inject
 import kotlin.math.roundToInt
 
 class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
+    @Inject
+    lateinit var dataStore: HealersDataStore
 
     private val notificationBuilder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
             .setSmallIcon(com.yashovardhan99.healersdiary.R.drawable.ic_launcher_foreground)
@@ -46,6 +50,18 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
 
     @OptIn(DangerousDatabase::class)
     override suspend fun doWork(): Result {
+
+        val coreModuleDependencies = EntryPointAccessors.fromApplication(
+                applicationContext,
+                OnlineModuleDependencies::class.java
+        )
+        DaggerOnlineComponent.builder()
+                .context(applicationContext)
+                .appDependencies(coreModuleDependencies)
+                .build()
+                .inject(this)
+        Timber.d("Dagger injection successful")
+        Timber.d("datastore = $dataStore")
         AnalyticsEvent.Import.Started.trackEvent()
         updatePreferences(false)
         buildNotificationChannels()
@@ -126,9 +142,7 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
     }
 
     private suspend fun updatePreferences(importCompleted: Boolean) {
-        DatabaseModule.provideAppDatastore(applicationContext).edit { preferences ->
-            preferences[OnboardingViewModel.Companion.PreferencesKey.importComplete] = importCompleted
-        }
+        if (importCompleted) dataStore.updateOnboardingState(OnboardingState.ImportCompleted)
     }
 
     private suspend fun HealersDao.getPatientData(patientUid: String, id: Long, charge: Long, curIndex: Int, maxPatients: Int) {

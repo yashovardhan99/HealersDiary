@@ -81,8 +81,8 @@ class ImportFirebaseFragment : Fragment() {
 
     private fun onSignIn(signInResult: ActivityResult?) {
         if (signInResult != null) {
+            Timber.d("Sign in result = $signInResult")
             lifecycleScope.launchWhenStarted {
-
                 try {
                     val signInTask = GoogleSignIn.getSignedInAccountFromIntent(signInResult.data)
                     val account = signInTask.getResult(ApiException::class.java)
@@ -134,6 +134,7 @@ class ImportFirebaseFragment : Fragment() {
                         else binding.progressText.text = getString(R.string.importing_of, current, patients)
                     }
                     indeterminateProgressJob?.cancel()
+                    if (!binding.progressHorizontal.isVisible) binding.progressHorizontal.show()
                     binding.progressHorizontal.setProgressCompat(workInfo.progress.getInt(ImportWorker.OVERALL_PROGRESS, 0), true)
 
                     binding.login.visibility = View.GONE

@@ -7,11 +7,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.google.android.material.snackbar.Snackbar
+import com.yashovardhan99.core.DangerousDatabase
+import com.yashovardhan99.core.database.OnboardingState
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.dashboard.MainActivity
-import com.yashovardhan99.core.DangerousDatabase
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
+import kotlinx.coroutines.flow.collect
 
 /**
  * Starting Splash screen Activity with onboarding workflow
@@ -19,7 +20,6 @@ import timber.log.Timber
  * @see onStart
  * @see OnboardingFragment
  * @see OnboardingViewModel
- * @see com.yashovardhan99.healersdiary.online.importFirebase.ImportFirebaseFragment
  */
 @AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
@@ -51,17 +51,21 @@ class SplashActivity : AppCompatActivity() {
                 viewModel.clearAll()
                 Snackbar.make(findViewById(R.id.nav_host_fragment_container), R.string.data_cleared, Snackbar.LENGTH_LONG).show()
             }
-            viewModel.onboardingPrefs.observe(this@SplashActivity) { preferences ->
-                Timber.d("Pref at activity = $preferences")
-                // If onboarding complete -> launch MainActivity
-                if (preferences.onboardingComplete && !preferences.importRequest) {
-                    startActivity(Intent(this@SplashActivity, MainActivity::class.java)
-                            .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK))
-                    finish()
-                } else if (preferences.importComplete) {
-                    // if import is completed, navigate back to onboarding fragment
-                    findNavController(R.id.nav_host_fragment_container).apply {
-                        popBackStack(R.id.onboardingFragment, false)
+            viewModel.onboardingPrefs.collect { onboardingState ->
+                when (onboardingState) {
+                    OnboardingState.ImportCompleted -> {
+                        // if import is completed, navigate back to onboarding fragment
+                        findNavController(R.id.nav_host_fragment_container).apply {
+                            popBackStack(R.id.onboardingFragment, false)
+                        }
+                    }
+                    OnboardingState.OnboardingCompleted -> {
+                        // If onboarding complete -> launch MainActivity
+                        startActivity(Intent(this@SplashActivity, MainActivity::class.java)
+                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK))
+                        finish()
+                    }
+                    OnboardingState.OnboardingRequired -> {
                     }
                 }
             }
