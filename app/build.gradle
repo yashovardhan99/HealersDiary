@@ -10,23 +10,6 @@ apply plugin: 'dagger.hilt.android.plugin'
 apply plugin: "androidx.navigation.safeargs.kotlin"
 apply plugin: "com.google.gms.google-services"
 
-def build_param = "${build}"
-// Needed for CI
-if (build_param != "dev") {
-    //exclude production build
-    android.variantFilter { variant ->
-        if (variant.buildType.name == 'dev') {
-            variant.setIgnore(true)
-        }
-    }
-} else {
-    //exclude all except production build
-    android.variantFilter { variant ->
-        if (variant.buildType.name != 'dev') {
-            variant.setIgnore(true)
-        }
-    }
-}
 android {
     compileSdkVersion = Version.AppVersion.compileSdk
     defaultConfig {
@@ -43,10 +26,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             applicationIdSuffix ".debug"
             versionNameSuffix "-debug"
-        }
-        dev { //needed for CI
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         release {
             minifyEnabled true

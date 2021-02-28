@@ -32,8 +32,6 @@ android {
             minifyEnabled(false)
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
-        create("dev") {
-        }
     }
     compileOptions {
         isCoreLibraryDesugaringEnabled = true

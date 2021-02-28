@@ -3,11 +3,19 @@ name: Android CI
 on:
   push:
     branches: [ master ]
+    paths-ignore:
   pull_request:
-    branches: [ master ]
 
 jobs:
+  validation:
+    name: "Gradle wrapper Validation"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: gradle/wrapper-validation-action@v1
+
   build:
+    needs: validation
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
@@ -27,19 +35,27 @@ jobs:
         run: echo $FIREBASE_CONFIG > ./app/google-services.json
 
       - name: Provide Firebase config to online module
-        env:
-          FIREBASE_CONFIG: ${{ secrets.FIREBASE_CONFIG }}
         run: echo $FIREBASE_CONFIG > ./online/google-services.json
+
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: ${{ runner.os }}-gradle-
 
       - name: Build with Gradle
         run: ./gradlew buildDebug
 
   test:
+    needs: validation
     runs-on: macos-latest
-    strategy:
-      matrix:
-        api_level: [21, 24, 27, 30]
-        target: [default, google_apis]
+    timeout-minutes: 60
+    #    strategy:
+    #      matrix:
+    #        api_level: [21, 24, 27, 30]
+    #        target: [default, google_apis]
 
     steps:
       - uses: actions/checkout@v2
@@ -63,12 +79,20 @@ jobs:
           FIREBASE_CONFIG: ${{ secrets.FIREBASE_CONFIG }}
         run: echo $FIREBASE_CONFIG > ./online/google-services.json
 
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: ${{ runner.os }}-gradle-
+
       - name: Unit tests
         run: ./gradlew testDebug
 
-      - name: Instrumentation tests
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: ${{ matrix.api_level }}
-          target: ${{ matrix.target }}
-          script: ./gradlew connectedAndroidTest
+#      - name: Instrumentation tests
+#        uses: reactivecircus/android-emulator-runner@v2
+#        with:
+#          api-level: ${{ matrix.api_level }}
+#          target: ${{ matrix.target }}
+#          script: ./gradlew connectedAndroidTest

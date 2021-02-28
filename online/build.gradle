@@ -6,23 +6,6 @@ plugins {
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
 }
-def build_param = "${build}"
-// Needed for CI
-if (build_param != "dev") {
-    //exclude production build
-    android.variantFilter { variant ->
-        if (variant.buildType.name == 'dev') {
-            variant.setIgnore(true)
-        }
-    }
-} else {
-    //exclude all except production build
-    android.variantFilter { variant ->
-        if (variant.buildType.name != 'dev') {
-            variant.setIgnore(true)
-        }
-    }
-}
 
 android {
     compileSdkVersion 30
@@ -39,10 +22,6 @@ android {
     }
 
     buildTypes {
-        dev { //needed for CI
-            minifyEnabled false
-            consumerProguardFiles 'proguard-rules.pro'
-        }
         release {
             minifyEnabled false
             consumerProguardFiles 'proguard-rules.pro'
