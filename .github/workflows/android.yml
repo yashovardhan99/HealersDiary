@@ -21,6 +21,16 @@ jobs:
       - name: Grant execute permissions
         run: chmod +x gradlew
 
+      - name: Provide Firebase config to app module
+        env:
+          FIREBASE_CONFIG: ${{ secrets.FIREBASE_CONFIG }}
+        run: echo $FIREBASE_CONFIG > ./app/google-services.json
+
+      - name: Provide Firebase config to online module
+        env:
+          FIREBASE_CONFIG: ${{ secrets.FIREBASE_CONFIG }}
+        run: echo $FIREBASE_CONFIG > ./online/google-services.json
+
       - name: Build with Gradle
         run: ./gradlew buildDebug
 
@@ -43,12 +53,22 @@ jobs:
       - name: Grant execute permissions
         run: chmod +x gradlew
 
+      - name: Provide Firebase config to app module
+        env:
+          FIREBASE_CONFIG: ${{ secrets.FIREBASE_CONFIG }}
+        run: echo $FIREBASE_CONFIG > ./app/google-services.json
+
+      - name: Provide Firebase config to online module
+        env:
+          FIREBASE_CONFIG: ${{ secrets.FIREBASE_CONFIG }}
+        run: echo $FIREBASE_CONFIG > ./online/google-services.json
+
       - name: Unit tests
         run: ./gradlew testDebug
 
       - name: Instrumentation tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: ${{ matrix.api-level }}
+          api-level: ${{ matrix.api_level }}
           target: ${{ matrix.target }}
           script: ./gradlew connectedAndroidTest
