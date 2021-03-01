@@ -1,14 +1,13 @@
 package com.yashovardhan99.healersdiary.create
 
+import android.os.Bundle
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yashovardhan99.healersdiary.dashboard.DashboardRepository
-import com.yashovardhan99.core.database.ActivityType
-import com.yashovardhan99.core.database.Healing
-import com.yashovardhan99.core.database.Patient
-import com.yashovardhan99.core.database.Payment
-import com.yashovardhan99.core.utils.Request
+import com.yashovardhan99.core.database.*
 import com.yashovardhan99.core.setToStartOfDay
+import com.yashovardhan99.core.utils.Request
+import com.yashovardhan99.healersdiary.dashboard.DashboardRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -20,7 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class CreateActivityViewModel @Inject constructor(
         private val dashboardRepository: DashboardRepository,
-        private val createRepository: CreateRepository
+        private val createRepository: CreateRepository,
+        private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     var selectedPatient: Patient? = null
         private set
@@ -62,6 +62,14 @@ class CreateActivityViewModel @Inject constructor(
         if (patient != null) selectedPatient = patient
         viewModelScope.launch {
             _selectedPatient.emit(patient)
+        }
+    }
+
+    suspend fun getPatientDetails(patientId: Long): Patient? {
+        val savedPatient: Patient? = savedStateHandle.get<Bundle?>("patient-$patientId")?.toPatient()
+        if (savedPatient != null) return savedPatient
+        return dashboardRepository.getPatient(patientId).also {
+            savedStateHandle["patient-$patientId"] = it?.toBundle()
         }
     }
 
@@ -121,3 +129,4 @@ class CreateActivityViewModel @Inject constructor(
         }
     }
 }
+

@@ -6,10 +6,10 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.asLiveData
-import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.core.database.ActivityType
 import com.yashovardhan99.core.utils.Request
 import com.yashovardhan99.core.utils.Request.Companion.fromUri
+import com.yashovardhan99.healersdiary.R
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -45,7 +45,9 @@ class CreateNewActivity : AppCompatActivity() {
             is Request.UpdateHealing -> throw NotImplementedError()
             is Request.UpdatePayment -> throw NotImplementedError()
             Request.ViewDashboard -> finish()
-            else -> throw IllegalArgumentException()
+            else -> {
+                Timber.w("Unknown request = $request")
+            }
         }
     }
 }

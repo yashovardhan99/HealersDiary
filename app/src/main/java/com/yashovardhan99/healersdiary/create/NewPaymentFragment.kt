@@ -16,10 +16,10 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
-import com.yashovardhan99.healersdiary.R
-import com.yashovardhan99.healersdiary.databinding.FragmentNewPaymentBinding
 import com.yashovardhan99.core.utils.Icons
 import com.yashovardhan99.core.utils.buildHeader
+import com.yashovardhan99.healersdiary.R
+import com.yashovardhan99.healersdiary.databinding.FragmentNewPaymentBinding
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.math.BigDecimal
@@ -59,7 +59,9 @@ class NewPaymentFragment : Fragment() {
         binding.header = context?.run {
             buildHeader(Icons.Back, R.string.new_payment, Icons.Save)
         }
-        binding.heading.icon.setOnClickListener { findNavController().navigateUp() }
+        binding.heading.icon.setOnClickListener {
+            if (!findNavController().popBackStack()) activity?.finish()
+        }
 
         binding.heading.optionsIcon.setOnClickListener { save(binding) }
         binding.newPayment.setOnClickListener { save(binding) }
