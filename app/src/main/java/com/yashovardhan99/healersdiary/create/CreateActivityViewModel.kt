@@ -75,7 +75,7 @@ class CreateActivityViewModel @Inject constructor(
 
     fun selectPatient(pid: Long, activityType: ActivityType? = null) {
         viewModelScope.launch {
-            val patient = dashboardRepository.getPatient(pid)
+            val patient = getPatientDetails(pid)
             _selectedActivityType.emit(activityType)
             if (patient != null) selectPatient(patient)
         }
