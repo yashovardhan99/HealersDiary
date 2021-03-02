@@ -199,11 +199,11 @@ sealed class AnalyticsEvent(private val name: String, private val params: Bundle
      * @param why The [reason][SelectReason] why the content was selected.
      * @see Content
      */
-    class Select(content: Content, where: Screen, why: SelectReason = SelectReason.Unknown) : AnalyticsEvent(
+    class Select(content: Content, where: Screen, why: SelectReason = Unknown) : AnalyticsEvent(
             FirebaseAnalytics.Event.SELECT_CONTENT,
             content.bundle.apply {
                 putString(FirebaseAnalytics.Param.SCREEN_NAME, where.name)
-                if (why !is SelectReason.Unknown) putString("action", why.name)
+                if (why !is Unknown) putString("action", why.name)
             }
     )
 
