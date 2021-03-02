@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.datepicker.CalendarConstraints
@@ -21,6 +22,7 @@ import com.yashovardhan99.core.utils.buildHeader
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.FragmentNewPaymentBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -57,7 +59,7 @@ class NewPaymentFragment : Fragment() {
             binding.timeEdit.setText(SimpleDateFormat.getTimeInstance().format(calendar.time))
         }
         binding.header = context?.run {
-            buildHeader(Icons.Back, R.string.new_payment, Icons.Save)
+            buildHeader(Icons.Back, if (viewModel.getPayment().value != null) R.string.edit_payment else R.string.new_payment, Icons.Save)
         }
         binding.heading.icon.setOnClickListener {
             if (!findNavController().popBackStack()) activity?.finish()
@@ -71,6 +73,17 @@ class NewPaymentFragment : Fragment() {
             if (error) {
                 Snackbar.make(binding.newPayment, resources.getString(R.string.error_creating_activity), Snackbar.LENGTH_LONG)
                 viewModel.resetError()
+            }
+        }
+        lifecycleScope.launchWhenStarted {
+            viewModel.getPayment().collect { payment ->
+                if (payment != null) {
+                    val edited = BigDecimal(payment.amount).movePointLeft(2).setScale(2, RoundingMode.HALF_EVEN).toPlainString()
+                    binding.amountEdit.setText(edited)
+                    binding.notesEdit.setText(payment.notes)
+                    binding.newPayment.setText(R.string.update)
+                    binding.header = context?.run { buildHeader(Icons.Back, R.string.edit_payment, Icons.Save) }
+                }
             }
         }
         return binding.root

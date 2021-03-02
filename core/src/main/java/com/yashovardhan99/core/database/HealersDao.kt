@@ -33,6 +33,23 @@ abstract class HealersDao {
     abstract suspend fun getPatient(patientId: Long): Patient?
 
     /**
+     * Get a particular healing
+     * @param healingId The id of the healing to find
+     * @return The healing, if found. null otherwise
+     */
+    @Query("SELECT * FROM healings WHERE id=:healingId")
+    abstract suspend fun getHealing(healingId: Long): Healing?
+
+    /**
+     * Get a particular payment
+     * @param paymentId The id of the payment to find
+     * @return The payment, if found. null otherwise
+     */
+    @Query("SELECT * FROM payments WHERE id=:paymentId")
+    abstract suspend fun getPayment(paymentId: Long): Payment?
+
+
+    /**
      * Get all healings starting after a particular date
      * @param startDate The date after which we want all the healings
      * @return A flow of the list of all healings found
@@ -88,6 +105,61 @@ abstract class HealersDao {
      */
     @Update(entity = Patient::class, onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun updatePatient(patient: Patient)
+
+    /**
+     * Update a healing record. Do not use directly.
+     *
+     * Use [updateHealing] instead.
+     * @param healing The healing to update
+     */
+    @Update(entity = Healing::class, onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun internalUpdateHealing(healing: Healing)
+
+    /**
+     * Update a payment record. Do not use directly.
+     *
+     * Use [updatePayment] instead.
+     * @param healing The healing to update
+     */
+    @Update(entity = Payment::class, onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun internalUpdatePayment(payment: Payment)
+
+    /**
+     * Update a healing record.
+     *
+     * This transaction also takes care of updating the patient record.
+     * @param oldHealing The healing before the update
+     * @param newHealing The updated healing. [Healing.id] and [Healing.patientId] must be same as [oldHealing]
+     */
+    @Transaction
+    open suspend fun updateHealing(oldHealing: Healing, newHealing: Healing) {
+        val patient = getPatient(oldHealing.patientId)
+        val difference = newHealing.charge - oldHealing.charge
+        val updatedPatient = patient?.copy(due = patient.due + difference)
+        if (updatedPatient != null) {
+            updatePatient(updatedPatient)
+        }
+        internalUpdateHealing(newHealing)
+    }
+
+    /**
+     * Update a payment record.
+     *
+     * This transaction also takes care of updating the patient record.
+     * @param oldPayment The Payment before the update
+     * @param newPayment The updated payment. [Payment.id] and [Payment.patientId] must be same as [oldPayment]
+     */
+    @Transaction
+    open suspend fun updatePayment(oldPayment: Payment, newPayment: Payment) {
+        val patient = getPatient(oldPayment.patientId)
+        val difference = oldPayment.amount - newPayment.amount
+        val updatedPatient = patient?.copy(due = patient.due + difference)
+        if (updatedPatient != null) {
+            updatePatient(updatedPatient)
+        }
+        internalUpdatePayment(newPayment)
+    }
+
 
     /**
      * Add new patient.

@@ -81,6 +81,34 @@ class CreateActivityViewModel @Inject constructor(
         }
     }
 
+    private var _healingEdit = MutableStateFlow<Healing?>(null)
+    private var _paymentEdit = MutableStateFlow<Payment?>(null)
+    fun getHealing() = _healingEdit.asStateFlow()
+    fun getPayment() = _paymentEdit.asStateFlow()
+
+    fun requestEdit(pid: Long, activityId: Long, activityType: ActivityType) {
+        viewModelScope.launch {
+            selectPatient(pid, activityType)
+            when (activityType) {
+                ActivityType.HEALING -> {
+                    val healing = createRepository.getHealing(activityId)
+                    if (healing != null)
+                        setActivityCalendar(Calendar.getInstance().apply {
+                            time = healing.time
+                        })
+                    _healingEdit.value = healing
+                }
+                ActivityType.PAYMENT -> {
+                    val payment = createRepository.getPayment(activityId)
+                    if (payment != null) setActivityCalendar(Calendar.getInstance().apply {
+                        time = payment.time
+                    })
+                    _paymentEdit.value = payment
+                }
+            }
+        }
+    }
+
     fun newPatient() {
         _result.value = Request.NewPatient
     }
@@ -89,10 +117,17 @@ class CreateActivityViewModel @Inject constructor(
         try {
             _error.value = false
             val chargeInLong = if (charge.isBlank()) 0 else BigDecimal(charge).movePointRight(2).longValueExact()
-            val healing = Healing(0, _activityCalendar.value.time, chargeInLong, notes, pid)
+            val current = getHealing().value
+            val healing = if (current != null) Healing(current.id, _activityCalendar.value.time, chargeInLong, notes, pid)
+            else Healing(0, _activityCalendar.value.time, chargeInLong, notes, pid)
             viewModelScope.launch {
-                createRepository.insertNewHealing(healing)
-                Timber.d("Inserted new Healing!")
+                if (current != null) {
+                    createRepository.updateHealing(current, healing)
+                    Timber.d("Updated healing ${healing.id}")
+                } else {
+                    createRepository.insertNewHealing(healing)
+                    Timber.d("Inserted new Healing!")
+                }
                 _result.emit(Request.ViewPatient(pid))
             }
         } catch (e: NumberFormatException) {
@@ -107,11 +142,18 @@ class CreateActivityViewModel @Inject constructor(
     fun createPayment(amount: String, notes: String, pid: Long) {
         try {
             _error.value = false
+            val current = getPayment().value
             val amountInLong = if (amount.isBlank()) 0L else BigDecimal(amount).movePointRight(2).longValueExact()
-            val payment = Payment(0, _activityCalendar.value.time, amountInLong, notes, pid)
+            val payment = current?.copy(time = _activityCalendar.value.time, amount = amountInLong, notes = notes)
+                    ?: Payment(0, _activityCalendar.value.time, amountInLong, notes, pid)
             viewModelScope.launch {
-                createRepository.insertNewPayment(payment)
-                Timber.d("Inserted new Payment!")
+                if (current != null) {
+                    createRepository.updatePayment(current, payment)
+                    Timber.d("Updated payment: ${payment.id}")
+                } else {
+                    createRepository.insertNewPayment(payment)
+                    Timber.d("Inserted new Payment!")
+                }
                 _result.emit(Request.ViewPatient(pid))
             }
         } catch (e: NumberFormatException) {

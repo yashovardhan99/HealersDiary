@@ -42,8 +42,8 @@ class CreateNewActivity : AppCompatActivity() {
             is Request.NewPayment -> viewModel.selectPatient(request.patientId, ActivityType.PAYMENT)
             Request.NewPatient -> viewModel.newPatient()
             is Request.NewActivity -> viewModel.selectPatient(request.patientId)
-            is Request.UpdateHealing -> throw NotImplementedError()
-            is Request.UpdatePayment -> throw NotImplementedError()
+            is Request.UpdateHealing -> viewModel.requestEdit(request.patientId, request.healingId, ActivityType.HEALING)
+            is Request.UpdatePayment -> viewModel.requestEdit(request.patientId, request.paymentId, ActivityType.PAYMENT)
             Request.ViewDashboard -> finish()
             else -> {
                 Timber.w("Unknown request = $request")

@@ -54,8 +54,7 @@ class PaymentListFragment : Fragment() {
     private fun editPayment(payment: PaymentParent.Payment) {
         AnalyticsEvent.Select(AnalyticsEvent.Content.Payment(payment.patientId), AnalyticsEvent.Screen.PaymentLog,
                 AnalyticsEvent.SelectReason.Edit).trackEvent()
-        // TODO: 31/1/21 Edit Payment
-        Toast.makeText(context, R.string.not_yet_implemented, Toast.LENGTH_SHORT).show()
+        dashboardViewModel.editPayment(payment)
     }
 
     private fun deletePayment(payment: PaymentParent.Payment) {

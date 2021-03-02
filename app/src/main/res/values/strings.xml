@@ -114,5 +114,7 @@
     <string name="confirm">Confirm</string>
     <string name="data_cleared">Data Cleared</string>
   <string name="undo">Undo</string>
+    <string name="edit_healing">Edit Healing</string>
+  <string name="edit_payment">Edit Payment</string>
 </resources>
 

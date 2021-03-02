@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -14,13 +13,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
-import com.yashovardhan99.healersdiary.R
-import com.yashovardhan99.healersdiary.dashboard.DashboardViewModel
-import com.yashovardhan99.healersdiary.databinding.FragmentHealingListBinding
 import com.yashovardhan99.core.analytics.AnalyticsEvent
 import com.yashovardhan99.core.utils.Header.Companion.buildHeader
 import com.yashovardhan99.core.utils.HealingParent
 import com.yashovardhan99.core.utils.Icons
+import com.yashovardhan99.healersdiary.R
+import com.yashovardhan99.healersdiary.dashboard.DashboardViewModel
+import com.yashovardhan99.healersdiary.databinding.FragmentHealingListBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
@@ -53,8 +52,7 @@ class HealingListFragment : Fragment() {
     private fun editHealing(healing: HealingParent.Healing) {
         AnalyticsEvent.Select(AnalyticsEvent.Content.Healing(healing.patientId), AnalyticsEvent.Screen.HealingLog,
                 AnalyticsEvent.SelectReason.Edit).trackEvent()
-        // TODO: 1/2/21 Edit healing
-        Toast.makeText(context, R.string.not_yet_implemented, Toast.LENGTH_SHORT).show()
+        dashboardViewModel.editHealing(healing)
     }
 
     private fun deleteHealing(healing: HealingParent.Healing) {

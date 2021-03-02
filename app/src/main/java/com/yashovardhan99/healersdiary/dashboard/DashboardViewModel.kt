@@ -1,13 +1,16 @@
 package com.yashovardhan99.healersdiary.dashboard
 
 import androidx.lifecycle.ViewModel
-import com.yashovardhan99.core.setToStartOfDay
-import com.yashovardhan99.core.setToStartOfLastMonth
-import com.yashovardhan99.core.setToStartOfMonth
 import com.yashovardhan99.core.database.Healing
 import com.yashovardhan99.core.database.Patient
 import com.yashovardhan99.core.database.Payment
-import com.yashovardhan99.core.utils.*
+import com.yashovardhan99.core.setToStartOfDay
+import com.yashovardhan99.core.setToStartOfLastMonth
+import com.yashovardhan99.core.setToStartOfMonth
+import com.yashovardhan99.core.utils.ActivityParent
+import com.yashovardhan99.core.utils.HealingParent
+import com.yashovardhan99.core.utils.PaymentParent
+import com.yashovardhan99.core.utils.Request
 import com.yashovardhan99.core.utils.Stat.Companion.earnedLastMonth
 import com.yashovardhan99.core.utils.Stat.Companion.earnedThisMonth
 import com.yashovardhan99.core.utils.Stat.Companion.healingsThisMonth
@@ -136,6 +139,13 @@ class DashboardViewModel @Inject constructor(repository: DashboardRepository) : 
     }
 
     fun getPatientId(): Long = currentPatientId
+    fun editHealing(healing: HealingParent.Healing) {
+        _requests.value = Request.UpdateHealing(healing.patientId, healing.id)
+    }
+
+    fun editPayment(payment: PaymentParent.Payment) {
+        _requests.value = Request.UpdatePayment(payment.patientId, payment.id)
+    }
 
     init {
         Timber.d("DATES: Today = ${today.time} This month = ${thisMonth.time} Last month = ${lastMonth.time}")
