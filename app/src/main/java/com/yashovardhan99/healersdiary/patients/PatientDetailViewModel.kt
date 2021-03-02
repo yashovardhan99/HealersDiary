@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.insertSeparators
 import androidx.paging.map
+import com.yashovardhan99.core.analytics.AnalyticsEvent
 import com.yashovardhan99.core.database.*
 import com.yashovardhan99.core.setToStartOfDay
 import com.yashovardhan99.core.setToStartOfLastMonth
@@ -115,6 +116,7 @@ class PatientDetailViewModel @Inject constructor(
         savedStateHandle["deleted_healing"] = healing.toBundle()
         viewModelScope.launch {
             repository.deleteHealing(healing)
+            AnalyticsEvent.Content.Healing(healing.patientId).trackDelete()
         }
     }
 
@@ -123,6 +125,7 @@ class PatientDetailViewModel @Inject constructor(
                 ?: return false
         viewModelScope.launch {
             createRepository.insertNewHealing(healing)
+            AnalyticsEvent.Content.Healing(healing.patientId).trackUndoDelete()
         }
         return true
     }
@@ -131,6 +134,7 @@ class PatientDetailViewModel @Inject constructor(
         savedStateHandle["deleted_payment"] = payment.toBundle()
         viewModelScope.launch {
             repository.deletePayment(payment)
+            AnalyticsEvent.Content.Payment(payment.patientId).trackDelete()
         }
     }
 
@@ -139,6 +143,7 @@ class PatientDetailViewModel @Inject constructor(
                 ?: return false
         viewModelScope.launch {
             createRepository.insertNewPayment(payment)
+            AnalyticsEvent.Content.Payment(payment.patientId).trackUndoDelete()
         }
         return true
     }

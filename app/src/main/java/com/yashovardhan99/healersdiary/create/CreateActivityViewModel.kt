@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.yashovardhan99.core.analytics.AnalyticsEvent
 import com.yashovardhan99.core.database.*
 import com.yashovardhan99.core.setToStartOfDay
 import com.yashovardhan99.core.utils.Request
@@ -124,9 +125,11 @@ class CreateActivityViewModel @Inject constructor(
                 if (current != null) {
                     createRepository.updateHealing(current, healing)
                     Timber.d("Updated healing ${healing.id}")
+                    AnalyticsEvent.Content.Healing(healing.patientId).trackEdit()
                 } else {
                     createRepository.insertNewHealing(healing)
                     Timber.d("Inserted new Healing!")
+                    AnalyticsEvent.Content.Healing(healing.patientId).trackCreate()
                 }
                 _result.emit(Request.ViewPatient(pid))
             }
@@ -150,9 +153,11 @@ class CreateActivityViewModel @Inject constructor(
                 if (current != null) {
                     createRepository.updatePayment(current, payment)
                     Timber.d("Updated payment: ${payment.id}")
+                    AnalyticsEvent.Content.Payment(payment.patientId).trackEdit()
                 } else {
                     createRepository.insertNewPayment(payment)
                     Timber.d("Inserted new Payment!")
+                    AnalyticsEvent.Content.Payment(payment.patientId).trackCreate()
                 }
                 _result.emit(Request.ViewPatient(pid))
             }

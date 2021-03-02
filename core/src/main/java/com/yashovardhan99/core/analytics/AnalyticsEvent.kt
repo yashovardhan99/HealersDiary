@@ -118,6 +118,11 @@ sealed class AnalyticsEvent(private val name: String, private val params: Bundle
         fun trackDelete() = InternalBuild("delete", bundle).trackEvent()
 
         /**
+         * Log an undo delete event
+         */
+        fun trackUndoDelete() = InternalBuild("undo_delete", bundle).trackEvent()
+
+        /**
          * A healing content type.
          * @param patientId The id of the patient related to this healing.
          */
