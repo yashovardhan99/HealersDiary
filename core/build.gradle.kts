@@ -25,11 +25,13 @@ android {
                 arguments["room.schemaLocation"] = "$projectDir/schemas"
             }
         }
+
+        testBuildType = System.getProperty("testBuildType", "debug")
     }
 
     buildTypes {
         getByName("release") {
-            minifyEnabled(false)
+            minifyEnabled(true)
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
