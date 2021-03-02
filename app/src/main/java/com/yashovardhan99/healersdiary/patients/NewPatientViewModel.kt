@@ -3,9 +3,10 @@ package com.yashovardhan99.healersdiary.patients
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yashovardhan99.healersdiary.create.CreateRepository
+import com.yashovardhan99.core.analytics.AnalyticsEvent
 import com.yashovardhan99.core.database.Patient
 import com.yashovardhan99.core.utils.Request
+import com.yashovardhan99.healersdiary.create.CreateRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -78,6 +79,7 @@ class NewPatientViewModel @Inject constructor(private val repository: CreateRepo
         viewModelScope.launch {
             repository.updatePatient(updatedPatient)
             Timber.d("Patient updated; pid = ${patient.id}")
+            AnalyticsEvent.Content.Patient(patient.id).trackEdit()
             _result.emit(Result.Success(patient.id))
         }
     }
@@ -90,6 +92,7 @@ class NewPatientViewModel @Inject constructor(private val repository: CreateRepo
         viewModelScope.launch {
             val pid = repository.insertNewPatient(patient)
             Timber.d("New patient inserted; pid = $pid")
+            AnalyticsEvent.Content.Patient(pid).trackCreate()
             _result.emit(Result.Success(pid))
         }
     }
@@ -103,6 +106,7 @@ class NewPatientViewModel @Inject constructor(private val repository: CreateRepo
         val patient = _patient.value ?: return
         viewModelScope.launch {
             repository.deletePatient(patient)
+            AnalyticsEvent.Content.Patient(patient.id).trackDelete()
             _result.emit(Result.Deleted)
         }
     }
