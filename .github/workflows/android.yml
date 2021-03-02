@@ -16,7 +16,7 @@ jobs:
 
   build:
     needs: validation
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         name: Checkout
@@ -50,7 +50,7 @@ jobs:
 
   unit-test:
     needs: validation
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         name: Checkout
@@ -96,6 +96,10 @@ jobs:
       matrix:
         api_level: [21, 24, 27, 30]
         target: [default, google_apis]
+        exclude:
+          # Excluding as 30-default is not supported by emulator yet
+          - api_level: 30
+            target: default
 
     steps:
       - uses: actions/checkout@v2
@@ -125,15 +129,12 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: ${{ runner.os }}-gradle-
 
-      - name: Unit tests
-        run: ./gradlew testDebug
-
       - name: Instrumentation tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api_level }}
           target: ${{ matrix.target }}
-          script: ./gradlew core:connectedCheck app:connectedCheck
+          script: ./gradlew core:connectedDebugAndroidTest app:connectedDebugAndroidTest
 
       - name: Output test results
         uses: actions/upload-artifact@v2
