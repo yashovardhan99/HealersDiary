@@ -17,6 +17,7 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
+import com.yashovardhan99.core.analytics.AnalyticsEvent
 import com.yashovardhan99.core.utils.Icons
 import com.yashovardhan99.core.utils.buildHeader
 import com.yashovardhan99.healersdiary.R
@@ -87,6 +88,11 @@ class NewPaymentFragment : Fragment() {
             }
         }
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        AnalyticsEvent.Screen.CreatePayment.trackView()
     }
 
     private fun save(binding: FragmentNewPaymentBinding) {

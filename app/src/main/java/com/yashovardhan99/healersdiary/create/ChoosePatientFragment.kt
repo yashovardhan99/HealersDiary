@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.yashovardhan99.core.analytics.AnalyticsEvent
 import com.yashovardhan99.core.database.Patient
 import com.yashovardhan99.core.utils.Icons
 import com.yashovardhan99.core.utils.buildHeader
@@ -51,6 +52,11 @@ class ChoosePatientFragment : Fragment() {
             viewModel.newPatient()
         }
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        AnalyticsEvent.Screen.CreateChoosePatient.trackView()
     }
 
     private fun navigateToChooseActivity(patient: Patient, popUpFlag: Boolean) {

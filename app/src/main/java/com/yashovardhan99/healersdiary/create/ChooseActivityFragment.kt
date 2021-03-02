@@ -10,6 +10,7 @@ import androidx.lifecycle.asLiveData
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.yashovardhan99.core.analytics.AnalyticsEvent
 import com.yashovardhan99.core.database.ActivityType
 import com.yashovardhan99.core.utils.Header.Companion.buildHeader
 import com.yashovardhan99.core.utils.Icons
@@ -26,7 +27,7 @@ class ChooseActivityFragment : Fragment() {
         val binding = FragmentChooseActivityBinding.inflate(inflater, container, false)
         binding.header = buildHeader(Icons.Back, args.patientName)
         binding.heading.icon.setOnClickListener {
-            if(!findNavController().popBackStack()) activity?.finish()
+            if (!findNavController().popBackStack()) activity?.finish()
         }
         binding.healing.setOnClickListener { newHealing(false) }
         binding.payment.setOnClickListener { newPayment(false) }
@@ -40,6 +41,11 @@ class ChooseActivityFragment : Fragment() {
             }
         }
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        AnalyticsEvent.Screen.CreateChooseActivity.trackView()
     }
 
     private fun newPayment(popUpFlag: Boolean) {

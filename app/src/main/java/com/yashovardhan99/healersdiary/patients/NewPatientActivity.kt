@@ -13,12 +13,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.asLiveData
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
-import com.yashovardhan99.healersdiary.R
-import com.yashovardhan99.healersdiary.create.CreateNewActivity
-import com.yashovardhan99.healersdiary.databinding.ActivityNewPatientBinding
+import com.yashovardhan99.core.analytics.AnalyticsEvent
 import com.yashovardhan99.core.utils.Icons
 import com.yashovardhan99.core.utils.Request
 import com.yashovardhan99.core.utils.buildHeader
+import com.yashovardhan99.healersdiary.R
+import com.yashovardhan99.healersdiary.create.CreateNewActivity
+import com.yashovardhan99.healersdiary.databinding.ActivityNewPatientBinding
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.math.BigDecimal
@@ -137,6 +138,11 @@ class NewPatientActivity : AppCompatActivity() {
         }
         // headingIcon -> close button
         binding.heading.icon.setOnClickListener { finish() }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        AnalyticsEvent.Screen.CreatePatient.trackView()
     }
 
     /**

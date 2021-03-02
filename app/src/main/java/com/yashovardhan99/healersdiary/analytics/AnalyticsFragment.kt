@@ -7,11 +7,12 @@ import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.yashovardhan99.core.analytics.AnalyticsEvent
+import com.yashovardhan99.core.utils.EmptyState
+import com.yashovardhan99.core.utils.buildHeader
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.dashboard.DashboardViewModel
 import com.yashovardhan99.healersdiary.databinding.FragmentAnalyticsBinding
-import com.yashovardhan99.core.utils.EmptyState
-import com.yashovardhan99.core.utils.buildHeader
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -26,5 +27,10 @@ class AnalyticsFragment : Fragment() {
         binding.emptyStateLayout.noDataImage.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.analytics_illustration, context?.theme))
         viewModel.resetPatientId()
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        AnalyticsEvent.Screen.Analytics.trackView()
     }
 }

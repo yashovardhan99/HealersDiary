@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.yashovardhan99.core.analytics.AnalyticsEvent
 import com.yashovardhan99.core.database.OnboardingState
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.FragmentOnboardingBinding
@@ -68,6 +69,11 @@ class OnboardingFragment : Fragment() {
         }
         binding.importOnline.setOnClickListener { importOnline() }
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        AnalyticsEvent.Screen.Onboarding.trackView()
     }
 
     /**
