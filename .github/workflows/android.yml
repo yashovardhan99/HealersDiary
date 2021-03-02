@@ -86,7 +86,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Unit test results
-          path: **/build/reports/tests/testDebugUnitTest/
+          path: "**/build/reports/tests/testDebugUnitTest/"
 
   instrumented-test:
     needs: validation
@@ -139,4 +139,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Instrumented test results (${{ matrix.api_level }}-${{ matrix.target }})
-          path: **/build/reports/androidTests/connected/flavors/debugAndroidTest
+          path: "**/build/reports/androidTests/connected/flavors/debugAndroidTest"
