@@ -94,7 +94,7 @@ jobs:
     timeout-minutes: 60
     strategy:
       matrix:
-        api_level: [21, 24, 27, 30]
+        api_level: [21, 27, 30]
         target: [default, google_apis]
         exclude:
           # Excluding as 30-default is not supported by emulator yet
