@@ -5,10 +5,23 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [2.0.0-alpha06] - 2021-03-06
+### Added
+- Edit implementation for healings and payments
+- Core module for common database, utils and more
+- Analytics event tracking
+- [META] Github actions workflow for regular builds and automated releases
+- Unit tests for CalendarUtils
+- Some database integration tests
+
+### Changed
+- Datastore refactor
+
 ### Fixed
 - Fixed navigation graph and popup behaviour.
 
-## [2.0.0-alpha05] - 2020-02-28
+## [2.0.0-alpha05] - 2021-02-28
 ### Added
 - Added Undo action for Snackbar on deleting Healing and Payment
 - A new material design for Progressbar, TimePicker, DatePicker
@@ -19,17 +32,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - Fixed a bug where deleting multiple healings/payments did not correctly update the due amount.
 
-## [2.0.0-alpha04] - 2020-02-21
+## [2.0.0-alpha04] - 2021-02-21
 ### Changed
 - Changed splash screen behaviour
 - Updated dependencies
 - Added separators for Healings and Payment list
 
-## [2.0.0-alpha03] - 2020-02-16
+## [2.0.0-alpha03] - 2021-02-16
 ### Added
 - Import from v1.0 and Clear all options in Settings
 
-## [2.0.0-alpha02] - 2020-02-08
+## [2.0.0-alpha02] - 2021-02-08
 ### Added
 - Individual healings can now be customized to include a different price
 - Migration option from v1.0
@@ -156,7 +169,8 @@ See Pull Request #5
 - Add new healing record for patient
 - View healing logs
 
-[Unreleased]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-alpha05...HEAD
+[Unreleased]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-alpha06...HEAD
+[2.0.0-alpha06]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-alpha05...v2.0.0-alpha06
 [2.0.0-alpha05]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-alpha04...v2.0.0-alpha05
 [2.0.0-alpha04]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-alpha03...v2.0.0-alpha04
 [2.0.0-alpha03]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-alpha02...v2.0.0-alpha03
