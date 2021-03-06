@@ -9,7 +9,7 @@ An android app for professional healers to keep track of their patients and help
 
 To track current status, [check out this GitHub project](https://github.com/yashovardhan99/HealersDiary/projects/2).
 
-For the currently released version of the app, check out the [stable branch](https://github.com/yashovardhan99/HealersDiary/tree/stable)
+For the currently released version of the app, check out the [production branch](https://github.com/yashovardhan99/HealersDiary/tree/releases/production)
 
 This new version uses the latest Jetpack libraries.
 
@@ -39,10 +39,10 @@ This new version uses the latest Jetpack libraries.
 * Dynamic module with WorkManager to connect and import data from Firestore.
 
 ## V2.0 timeline
-* Private Alpha - January 2021. *Invites sent*
-* Public Beta - *tentative* ~~April~~ *March* 2021
-* Public Stable - *tentative* ~~December~~ *July* 2021,
-* Firestore access and all user data on Firebase will be deleted ~~within a few months of stable release~~ starting 2022 in a phased manner.
+* Private Alpha - **Completed**
+* Public Beta - *March* 2021
+* Public Release - *tentative May* 2021,
+* Firestore access and all user data on Firebase will be deleted starting 2022 in a phased manner.
 
 ## Contributing and Support
 Read the [Contributing guide](CONTRIBUTING.md) to learn how you can help this project.

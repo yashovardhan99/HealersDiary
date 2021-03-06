@@ -5,7 +5,7 @@ This update is intended for changes introduced in version 2.0.0 of the app.
 This summary is just for your information. The actual policy is stated below
 
 # Privacy Policy
-This policy is applicable to all users of the app starting v2.0.0. If you are using an older version, please check [This page](https://github.com/yashovardhan99/HealersDiary/blob/stable/PRIVACY%20POLICY.md)
+This policy is applicable to all users of the app starting v2.0.0. If you are using an older version, please check [This page](https://github.com/yashovardhan99/HealersDiary/blob/releases/production/PRIVACY%20POLICY.md)
 
 ## Introduction
 Yashovardhan Dhanania ("I", "Me") along with any other service providers ("We") provides this Privacy policy to explain to you ("User"), user of the app Healers Diary ("app"), what information I may collect from you and how I will use it.
