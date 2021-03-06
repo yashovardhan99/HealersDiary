@@ -171,12 +171,25 @@ jobs:
       - name: Provide Firebase config to online module
         run: echo $FIREBASE_CONFIG > ./online/google-services.json
 
+      - name: Build App bundle with Gradle
+        run: ./gradlew app:bundleRelease
+
       - name: Build Universal APK with Gradle
         run: ./gradlew packageReleaseUniversalApk
 
-      - name: Sign Android release
+      - name: Sign Android release - App bundle
         uses: r0adkll/sign-android-release@v1
-        id: sign_app
+        id: sign_app_bundle
+        with:
+          releaseDirectory: app/build/outputs/bundle/release
+          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+          alias: ${{ secrets.ALIAS }}
+          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Sign Android release - APK
+        uses: r0adkll/sign-android-release@v1
+        id: sign_apk
         with:
           releaseDirectory: app/build/outputs/universal_apk/release
           signingKeyBase64: ${{ secrets.SIGNING_KEY }}
@@ -190,18 +203,36 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload Release APK to Github Releases
-        id: upload-release-asset
+      - name: Upload Release App bundle to Github Releases
+        id: upload-release-bundle
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ${{ steps.sign_app.outputs.signedReleaseFile }}
+          asset_path: ${{ steps.sign_app_bundle.outputs.signedReleaseFile }}
+          asset_name: Healers-Diary-${{ steps.get_release.outputs.tag_name }}.aab
+          asset_content_type: application/octet-stream
+
+      - uses: actions/upload-artifact@v2
+        name: Upload Release App bundle to this action
+        with:
+          name: Healers-Diary-${{ steps.get_release.outputs.tag_name }}.aab
+          path: ${{steps.sign_app_bundle.outputs.signedReleaseFile}}
+
+      - name: Upload Release APK to Github Releases
+        id: upload-release-apk
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: ${{ steps.sign_apk.outputs.signedReleaseFile }}
           asset_name: Healers-Diary-${{ steps.get_release.outputs.tag_name }}.apk
           asset_content_type: application/vnd.android.package-archive
+
       - uses: actions/upload-artifact@v2
         name: Upload Release APK to this action
         with:
           name: Healers-Diary-${{ steps.get_release.outputs.tag_name }}.apk
-          path: ${{steps.sign_app.outputs.signedReleaseFile}}
+          path: ${{steps.sign_apk.outputs.signedReleaseFile}}
