@@ -1,14 +1,16 @@
 package com.yashovardhan99.healersdiary.dashboard
 
+import com.yashovardhan99.core.database.Activity
 import com.yashovardhan99.core.database.HealersDao
 import com.yashovardhan99.core.database.Healing
 import com.yashovardhan99.core.database.Patient
 import com.yashovardhan99.core.database.Payment
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import java.util.*
+import java.time.LocalDate
+import java.util.Date
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 /**
  * Database repository for the database.
@@ -49,5 +51,14 @@ class DashboardRepository @Inject constructor(private val healersDao: HealersDao
      */
     suspend fun getPatient(pid: Long): Patient? {
         return healersDao.getPatient(pid)
+    }
+
+    /**
+     * Get all activities done after startDate
+     * @param startDate The date after which all activities are needed
+     * @return flow of a list of all activities starting [startDate]
+     */
+    fun getActivitiesStarting(startDate: LocalDate): Flow<List<Activity>> {
+        return healersDao.getActivities(startDate.atStartOfDay())
     }
 }
