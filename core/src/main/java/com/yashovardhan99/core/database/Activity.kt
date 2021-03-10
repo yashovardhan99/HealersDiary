@@ -2,6 +2,8 @@ package com.yashovardhan99.core.database
 
 import androidx.room.ColumnInfo
 import androidx.room.DatabaseView
+import com.yashovardhan99.core.toDate
+import com.yashovardhan99.core.utils.ActivityParent
 import java.time.LocalDateTime
 
 @DatabaseView(
@@ -23,7 +25,20 @@ data class Activity(
     @ColumnInfo(name = "notes") val notesOrName: String,
     @ColumnInfo(name = "patient_id") val patientId: Long,
     val type: ActivityType
-)
+) {
+    fun toUiActivity(patientList: List<Patient>): ActivityParent.Activity =
+        ActivityParent.Activity(
+            id = id,
+            time = time.toDate(),
+            type = when (type) {
+                ActivityType.HEALING -> ActivityParent.Activity.Type.HEALING
+                ActivityType.PAYMENT -> ActivityParent.Activity.Type.PAYMENT
+                ActivityType.PATIENT -> ActivityParent.Activity.Type.PATIENT
+            },
+            amount = amount,
+            patient = patientList.find { it.id == patientId } ?: Patient.MissingPatient
+        )
+}
 
 enum class ActivityType(val type: String) {
     HEALING("healing"),

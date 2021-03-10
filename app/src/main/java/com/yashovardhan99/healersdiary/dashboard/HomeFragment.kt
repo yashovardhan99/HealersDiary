@@ -17,9 +17,14 @@ import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialFadeThrough
 import com.yashovardhan99.core.analytics.AnalyticsEvent
 import com.yashovardhan99.core.transitionDurationLarge
+import com.yashovardhan99.core.utils.ActivityParent
+import com.yashovardhan99.core.utils.EmptyState
+import com.yashovardhan99.core.utils.EmptyStateAdapter
+import com.yashovardhan99.core.utils.HeaderAdapter
+import com.yashovardhan99.core.utils.StatAdapter
+import com.yashovardhan99.core.utils.buildHeader
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.FragmentHomeBinding
-import com.yashovardhan99.core.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
@@ -32,7 +37,11 @@ import timber.log.Timber
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
     private val viewModel: DashboardViewModel by activityViewModels()
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         val binding = FragmentHomeBinding.inflate(inflater, container, false)
         // build and attach header
         binding.header = context?.run {
@@ -44,19 +53,30 @@ class HomeFragment : Fragment() {
             findNavController().navigate(R.id.settings)
         }
         // Creating different adapters
-        val statAdapter = StatAdapter().apply { stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY }
+        val statAdapter = StatAdapter().apply {
+            stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+        }
         val headerAdapter = HeaderAdapter(false)
-        val activityAdapter = ActivityAdapter(::goToPatient).apply { stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY }
+        val activityAdapter = ActivityAdapter(::goToPatient).apply {
+            stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+        }
         val emptyStateAdapter = EmptyStateAdapter(false, EmptyState.DASHBOARD)
         // concatting all adapters
-        binding.recycler.adapter = ConcatAdapter(statAdapter, headerAdapter, activityAdapter, emptyStateAdapter)
+        binding.recycler.adapter =
+            ConcatAdapter(statAdapter, headerAdapter, activityAdapter, emptyStateAdapter)
         lifecycleScope.launchWhenStarted {
             // collect latest stats and activities
-            viewModel.dashboardFlow.collectLatest { (stats, activities) ->
-                Timber.d("$activities")
+            viewModel.statsFlow.collectLatest { stats ->
+                Timber.d("$stats")
                 statAdapter.submitList(stats)
-                headerAdapter.isVisible = activities != null
-                emptyStateAdapter.isVisible = activities == null
+            }
+        }
+        lifecycleScope.launchWhenStarted {
+            // collect latest stats and activities
+            viewModel.activitiesFlow.collectLatest { activities ->
+                Timber.d("$activities")
+                headerAdapter.isVisible = activities.isNotEmpty()
+                emptyStateAdapter.isVisible = activities.isNullOrEmpty()
                 headerAdapter.notifyDataSetChanged()
                 emptyStateAdapter.notifyDataSetChanged()
                 activityAdapter.submitList(activities)
@@ -95,10 +115,17 @@ class HomeFragment : Fragment() {
      */
     private fun goToPatient(activity: ActivityParent, view: View) {
         if (activity !is ActivityParent.Activity) return
-        AnalyticsEvent.Select(when (activity.type) {
-            ActivityParent.Activity.Type.HEALING -> AnalyticsEvent.Content.Healing(activity.patient.id)
-            ActivityParent.Activity.Type.PAYMENT -> AnalyticsEvent.Content.Payment(activity.patient.id)
-        }, AnalyticsEvent.Screen.Dashboard, AnalyticsEvent.SelectReason.Open).trackEvent()
+        AnalyticsEvent.Select(
+            when (activity.type) {
+                ActivityParent.Activity.Type.HEALING ->
+                    AnalyticsEvent.Content.Healing(activity.patient.id)
+                ActivityParent.Activity.Type.PAYMENT ->
+                    AnalyticsEvent.Content.Payment(activity.patient.id)
+                ActivityParent.Activity.Type.PATIENT ->
+                    AnalyticsEvent.Content.Patient(activity.patient.id)
+            },
+            AnalyticsEvent.Screen.Dashboard, AnalyticsEvent.SelectReason.Open
+        ).trackEvent()
         exitTransition = MaterialElevationScale(true).apply {
             duration = transitionDurationLarge
         }
@@ -109,7 +136,7 @@ class HomeFragment : Fragment() {
         val extras = FragmentNavigatorExtras(view to patientDetailTransName)
         viewModel.setPatientId(activity.patient.id)
         val direction = HomeFragmentDirections
-                .actionHomeToPatientDetailFragment(activity.patient.id)
+            .actionHomeToPatientDetailFragment(activity.patient.id)
         findNavController().navigate(direction, extras)
     }
 

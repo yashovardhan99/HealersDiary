@@ -16,14 +16,20 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.transition.MaterialContainerTransform
 import com.yashovardhan99.core.analytics.AnalyticsEvent
+import com.yashovardhan99.core.database.ActivityType
 import com.yashovardhan99.core.getColorFromAttr
 import com.yashovardhan99.core.transitionDurationLarge
+import com.yashovardhan99.core.utils.ActivityParent
+import com.yashovardhan99.core.utils.EmptyState
+import com.yashovardhan99.core.utils.EmptyStateAdapter
+import com.yashovardhan99.core.utils.Header.Companion.buildHeader
+import com.yashovardhan99.core.utils.HeaderAdapter
+import com.yashovardhan99.core.utils.Icons
+import com.yashovardhan99.core.utils.StatAdapter
+import com.yashovardhan99.core.utils.buildHeader
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.dashboard.DashboardViewModel
-import com.yashovardhan99.core.database.ActivityType
 import com.yashovardhan99.healersdiary.databinding.FragmentPatientDetailBinding
-import com.yashovardhan99.core.utils.*
-import com.yashovardhan99.core.utils.Header.Companion.buildHeader
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
@@ -44,19 +50,27 @@ class PatientDetailFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         val binding = FragmentPatientDetailBinding.inflate(inflater, container, false)
         binding.header = context?.run {
-            buildHeader(Icons.Close, viewModel.patient.value?.name ?: getString(R.string.loading),
-                    Icons.CustomButton(R.drawable.edit, R.string.edit_patient))
+            buildHeader(
+                Icons.Close, viewModel.patient.value?.name ?: getString(R.string.loading),
+                Icons.CustomButton(R.drawable.edit, R.string.edit_patient)
+            )
         }
         binding.toolbar.icon.setOnClickListener { findNavController().navigateUp() }
         viewModel.setPatientId(args.patientId)
         dashboardViewModel.setPatientId(args.patientId)
         viewModel.patient.asLiveData().observe(viewLifecycleOwner) { patient ->
             Timber.d("Patient = $patient")
-            binding.header = buildHeader(Icons.Close, patient?.name ?: "",
-                    Icons.CustomButton(R.drawable.edit, R.string.edit_patient))
+            binding.header = buildHeader(
+                Icons.Close, patient?.name ?: "",
+                Icons.CustomButton(R.drawable.edit, R.string.edit_patient)
+            )
         }
         val statAdapter = StatAdapter { stat ->
             when (stat.type) {
@@ -70,18 +84,23 @@ class PatientDetailFragment : Fragment() {
             when (activity.type) {
                 ActivityParent.Activity.Type.HEALING -> goToHealings()
                 ActivityParent.Activity.Type.PAYMENT -> goToPayments()
+                ActivityParent.Activity.Type.PATIENT -> Unit
             }
         }
         val emptyStatAdapter = EmptyStateAdapter(false, EmptyState.DASHBOARD)
-        binding.recycler.adapter = ConcatAdapter(statAdapter, headerAdapter, activityAdapter, emptyStatAdapter)
-        binding.recycler.layoutManager = GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false).apply {
-            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                override fun getSpanSize(position: Int) = if (position <= 5) 1 else 2
+        binding.recycler.adapter =
+            ConcatAdapter(statAdapter, headerAdapter, activityAdapter, emptyStatAdapter)
+        binding.recycler.layoutManager =
+            GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false).apply {
+                spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                    override fun getSpanSize(position: Int) = if (position <= 5) 1 else 2
+                }
             }
-        }
         binding.toolbar.optionsIcon.setOnClickListener {
-            AnalyticsEvent.Select(AnalyticsEvent.Content.Patient(args.patientId), AnalyticsEvent.Screen.PatientDetail,
-                    AnalyticsEvent.SelectReason.Edit).trackEvent()
+            AnalyticsEvent.Select(
+                AnalyticsEvent.Content.Patient(args.patientId), AnalyticsEvent.Screen.PatientDetail,
+                AnalyticsEvent.SelectReason.Edit
+            ).trackEvent()
             Timber.d("Request edit")
             dashboardViewModel.editPatient(args.patientId)
         }
@@ -101,18 +120,22 @@ class PatientDetailFragment : Fragment() {
     }
 
     private fun goToHealings() {
-        AnalyticsEvent.Select(AnalyticsEvent.Content.Healing(args.patientId), AnalyticsEvent.Screen.PatientDetail,
-                AnalyticsEvent.SelectReason.Open).trackEvent()
+        AnalyticsEvent.Select(
+            AnalyticsEvent.Content.Healing(args.patientId), AnalyticsEvent.Screen.PatientDetail,
+            AnalyticsEvent.SelectReason.Open
+        ).trackEvent()
         val action = PatientDetailFragmentDirections
-                .actionPatientDetailFragmentToHealingListFragment(args.patientId)
+            .actionPatientDetailFragmentToHealingListFragment(args.patientId)
         findNavController().navigate(action)
     }
 
     private fun goToPayments() {
-        AnalyticsEvent.Select(AnalyticsEvent.Content.Payment(args.patientId), AnalyticsEvent.Screen.PatientDetail,
-                AnalyticsEvent.SelectReason.Open).trackEvent()
+        AnalyticsEvent.Select(
+            AnalyticsEvent.Content.Payment(args.patientId), AnalyticsEvent.Screen.PatientDetail,
+            AnalyticsEvent.SelectReason.Open
+        ).trackEvent()
         val action = PatientDetailFragmentDirections
-                .actionPatientDetailFragmentToPaymentListFragment(args.patientId)
+            .actionPatientDetailFragmentToPaymentListFragment(args.patientId)
         findNavController().navigate(action)
     }
 
