@@ -1,11 +1,18 @@
 package com.yashovardhan99.core.database
 
 import androidx.paging.PagingSource
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Update
 import com.yashovardhan99.core.DangerousDatabase
 import com.yashovardhan99.core.InternalDatabase
+import java.time.LocalDateTime
+import java.util.Date
 import kotlinx.coroutines.flow.Flow
-import java.util.*
 
 /**
  * Abstract dao implemented by the database.
@@ -47,7 +54,6 @@ abstract class HealersDao {
      */
     @Query("SELECT * FROM payments WHERE id=:paymentId")
     abstract suspend fun getPayment(paymentId: Long): Payment?
-
 
     /**
      * Get all healings starting after a particular date
@@ -160,7 +166,6 @@ abstract class HealersDao {
         internalUpdatePayment(newPayment)
     }
 
-
     /**
      * Add new patient.
      * @param patient The patient to be added
@@ -186,9 +191,13 @@ abstract class HealersDao {
     @Transaction
     open suspend fun newHealing(healing: Healing): Long {
         val patient = getPatient(healing.patientId)
-                ?: throw IllegalArgumentException("Invalid patient id")
-        updatePatient(patient.copy(due = patient.due + healing.charge,
-                lastModified = maxOf(patient.lastModified, healing.time)))
+            ?: throw IllegalArgumentException("Invalid patient id")
+        updatePatient(
+            patient.copy(
+                due = patient.due + healing.charge,
+                lastModified = maxOf(patient.lastModified, healing.time)
+            )
+        )
         return insertHealing(healing)
     }
 
@@ -200,9 +209,13 @@ abstract class HealersDao {
     @Transaction
     open suspend fun newPayment(payment: Payment): Long {
         val patient = getPatient(payment.patientId)
-                ?: throw IllegalArgumentException("Invalid patient id")
-        updatePatient(patient.copy(due = patient.due - payment.amount,
-                lastModified = maxOf(patient.lastModified, payment.time)))
+            ?: throw IllegalArgumentException("Invalid patient id")
+        updatePatient(
+            patient.copy(
+                due = patient.due - payment.amount,
+                lastModified = maxOf(patient.lastModified, payment.time)
+            )
+        )
         return insertPayment(payment)
     }
 
@@ -292,6 +305,14 @@ abstract class HealersDao {
      */
     @Query("SELECT * FROM activity  WHERE patient_id=:patientId")
     abstract fun getActivities(patientId: Long): PagingSource<Int, Activity>
+
+    /**
+     * Get all activities from a specific date
+     * @param startDate The date after which we want all activities
+     * @return The queried activities sorted by time
+     */
+    @Query("SELECT * FROM activity  WHERE time>=:startDate")
+    abstract fun getActivities(startDate: LocalDateTime): Flow<List<Activity>>
 
     /**
      * Delete all healings for a particular patient. Should not be used directly
