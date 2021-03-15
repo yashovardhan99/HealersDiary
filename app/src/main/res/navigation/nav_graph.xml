@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/home">
+
+    <fragment
+        android:id="@+id/home"
+        android:name="com.yashovardhan99.healersdiary.dashboard.HomeFragment"
+        android:label="HomeFragment"
+        tools:layout="@layout/fragment_home">
+        <deepLink
+            android:id="@+id/deepLink2"
+            app:uri="healersdiary://com.yashovardhan99.healersdiary/dashboard" />
+        <action
+            android:id="@+id/action_home_to_patientDetailFragment"
+            app:destination="@id/patientDetailFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/home"
+            app:popUpToInclusive="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/patients"
+        android:name="com.yashovardhan99.healersdiary.patients.PatientsListFragment"
+        android:label="PatientsListFragment"
+        tools:layout="@layout/fragment_patients_list">
+        <action
+            android:id="@+id/action_patients_to_patientDetailFragment"
+            app:destination="@id/patientDetailFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/patients"
+            app:popUpToInclusive="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/analytics"
+        android:name="com.yashovardhan99.healersdiary.analytics.AnalyticsFragment"
+        android:label="AnalyticsFragment"
+        tools:layout="@layout/fragment_analytics" />
+    <fragment
+        android:id="@+id/patientDetailFragment"
+        android:name="com.yashovardhan99.healersdiary.patients.PatientDetailFragment"
+        android:label="PatientDetailFragment"
+        tools:layout="@layout/fragment_patient_detail">
+        <argument
+            android:name="patientId"
+            app:argType="long" />
+        <deepLink
+            android:id="@+id/deepLink"
+            android:autoVerify="true"
+            app:action="ACTION_VIEW"
+            app:uri="healersdiary://com.yashovardhan99.healersdiary/patients?patient_id={patientId}" />
+        <action
+            android:id="@+id/action_patientDetailFragment_to_healingListFragment"
+            app:destination="@id/healingListFragment" />
+        <action
+            android:id="@+id/action_patientDetailFragment_to_paymentListFragment"
+            app:destination="@id/paymentListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/healingListFragment"
+        android:name="com.yashovardhan99.healersdiary.patients.HealingListFragment"
+        android:label="HealingListFragment"
+        tools:layout="@layout/fragment_healing_list">
+        <argument
+            android:name="patientId"
+            app:argType="long" />
+    </fragment>
+    <fragment
+        android:id="@+id/paymentListFragment"
+        android:name="com.yashovardhan99.healersdiary.patients.PaymentListFragment"
+        android:label="PaymentListFragment"
+        tools:layout="@layout/fragment_healing_list">
+        <argument
+            android:name="patientId"
+            app:argType="long" />
+    </fragment>
+    <fragment
+        android:id="@+id/settings"
+        android:name="com.yashovardhan99.healersdiary.settings.SettingsFragment"
+        android:label="SettingsFragment"
+        tools:layout="@layout/fragment_settings" />
+</navigation>

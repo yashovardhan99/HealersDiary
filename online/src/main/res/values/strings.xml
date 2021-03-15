@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="login">Login</string>
+    <string name="backup_sync_group_name">Backup &amp; Sync</string>
+    <string name="import_channel_name">Import</string>
+    <string name="patients_found">%d Patients found</string>
+    <string name="importing_of">Importing %d of %d patients</string>
+    <string name="looking_for_patients">Looking for your patients</string>
+    <string name="import_v1">Import from v1.0</string>
+    <string name="import_retry">Something went wrong! We will retry importing in a while</string>
+    <string name="import_failed">Import Failed! Please try again.</string>
+    <string name="login_to_continue">Please login with the Google account you have used earlier</string>
+    <string name="connecting">Connecting… Make sure you are connected to the internet.</string>
+    <string name="importing">Importing…</string>
+    <string name="waiting_for_constraints">Waiting for network…</string>
+    <string name="import_done_message">All your data has been imported and is ready to use!</string>
+</resources>

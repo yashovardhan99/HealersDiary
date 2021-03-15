@@ -1,41 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <resources>
-    <string name="app_name">Healer\'s Diary</string>
+    <string name="app_name">Healers Diary</string>
     <string name="patient_name">Patient Name</string>
     <string name="browse">Browse</string>
     <string name="disease">Disease</string>
     <string name="rate">Rate per healing</string>
     <string name="signing_in">Signing In</string>
-    <string name="save">Save</string>
-    <string name="payment_due">Payment Due</string>
     <string name="enter_payment_received">Enter Payment Received</string>
     <string name="welcome_user">Welcome, %s!</string>
-    <string name="today">Today</string>
-    <string name="yesterday">Yesterday</string>
-    <string name="graphic_of_a_meditating_girl">graphic of a meditating girl</string>
-    <string name="this_month">this Month</string>
-    <string name="last_month">last Month</string>
-    <string name="healers_diary_pro">Healers Diary Pro</string>
-    <string name="all_plans_come_with_a_s_free_trial">All plans come with %s free trial</string>
-    <string name="_3_months">3 Months</string>
-    <string name="price">Price</string>
-    <string name="_1_year">1 year</string>
-    <string name="_6_months">6 Months</string>
-    <string name="close">close</string>
-    <string name="_30_days">30 Days</string>
-    <string name="by_signing_in_you_agree_to_our_s">By Signing in, you agree to our <a href="https://github.com/yashovardhan99/HealersDiary/blob/master/PRIVACY%20POLICY.md">Privacy Policy</a> and <a href="https://github.com/yashovardhan99/HealersDiary/blob/master/EULA.md">Terms of Use</a></string>
+    <string name="by_signing_in_you_agree_to_our_s">
+    By Signing in, you agree to our
+    <a href="https://github.com/yashovardhan99/HealersDiary/blob/master/PRIVACY%20POLICY.md">Privacy Policy</a>
+    and
+    <a href="https://github.com/yashovardhan99/HealersDiary/blob/master/EULA.md">Terms of Use</a>
+  </string>
+    <string name="privacy_policy_link" translatable="false">https://github.com/yashovardhan99/HealersDiary/blob/master/PRIVACY%20POLICY.md</string>
+    <string name="eula_link" translatable="false">https://github.com/yashovardhan99/HealersDiary/blob/master/EULA.md</string>
     <string name="phone_number">Phone Number</string>
     <string name="client_will_be_charged_at_your_specified_rate">Client will be charged at your specified rate</string>
     <string name="payment_will_be_credited_to_the_patient_s_account_with_the_current_date_and_time">Payment will be credited to the patient\'s account with the current date and time</string>
     <string name="confirm_new_healing">Confirm New Healing</string>
-    <string name="new_healing">New Healing</string>
     <string name="view_healing_logs">View Healing Logs</string>
     <string name="add_patient_feedback">Add new Feedback</string>
     <string name="view_patient_feedback">View Feedback logs</string>
     <string name="add_payment_detail">Add new payment</string>
     <string name="view_payment_logs">View Payment logs</string>
-    <string name="nothing_here">NOTHING HERE</string>
-    <string name="date">DATE</string>
-    <string name="amount">AMOUNT</string>
+    <string name="date">Date</string>
+    <string name="amount">Amount</string>
     <string name="tap_plus_to_get_started">Tap the + button to get started!</string>
     <string name="something_went_wrong">Some problem Occurred. You have been logged in but some features may not work properly</string>
     <string name="delete_warning_message">This will delete all patient records permanently. This action cannot be undone</string>
@@ -46,8 +37,6 @@
     <string name="name_cannot_be_blank">Name cannot be blank</string>
     <string name="enter_valid_amt">Enter a valid amount</string>
     <string name="payment_logs">Payment Logs</string>
-    <string name="edit">Edit</string>
-    <string name="delete">Delete</string>
     <string name="enter_patient_feedback">Enter Patient Feedback</string>
     <string name="start_typing_here">Start typing here</string>
     <string name="not_blank_error">Cannot be Blank</string>
@@ -69,11 +58,8 @@
     <string name="home">Home</string>
     <string name="version_s">Version : %s</string>
     <string name="made_with_yashovardhan_dhanania">Made with ❤ Yashovardhan Dhanania</string>
-    <string name="logo_courtesy_yasujizr_on_github">Logo courtesy <a href="https://github.com/Yasujizr">Yasujizr</a></string>
     <string name="about">About</string>
     <string name="main_list_extra_choice">Main List Extra Choice :</string>
-    <string name="settings">Settings</string>
-    <string name="number_of_healings_today">Number of healings today</string>
     <string name="more_details_will_be_available_soon">More details will be available soon</string>
     <string name="set_preferred_main_list_format">Set preferred main list format</string>
     <string name="enable_crash_reporting">Enable Crash Reporting</string>
@@ -81,4 +67,54 @@
     <string name="open_source_licenses">Open source licenses</string>
     <string name="privacy_policy">Privacy policy</string>
     <string name="end_user_license_agreement">End User License Agreement</string>
+    <string name="title">Reminder</string>
+    <string name="content">Your daily reminder to update records is here!</string>
+    <string name="channel_name">Daily reminder</string>
+    <string name="channel_description">Reminds you daily about to update records. Can be modified in settings</string>
+    <string name="remind_me_daily">Remind me daily</string>
+    <string name="turn_it_on_to_schedule_a_daily_reminder_to_help_you_update_your_healing_records">Turn it on to schedule a daily reminder to help you update your healing records</string>
+    <string name="daily_time">Daily at %s</string>
+    <string name="bill">To %1$s, \n Your bill dated %2$s is due for payment. Total amount due is %3$s \n From %4$s \n Generated by Healers Diary!</string>
+    <string name="bill_title">BILL</string>
+    <string name="donate_via_paypal">Donate via PayPal</string>
+    <string name="paypal_url">http://paypal.me/yashovardhan99</string>
+    <string name="patient_data">Patient Data</string>
+    <string name="generate_bill">Generate Bill [BETA]</string>
+    <string name="new_patient_analytics" translatable="false">new_patient</string>
+    <string name="get_started">Get Started</string>
+    <string name="analytics">Analytics</string>
+    <string name="patients">Patients</string>
+    <string name="sample_money">$500.00</string>
+    <string name="total_amount_due">Total amount due</string>
+    <string name="choose_a_patient">Choose a Patient</string>
+    <string name="new_payment">New Payment</string>
+    <string name="charge">Charge</string>
+    <string name="notes">Notes</string>
+    <string name="add_healing">Add Healing</string>
+    <string name="time">Time</string>
+    <string name="due_amount">Due: %s</string>
+    <string name="name">name</string>
+    <string name="charge_per_healing">Charge per healing</string>
+    <string name="due_if_any">Amount due (if any)</string>
+    <string name="error_creating_activity">Error saving. Check the values you entered</string>
+    <string name="patient_all_healings">%s: All Healings</string>
+    <string name="patient_all_payments">%s: All Payments</string>
+    <string name="patient_list_transition" translatable="false">patient_%d</string>
+    <string name="date_transition" translatable="false">transition %d</string>
+    <string name="patient_detail_transition" translatable="false">patient_detail_transition</string>
+    <string name="edit_patient">Edit Patient</string>
+    <string name="loading">Loading!</string>
+    <string name="title_online">Backup &amp; Sync</string>
+    <string name="import_from_v1_0">Import from v1.0</string>
+    <string name="import_completed">Import completed</string>
+    <string name="dangerous_settings">Dangerous settings</string>
+    <string name="reset_data">Reset Data</string>
+    <string name="are_you_sure">Are you sure</string>
+    <string name="overrides_all_data">This action will override all existing records. Are you sure you want to continue?</string>
+    <string name="confirm">Confirm</string>
+    <string name="data_cleared">Data Cleared</string>
+  <string name="undo">Undo</string>
+    <string name="edit_healing">Edit Healing</string>
+  <string name="edit_payment">Edit Payment</string>
 </resources>
+

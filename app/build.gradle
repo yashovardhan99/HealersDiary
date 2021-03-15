@@ -1,50 +1,133 @@
+import dependencies.Dependencies
+import dependencies.Version
+
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.android.gms.oss-licenses-plugin'
-apply plugin: 'io.fabric'
+apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: 'dagger.hilt.android.plugin'
+apply plugin: "androidx.navigation.safeargs.kotlin"
+apply plugin: "com.google.gms.google-services"
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion = Version.AppVersion.compileSdk
     defaultConfig {
-        applicationId "com.yashovardhan99.healersdiary"
-        minSdkVersion 19
-        targetSdkVersion 28
-        versionCode 10000
-        versionName "0.10.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        multiDexEnabled true
+        applicationId = "com.yashovardhan99.healersdiary"
+        minSdkVersion Version.AppVersion.minSdk
+        targetSdkVersion Version.AppVersion.targetSdk
+        versionCode = Version.AppVersion.versionCode
+        versionName = Version.AppVersion.versionName
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled = true
     }
     buildTypes {
+        debug {
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+        }
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 
+    buildFeatures {
+        dataBinding true
+    }
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
     lintOptions {
         abortOnError false
     }
+    task generateDependencyListFile {
+        configurations.implementation.setCanBeResolved(true)
+        configurations.androidTestImplementation.setCanBeResolved(true)
+        configurations.api.setCanBeResolved(true)
 
-    buildToolsVersion "28.0.3"
+        doLast {
+            def str = "# auto-generated from ${this.name}; this file should be checked into version control\n"
+            def resolvedImplementationConfig = configurations.implementation.resolvedConfiguration
+            def resolvedAndroidTestImplementationConfig = configurations.androidTestImplementation.resolvedConfiguration
+            def resolvedApiConfig = configurations.api.resolvedConfiguration
+
+//            resolvedImplementationConfig.firstLevelModuleDependencies.each { dep ->
+//                str += "${dep.moduleGroup}:${dep.moduleName}:${dep.moduleVersion}\n"
+//            }
+
+            resolvedAndroidTestImplementationConfig.firstLevelModuleDependencies.each { dep ->
+                str += "${dep.moduleGroup}:${dep.moduleName}:${dep.moduleVersion}\n"
+            }
+
+            resolvedApiConfig.firstLevelModuleDependencies.each { dep ->
+                str += "${dep.moduleGroup}:${dep.moduleName}:${dep.moduleVersion}\n"
+            }
+
+            new File(projectDir, "deps.list.txt").text = str
+        }
+    }
+    preBuild.dependsOn(generateDependencyListFile)
+    dynamicFeatures = [':online']
 }
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support:design:28.0.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-    implementation 'com.android.support:recyclerview-v7:28.0.0'
-    implementation 'com.android.support:support-v4:28.0.0'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    implementation 'com.google.firebase:firebase-core:16.0.4'
-    implementation 'com.google.firebase:firebase-auth:16.0.5'
-    implementation 'com.google.firebase:firebase-firestore:17.1.2'
-    implementation 'com.google.android.gms:play-services-auth:16.0.1'
-    implementation 'com.android.support:multidex:1.0.3'
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.5'
-    implementation 'com.android.billingclient:billing:1.1'
-    implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation 'com.google.android.gms:play-services-oss-licenses:16.0.1'
+    implementation(project(":core"))
+    implementation(Dependencies.Android.app_compat)
+    api(Dependencies.Android.material)
+    implementation(Dependencies.Android.constraint_layout)
+    implementation(Dependencies.Android.recycler_view)
+    implementation(Dependencies.Android.ktx_core)
+    implementation(Dependencies.Android.activity_ktx)
+    implementation(Dependencies.Android.fragment_ktx)
+    implementation(Dependencies.Android.multidex)
+    implementation(Dependencies.Android.workmanager)
+
+    implementation(Dependencies.Android.Lifecycle.view_model)
+    implementation(Dependencies.Android.Lifecycle.view_model_saved_state)
+    implementation(Dependencies.Android.Lifecycle.live_data)
+    implementation(Dependencies.Android.Lifecycle.common_java8)
+
+    implementation(platform(Dependencies.Firebase.bom))
+    implementation(Dependencies.Firebase.analytics)
+    implementation(Dependencies.Firebase.crashlytics)
+    implementation(Dependencies.Firebase.auth)
+    implementation(Dependencies.Firebase.play_services_auth)
+    implementation(Dependencies.Firebase.firestore)
+
+    implementation(Dependencies.OssLicenses.oss_app)
+
+    implementation(Dependencies.Room.runtime)
+    kapt(Dependencies.Room.compiler)
+    implementation(Dependencies.Room.ktx)
+    testImplementation(Dependencies.Room.testing)
+
+    implementation(Dependencies.Navigation.fragment)
+    implementation(Dependencies.Navigation.ui)
+    implementation(Dependencies.Navigation.dynamic_features)
+    androidTestImplementation(Dependencies.Navigation.testing)
+
+    implementation(Dependencies.Paging.runtime)
+    testImplementation(Dependencies.Paging.common_testing)
+
+    api(Dependencies.Hilt.android)
+    kapt(Dependencies.Hilt.android_compiler)
+    kapt(Dependencies.Hilt.compiler)
+    api(Dependencies.Hilt.view_model)
+
+    api(Dependencies.timber)
+
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation("com.google.truth:truth:1.1.2")
+    testImplementation("com.google.truth.extensions:truth-java8-extension:1.1.2")
+    androidTestImplementation 'androidx.test:runner:1.3.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.1'
 }
-apply plugin: 'com.google.gms.google-services'

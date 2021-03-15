@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <plurals name="healing">
-        <item quantity="other">%2$s <b>%1$d</b> उपचार</item>
-    </plurals>
-</resources>

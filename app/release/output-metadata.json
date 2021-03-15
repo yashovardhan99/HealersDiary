@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.yashovardhan99.healersdiary",
+  "variantName": "processReleaseResources",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "versionCode": 20000000,
+      "versionName": "2.0.0-alpha",
+      "outputFile": "app-release.apk"
+    }
+  ]
+}

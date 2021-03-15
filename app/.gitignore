@@ -34,7 +34,3 @@ output.json
 #NDK
 obj/
 .externalNativeBuild
-
-#Firebase Private files
-google-services.json
-

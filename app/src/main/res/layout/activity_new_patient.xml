@@ -1,100 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".activities.NewPatient">
-   <include
-       layout="@layout/app_bar_layout"
-       android:id="@+id/newPatientToolbar"/>
-    <ScrollView
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="header"
+            type="com.yashovardhan99.core.utils.Header" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_anchor="@id/newPatientToolbar"
-        app:layout_anchorGravity="bottom"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-        <LinearLayout
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/heading"
+            layout="@layout/header"
+            bind:header="@{header}" />
+
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <!--New patient dialog-->
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/icon">
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <android.support.design.widget.TextInputLayout
-                    android:layout_weight="8"
-                    android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="16dp">
-                    <android.support.design.widget.TextInputEditText
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:hint="@string/name"
+                    app:hintTextAppearance="@style/subtitle2">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/name_edit"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/patient_name"
                         android:inputType="textPersonName|textCapWords"
-                        android:id="@+id/patientName"/>
-                </android.support.design.widget.TextInputLayout>
-                <Button
+                        android:textAppearance="@style/subtitle"
+                        android:textSize="16sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/charge_box"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:hint="@string/charge_per_healing"
+                    app:hintEnabled="true"
+                    app:hintTextAppearance="@style/subtitle2"
+                    app:prefixTextAppearance="@style/h2"
+                    app:prefixTextColor="@color/colorPrimary"
+                    tools:prefixText="$">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/charge_edit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal"
+                        android:textAppearance="@style/subtitle"
+                        android:textSize="16sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/due_box"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:hint="@string/due_if_any"
+                    app:hintEnabled="true"
+                    app:hintTextAppearance="@style/subtitle2"
+                    app:prefixTextAppearance="@style/h2"
+                    app:prefixTextColor="@color/colorPrimary"
+                    tools:prefixText="$">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/due_edit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal"
+                        android:textAppearance="@style/subtitle"
+                        android:textSize="16sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:hint="@string/notes"
+                    app:hintTextAppearance="@style/subtitle2">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/notes_edit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="top"
+                        android:inputType="textMultiLine|textCapSentences"
+                        android:minLines="4"
+                        android:textAppearance="@style/subtitle"
+                        android:textSize="16sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/new_patient"
+                    style="@style/Widget.MaterialComponents.Button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/contact_picker_button"
-                    android:text="@string/browse"
-                    android:layout_gravity="center_vertical"
-                    android:padding="16dp"/>
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="28dp"
+                    android:padding="8dp"
+                    android:text="@string/add_new_patient"
+                    app:cornerRadius="20dp"
+                    app:icon="@drawable/add"
+                    app:iconPadding="20dp" />
             </LinearLayout>
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                app:counterMaxLength="15">
-                <android.support.design.widget.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/phoneNumber"
-                    android:hint="@string/phone_number"
-                    android:inputType="phone" />
-            </android.support.design.widget.TextInputLayout>
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp">
-                <android.support.design.widget.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/disease"
-                    android:id="@+id/patientDisease"
-                    android:inputType="textAutoCorrect|textCapWords" />
-            </android.support.design.widget.TextInputLayout>
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp">
-                <android.support.design.widget.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/rate"
-                    android:id="@+id/rate"
-                    android:inputType="numberDecimal" />
-            </android.support.design.widget.TextInputLayout>
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp">
-                <android.support.design.widget.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/payment_due"
-                    android:id="@+id/EnterPaymentDue"
-                    android:inputType="numberDecimal" />
-            </android.support.design.widget.TextInputLayout>
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/save"
-                android:id="@+id/saveNewPatient"
-                android:elevation="4dp"/>
-        </LinearLayout>
-    </ScrollView>
-</android.support.design.widget.CoordinatorLayout>
+        </ScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

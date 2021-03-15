@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/new_activity_nav_graph"
+    app:startDestination="@id/choosePatientFragment">
+
+    <fragment
+        android:id="@+id/choosePatientFragment"
+        android:name="com.yashovardhan99.healersdiary.create.ChoosePatientFragment"
+        android:label="ChoosePatientFragment"
+        tools:layout="@layout/fragment_choose_patient">
+        <action
+            android:id="@+id/action_choosePatientFragment_to_chooseActivityFragment"
+            app:destination="@id/chooseActivityFragment"
+            app:popUpToInclusive="false" />
+        <!--        <deepLink-->
+        <!--            android:id="@+id/deepLink4"-->
+        <!--            app:uri="healersdiary://com.yashovardhan99.healersdiary/activities/new_activity" />-->
+    </fragment>
+    <fragment
+        android:id="@+id/chooseActivityFragment"
+        android:name="com.yashovardhan99.healersdiary.create.ChooseActivityFragment"
+        android:label="ChooseActivityFragment"
+        tools:layout="@layout/fragment_choose_activity">
+        <argument
+            android:name="patient_id"
+            app:argType="long" />
+        <argument
+            android:name="patient_name"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_chooseActivityFragment_to_newHealingFragment"
+            app:destination="@id/newHealingFragment" />
+        <action
+            android:id="@+id/action_chooseActivityFragment_to_newPaymentFragment"
+            app:destination="@id/newPaymentFragment" />
+        <argument
+            android:name="default_charge"
+            app:argType="long" />
+        <argument
+            android:name="amount_due"
+            app:argType="long" />
+        <!--        <deepLink-->
+        <!--            android:id="@+id/deepLink3"-->
+        <!--            app:uri="healersdiary://com.yashovardhan99.healersdiary/activities/new_activity?patient_id={patient_id}" />-->
+    </fragment>
+    <fragment
+        android:id="@+id/newHealingFragment"
+        android:name="com.yashovardhan99.healersdiary.create.NewHealingFragment"
+        android:label="NewHealingFragment"
+        tools:layout="@layout/fragment_new_healing">
+        <argument
+            android:name="patient_id"
+            app:argType="long" />
+        <argument
+            android:name="patient_name"
+            app:argType="string" />
+        <argument
+            android:name="default_charge"
+            app:argType="long" />
+    </fragment>
+    <fragment
+        android:id="@+id/newPaymentFragment"
+        android:name="com.yashovardhan99.healersdiary.create.NewPaymentFragment"
+        android:label="NewPaymentFragment"
+        tools:layout="@layout/fragment_new_payment">
+        <argument
+            android:name="patient_id"
+            app:argType="long" />
+        <argument
+            android:name="patient_name"
+            app:argType="string" />
+        <argument
+            android:name="current_due"
+            app:argType="long" />
+    </fragment>
+</navigation>

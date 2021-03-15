@@ -1,77 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".activities.PatientView">
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <include
-        android:id="@+id/settingsToolbar"
-        layout="@layout/app_bar_layout" />
+    <data>
 
-    <android.support.v4.widget.NestedScrollView
+        <variable
+            name="header"
+            type="com.yashovardhan99.core.utils.Header" />
+    </data>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="16dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_height="match_parent">
 
-        <LinearLayout
+        <include
+            android:id="@+id/heading"
+            layout="@layout/header"
+            bind:header="@{header}" />
+
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/icon">
 
             <LinearLayout
-                android:id="@+id/ChooseMainListPref"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/logo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:contentDescription="@string/healers_diary_logo"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_full_logo" />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/version"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/set_preferred_main_list_format"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:layout_margin="12dp"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/h1"
+                    bind:showDebugVersion="@{true}"
+                    tools:text="@string/version_s" />
 
                 <TextView
-                    android:id="@+id/chosenMainListPref"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/author"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/nothing_here" />
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="32dp"
+                    android:text="@string/made_with_yashovardhan_dhanania"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/h1" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/open_source"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/open_source_licenses" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/privacy_policy"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/privacy_policy" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/eula"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/end_user_license_agreement" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/colorControlHighlight"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_margin="16dp"
+                        android:text="@string/dangerous_settings"
+                        android:textAppearance="@style/subtitle"
+                        android:textColor="?attr/colorError" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/import_from_v1"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="@string/import_from_v1_0"
+                        android:textColor="?attr/colorError" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/reset_all"
+                        style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/reset_data"
+                        android:textColor="?attr/colorError" />
+
+                </LinearLayout>
             </LinearLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp">
-
-                <TextView
-                    android:id="@+id/TextEnableCrash"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/enable_crash_reporting"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/TextEnableCrash"
-                    android:layout_marginEnd="16dp"
-                    android:layout_toStartOf="@id/CrashSwitch"
-                    android:text="@string/send_crash_reports_to_help_me_fix_issues_the_reports_are_normally_anonymous_but_may_include_details_like_your_device_model_and_android_version"
-                    android:textAlignment="textStart" />
-
-                <Switch
-                    android:id="@+id/CrashSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:paddingStart="16dp"/>
-            </RelativeLayout>
-        </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
-</android.support.design.widget.CoordinatorLayout>
+        </ScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

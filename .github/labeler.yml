@@ -1,0 +1,9 @@
+meta:
+  - .github/**/*
+  - any: ['**/*.md', '!CHANGELOG.md']
+  - LICENSE
+  - "*.yml"
+  - "**/*.gitignore"
+invalid:
+  - "**/*.java" # This project aims to be 100% Kotlin
+  - gradlew

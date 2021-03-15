@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="header"
+            type="com.yashovardhan99.core.utils.Header" />
+
+        <variable
+            name="emptyState"
+            type="com.yashovardhan99.core.utils.EmptyState" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/heading"
+            layout="@layout/header"
+            bind:header="@{header}" />
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            bind:layout_constraintTop_toBottomOf="@id/icon"
+            android:id="@+id/empty_state_layout"
+            layout="@layout/empty_dashboard"
+            bind:emptyState="@{emptyState}"
+            bind:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

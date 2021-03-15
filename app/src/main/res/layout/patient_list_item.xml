@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="patient"
+            type="com.yashovardhan99.core.database.Patient" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="12dp"
+            android:text="@{patient.name}"
+            android:textAppearance="@style/h1"
+            app:layout_constraintEnd_toStartOf="@id/amount"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@tools:sample/full_names" />
+
+        <TextView
+            android:id="@+id/amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:textAppearance="@style/h2"
+            android:textSize="24sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintStart_toEndOf="@id/name"
+            bind:amountText="@{patient.due}"
+            tools:text="@tools:sample/us_zipcodes" />
+
+        <TextView
+            android:id="@+id/healings_today"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/subtitle"
+            app:layout_constraintStart_toStartOf="@id/name"
+            app:layout_constraintTop_toBottomOf="@id/name"
+            bind:healingsToday="@{patient.healingsToday}"
+            tools:text="@tools:sample/lorem" />
+
+        <TextView
+            android:id="@+id/healings_this_month"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/subtitle2"
+            app:layout_constraintStart_toStartOf="@id/name"
+            app:layout_constraintTop_toBottomOf="@id/healings_today"
+            bind:healingsThisMonth="@{patient.healingsThisMonth}"
+            tools:text="@tools:sample/lorem" />
+
+        <TextView
+            android:id="@+id/payment_due_caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/total_amount_due"
+            android:textAppearance="@style/subtitle2"
+            app:layout_constraintEnd_toEndOf="@id/amount"
+            app:layout_constraintTop_toBottomOf="@id/amount" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

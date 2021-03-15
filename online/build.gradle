@@ -1,0 +1,76 @@
+import dependencies.Dependencies
+
+plugins {
+    id 'com.android.dynamic-feature'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
+}
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
+
+    defaultConfig {
+        applicationId "com.yashovardhan99.healersdiary.online"
+        minSdkVersion 21
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            consumerProguardFiles 'proguard-rules.pro'
+        }
+    }
+    buildFeatures {
+        dataBinding true
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+    lintOptions {
+        abortOnError false
+    }
+}
+
+dependencies {
+    implementation project(":app")
+    implementation(project(":core"))
+    implementation(Dependencies.Android.ktx_core)
+    implementation(Dependencies.Android.app_compat)
+    implementation(Dependencies.Android.constraint_layout)
+    implementation(Dependencies.Hilt.android)
+    kapt(Dependencies.Hilt.android_compiler)
+    kapt(Dependencies.Hilt.compiler)
+    implementation(Dependencies.Hilt.view_model)
+    implementation(Dependencies.Android.fragment_ktx)
+
+    implementation(Dependencies.Firebase.bom)
+    implementation(Dependencies.Firebase.analytics)
+    implementation(Dependencies.Firebase.auth)
+    implementation(Dependencies.Firebase.play_services_auth)
+    implementation(Dependencies.Firebase.firestore)
+    implementation(Dependencies.Firebase.coroutines)
+
+    implementation(Dependencies.Android.workmanager)
+
+    implementation(Dependencies.Navigation.fragment)
+    implementation(Dependencies.Navigation.ui)
+    implementation(Dependencies.Navigation.dynamic_features)
+
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    androidTestImplementation 'androidx.annotation:annotation:1.1.0'
+}
+apply plugin: "com.google.gms.google-services"

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/home"
+        android:icon="@drawable/home"
+        android:title="@string/home" />
+    <item
+        android:id="@+id/patients"
+        android:icon="@drawable/list"
+        android:title="@string/patients" />
+    <item android:enabled="false" />
+    <item
+        android:id="@+id/analytics"
+        android:icon="@drawable/analytics"
+        android:title="@string/analytics" />
+    <item
+        android:id="@+id/settings"
+        android:icon="@drawable/settings"
+        android:title="@string/settings" />
+</menu>

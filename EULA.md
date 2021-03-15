@@ -25,7 +25,7 @@ You shall use the app strictly in accordance with the terms outlined in this agr
 13. Try to break the security of this app or capture logs or any other communication with any server or service that this app attempts to make or makes.
 ## Termination of Use
 1. This agreement is effective 16 July, 2018 or the date on which you first installed the app on your device, whichever is later.
-2. If you don't expressly agree to these terms, immediately stop using the service and uninstall the app from your mobile device. In the case you have signed into the app or used the app for any purpose which results in data being stored by me on your behalf, immediately send a written letter to yashovardhan99@outlook.com. Upon receipt of such letter, I shall delete any personalized data that this app has collected and stored online within 30 days and provide you a written confirmation of the same. After such written confirmation, this agreement between us shall be terminated.
+2. If you don't expressly agree to these terms, immediately stop using the service and uninstall the app from your mobile device. In the case you have signed into the app or used the app for any purpose which results in data being stored by me on your behalf, immediately send a written letter to teamhealersdiary@gmail.com. Upon receipt of such letter, I shall delete any personalized data that this app has collected and stored online within 30 days and provide you a written confirmation of the same. After such written confirmation, this agreement between us shall be terminated.
 3. If you violate any terms mentioned in this agreement, this agreement will terminate automatically. On detection of such violation or breaches made by you, I reserve the right to disable your access to this app and delete any information provided by you immediately and without notice. 
 4. On termination of this agreement, you shall remove/uninstall the app from your device and stop using any service related to this app.
 5. On termination of this agreement, we reserve the right to disable your access to this app and delete any data provided by you. However, we may choose to retain such data and access in case you have not provided us a written notice as specified under clause 2 of this section.
@@ -43,7 +43,7 @@ Except, if required by applicable law,
 3. Any violation or attempt to violate this copyright clause shall immediately terminate this agreement and shall be dealt with in accordance with the applicable laws.
 ## Contact Information
 You may contact me through :
-- Email at yashovardhan99@outlook.com
+- Email at teamhealersdiary@gmail.com
 - Raise an issue on this [GitHub repository](https://github.com/yashovardhan99/HealersDiary).
 
 ## General Information
@@ -51,5 +51,7 @@ You may contact me through :
 - This agreement does not supersede any applicable laws. Please follow and respect all laws, rules and regulations and use this app only in accordance with them.
 - I reserve the right to modify this license at any point without notice. Any such modification will come into effect 30 days from the date of such modification for existing users. You are responsible to regularly check this license and inform me if you disagree with it at any time. Refer section **Termination of Use** above.
 
-This license was last updated on 19 July, 2018.
+This license was last updated on 23 February, 2021.
 
+## Changes on 23 February, 2021
+- Email ID updated
