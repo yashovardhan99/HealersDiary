@@ -40,7 +40,7 @@ This new version uses the latest Jetpack libraries.
 
 ## V2.0 timeline
 * Private Alpha - **Completed**
-* Public Beta - *March* 2021
+* Public Beta - **Released** - [Sign up for the beta](https://play.google.com/apps/testing/com.yashovardhan99.healersdiary)
 * Public Release - *tentative May* 2021,
 * Firestore access and all user data on Firebase will be deleted starting 2022 in a phased manner.
 
