@@ -20,8 +20,8 @@ object Version {
         private const val minor = 0
         private const val patch = 0
 
-        private val buildType: BuildType = BuildType.ALPHA
-        private const val buildCode = 6
+        private val buildType: BuildType = BuildType.BETA
+        private const val buildCode = 1
 
         private const val standard = (major * 100 + minor) * 100 + patch
         val versionCode = (standard * 10 + buildType.typeCode) * 100 + buildCode
@@ -34,9 +34,11 @@ object Version {
             val builder = StringBuilder("$major.$minor.$patch")
             return when {
                 buildType is BuildType.RELEASE -> builder.toString()
-                buildCode == 0 -> builder.append(builder.append("-${buildType.typeString}")).toString()
+                buildCode == 0 -> builder.append(builder.append("-${buildType.typeString}"))
+                    .toString()
                 else -> {
-                    val code = NumberFormat.getInstance().apply { minimumIntegerDigits = 2 }.format(buildCode)
+                    val code = NumberFormat.getInstance().apply { minimumIntegerDigits = 2 }
+                        .format(buildCode)
                     builder.append("-${buildType.typeString}").append(code).toString()
                 }
             }
