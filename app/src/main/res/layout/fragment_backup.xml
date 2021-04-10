@@ -58,7 +58,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:padding="8dp"
-            app:layout_constraintBottom_toTopOf="@id/start"
+            app:layout_constraintBottom_toTopOf="@id/import_note"
             android:animateLayoutChanges="true"
             app:checkedButton="@id/import_backup"
             android:id="@+id/import_export_toggle"
@@ -83,13 +83,30 @@
                 android:text="@string/export" />
         </com.google.android.material.button.MaterialButtonToggleGroup>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:textAppearance="@style/subtitle2"
+            android:textColor="?attr/colorOnBackground"
+            android:textSize="16sp"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:id="@+id/import_note"
+            app:layout_constraintTop_toBottomOf="@id/import_export_toggle"
+            app:layout_constraintBottom_toTopOf="@id/start"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_margin="8dp"
+            android:textAlignment="center"
+            android:text="@string/might_be_overwrriten_note" />
+
         <com.google.android.material.button.MaterialButton
             android:layout_width="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/import_export_toggle"
+            app:layout_constraintTop_toBottomOf="@id/import_note"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:padding="8dp"
+            android:enabled="false"
             android:id="@+id/start"
             android:layout_height="wrap_content"
             android:text="@string/start" />

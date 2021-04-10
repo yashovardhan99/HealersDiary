@@ -79,7 +79,7 @@
         android:id="@+id/settings"
         android:name="com.yashovardhan99.healersdiary.settings.SettingsFragment"
         android:label="SettingsFragment"
-        tools:layout="@layout/fragment_settings" >
+        tools:layout="@layout/fragment_settings">
         <action
             android:id="@+id/action_settings_to_backupFragment"
             app:destination="@id/backupFragment" />
@@ -88,5 +88,19 @@
         tools:layout="@layout/fragment_backup"
         android:id="@+id/backupFragment"
         android:name="com.yashovardhan99.healersdiary.settings.BackupFragment"
-        android:label="BackupFragment" />
+        android:label="BackupFragment">
+        <action
+            android:id="@+id/action_backupFragment_to_importFragment"
+            app:destination="@id/importFragment" />
+    </fragment>
+    <fragment
+        tools:layout="@layout/fragment_import"
+        android:id="@+id/importFragment"
+        android:name="com.yashovardhan99.healersdiary.settings.ImportFragment"
+        android:label="ImportFragment">
+        <argument
+            android:name="selectedType"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </fragment>
 </navigation>

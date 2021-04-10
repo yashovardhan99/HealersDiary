@@ -121,5 +121,8 @@
   <string name="payments">Payments</string>
   <string name="import_text">Import</string>
   <string name="start">Start</string>
+    <string name="might_be_overwrriten_note">Any data matching existing IDs might be overwritten</string>
+  <string name="must_match_an_existing_patient">Healings or payments must match an existing patient</string>
+    <string name="upload_files">Upload Files</string>
 </resources>
 
