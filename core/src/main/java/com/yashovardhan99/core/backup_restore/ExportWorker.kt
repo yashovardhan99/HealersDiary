@@ -20,7 +20,9 @@ import androidx.work.workDataOf
 import com.yashovardhan99.core.R
 import com.yashovardhan99.core.database.DatabaseModule
 import com.yashovardhan99.core.database.HealersDao
+import com.yashovardhan99.core.database.Healing
 import com.yashovardhan99.core.database.Patient
+import com.yashovardhan99.core.database.Payment
 import java.io.FileNotFoundException
 import java.io.IOException
 import kotlinx.coroutines.Dispatchers
@@ -50,6 +52,12 @@ class ExportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
             try {
                 if (dataType and DataType.Patients.mask > 0) {
                     exportPatients(contentResolver, healersDao)
+                }
+                if (dataType and DataType.Healings.mask > 0) {
+                    exportHealings(contentResolver, healersDao)
+                }
+                if (dataType and DataType.Payments.mask > 0) {
+                    exportPayments(contentResolver, healersDao)
                 }
                 Result.success()
             } catch (e: FileNotFoundException) {
@@ -82,6 +90,60 @@ class ExportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
                             "${patient.lastModified.time},${patient.created.time}"
                     )
                     updateProgress((index + 1) * 100 / patients.size, "Exporting Patients")
+                }
+                close()
+            }
+            outputStream.close()
+        }
+    }
+
+    @Suppress("BlockingMethodInNonBlockingContext")
+    private suspend fun exportHealings(contentResolver: ContentResolver, dao: HealersDao) {
+        updateProgress(0, "Exporting Healings")
+        val fileUri =
+            Uri.parse(inputData.getString(HEALINGS_FILE_URI_KEY)) ?: throw FileNotFoundException()
+        contentResolver.openOutputStream(fileUri)?.use { outputStream ->
+            outputStream.bufferedWriter().apply {
+                appendLine(
+                    "${Healing::id.name},${Healing::time.name}," +
+                        "${Healing::charge.name},${Healing::notes.name}," +
+                        Healing::patientId.name
+                )
+                val healings = dao.getAllHealings()
+                healings.forEachIndexed { index, healing ->
+                    appendLine(
+                        "${healing.id},${healing.time.time}," +
+                            "${healing.charge},${healing.notes}," +
+                            "${healing.patientId}"
+                    )
+                    updateProgress((index + 1) * 100 / healings.size, "Exporting Healings")
+                }
+                close()
+            }
+            outputStream.close()
+        }
+    }
+
+    @Suppress("BlockingMethodInNonBlockingContext")
+    private suspend fun exportPayments(contentResolver: ContentResolver, dao: HealersDao) {
+        updateProgress(0, "Exporting Payments")
+        val fileUri =
+            Uri.parse(inputData.getString(PAYMENTS_FILE_URI_KEY)) ?: throw FileNotFoundException()
+        contentResolver.openOutputStream(fileUri)?.use { outputStream ->
+            outputStream.bufferedWriter().apply {
+                appendLine(
+                    "${Payment::id.name},${Payment::time.name}," +
+                        "${Payment::amount.name},${Payment::notes.name}," +
+                        Payment::patientId.name
+                )
+                val payments = dao.getAllPayments()
+                payments.forEachIndexed { index, payment ->
+                    appendLine(
+                        "${payment.id},${payment.time.time}," +
+                            "${payment.amount},${payment.notes}," +
+                            "${payment.patientId}"
+                    )
+                    updateProgress((index + 1) * 100 / payments.size, "Exporting Payments")
                 }
                 close()
             }

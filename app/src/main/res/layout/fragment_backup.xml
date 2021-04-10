@@ -19,15 +19,80 @@
             bind:header="@{header}"
             layout="@layout/header" />
 
-        <com.google.android.material.button.MaterialButton
+        <LinearLayout
+            android:layout_margin="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/checkboxes"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/icon"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintBottom_toTopOf="@id/import_export_toggle"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:gravity="fill_horizontal"
+            android:orientation="vertical">
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/patient_checkbox"
+                android:layout_width="wrap_content"
+                android:text="@string/patients"
+                android:layout_height="wrap_content" />
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/healing_checkbox"
+                android:layout_width="wrap_content"
+                android:text="@string/healings"
+                android:layout_height="wrap_content" />
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/payment_checkbox"
+                android:text="@string/payments"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@id/checkboxes"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            android:padding="8dp"
+            app:layout_constraintBottom_toTopOf="@id/start"
+            android:animateLayoutChanges="true"
+            app:checkedButton="@id/import_backup"
+            android:id="@+id/import_export_toggle"
+            app:singleSelection="true"
+            app:selectionRequired="true"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="wrap_content"
+                android:padding="8dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/import_backup"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:text="@string/import_text" />
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="wrap_content"
+                android:padding="8dp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_height="wrap_content"
+                android:id="@+id/export"
+                android:text="@string/export" />
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/import_export_toggle"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:id="@+id/export"
-            android:text="@string/export" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:padding="8dp"
+            android:id="@+id/start"
+            android:layout_height="wrap_content"
+            android:text="@string/start" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

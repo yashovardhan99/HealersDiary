@@ -117,5 +117,9 @@
     <string name="edit_healing">Edit Healing</string>
   <string name="edit_payment">Edit Payment</string>
     <string name="export">Export</string>
+    <string name="healings">Healings</string>
+  <string name="payments">Payments</string>
+  <string name="import_text">Import</string>
+  <string name="start">Start</string>
 </resources>
 

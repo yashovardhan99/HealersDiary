@@ -32,6 +32,22 @@ abstract class HealersDao {
     abstract fun getAllPatients(): Flow<List<Patient>>
 
     /**
+     * Get all healings
+     * Use only when all healings are needed together
+     * @return a list of all healings
+     */
+    @Query("SELECT * FROM healings")
+    abstract suspend fun getAllHealings(): List<Healing>
+
+    /**
+     * Get all payments
+     * Use only when all payments are needed together
+     * @return a list of all payments
+     */
+    @Query("SELECT * FROM payments")
+    abstract suspend fun getAllPayments(): List<Payment>
+
+    /**
      * Get a particular patient
      * @param patientId The id of the patient to look
      * @return The patient, if found. Null, otherwise

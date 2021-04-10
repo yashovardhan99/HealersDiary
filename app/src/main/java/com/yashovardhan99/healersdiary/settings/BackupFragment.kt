@@ -23,11 +23,15 @@ class BackupFragment : Fragment() {
     private val createDocumentContract = CreateCsvDocument
     private val exportPatientsLauncher = registerForActivityResult(createDocumentContract) {
         Timber.d("Received uri for export patients = $it")
-        viewModel.createBackup(ExportWorker.Companion.DataType.Patients, it)
+        viewModel.selectType(ExportWorker.Companion.DataType.Patients, it)
     }
     private val exportHealingsLauncher = registerForActivityResult(createDocumentContract) {
+        Timber.d("Received uri for export healings = $it")
+        viewModel.selectType(ExportWorker.Companion.DataType.Healings, it)
     }
     private val exportPaymentsLauncher = registerForActivityResult(createDocumentContract) {
+        Timber.d("Received uri for export payments = $it")
+        viewModel.selectType(ExportWorker.Companion.DataType.Payments, it)
     }
 
     override fun onCreateView(
@@ -37,10 +41,33 @@ class BackupFragment : Fragment() {
     ): View {
         val binding = FragmentBackupBinding.inflate(inflater, container, false)
         binding.header = Header.buildHeader(Icons.Back, getString(R.string.backup_sync_group_name))
-        binding.export.setOnClickListener {
-            exportPatientsLauncher.launch("patients.csv")
+        binding.start.setOnClickListener {
+            if (binding.importExportToggle.checkedButtonId == R.id.export) {
+                viewModel.setExport(true)
+                if (viewModel.checkedTypes and ExportWorker.Companion.DataType.Patients.mask > 0)
+                    exportPatientsLauncher.launch("patients.csv")
+                if (viewModel.checkedTypes and ExportWorker.Companion.DataType.Healings.mask > 0)
+                    exportHealingsLauncher.launch("healings.csv")
+                if (viewModel.checkedTypes and ExportWorker.Companion.DataType.Payments.mask > 0)
+                    exportPaymentsLauncher.launch("payments.csv")
+            } else viewModel.setExport(false)
         }
-        viewModel
+        binding.start.isEnabled = viewModel.checkedTypes != 0
+        binding.patientCheckbox.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) viewModel.selectType(ExportWorker.Companion.DataType.Patients)
+            else viewModel.deselectType(ExportWorker.Companion.DataType.Patients)
+            binding.start.isEnabled = viewModel.checkedTypes != 0
+        }
+        binding.healingCheckbox.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) viewModel.selectType(ExportWorker.Companion.DataType.Healings)
+            else viewModel.deselectType(ExportWorker.Companion.DataType.Healings)
+            binding.start.isEnabled = viewModel.checkedTypes != 0
+        }
+        binding.paymentCheckbox.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) viewModel.selectType(ExportWorker.Companion.DataType.Payments)
+            else viewModel.deselectType(ExportWorker.Companion.DataType.Payments)
+            binding.start.isEnabled = viewModel.checkedTypes != 0
+        }
         return binding.root
     }
 }
