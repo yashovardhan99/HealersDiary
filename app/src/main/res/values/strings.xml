@@ -116,5 +116,6 @@
   <string name="undo">Undo</string>
     <string name="edit_healing">Edit Healing</string>
   <string name="edit_payment">Edit Payment</string>
+    <string name="export">Export</string>
 </resources>
 

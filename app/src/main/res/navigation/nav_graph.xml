@@ -79,5 +79,14 @@
         android:id="@+id/settings"
         android:name="com.yashovardhan99.healersdiary.settings.SettingsFragment"
         android:label="SettingsFragment"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/action_settings_to_backupFragment"
+            app:destination="@id/backupFragment" />
+    </fragment>
+    <fragment
+        tools:layout="@layout/fragment_backup"
+        android:id="@+id/backupFragment"
+        android:name="com.yashovardhan99.healersdiary.settings.BackupFragment"
+        android:label="BackupFragment" />
 </navigation>

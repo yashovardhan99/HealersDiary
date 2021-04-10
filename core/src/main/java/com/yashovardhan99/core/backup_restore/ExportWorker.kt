@@ -70,7 +70,7 @@ class ExportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         contentResolver.openOutputStream(fileUri)?.use { outputStream ->
             outputStream.bufferedWriter().apply {
                 appendLine(
-                    "${Patient::id.name},${Patient::charge.name},${Patient::charge.name}," +
+                    "${Patient::id.name},${Patient::name.name},${Patient::charge.name}," +
                         "${Patient::due.name},${Patient::notes.name}," +
                         "${Patient::lastModified.name},${Patient::created.name}"
                 )
@@ -79,7 +79,7 @@ class ExportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
                     appendLine(
                         "${patient.id},${patient.name},${patient.charge}," +
                             "${patient.due},${patient.notes}," +
-                            "${patient.lastModified},${patient.created}"
+                            "${patient.lastModified.time},${patient.created.time}"
                     )
                     updateProgress((index + 1) * 100 / patients.size, "Exporting Patients")
                 }
@@ -93,6 +93,7 @@ class ExportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         @IntRange(from = 0, to = 100) progress: Int,
         message: String
     ) {
+        buildNotificationChannel()
         val notification = notificationBuilder.setProgress(100, progress, false)
             .setContentText(message)
             .build()
