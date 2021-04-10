@@ -31,13 +31,34 @@ object DatabaseModule {
     private object Migration2to3 : Migration(2, 3) {
         override fun migrate(database: SupportSQLiteDatabase) {
             database.execSQL("DROP VIEW IF EXISTS `Activity`;")
-            database.execSQL("CREATE VIEW `Activity` AS " +
+            database.execSQL(
+                "CREATE VIEW `Activity` AS " +
                     "SELECT id, time, charge AS amount, notes, patient_id, 'healing' as type " +
                     "FROM healings " +
                     "UNION " +
                     "SELECT id, time, amount, notes, patient_id, 'payment' as type " +
                     "FROM payments " +
-                    "ORDER BY time DESC;")
+                    "ORDER BY time DESC;"
+            )
+        }
+    }
+
+    private object Migration3to4 : Migration(3, 4) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+            database.execSQL("DROP VIEW IF EXISTS `Activity`;")
+            database.execSQL(
+                "CREATE VIEW `Activity` AS " +
+                    "SELECT id, time, charge AS amount, notes, patient_id, 'healing' as type " +
+                    "FROM healings " +
+                    "UNION " +
+                    "SELECT id, time, amount, notes, patient_id, 'payment' as type " +
+                    "FROM payments " +
+                    "UNION " +
+                    "SELECT id, created as time, due as amount, name as notes, " +
+                    "id as patient_id, 'patient' AS type " +
+                    "FROM patients " +
+                    "ORDER BY time DESC"
+            )
         }
     }
 
@@ -45,8 +66,9 @@ object DatabaseModule {
     @Singleton
     fun provideHealersDatabase(@ApplicationContext context: Context): HealersDatabase {
         return Room.databaseBuilder(context, HealersDatabase::class.java, "healers_db")
-                .addMigrations(Migration1to2)
-                .addMigrations(Migration2to3)
-                .build()
+            .addMigrations(Migration1to2)
+            .addMigrations(Migration2to3)
+            .addMigrations(Migration3to4)
+            .build()
     }
 }
