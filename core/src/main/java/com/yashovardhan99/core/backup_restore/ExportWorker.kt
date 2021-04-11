@@ -78,16 +78,20 @@ class ExportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         contentResolver.openOutputStream(fileUri)?.use { outputStream ->
             outputStream.bufferedWriter().apply {
                 appendLine(
-                    "${Patient::id.name},${Patient::name.name},${Patient::charge.name}," +
-                        "${Patient::due.name},${Patient::notes.name}," +
-                        "${Patient::lastModified.name},${Patient::created.name}"
+                    ExportUtils.getCsvRow(
+                        Patient::id.name, Patient::name.name, Patient::charge.name,
+                        Patient::due.name, Patient::notes.name,
+                        Patient::lastModified.name, Patient::created.name
+                    )
                 )
                 val patients = dao.getAllPatients().first()
                 patients.forEachIndexed { index, patient ->
                     appendLine(
-                        "${patient.id},${patient.name},${patient.charge}," +
-                            "${patient.due},${patient.notes}," +
-                            "${patient.lastModified.time},${patient.created.time}"
+                        ExportUtils.getCsvRow(
+                            patient.id, patient.name,
+                            patient.charge, patient.due, patient.notes,
+                            patient.lastModified.time, patient.created.time
+                        )
                     )
                     updateProgress((index + 1) * 100 / patients.size, "Exporting Patients")
                 }
@@ -105,16 +109,19 @@ class ExportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         contentResolver.openOutputStream(fileUri)?.use { outputStream ->
             outputStream.bufferedWriter().apply {
                 appendLine(
-                    "${Healing::id.name},${Healing::time.name}," +
-                        "${Healing::charge.name},${Healing::notes.name}," +
+                    ExportUtils.getCsvRow(
+                        Healing::id.name, Healing::time.name,
+                        Healing::charge.name, Healing::notes.name,
                         Healing::patientId.name
+                    )
                 )
                 val healings = dao.getAllHealings()
                 healings.forEachIndexed { index, healing ->
                     appendLine(
-                        "${healing.id},${healing.time.time}," +
-                            "${healing.charge},${healing.notes}," +
-                            "${healing.patientId}"
+                        ExportUtils.getCsvRow(
+                            healing.id, healing.time.time,
+                            healing.charge, healing.notes, healing.patientId
+                        )
                     )
                     updateProgress((index + 1) * 100 / healings.size, "Exporting Healings")
                 }
@@ -132,16 +139,19 @@ class ExportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         contentResolver.openOutputStream(fileUri)?.use { outputStream ->
             outputStream.bufferedWriter().apply {
                 appendLine(
-                    "${Payment::id.name},${Payment::time.name}," +
-                        "${Payment::amount.name},${Payment::notes.name}," +
+                    ExportUtils.getCsvRow(
+                        Payment::id.name, Payment::time.name,
+                        Payment::amount.name, Payment::notes.name,
                         Payment::patientId.name
+                    )
                 )
                 val payments = dao.getAllPayments()
                 payments.forEachIndexed { index, payment ->
                     appendLine(
-                        "${payment.id},${payment.time.time}," +
-                            "${payment.amount},${payment.notes}," +
-                            "${payment.patientId}"
+                        ExportUtils.getCsvRow(
+                            payment.id, payment.time.time,
+                            payment.amount, payment.notes, payment.patientId
+                        )
                     )
                     updateProgress((index + 1) * 100 / payments.size, "Exporting Payments")
                 }
