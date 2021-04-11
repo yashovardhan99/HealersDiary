@@ -10,6 +10,7 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.yashovardhan99.core.backup_restore.ExportWorker
+import com.yashovardhan99.core.backup_restore.ImportWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -117,6 +118,36 @@ class BackupViewModel @Inject constructor(@ApplicationContext context: Context) 
         workManager.enqueueUniqueWork(
             "exportWorker",
             ExistingWorkPolicy.REPLACE,
+            workRequest
+        )
+        return true
+    }
+
+    fun importBackup(): Boolean {
+        if (selectedTypes == 0) return false
+        val workData = Data.Builder().putInt(ImportWorker.DATA_TYPE_KEY, selectedTypes)
+        if (selectedTypes and ExportWorker.Companion.DataType.Patients.mask > 0) workData
+            .putString(
+                ImportWorker.PATIENTS_FILE_URI_KEY,
+                patientsUri.toString()
+            )
+        if (selectedTypes and ExportWorker.Companion.DataType.Healings.mask > 0) workData
+            .putString(
+                ImportWorker.HEALINGS_FILE_URI_KEY,
+                healingsUri.toString()
+            )
+        if (selectedTypes and ExportWorker.Companion.DataType.Payments.mask > 0) workData
+            .putString(
+                ImportWorker.PAYMENTS_FILE_URI_KEY,
+                paymentsUri.toString()
+            )
+        val workRequest = OneTimeWorkRequestBuilder<ImportWorker>()
+            .setInputData(workData.build())
+            .addTag("importWorker")
+            .build()
+        workManager.enqueueUniqueWork(
+            "importWorker",
+            ExistingWorkPolicy.APPEND_OR_REPLACE,
             workRequest
         )
         return true

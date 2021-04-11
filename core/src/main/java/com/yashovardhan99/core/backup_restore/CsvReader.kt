@@ -2,12 +2,12 @@ package com.yashovardhan99.core.backup_restore
 
 import java.io.BufferedReader
 import java.io.IOException
-import java.io.InputStreamReader
+import java.io.InputStream
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class CsvReader(private val bufferedReader: BufferedReader) {
-    constructor(inputStreamReader: InputStreamReader) : this(inputStreamReader.buffered())
+    constructor(inputStream: InputStream) : this(inputStream.bufferedReader())
 
     private fun String.unescapeString(): String {
         return if (startsWith("\"") && endsWith("\"")) {
@@ -92,5 +92,12 @@ class CsvReader(private val bufferedReader: BufferedReader) {
             }
         }
         return curRow.map { it.unescapeString() }
+    }
+
+    suspend fun close() {
+        withContext(Dispatchers.IO) {
+            @Suppress("BlockingMethodInNonBlockingContext")
+            bufferedReader.close()
+        }
     }
 }

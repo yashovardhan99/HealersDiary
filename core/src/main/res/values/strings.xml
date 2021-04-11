@@ -32,5 +32,11 @@
     <string name="exporting_data">Exporting Data</string>
     <string name="backup_sync_group_name">Backup &amp; Sync</string>
     <string name="export">Export</string>
+    <string name="import_text">Import</string>
+    <string name="invalid_format">Provided file had an invalid format</string>
+    <string name="empty_file">Provided file had nothing to import</string>
+    <string name="partially_successful">Some entries were imported successfully</string>
+    <string name="successful">Import was successful</string>
+    <string name="importing_data">Importing Data</string>
 
 </resources>

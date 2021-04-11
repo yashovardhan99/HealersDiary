@@ -95,6 +95,11 @@ class ImportFragment : Fragment() {
         binding.paymentsUploadBox.setOnClickListener {
             paymentsImportLauncher.launch(arrayOf("text/csv"))
         }
+        binding.importBackup.setOnClickListener {
+            if (viewModel.isReadyForImport()) {
+                viewModel.importBackup()
+            }
+        }
         return binding.root
     }
 }
