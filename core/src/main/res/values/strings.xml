@@ -28,5 +28,6 @@
     <string name="healings_last_month">Healings last month</string>
     <string name="payment_due">Payment Due</string>
     <string name="nothing_here">NOTHING HERE</string>
+    <string name="patient_added">Patient Added</string>
 
 </resources>

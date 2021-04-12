@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.0.0-beta02] - 2021-04-12
+### Added
+- Patient created events now show up in dashboard
+
 ## [2.0.0-beta01] - 2021-03-15
 Same as [2.0.0-alpha06]
 
@@ -172,7 +176,8 @@ See Pull Request #5
 - Add new healing record for patient
 - View healing logs
 
-[Unreleased]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-beta01...HEAD
+[Unreleased]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-beta02...HEAD
+[2.0.0-beta02]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-beta01...v2.0.0-beta02
 [2.0.0-beta01]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-alpha06...v2.0.0-beta01
 [2.0.0-alpha06]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-alpha05...v2.0.0-alpha06
 [2.0.0-alpha05]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-alpha04...v2.0.0-alpha05
