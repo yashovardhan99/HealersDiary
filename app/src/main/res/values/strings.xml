@@ -9,11 +9,9 @@
     <string name="enter_payment_received">Enter Payment Received</string>
     <string name="welcome_user">Welcome, %s!</string>
     <string name="by_signing_in_you_agree_to_our_s">
-    By Signing in, you agree to our
-    <a href="https://github.com/yashovardhan99/HealersDiary/blob/master/PRIVACY%20POLICY.md">Privacy Policy</a>
-    and
-    <a href="https://github.com/yashovardhan99/HealersDiary/blob/master/EULA.md">Terms of Use</a>
-  </string>
+        By Signing in, you agree to our
+        <a href="https://github.com/yashovardhan99/HealersDiary/blob/master/PRIVACY%20POLICY.md">Privacy Policy</a>
+        and<a href="https://github.com/yashovardhan99/HealersDiary/blob/master/EULA.md">Terms of Use</a></string>
     <string name="privacy_policy_link" translatable="false">https://github.com/yashovardhan99/HealersDiary/blob/master/PRIVACY%20POLICY.md</string>
     <string name="eula_link" translatable="false">https://github.com/yashovardhan99/HealersDiary/blob/master/EULA.md</string>
     <string name="phone_number">Phone Number</string>
@@ -113,17 +111,24 @@
     <string name="overrides_all_data">This action will override all existing records. Are you sure you want to continue?</string>
     <string name="confirm">Confirm</string>
     <string name="data_cleared">Data Cleared</string>
-  <string name="undo">Undo</string>
+    <string name="undo">Undo</string>
     <string name="edit_healing">Edit Healing</string>
-  <string name="edit_payment">Edit Payment</string>
+    <string name="edit_payment">Edit Payment</string>
     <string name="export">Export</string>
     <string name="healings">Healings</string>
-  <string name="payments">Payments</string>
-  <string name="import_text">Import</string>
-  <string name="start">Start</string>
+    <string name="payments">Payments</string>
+    <string name="import_text">Import</string>
+    <string name="start">Start</string>
     <string name="might_be_overwrriten_note">Any data matching existing IDs might be overwritten</string>
-  <string name="must_match_an_existing_patient">Healings or payments must match an existing patient</string>
+    <string name="must_match_an_existing_patient">Healings or payments must match an existing patient</string>
     <string name="upload_files">Upload Files</string>
     <string name="exporting_to">Exporting to %s</string>
+    <string name="currently_importing_s">Currently Importing: %s</string>
+    <string name="currently_exporting_s">Currently Exporting: %s</string>
+    <string name="exported_d_of_d">Exported %d of %d</string>
+    <string name="import_error">Invalid format</string>
+    <string name="import_empty">Nothing to import</string>
+    <string name="import_success">Imported %d rows</string>
+    <string name="import_partial">Imported %d rows (%d failed)</string>
 </resources>
 

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="header"
+            type="com.yashovardhan99.core.utils.Header" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/start"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.02" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/end"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.98" />
+
+        <include
+            android:id="@+id/heading"
+            bind:header="@{header}"
+            layout="@layout/header" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            app:layout_constraintStart_toStartOf="@id/start"
+            app:layout_constraintEnd_toEndOf="@id/end"
+            app:layout_constraintTop_toBottomOf="@id/icon"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintVertical_bias="0.05">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/exporting_data"
+                android:textAppearance="@style/h1"
+                android:layout_margin="8dp" />
+
+            <TextView
+                android:id="@+id/subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="@string/currently_exporting_s"
+                android:textAppearance="@style/h2" />
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/main_progress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="100"
+                android:layout_margin="8dp" />
+
+            <RelativeLayout
+                android:id="@+id/patients_box"
+                android:layout_width="match_parent"
+                android:layout_margin="8dp"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/patient_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/subtitle"
+                    android:text="@string/patients" />
+
+                <com.google.android.material.progressindicator.LinearProgressIndicator
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/patient_progress"
+                    android:layout_below="@id/patient_title"
+                    android:layout_marginTop="8dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_below="@id/patient_progress"
+                    android:id="@+id/patient_status"
+                    android:text="@string/exported_d_of_d" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/healings_box"
+                android:layout_width="match_parent"
+                android:layout_margin="8dp"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/healing_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/subtitle"
+                    android:text="@string/healings" />
+
+                <com.google.android.material.progressindicator.LinearProgressIndicator
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/healing_progress"
+                    android:layout_below="@id/healing_title"
+                    android:layout_marginTop="8dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_below="@id/healing_progress"
+                    android:id="@+id/healing_status"
+                    android:text="@string/exported_d_of_d" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/payments_box"
+                android:layout_width="match_parent"
+                android:layout_margin="8dp"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/payment_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/subtitle"
+                    android:text="@string/payments" />
+
+                <com.google.android.material.progressindicator.LinearProgressIndicator
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/payment_progress"
+                    android:layout_below="@id/payment_title"
+                    android:layout_marginTop="8dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_below="@id/payment_progress"
+                    android:id="@+id/payment_status"
+                    android:text="@string/exported_d_of_d" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

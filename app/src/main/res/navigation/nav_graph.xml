@@ -92,6 +92,9 @@
         <action
             android:id="@+id/action_backupFragment_to_importFragment"
             app:destination="@id/importFragment" />
+        <action
+            android:id="@+id/action_backupFragment_to_backupProgressFragment"
+            app:destination="@id/backupProgressFragment" />
     </fragment>
     <fragment
         tools:layout="@layout/fragment_import"
@@ -102,5 +105,13 @@
             android:name="selectedType"
             app:argType="integer"
             android:defaultValue="0" />
+        <action
+            android:id="@+id/action_importFragment_to_backupProgressFragment"
+            app:destination="@id/backupProgressFragment" />
     </fragment>
+    <fragment
+        tools:layout="@layout/fragment_backup_progress"
+        android:id="@+id/backupProgressFragment"
+        android:name="com.yashovardhan99.healersdiary.settings.BackupProgressFragment"
+        android:label="BackupProgressFragment" />
 </navigation>

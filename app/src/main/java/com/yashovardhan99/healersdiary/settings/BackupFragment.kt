@@ -67,6 +67,13 @@ class BackupFragment : Fragment() {
                 showExportNote()
             }
         }
+        lifecycleScope.launchWhenResumed {
+            viewModel.showProgress.collect {
+                if (it) findNavController().navigate(
+                    BackupFragmentDirections.actionBackupFragmentToBackupProgressFragment()
+                )
+            }
+        }
         binding.start.setOnClickListener {
             if (binding.importExportToggle.checkedButtonId == R.id.export) {
                 viewModel.setExport(true)

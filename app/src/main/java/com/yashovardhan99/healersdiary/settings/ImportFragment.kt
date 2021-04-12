@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.yashovardhan99.core.backup_restore.ExportWorker
@@ -17,8 +18,11 @@ import com.yashovardhan99.core.utils.Icons
 import com.yashovardhan99.core.utils.buildHeader
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.FragmentImportBinding
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 
+@AndroidEntryPoint
 class ImportFragment : Fragment() {
     private val viewModel: BackupViewModel by activityViewModels()
     private lateinit var binding: FragmentImportBinding
@@ -90,7 +94,7 @@ class ImportFragment : Fragment() {
     ): View {
         binding = FragmentImportBinding.inflate(inflater, container, false)
         context?.apply {
-            binding.header = buildHeader(Icons.Back, R.string.import_text)
+            binding.header = buildHeader(Icons.Back, R.string.backup_sync_group_name)
             binding.heading.icon.setOnClickListener {
                 findNavController().popBackStack()
             }
@@ -120,6 +124,14 @@ class ImportFragment : Fragment() {
                 viewModel.importBackup()
             }
         }
+        lifecycleScope.launchWhenResumed {
+            viewModel.showProgress.collect {
+                if (it) findNavController().navigate(
+                    ImportFragmentDirections.actionImportFragmentToBackupProgressFragment()
+                )
+            }
+        }
+
         return binding.root
     }
 }

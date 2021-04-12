@@ -7,11 +7,14 @@ import android.provider.DocumentsContract
 import android.provider.OpenableColumns
 import androidx.core.database.getStringOrNull
 import androidx.documentfile.provider.DocumentFile
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.yashovardhan99.core.backup_restore.ExportWorker
 import com.yashovardhan99.core.backup_restore.ImportWorker
@@ -21,6 +24,9 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -47,6 +53,16 @@ class BackupViewModel @Inject constructor(
         private set
     private val exportUri = dataStore.getExportLocation().onEach { exportUriCopy = it }
     val exportUriFlow = exportUri
+    private val allWorkObserver: LiveData<List<WorkInfo>> =
+        workManager.getWorkInfosForUniqueWorkLiveData("backupWorker").map { list ->
+            list.filter { it.state in setOf(WorkInfo.State.RUNNING, WorkInfo.State.ENQUEUED) }
+        }
+    private val showProgressInternal = MutableStateFlow(false)
+    val showProgress: StateFlow<Boolean> = showProgressInternal.asStateFlow()
+
+    val workObserver: LiveData<WorkInfo?> = allWorkObserver.map { list ->
+        list.firstOrNull { it.state == WorkInfo.State.RUNNING } ?: list.firstOrNull()
+    }
 
     @Suppress("BlockingMethodInNonBlockingContext")
     val exportLocation: Flow<String?> = exportUri.map { uri ->
@@ -188,11 +204,12 @@ class BackupViewModel @Inject constructor(
             .addTag("exportWorker")
             .build()
         workManager.enqueueUniqueWork(
-            "exportWorker",
-            ExistingWorkPolicy.REPLACE,
+            "backupWorker",
+            ExistingWorkPolicy.APPEND_OR_REPLACE,
             workRequest
         )
         checkedTypes = 0
+        showProgressInternal.value = true
         return true
     }
 
@@ -219,11 +236,16 @@ class BackupViewModel @Inject constructor(
             .addTag("importWorker")
             .build()
         workManager.enqueueUniqueWork(
-            "importWorker",
+            "backupWorker",
             ExistingWorkPolicy.APPEND_OR_REPLACE,
             workRequest
         )
+        showProgressInternal.value = true
         return true
+    }
+
+    fun resetShowProgress() {
+        showProgressInternal.value = false
     }
 
     companion object {
