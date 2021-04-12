@@ -71,93 +71,82 @@ class ExportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
     }
 
     @Suppress("BlockingMethodInNonBlockingContext")
+    private suspend inline fun <T> export(
+        contentResolver: ContentResolver,
+        uriKey: String,
+        notificationMessage: String,
+        header: String,
+        items: List<T>,
+        crossinline getCsvRow: (T) -> String
+    ) {
+        updateProgress(0, notificationMessage)
+        val fileUri = Uri.parse(inputData.getString(uriKey)) ?: throw FileNotFoundException()
+        withContext(Dispatchers.IO) {
+            contentResolver.openAssetFileDescriptor(fileUri, "w")?.use {
+                it.createOutputStream().channel.truncate(0).close()
+            }
+            contentResolver.openOutputStream(fileUri)?.bufferedWriter()?.apply {
+                appendLine(header)
+                items.forEachIndexed { index, item ->
+                    appendLine(getCsvRow(item))
+                    updateProgress((index + 1) * 100 / items.size, notificationMessage)
+                }
+                close()
+            }?.close()
+        }
+    }
+
     private suspend fun exportPatients(contentResolver: ContentResolver, dao: HealersDao) {
-        updateProgress(0, "Exporting Patients")
-        val fileUri =
-            Uri.parse(inputData.getString(PATIENTS_FILE_URI_KEY)) ?: throw FileNotFoundException()
-        contentResolver.openOutputStream(fileUri)?.use { outputStream ->
-            outputStream.bufferedWriter().apply {
-                appendLine(
-                    ExportUtils.getCsvRow(
-                        Patient::id.name, Patient::name.name, Patient::charge.name,
-                        Patient::due.name, Patient::notes.name,
-                        Patient::lastModified.name, Patient::created.name
-                    )
-                )
-                val patients = dao.getAllPatients().first()
-                patients.forEachIndexed { index, patient ->
-                    appendLine(
-                        ExportUtils.getCsvRow(
-                            patient.id, patient.name,
-                            patient.charge, patient.due, patient.notes,
-                            patient.lastModified.time, patient.created.time
-                        )
-                    )
-                    updateProgress((index + 1) * 100 / patients.size, "Exporting Patients")
-                }
-                close()
-            }
-            outputStream.close()
+        export(
+            contentResolver,
+            PATIENTS_FILE_URI_KEY,
+            "Exporting Patients",
+            ExportUtils.getCsvRow(
+                Patient::id.name, Patient::name.name, Patient::charge.name, Patient::due.name,
+                Patient::notes.name, Patient::lastModified.name, Patient::created.name
+            ),
+            dao.getAllPatients().first()
+        ) { patient ->
+            ExportUtils.getCsvRow(
+                patient.id, patient.name, patient.charge,
+                patient.due, patient.notes, patient.lastModified.time, patient.created.time
+            )
         }
     }
 
-    @Suppress("BlockingMethodInNonBlockingContext")
     private suspend fun exportHealings(contentResolver: ContentResolver, dao: HealersDao) {
-        updateProgress(0, "Exporting Healings")
-        val fileUri =
-            Uri.parse(inputData.getString(HEALINGS_FILE_URI_KEY)) ?: throw FileNotFoundException()
-        contentResolver.openOutputStream(fileUri)?.use { outputStream ->
-            outputStream.bufferedWriter().apply {
-                appendLine(
-                    ExportUtils.getCsvRow(
-                        Healing::id.name, Healing::time.name,
-                        Healing::charge.name, Healing::notes.name,
-                        Healing::patientId.name
-                    )
-                )
-                val healings = dao.getAllHealings()
-                healings.forEachIndexed { index, healing ->
-                    appendLine(
-                        ExportUtils.getCsvRow(
-                            healing.id, healing.time.time,
-                            healing.charge, healing.notes, healing.patientId
-                        )
-                    )
-                    updateProgress((index + 1) * 100 / healings.size, "Exporting Healings")
-                }
-                close()
-            }
-            outputStream.close()
+        export(
+            contentResolver,
+            HEALINGS_FILE_URI_KEY,
+            "Exporting Healings",
+            ExportUtils.getCsvRow(
+                Healing::id.name, Healing::time.name, Healing::charge.name,
+                Healing::notes.name, Healing::patientId.name
+            ),
+            dao.getAllHealings()
+        ) { healing ->
+            ExportUtils.getCsvRow(
+                healing.id, healing.time.time, healing.charge,
+                healing.notes, healing.patientId
+            )
         }
     }
 
-    @Suppress("BlockingMethodInNonBlockingContext")
     private suspend fun exportPayments(contentResolver: ContentResolver, dao: HealersDao) {
-        updateProgress(0, "Exporting Payments")
-        val fileUri =
-            Uri.parse(inputData.getString(PAYMENTS_FILE_URI_KEY)) ?: throw FileNotFoundException()
-        contentResolver.openOutputStream(fileUri)?.use { outputStream ->
-            outputStream.bufferedWriter().apply {
-                appendLine(
-                    ExportUtils.getCsvRow(
-                        Payment::id.name, Payment::time.name,
-                        Payment::amount.name, Payment::notes.name,
-                        Payment::patientId.name
-                    )
-                )
-                val payments = dao.getAllPayments()
-                payments.forEachIndexed { index, payment ->
-                    appendLine(
-                        ExportUtils.getCsvRow(
-                            payment.id, payment.time.time,
-                            payment.amount, payment.notes, payment.patientId
-                        )
-                    )
-                    updateProgress((index + 1) * 100 / payments.size, "Exporting Payments")
-                }
-                close()
-            }
-            outputStream.close()
+        export(
+            contentResolver,
+            PAYMENTS_FILE_URI_KEY,
+            "Exporting Payments",
+            ExportUtils.getCsvRow(
+                Payment::id.name, Payment::time.name, Payment::amount.name,
+                Payment::notes.name, Payment::patientId.name
+            ),
+            dao.getAllPayments()
+        ) { payment ->
+            ExportUtils.getCsvRow(
+                payment.id, payment.time.time, payment.amount,
+                payment.notes, payment.patientId
+            )
         }
     }
 

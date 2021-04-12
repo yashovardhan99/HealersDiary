@@ -153,10 +153,16 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
                     failed += 1
                 } else {
                     try {
-                        val patientId = row[4].toLong()
+                        val patientId = patientMaps.getOrDefault(row[4].toLong(), row[4].toLong())
+                        if (
+                            dao.getPatient(patientId) == null
+                        ) {
+                            failed += 1
+                            continue
+                        }
                         val healing = Healing(
                             row[0].toLong(), Date(row[1].toLong()),
-                            row[2].toLong(), row[3], patientMaps.getOrDefault(patientId, patientId)
+                            row[2].toLong(), row[3], patientId
                         )
                         dao.insertHealing(healing)
                         success += 1

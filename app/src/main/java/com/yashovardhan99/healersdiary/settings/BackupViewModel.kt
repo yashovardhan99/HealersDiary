@@ -1,23 +1,37 @@
 package com.yashovardhan99.healersdiary.settings
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
+import android.provider.DocumentsContract
 import android.provider.OpenableColumns
 import androidx.core.database.getStringOrNull
+import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.yashovardhan99.core.backup_restore.ExportWorker
 import com.yashovardhan99.core.backup_restore.ImportWorker
+import com.yashovardhan99.core.database.HealersDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 @HiltViewModel
-class BackupViewModel @Inject constructor(@ApplicationContext context: Context) : ViewModel() {
+class BackupViewModel @Inject constructor(
+    @ApplicationContext context: Context,
+    private val dataStore: HealersDataStore
+) : ViewModel() {
     private val workManager = WorkManager.getInstance(context)
     private val contentResolver = context.contentResolver
     private var selectedTypes = 0
@@ -28,6 +42,21 @@ class BackupViewModel @Inject constructor(@ApplicationContext context: Context) 
     private var paymentsUri = Uri.EMPTY
     var isExporting = false
         private set
+    private val exportUri = dataStore.getExportLocation()
+    val exportUriFlow = exportUri
+
+    @Suppress("BlockingMethodInNonBlockingContext")
+    val exportLocation: Flow<String?> = exportUri.map { uri ->
+        uri?.let {
+            getFileName(it)
+        }
+    }
+    private val documentFile = exportUri.map { uri ->
+        uri?.let {
+            Timber.d("Mapping export location for uri = $uri")
+            DocumentFile.fromTreeUri(context, it)?.getChildDocumentFile()
+        }
+    }
 
     fun setExport(isExport: Boolean) {
         isExporting = isExport
@@ -78,9 +107,6 @@ class BackupViewModel @Inject constructor(@ApplicationContext context: Context) 
             ExportWorker.Companion.DataType.Patients -> patientsUri = uri
             ExportWorker.Companion.DataType.Payments -> paymentsUri = uri
         }
-        if (selectedTypes == checkedTypes) {
-            if (isExporting) createBackup()
-        }
     }
 
     fun deselectType(type: ExportWorker.Companion.DataType) {
@@ -93,23 +119,66 @@ class BackupViewModel @Inject constructor(@ApplicationContext context: Context) 
         }
     }
 
-    private fun createBackup(): Boolean {
-        if (selectedTypes == 0) return false
-        val workData = Data.Builder().putInt(ExportWorker.DATA_TYPE_KEY, selectedTypes)
-        if (selectedTypes and ExportWorker.Companion.DataType.Patients.mask > 0) workData
+    fun setExportLocation(context: Context, uri: Uri) {
+        contentResolver.takePersistableUriPermission(
+            uri,
+            Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+        )
+        DocumentFile.fromTreeUri(context, uri)?.getChildDocumentFile()?.uri?.let {
+            viewModelScope.launch(Dispatchers.IO) {
+                dataStore.updateExportLocation(it)
+                createBackup()
+            }
+        }
+    }
+
+    private fun DocumentFile.getChildDocumentFile(): DocumentFile? {
+        return if (name?.startsWith(ExportFolderName) == false)
+            findFile(ExportFolderName) ?: createDirectory(ExportFolderName)
+        else this
+    }
+
+    private suspend fun buildFileUri(type: ExportWorker.Companion.DataType): Uri? {
+        return withContext(Dispatchers.IO) {
+            documentFile.firstOrNull()?.run {
+                Timber.d("build file docfile = $name")
+                @Suppress("BlockingMethodInNonBlockingContext")
+                findFile(getBackupFileName(type))?.uri
+                    ?: DocumentsContract.createDocument(
+                        contentResolver,
+                        uri,
+                        "text/csv",
+                        getBackupFileName(type)
+                    )
+            }
+        }
+    }
+
+    private fun getBackupFileName(type: ExportWorker.Companion.DataType): String {
+        return when (type) {
+            ExportWorker.Companion.DataType.Healings -> "healings.csv"
+            ExportWorker.Companion.DataType.Patients -> "patients.csv"
+            ExportWorker.Companion.DataType.Payments -> "payments.csv"
+        }
+    }
+
+    private suspend fun createBackup(): Boolean {
+        if (checkedTypes == 0) return false
+        val workData = Data.Builder().putInt(ExportWorker.DATA_TYPE_KEY, checkedTypes)
+        if (checkedTypes and ExportWorker.Companion.DataType.Patients.mask > 0) workData
             .putString(
                 ExportWorker.PATIENTS_FILE_URI_KEY,
-                patientsUri.toString()
+                buildFileUri(ExportWorker.Companion.DataType.Patients).toString()
             )
-        if (selectedTypes and ExportWorker.Companion.DataType.Healings.mask > 0) workData
+        if (checkedTypes and ExportWorker.Companion.DataType.Healings.mask > 0) workData
             .putString(
                 ExportWorker.HEALINGS_FILE_URI_KEY,
-                healingsUri.toString()
+                buildFileUri(ExportWorker.Companion.DataType.Healings).toString()
             )
-        if (selectedTypes and ExportWorker.Companion.DataType.Payments.mask > 0) workData
+        if (checkedTypes and ExportWorker.Companion.DataType.Payments.mask > 0) workData
             .putString(
                 ExportWorker.PAYMENTS_FILE_URI_KEY,
-                paymentsUri.toString()
+                buildFileUri(ExportWorker.Companion.DataType.Payments).toString()
             )
         val workRequest = OneTimeWorkRequestBuilder<ExportWorker>()
             .setInputData(workData.build())
@@ -120,6 +189,7 @@ class BackupViewModel @Inject constructor(@ApplicationContext context: Context) 
             ExistingWorkPolicy.REPLACE,
             workRequest
         )
+        checkedTypes = 0
         return true
     }
 
@@ -151,5 +221,9 @@ class BackupViewModel @Inject constructor(@ApplicationContext context: Context) 
             workRequest
         )
         return true
+    }
+
+    companion object {
+        private const val ExportFolderName = "HealersDiary"
     }
 }
