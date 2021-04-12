@@ -1,5 +1,6 @@
 package com.yashovardhan99.healersdiary.dashboard
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -10,10 +11,10 @@ import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
-import com.yashovardhan99.healersdiary.R
-import com.yashovardhan99.healersdiary.databinding.ActivityMainBinding
 import com.yashovardhan99.core.utils.Request
+import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.RequestContract
+import com.yashovardhan99.healersdiary.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -66,19 +67,26 @@ class MainActivity : AppCompatActivity() {
             Request.NewPatient -> getRequestContract.launch(request)
             is Request.NewActivity -> getRequestContract.launch(request)
             is Request.ViewPatient -> findNavController(R.id.nav_host_fragment_container)
-                    .navigate(request.getUri(), NavOptions.Builder().setLaunchSingleTop(true)
-                            .setPopUpTo(R.id.patientDetailFragment, true).build())
+                .navigate(
+                    request.getUri(),
+                    NavOptions.Builder().setLaunchSingleTop(true)
+                        .setPopUpTo(R.id.patientDetailFragment, true).build()
+                )
             is Request.UpdateHealing -> getRequestContract.launch(request)
             is Request.UpdatePayment -> getRequestContract.launch(request)
             is Request.UpdatePatient -> getRequestContract.launch(request)
-            Request.ViewDashboard -> findNavController(R.id.nav_host_fragment_container).popBackStack(R.id.home, false)
+            Request.ViewDashboard -> findNavController(R.id.nav_host_fragment_container)
+                .popBackStack(R.id.home, false)
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container) as NavHostFragment
+        val binding =
+            DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container)
+                as NavHostFragment
         navController = navHostFragment.navController
         binding.bottomNav.setupWithNavController(navController)
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
@@ -95,6 +103,9 @@ class MainActivity : AppCompatActivity() {
                 handleRequest(request)
                 viewModel.resetRequest()
             }
+        }
+        if (intent.action == Intent.ACTION_VIEW) {
+            intent = intent.setData(null).setAction(null)
         }
     }
 }

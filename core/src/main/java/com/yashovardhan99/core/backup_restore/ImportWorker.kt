@@ -4,14 +4,17 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationChannelGroup
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.ContentResolver
 import android.content.Context
+import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.net.Uri
 import android.os.Build
 import androidx.annotation.StringRes
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.TaskStackBuilder
 import androidx.core.content.ContextCompat
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
@@ -251,8 +254,16 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         message: String
     ) {
         buildNotificationChannel()
+        val deepLink = TaskStackBuilder.create(applicationContext)
+            .addNextIntentWithParentStack(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("healersdiary://com.yashovardhan99.healersdiary/backup/progress"),
+                )
+            ).getPendingIntent(PendingIntentReqCode, PendingIntent.FLAG_UPDATE_CURRENT)
         val notification = notificationBuilder.setProgress(100, 30, true)
             .setContentText(message)
+            .setContentIntent(deepLink)
             .build()
         val foregroundInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             ForegroundInfo(
@@ -298,6 +309,7 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         val CHANNEL_NAME = R.string.import_text
         val GROUP_NAME = R.string.backup_sync_group_name
         const val PROGRESS_TEXT_KEY = "progress_text"
+        const val PendingIntentReqCode = 30
 
         sealed class ImportResult(@StringRes val message: Int) {
             object InvalidFormat : ImportResult(R.string.invalid_format)

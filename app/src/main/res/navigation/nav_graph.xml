@@ -113,5 +113,10 @@
         tools:layout="@layout/fragment_backup_progress"
         android:id="@+id/backupProgressFragment"
         android:name="com.yashovardhan99.healersdiary.settings.BackupProgressFragment"
-        android:label="BackupProgressFragment" />
+        android:label="BackupProgressFragment">
+        <deepLink
+            android:id="@+id/deepLink3"
+            app:uri="healersdiary://com.yashovardhan99.healersdiary/backup/progress"
+            app:action="ACTION_VIEW" />
+    </fragment>
 </navigation>
