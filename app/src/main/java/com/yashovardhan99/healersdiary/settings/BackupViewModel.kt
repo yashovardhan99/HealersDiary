@@ -23,6 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -42,7 +43,9 @@ class BackupViewModel @Inject constructor(
     private var paymentsUri = Uri.EMPTY
     var isExporting = false
         private set
-    private val exportUri = dataStore.getExportLocation()
+    var exportUriCopy: Uri? = null
+        private set
+    private val exportUri = dataStore.getExportLocation().onEach { exportUriCopy = it }
     val exportUriFlow = exportUri
 
     @Suppress("BlockingMethodInNonBlockingContext")
@@ -122,7 +125,7 @@ class BackupViewModel @Inject constructor(
     fun setExportLocation(context: Context, uri: Uri) {
         contentResolver.takePersistableUriPermission(
             uri,
-            Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+            Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         )
         DocumentFile.fromTreeUri(context, uri)?.getChildDocumentFile()?.uri?.let {
             viewModelScope.launch(Dispatchers.IO) {

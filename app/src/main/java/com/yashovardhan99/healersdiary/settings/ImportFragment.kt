@@ -1,12 +1,16 @@
 package com.yashovardhan99.healersdiary.settings
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.provider.DocumentsContract
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.yashovardhan99.core.backup_restore.ExportWorker
 import com.yashovardhan99.core.utils.Icons
@@ -19,52 +23,65 @@ class ImportFragment : Fragment() {
     private val viewModel: BackupViewModel by activityViewModels()
     private lateinit var binding: FragmentImportBinding
     private val args by navArgs<ImportFragmentArgs>()
-    private val importContract = ActivityResultContracts.OpenDocument()
-    private val patientsImportLauncher = registerForActivityResult(importContract) {
-        Timber.d("Received uri for import patients = $it")
-        if (it != null && viewModel.checkUri(it)) {
-            viewModel.selectType(ExportWorker.Companion.DataType.Patients, it)
-            binding.patientsUpload.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                R.drawable.check,
-                0,
-                0,
-                0
-            )
-            binding.patientsFileName.visibility = View.VISIBLE
-            binding.patientsFileName.text = viewModel.getFileName(it)
+    private val importDocumentContract = object : ActivityResultContracts.OpenDocument() {
+        override fun createIntent(context: Context, input: Array<out String>): Intent {
+            return super.createIntent(context, input).apply {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    putExtra(DocumentsContract.EXTRA_INITIAL_URI, viewModel.exportUriCopy)
+                }
+                addCategory(Intent.CATEGORY_OPENABLE)
+            }
         }
-        binding.importBackup.isEnabled = viewModel.isReadyForImport()
     }
-    private val healingsImportLauncher = registerForActivityResult(importContract) {
-        Timber.d("Received uri for import healings = $it")
-        if (it != null && viewModel.checkUri(it)) {
-            viewModel.selectType(ExportWorker.Companion.DataType.Healings, it)
-            binding.healingsUpload.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                R.drawable.check,
-                0,
-                0,
-                0
-            )
-            binding.healingsFileName.visibility = View.VISIBLE
-            binding.healingsFileName.text = viewModel.getFileName(it)
+
+    private val patientsImportLauncher =
+        registerForActivityResult(importDocumentContract) {
+            Timber.d("Received uri for import patients = $it")
+            if (it != null && viewModel.checkUri(it)) {
+                viewModel.selectType(ExportWorker.Companion.DataType.Patients, it)
+                binding.patientsUpload.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                    R.drawable.check,
+                    0,
+                    0,
+                    0
+                )
+                binding.patientsFileName.visibility = View.VISIBLE
+                binding.patientsFileName.text = viewModel.getFileName(it)
+            }
+            binding.importBackup.isEnabled = viewModel.isReadyForImport()
         }
-        binding.importBackup.isEnabled = viewModel.isReadyForImport()
-    }
-    private val paymentsImportLauncher = registerForActivityResult(importContract) {
-        Timber.d("Received uri for import payments = $it")
-        if (it != null && viewModel.checkUri(it)) {
-            viewModel.selectType(ExportWorker.Companion.DataType.Payments, it)
-            binding.paymentsUpload.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                R.drawable.check,
-                0,
-                0,
-                0
-            )
-            binding.paymentsFileName.visibility = View.VISIBLE
-            binding.paymentsFileName.text = viewModel.getFileName(it)
+    private val healingsImportLauncher =
+        registerForActivityResult(importDocumentContract) {
+            Timber.d("Received uri for import healings = $it")
+            if (it != null && viewModel.checkUri(it)) {
+                viewModel.selectType(ExportWorker.Companion.DataType.Healings, it)
+                binding.healingsUpload.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                    R.drawable.check,
+                    0,
+                    0,
+                    0
+                )
+                binding.healingsFileName.visibility = View.VISIBLE
+                binding.healingsFileName.text = viewModel.getFileName(it)
+            }
+            binding.importBackup.isEnabled = viewModel.isReadyForImport()
         }
-        binding.importBackup.isEnabled = viewModel.isReadyForImport()
-    }
+    private val paymentsImportLauncher =
+        registerForActivityResult(importDocumentContract) {
+            Timber.d("Received uri for import payments = $it")
+            if (it != null && viewModel.checkUri(it)) {
+                viewModel.selectType(ExportWorker.Companion.DataType.Payments, it)
+                binding.paymentsUpload.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                    R.drawable.check,
+                    0,
+                    0,
+                    0
+                )
+                binding.paymentsFileName.visibility = View.VISIBLE
+                binding.paymentsFileName.text = viewModel.getFileName(it)
+            }
+            binding.importBackup.isEnabled = viewModel.isReadyForImport()
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -74,6 +91,9 @@ class ImportFragment : Fragment() {
         binding = FragmentImportBinding.inflate(inflater, container, false)
         context?.apply {
             binding.header = buildHeader(Icons.Back, R.string.import_text)
+            binding.heading.icon.setOnClickListener {
+                findNavController().popBackStack()
+            }
         }
         viewModel.setExport(false)
         val selected = args.selectedType
@@ -87,13 +107,13 @@ class ImportFragment : Fragment() {
             if (selected and ExportWorker.Companion.DataType.Payments.mask > 0) View.VISIBLE
             else View.GONE
         binding.patientsUploadBox.setOnClickListener {
-            patientsImportLauncher.launch(arrayOf("text/csv"))
+            patientsImportLauncher.launch(arrayOf("text/csv", "text/comma-separated-values"))
         }
         binding.healingsUploadBox.setOnClickListener {
-            healingsImportLauncher.launch(arrayOf("text/csv"))
+            healingsImportLauncher.launch(arrayOf("text/csv", "text/comma-separated-values"))
         }
         binding.paymentsUploadBox.setOnClickListener {
-            paymentsImportLauncher.launch(arrayOf("text/csv"))
+            paymentsImportLauncher.launch(arrayOf("text/csv", "text/comma-separated-values"))
         }
         binding.importBackup.setOnClickListener {
             if (viewModel.isReadyForImport()) {

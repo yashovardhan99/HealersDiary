@@ -11,8 +11,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.yashovardhan99.core.backup_restore.ExportWorker
 import com.yashovardhan99.core.getColorFromAttr
-import com.yashovardhan99.core.utils.Header
 import com.yashovardhan99.core.utils.Icons
+import com.yashovardhan99.core.utils.buildHeader
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.FragmentBackupBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,7 +39,12 @@ class BackupFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentBackupBinding.inflate(inflater, container, false)
-        binding.header = Header.buildHeader(Icons.Back, getString(R.string.backup_sync_group_name))
+        context?.apply {
+            binding.header = buildHeader(Icons.Back, R.string.backup_sync_group_name)
+            binding.heading.icon.setOnClickListener {
+                findNavController().popBackStack()
+            }
+        }
         binding.importExportToggle.addOnButtonCheckedListener { _, checkedId, isChecked ->
             when (checkedId) {
                 R.id.export -> if (isChecked) {
@@ -163,8 +168,22 @@ class BackupFragment : Fragment() {
     private fun goToImport() {
         findNavController().navigate(
             BackupFragmentDirections.actionBackupFragmentToImportFragment(
-                viewModel.checkedTypes
+                getMask(
+                    ExportWorker.Companion.DataType.Patients,
+                    binding.patientCheckbox.isChecked
+                ) or getMask(
+                    ExportWorker.Companion.DataType.Healings,
+                    binding.healingCheckbox.isChecked
+                ) or getMask(
+                    ExportWorker.Companion.DataType.Payments,
+                    binding.paymentCheckbox.isChecked
+                )
             )
         )
+    }
+
+    private fun getMask(type: ExportWorker.Companion.DataType, include: Boolean): Int {
+        return if (include) type.mask
+        else 0
     }
 }
