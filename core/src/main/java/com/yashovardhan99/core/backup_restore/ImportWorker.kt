@@ -1,23 +1,12 @@
 package com.yashovardhan99.core.backup_restore
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationChannelGroup
-import android.app.NotificationManager
-import android.app.PendingIntent
+import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.Context
-import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.net.Uri
-import android.os.Build
 import androidx.annotation.StringRes
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import androidx.core.app.TaskStackBuilder
-import androidx.core.content.ContextCompat
 import androidx.work.CoroutineWorker
-import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.yashovardhan99.core.R
@@ -26,6 +15,10 @@ import com.yashovardhan99.core.database.HealersDao
 import com.yashovardhan99.core.database.Healing
 import com.yashovardhan99.core.database.Patient
 import com.yashovardhan99.core.database.Payment
+import com.yashovardhan99.core.utils.NotificationHelpers
+import com.yashovardhan99.core.utils.NotificationHelpers.setContentDeepLink
+import com.yashovardhan99.core.utils.NotificationHelpers.setForegroundCompat
+import com.yashovardhan99.core.utils.NotificationHelpers.setTypeProgress
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.Date
@@ -34,19 +27,6 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
-    private val notificationBuilder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
-        .setSmallIcon(R.drawable.ic_launcher_foreground)
-        .setContentTitle(context.getString(R.string.importing_data))
-        .setCategory(Notification.CATEGORY_PROGRESS)
-        .setColor(
-            ContextCompat.getColor(
-                applicationContext,
-                R.color.colorPrimary
-            )
-        )
-        .setOngoing(true)
-        .setOnlyAlertOnce(true)
-
     private val patientMaps = mutableMapOf<Long, Long>()
     override suspend fun doWork(): Result {
         val dataType =
@@ -253,28 +233,23 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
     private suspend fun updateProgress(
         message: String
     ) {
-        buildNotificationChannel()
-        val deepLink = TaskStackBuilder.create(applicationContext)
-            .addNextIntentWithParentStack(
-                Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse("healersdiary://com.yashovardhan99.healersdiary/backup/progress"),
-                )
-            ).getPendingIntent(PendingIntentReqCode, PendingIntent.FLAG_UPDATE_CURRENT)
-        val notification = notificationBuilder.setProgress(100, 30, true)
+        val notification = NotificationHelpers.getDefaultNotification(
+            applicationContext,
+            NotificationHelpers.Channel.LocalImport
+        ).setContentTitle(applicationContext.getString(R.string.importing_data))
+            .setTypeProgress()
+            .setProgress(0, 0, true)
             .setContentText(message)
-            .setContentIntent(deepLink)
-            .build()
-        val foregroundInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            ForegroundInfo(
-                PROGRESS_NOTIF_ID,
-                notification,
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
+            .setContentDeepLink(
+                applicationContext,
+                Uri.parse("healersdiary://com.yashovardhan99.healersdiary/backup/progress"),
+                PendingIntentReqCode
             )
-        } else {
-            ForegroundInfo(PROGRESS_NOTIF_ID, notification)
-        }
-        setForeground(foregroundInfo)
+            .build()
+
+        @SuppressLint("InlinedApi")
+        val foregroundServiceType = ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
+        setForegroundCompat(PROGRESS_NOTIF_ID, notification, foregroundServiceType)
         setProgress(
             workDataOf(
                 PROGRESS_TEXT_KEY to message
@@ -282,32 +257,12 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         )
     }
 
-    private fun buildNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channelGroup =
-                NotificationChannelGroup(GROUP_ID, applicationContext.getString(GROUP_NAME))
-            val notificationChannel = NotificationChannel(
-                CHANNEL_ID, applicationContext.getString(CHANNEL_NAME),
-                NotificationManager.IMPORTANCE_HIGH
-            )
-            notificationChannel.group = channelGroup.id
-            NotificationManagerCompat.from(applicationContext)
-                .createNotificationChannelGroup(channelGroup)
-            NotificationManagerCompat.from(applicationContext)
-                .createNotificationChannel(notificationChannel)
-        }
-    }
-
     companion object {
         const val PATIENTS_FILE_URI_KEY = "patient_file_uri"
         const val HEALINGS_FILE_URI_KEY = "healings_file_uri"
         const val PAYMENTS_FILE_URI_KEY = "payments_file_uri"
         const val DATA_TYPE_KEY = "data_type"
-        const val CHANNEL_ID = "import_export_import"
-        const val GROUP_ID = "backup_sync"
         const val PROGRESS_NOTIF_ID = 300
-        val CHANNEL_NAME = R.string.import_text
-        val GROUP_NAME = R.string.backup_sync_group_name
         const val PROGRESS_TEXT_KEY = "progress_text"
         const val PendingIntentReqCode = 30
 

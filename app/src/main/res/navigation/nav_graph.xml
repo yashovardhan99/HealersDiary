@@ -94,7 +94,9 @@
             app:destination="@id/importFragment" />
         <action
             android:id="@+id/action_backupFragment_to_backupProgressFragment"
-            app:destination="@id/backupProgressFragment" />
+            app:destination="@id/backupProgressFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/settings" />
     </fragment>
     <fragment
         tools:layout="@layout/fragment_import"
@@ -107,7 +109,9 @@
             android:defaultValue="0" />
         <action
             android:id="@+id/action_importFragment_to_backupProgressFragment"
-            app:destination="@id/backupProgressFragment" />
+            app:destination="@id/backupProgressFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/settings" />
     </fragment>
     <fragment
         tools:layout="@layout/fragment_backup_progress"

@@ -1,22 +1,16 @@
 package com.yashovardhan99.healersdiary.online.importFirebase
 
+import android.annotation.SuppressLint
 import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationChannelGroup
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
-import android.os.Build
 import androidx.annotation.FloatRange
 import androidx.annotation.IntRange
-import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContextCompat
 import androidx.work.CoroutineWorker
-import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.google.firebase.FirebaseNetworkException
@@ -36,6 +30,9 @@ import com.yashovardhan99.core.database.Healing
 import com.yashovardhan99.core.database.OnboardingState
 import com.yashovardhan99.core.database.Patient
 import com.yashovardhan99.core.database.Payment
+import com.yashovardhan99.core.utils.NotificationHelpers
+import com.yashovardhan99.core.utils.NotificationHelpers.setForegroundCompat
+import com.yashovardhan99.core.utils.NotificationHelpers.setTypeProgress
 import com.yashovardhan99.healersdiary.onboarding.SplashActivity
 import com.yashovardhan99.healersdiary.online.DaggerOnlineComponent
 import com.yashovardhan99.healersdiary.online.R
@@ -50,19 +47,6 @@ import timber.log.Timber
 class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
     @Inject
     lateinit var dataStore: HealersDataStore
-
-    private val notificationBuilder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
-        .setSmallIcon(com.yashovardhan99.healersdiary.R.drawable.ic_launcher_foreground)
-        .setContentTitle(context.getString(R.string.import_v1))
-        .setCategory(Notification.CATEGORY_PROGRESS)
-        .setColor(
-            ContextCompat.getColor(
-                applicationContext,
-                com.yashovardhan99.healersdiary.R.color.colorPrimary
-            )
-        )
-        .setOngoing(true)
-        .setOnlyAlertOnce(true)
 
     @OptIn(DangerousDatabase::class)
     override suspend fun doWork(): Result {
@@ -80,7 +64,6 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         dataStore.updateOnboardingState(OnboardingState.Importing)
         AnalyticsEvent.Import.Started.trackEvent()
         updatePreferences(false)
-        buildNotificationChannels()
         setProgress(0)
         val uid = Firebase.auth.currentUser?.uid
         if (uid == null) {
@@ -267,22 +250,19 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         ) progress: Int,
         message: String
     ) {
-        val notification = notificationBuilder
+        val notification = NotificationHelpers.getDefaultNotification(
+            applicationContext,
+            NotificationHelpers.Channel.FirebaseImport
+        ).setTypeProgress()
+            .setContentTitle(applicationContext.getString(R.string.import_v1))
             .setProgress(MAX_PROGRESS, progress, false)
             .setContentText(message)
             .build()
-        val foregroundInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            ForegroundInfo(
-                PROGRESS_NOTIF_ID,
-                notification,
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
-            )
-        } else {
-            ForegroundInfo(PROGRESS_NOTIF_ID, notification)
-        }
         NotificationManagerCompat.from(applicationContext)
             .cancel(OnboardingState.IMPORT_COMPLETE_NOTIF_ID)
-        setForeground(foregroundInfo)
+        @SuppressLint("InlinedApi")
+        val foregroundServiceType = ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
+        setForegroundCompat(PROGRESS_NOTIF_ID, notification, foregroundServiceType)
     }
 
     private fun showDoneNotification(isSuccessful: Boolean, willRetry: Boolean) {
@@ -293,9 +273,10 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
             addNextIntentWithParentStack(intent)
             getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
         }
-        val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
-            .setSmallIcon(com.yashovardhan99.healersdiary.R.drawable.ic_launcher_foreground)
-            .setContentTitle(applicationContext.getString(R.string.import_v1))
+        val notification = NotificationHelpers.getDefaultNotification(
+            applicationContext,
+            NotificationHelpers.Channel.FirebaseImport
+        ).setContentTitle(applicationContext.getString(R.string.import_v1))
             .setContentText(
                 applicationContext.getString(
                     when {
@@ -306,12 +287,6 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
                 )
             )
             .setCategory(Notification.CATEGORY_PROGRESS)
-            .setColor(
-                ContextCompat.getColor(
-                    applicationContext,
-                    com.yashovardhan99.healersdiary.R.color.colorPrimary
-                )
-            )
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
             .build()
@@ -319,32 +294,11 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
             .notify(OnboardingState.IMPORT_COMPLETE_NOTIF_ID, notification)
     }
 
-    private fun buildNotificationChannels() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channelGroup =
-                NotificationChannelGroup(GROUP_ID, applicationContext.getString(GROUP_NAME))
-            val notificationChannel = NotificationChannel(
-                CHANNEL_ID,
-                applicationContext.getString(CHANNEL_NAME),
-                NotificationManager.IMPORTANCE_HIGH
-            )
-            notificationChannel.group = channelGroup.id
-            NotificationManagerCompat.from(applicationContext)
-                .createNotificationChannelGroup(channelGroup)
-            NotificationManagerCompat.from(applicationContext)
-                .createNotificationChannel(notificationChannel)
-        }
-    }
-
     companion object {
         private const val PROGRESS_NOTIF_ID = 100
         const val MAX_PROGRESS = 100
         const val INITIAL_PROGRESS = 10
         const val INITIAL_PROGRESS_FLOAT = 0.1f
-        const val GROUP_ID = "backup_sync"
-        const val GROUP_NAME = R.string.backup_sync_group_name
-        const val CHANNEL_ID = "online_import"
-        const val CHANNEL_NAME = R.string.import_channel_name
         const val CURRENT_PATIENT = "patients_done"
         const val MAX_PATIENTS = "max_patients"
         const val OVERALL_PROGRESS = "progress"

@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.work.Data
 import androidx.work.WorkInfo
@@ -32,18 +31,7 @@ class BackupProgressFragment : Fragment() {
             binding.header = buildHeader(Icons.Back, R.string.backup_sync_group_name)
             binding.heading.icon.setOnClickListener {
                 viewModel.resetShowProgress()
-                if (!findNavController().popBackStack(
-                        R.id.backupFragment,
-                        false
-                    )
-                ) {
-                    findNavController().navigate(
-                        R.id.home,
-                        null,
-                        NavOptions.Builder().setPopUpTo(R.id.home, true)
-                            .build()
-                    )
-                }
+                findNavController().popBackStack()
             }
         }
         viewModel.workObserver.observe(viewLifecycleOwner) { workInfo ->
