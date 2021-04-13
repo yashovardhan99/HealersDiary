@@ -46,13 +46,19 @@ object BackupUtils {
         }
     }
 
+    object Input {
+        const val PATIENTS_FILE_URI_KEY = "patient_file_uri"
+        const val HEALINGS_FILE_URI_KEY = "healings_file_uri"
+        const val PAYMENTS_FILE_URI_KEY = "payments_file_uri"
+        const val DATA_TYPE_KEY = "data_type"
+    }
+
     // Progress constants for sending updates and results
     object Progress {
         const val ProgressPercent = "progress_percent" // Progress in 100
         const val ProgressMessage = "progress_message" // Message being shown in notification
         const val RequiredBit = "required_bit" // The data type(s) bit required to be handled
         const val CurrentBit = "current_bit" // The data type bit being currently being handled
-        const val DoneBit = "done_bit" // The data type(s) bit which have been handled
 
         // IntArray will always be in order [Patients, Healings, Payments]
         const val ExportCounts = "export_count" // IntArray containing the no. of exports done
@@ -64,9 +70,9 @@ object BackupUtils {
         const val InvalidFormatBit = "invalid_format_bit" // Bit of where invalid format was found
     }
 
-    sealed class DataType(val mask: Int) {
-        object Patients : DataType(1 shl 0)
-        object Healings : DataType(1 shl 1)
-        object Payments : DataType(1 shl 2)
+    sealed class DataType(val mask: Int, val idx: Int) {
+        object Patients : DataType(1 shl 0, 0)
+        object Healings : DataType(1 shl 1, 1)
+        object Payments : DataType(1 shl 2, 2)
     }
 }

@@ -10,6 +10,10 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.yashovardhan99.core.R
+import com.yashovardhan99.core.backup_restore.BackupUtils.Input.DATA_TYPE_KEY
+import com.yashovardhan99.core.backup_restore.BackupUtils.Input.HEALINGS_FILE_URI_KEY
+import com.yashovardhan99.core.backup_restore.BackupUtils.Input.PATIENTS_FILE_URI_KEY
+import com.yashovardhan99.core.backup_restore.BackupUtils.Input.PAYMENTS_FILE_URI_KEY
 import com.yashovardhan99.core.database.DatabaseModule
 import com.yashovardhan99.core.database.HealersDao
 import com.yashovardhan99.core.database.Healing
@@ -26,7 +30,13 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 
 class ExportWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
+    private val done = IntArray(3)
+    private val total = IntArray(3)
+    private var errorBit = 0
     override suspend fun doWork(): Result {
+        done.indices.forEach { done[it] = 0 }
+        total.indices.forEach { total[it] = 0 }
+        errorBit = 0
         val dataType = inputData.getInt(DATA_TYPE_KEY, BackupUtils.DataType.Patients.mask)
         val contentResolver = applicationContext.contentResolver
         val healersDatabase = DatabaseModule.provideHealersDatabase(applicationContext)
@@ -42,13 +52,14 @@ class ExportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
                 if (dataType and BackupUtils.DataType.Payments.mask > 0) {
                     exportPayments(contentResolver, healersDao)
                 }
-                Result.success()
+                if (errorBit == dataType) Result.failure(getProgressData(0, null, null))
+                Result.success(getProgressData(100, null, null))
             } catch (e: FileNotFoundException) {
                 e.printStackTrace()
-                Result.failure()
+                Result.failure(getProgressData(0, e.message, null))
             } catch (e: IOException) {
                 e.printStackTrace()
-                Result.failure()
+                Result.failure(getProgressData(0, e.message, null))
             }
         }
     }
@@ -62,80 +73,104 @@ class ExportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         items: List<T>,
         crossinline getCsvRow: (T) -> String
     ) {
-        updateProgress(0, notificationMessage)
-        val fileUri = Uri.parse(inputData.getString(uriKey)) ?: throw FileNotFoundException()
-        withContext(Dispatchers.IO) {
-            contentResolver.openAssetFileDescriptor(fileUri, "w")?.use {
-                it.createOutputStream().channel.truncate(0).close()
-            }
-            contentResolver.openOutputStream(fileUri)?.bufferedWriter()?.apply {
-                appendLine(header)
-                items.forEachIndexed { index, item ->
-                    appendLine(getCsvRow(item))
-                    updateProgress((index + 1) * 100 / items.size, notificationMessage)
-                }
-                close()
-            }?.close()
+        if (items.isNullOrEmpty()) return
+        val type = when (items.firstOrNull()) {
+            is Patient -> BackupUtils.DataType.Patients
+            is Healing -> BackupUtils.DataType.Healings
+            is Payment -> BackupUtils.DataType.Payments
+            else -> throw IllegalArgumentException("Items received $items are not recognized")
         }
+        done[type.idx] = 0
+        total[type.idx] = items.size
+        updateProgress(0, notificationMessage, type)
+        val fileUri = Uri.parse(inputData.getString(uriKey)) ?: throw FileNotFoundException()
+        contentResolver.openAssetFileDescriptor(fileUri, "w")?.use {
+            it.createOutputStream().channel.truncate(0).close()
+        }
+        contentResolver.openOutputStream(fileUri)?.bufferedWriter()?.apply {
+            appendLine(header)
+            items.forEachIndexed { index, item ->
+                done[type.idx] += 1
+                appendLine(getCsvRow(item))
+                updateProgress((index + 1) * 100 / items.size, notificationMessage, type)
+            }
+            close()
+        }?.close()
     }
 
     private suspend fun exportPatients(contentResolver: ContentResolver, dao: HealersDao) {
-        export(
-            contentResolver,
-            PATIENTS_FILE_URI_KEY,
-            "Exporting Patients",
-            BackupUtils.getCsvRow(
-                Patient::id.name, Patient::name.name, Patient::charge.name, Patient::due.name,
-                Patient::notes.name, Patient::lastModified.name, Patient::created.name
-            ),
-            dao.getAllPatients().first()
-        ) { patient ->
-            BackupUtils.getCsvRow(
-                patient.id, patient.name, patient.charge,
-                patient.due, patient.notes, patient.lastModified.time, patient.created.time
-            )
+        try {
+            export(
+                contentResolver,
+                PATIENTS_FILE_URI_KEY,
+                "Exporting Patients",
+                BackupUtils.getCsvRow(
+                    Patient::id.name, Patient::name.name, Patient::charge.name, Patient::due.name,
+                    Patient::notes.name, Patient::lastModified.name, Patient::created.name
+                ),
+                dao.getAllPatients().first(),
+            ) { patient ->
+                BackupUtils.getCsvRow(
+                    patient.id, patient.name, patient.charge,
+                    patient.due, patient.notes, patient.lastModified.time, patient.created.time
+                )
+            }
+        } catch (e: FileNotFoundException) {
+            errorBit = errorBit or BackupUtils.DataType.Patients.mask
+            updateProgress(0, "Exporting Patients Failed", BackupUtils.DataType.Patients)
         }
     }
 
     private suspend fun exportHealings(contentResolver: ContentResolver, dao: HealersDao) {
-        export(
-            contentResolver,
-            HEALINGS_FILE_URI_KEY,
-            "Exporting Healings",
-            BackupUtils.getCsvRow(
-                Healing::id.name, Healing::time.name, Healing::charge.name,
-                Healing::notes.name, Healing::patientId.name
-            ),
-            dao.getAllHealings()
-        ) { healing ->
-            BackupUtils.getCsvRow(
-                healing.id, healing.time.time, healing.charge,
-                healing.notes, healing.patientId
-            )
+        try {
+            export(
+                contentResolver,
+                HEALINGS_FILE_URI_KEY,
+                "Exporting Healings",
+                BackupUtils.getCsvRow(
+                    Healing::id.name, Healing::time.name, Healing::charge.name,
+                    Healing::notes.name, Healing::patientId.name
+                ),
+                dao.getAllHealings(),
+            ) { healing ->
+                BackupUtils.getCsvRow(
+                    healing.id, healing.time.time, healing.charge,
+                    healing.notes, healing.patientId
+                )
+            }
+        } catch (e: FileNotFoundException) {
+            errorBit = errorBit or BackupUtils.DataType.Healings.mask
+            updateProgress(0, "Exporting Healings Failed", BackupUtils.DataType.Healings)
         }
     }
 
     private suspend fun exportPayments(contentResolver: ContentResolver, dao: HealersDao) {
-        export(
-            contentResolver,
-            PAYMENTS_FILE_URI_KEY,
-            "Exporting Payments",
-            BackupUtils.getCsvRow(
-                Payment::id.name, Payment::time.name, Payment::amount.name,
-                Payment::notes.name, Payment::patientId.name
-            ),
-            dao.getAllPayments()
-        ) { payment ->
-            BackupUtils.getCsvRow(
-                payment.id, payment.time.time, payment.amount,
-                payment.notes, payment.patientId
-            )
+        try {
+            export(
+                contentResolver,
+                PAYMENTS_FILE_URI_KEY,
+                "Exporting Payments",
+                BackupUtils.getCsvRow(
+                    Payment::id.name, Payment::time.name, Payment::amount.name,
+                    Payment::notes.name, Payment::patientId.name
+                ),
+                dao.getAllPayments(),
+            ) { payment ->
+                BackupUtils.getCsvRow(
+                    payment.id, payment.time.time, payment.amount,
+                    payment.notes, payment.patientId
+                )
+            }
+        } catch (e: FileNotFoundException) {
+            errorBit = errorBit or BackupUtils.DataType.Payments.mask
+            updateProgress(0, "Exporting Payments Failed", BackupUtils.DataType.Payments)
         }
     }
 
     private suspend fun updateProgress(
         @IntRange(from = 0, to = 100) progress: Int,
-        message: String
+        message: String,
+        currentType: BackupUtils.DataType
     ) {
         val notification = NotificationHelpers.getDefaultNotification(
             applicationContext,
@@ -159,20 +194,26 @@ class ExportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
             foregroundServiceType
         )
         setProgress(
-            workDataOf(
-                PROGRESS_PERCENT_KEY to progress,
-                PROGRESS_TEXT_KEY to message
-            )
+            getProgressData(progress, message, currentType)
         )
     }
 
+    private fun getProgressData(
+        progress: Int,
+        message: String?,
+        currentType: BackupUtils.DataType?
+    ) =
+        workDataOf(
+            BackupUtils.Progress.ProgressPercent to progress,
+            BackupUtils.Progress.ProgressMessage to message,
+            BackupUtils.Progress.RequiredBit to inputData.getInt(DATA_TYPE_KEY, 0),
+            BackupUtils.Progress.CurrentBit to (currentType?.mask ?: 0),
+            BackupUtils.Progress.ExportCounts to done,
+            BackupUtils.Progress.ExportTotal to total,
+            BackupUtils.Progress.FileErrorBit to errorBit,
+        )
+
     companion object {
-        const val PATIENTS_FILE_URI_KEY = "patient_file_uri"
-        const val HEALINGS_FILE_URI_KEY = "healings_file_uri"
-        const val PAYMENTS_FILE_URI_KEY = "payments_file_uri"
-        const val DATA_TYPE_KEY = "data_type"
-        const val PROGRESS_PERCENT_KEY = "progress_percent"
-        const val PROGRESS_TEXT_KEY = "progress_text"
         const val PendingIntentReqCode = 30
     }
 }

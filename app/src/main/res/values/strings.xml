@@ -125,6 +125,8 @@
     <string name="exporting_to">Exporting to %s</string>
     <string name="currently_importing_s">Currently Importing: %s</string>
     <string name="currently_exporting_s">Currently Exporting: %s</string>
+    <string name="waiting">Waiting…</string>
+    <string name="file_error">Could not save exported data.</string>
     <string name="exported_d_of_d">Exported %d of %d</string>
     <string name="import_error">Invalid format</string>
     <string name="import_empty">Nothing to import</string>

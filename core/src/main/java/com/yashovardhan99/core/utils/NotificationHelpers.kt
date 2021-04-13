@@ -3,7 +3,6 @@ package com.yashovardhan99.core.utils
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationChannelGroup
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -96,21 +95,21 @@ object NotificationHelpers {
             Group.BackupSync,
             "local_export",
             R.string.export,
-            NotificationManager.IMPORTANCE_HIGH
+            NotificationManagerCompat.IMPORTANCE_HIGH
         )
 
         object LocalImport : Channel(
             Group.BackupSync,
             "local_import",
             R.string.import_text,
-            NotificationManager.IMPORTANCE_HIGH
+            NotificationManagerCompat.IMPORTANCE_HIGH
         )
 
         object FirebaseImport : Channel(
             Group.BackupSync,
             "online_import",
             R.string.online_import,
-            NotificationManager.IMPORTANCE_HIGH
+            NotificationManagerCompat.IMPORTANCE_HIGH
         )
 
         @RequiresApi(Build.VERSION_CODES.O)

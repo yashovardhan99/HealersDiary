@@ -184,20 +184,20 @@ class BackupViewModel @Inject constructor(
 
     private suspend fun createBackup(): Boolean {
         if (checkedTypes == 0) return false
-        val workData = Data.Builder().putInt(ExportWorker.DATA_TYPE_KEY, checkedTypes)
+        val workData = Data.Builder().putInt(BackupUtils.Input.DATA_TYPE_KEY, checkedTypes)
         if (checkedTypes and BackupUtils.DataType.Patients.mask > 0) workData
             .putString(
-                ExportWorker.PATIENTS_FILE_URI_KEY,
+                BackupUtils.Input.PATIENTS_FILE_URI_KEY,
                 buildFileUri(BackupUtils.DataType.Patients).toString()
             )
         if (checkedTypes and BackupUtils.DataType.Healings.mask > 0) workData
             .putString(
-                ExportWorker.HEALINGS_FILE_URI_KEY,
+                BackupUtils.Input.HEALINGS_FILE_URI_KEY,
                 buildFileUri(BackupUtils.DataType.Healings).toString()
             )
         if (checkedTypes and BackupUtils.DataType.Payments.mask > 0) workData
             .putString(
-                ExportWorker.PAYMENTS_FILE_URI_KEY,
+                BackupUtils.Input.PAYMENTS_FILE_URI_KEY,
                 buildFileUri(BackupUtils.DataType.Payments).toString()
             )
         val workRequest = OneTimeWorkRequestBuilder<ExportWorker>()
