@@ -129,4 +129,11 @@ object NotificationHelpers {
             return NotificationChannelGroup(id, context.getString(name))
         }
     }
+
+    object NotificationIds {
+        const val ImportV1Progress = 100
+        const val ImportV1Completed = 101
+        const val LocalBackupProgress = 200
+        const val LocalBackupCompleted = 201
+    }
 }

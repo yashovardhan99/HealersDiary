@@ -27,19 +27,19 @@ import kotlinx.coroutines.withContext
 
 class ExportWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
     override suspend fun doWork(): Result {
-        val dataType = inputData.getInt(DATA_TYPE_KEY, DataType.Patients.mask)
+        val dataType = inputData.getInt(DATA_TYPE_KEY, BackupUtils.DataType.Patients.mask)
         val contentResolver = applicationContext.contentResolver
         val healersDatabase = DatabaseModule.provideHealersDatabase(applicationContext)
         val healersDao = DatabaseModule.provideHealersDao(healersDatabase)
         return withContext(Dispatchers.IO) {
             try {
-                if (dataType and DataType.Patients.mask > 0) {
+                if (dataType and BackupUtils.DataType.Patients.mask > 0) {
                     exportPatients(contentResolver, healersDao)
                 }
-                if (dataType and DataType.Healings.mask > 0) {
+                if (dataType and BackupUtils.DataType.Healings.mask > 0) {
                     exportHealings(contentResolver, healersDao)
                 }
-                if (dataType and DataType.Payments.mask > 0) {
+                if (dataType and BackupUtils.DataType.Payments.mask > 0) {
                     exportPayments(contentResolver, healersDao)
                 }
                 Result.success()
@@ -84,13 +84,13 @@ class ExportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
             contentResolver,
             PATIENTS_FILE_URI_KEY,
             "Exporting Patients",
-            ExportUtils.getCsvRow(
+            BackupUtils.getCsvRow(
                 Patient::id.name, Patient::name.name, Patient::charge.name, Patient::due.name,
                 Patient::notes.name, Patient::lastModified.name, Patient::created.name
             ),
             dao.getAllPatients().first()
         ) { patient ->
-            ExportUtils.getCsvRow(
+            BackupUtils.getCsvRow(
                 patient.id, patient.name, patient.charge,
                 patient.due, patient.notes, patient.lastModified.time, patient.created.time
             )
@@ -102,13 +102,13 @@ class ExportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
             contentResolver,
             HEALINGS_FILE_URI_KEY,
             "Exporting Healings",
-            ExportUtils.getCsvRow(
+            BackupUtils.getCsvRow(
                 Healing::id.name, Healing::time.name, Healing::charge.name,
                 Healing::notes.name, Healing::patientId.name
             ),
             dao.getAllHealings()
         ) { healing ->
-            ExportUtils.getCsvRow(
+            BackupUtils.getCsvRow(
                 healing.id, healing.time.time, healing.charge,
                 healing.notes, healing.patientId
             )
@@ -120,13 +120,13 @@ class ExportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
             contentResolver,
             PAYMENTS_FILE_URI_KEY,
             "Exporting Payments",
-            ExportUtils.getCsvRow(
+            BackupUtils.getCsvRow(
                 Payment::id.name, Payment::time.name, Payment::amount.name,
                 Payment::notes.name, Payment::patientId.name
             ),
             dao.getAllPayments()
         ) { payment ->
-            ExportUtils.getCsvRow(
+            BackupUtils.getCsvRow(
                 payment.id, payment.time.time, payment.amount,
                 payment.notes, payment.patientId
             )
@@ -153,7 +153,11 @@ class ExportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
 
         @SuppressLint("InlinedApi")
         val foregroundServiceType = ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
-        setForegroundCompat(PROGRESS_NOTIF_ID, notification, foregroundServiceType)
+        setForegroundCompat(
+            NotificationHelpers.NotificationIds.LocalBackupProgress,
+            notification,
+            foregroundServiceType
+        )
         setProgress(
             workDataOf(
                 PROGRESS_PERCENT_KEY to progress,
@@ -167,15 +171,8 @@ class ExportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         const val HEALINGS_FILE_URI_KEY = "healings_file_uri"
         const val PAYMENTS_FILE_URI_KEY = "payments_file_uri"
         const val DATA_TYPE_KEY = "data_type"
-        const val PROGRESS_NOTIF_ID = 300
         const val PROGRESS_PERCENT_KEY = "progress_percent"
         const val PROGRESS_TEXT_KEY = "progress_text"
         const val PendingIntentReqCode = 30
-
-        sealed class DataType(val mask: Int) {
-            object Patients : DataType(1 shl 0)
-            object Healings : DataType(1 shl 1)
-            object Payments : DataType(1 shl 2)
-        }
     }
 }

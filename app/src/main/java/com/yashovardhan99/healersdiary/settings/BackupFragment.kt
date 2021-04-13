@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.yashovardhan99.core.backup_restore.ExportWorker
+import com.yashovardhan99.core.backup_restore.BackupUtils
 import com.yashovardhan99.core.getColorFromAttr
 import com.yashovardhan99.core.utils.Icons
 import com.yashovardhan99.core.utils.buildHeader
@@ -56,7 +56,7 @@ class BackupFragment : Fragment() {
                     if (viewModel.checkedTypes > 0) {
                         showImportNote(
                             viewModel.checkedTypes and
-                                ExportWorker.Companion.DataType.Patients.mask > 0
+                                BackupUtils.DataType.Patients.mask > 0
                         )
                     } else showExportNote()
                 }
@@ -88,30 +88,30 @@ class BackupFragment : Fragment() {
         binding.start.isEnabled = viewModel.checkedTypes != 0
 
         binding.patientCheckbox.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) viewModel.selectType(ExportWorker.Companion.DataType.Patients)
-            else viewModel.deselectType(ExportWorker.Companion.DataType.Patients)
+            if (isChecked) viewModel.selectType(BackupUtils.DataType.Patients)
+            else viewModel.deselectType(BackupUtils.DataType.Patients)
             binding.start.isEnabled = viewModel.checkedTypes != 0
             if (!viewModel.isExporting && viewModel.checkedTypes > 0) {
                 showImportNote(isChecked)
             } else showExportNote()
         }
         binding.healingCheckbox.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) viewModel.selectType(ExportWorker.Companion.DataType.Healings)
-            else viewModel.deselectType(ExportWorker.Companion.DataType.Healings)
+            if (isChecked) viewModel.selectType(BackupUtils.DataType.Healings)
+            else viewModel.deselectType(BackupUtils.DataType.Healings)
             binding.start.isEnabled = viewModel.checkedTypes != 0
             if (!viewModel.isExporting && viewModel.checkedTypes > 0) {
                 showImportNote(
-                    viewModel.checkedTypes and ExportWorker.Companion.DataType.Patients.mask > 0
+                    viewModel.checkedTypes and BackupUtils.DataType.Patients.mask > 0
                 )
             } else showExportNote()
         }
         binding.paymentCheckbox.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) viewModel.selectType(ExportWorker.Companion.DataType.Payments)
-            else viewModel.deselectType(ExportWorker.Companion.DataType.Payments)
+            if (isChecked) viewModel.selectType(BackupUtils.DataType.Payments)
+            else viewModel.deselectType(BackupUtils.DataType.Payments)
             binding.start.isEnabled = viewModel.checkedTypes != 0
             if (!viewModel.isExporting && viewModel.checkedTypes > 0) {
                 showImportNote(
-                    viewModel.checkedTypes and ExportWorker.Companion.DataType.Patients.mask > 0
+                    viewModel.checkedTypes and BackupUtils.DataType.Patients.mask > 0
                 )
             } else showExportNote()
         }
@@ -121,17 +121,17 @@ class BackupFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         if (binding.patientCheckbox.isChecked) viewModel.selectType(
-            ExportWorker.Companion.DataType.Patients
+            BackupUtils.DataType.Patients
         )
-        else viewModel.deselectType(ExportWorker.Companion.DataType.Patients)
+        else viewModel.deselectType(BackupUtils.DataType.Patients)
         if (binding.healingCheckbox.isChecked) viewModel.selectType(
-            ExportWorker.Companion.DataType.Healings
+            BackupUtils.DataType.Healings
         )
-        else viewModel.deselectType(ExportWorker.Companion.DataType.Healings)
+        else viewModel.deselectType(BackupUtils.DataType.Healings)
         if (binding.paymentCheckbox.isChecked) viewModel.selectType(
-            ExportWorker.Companion.DataType.Payments
+            BackupUtils.DataType.Payments
         )
-        else viewModel.deselectType(ExportWorker.Companion.DataType.Payments)
+        else viewModel.deselectType(BackupUtils.DataType.Payments)
         binding.importBackup.isChecked = !viewModel.isExporting
         binding.export.isChecked = viewModel.isExporting
     }
@@ -176,20 +176,20 @@ class BackupFragment : Fragment() {
         findNavController().navigate(
             BackupFragmentDirections.actionBackupFragmentToImportFragment(
                 getMask(
-                    ExportWorker.Companion.DataType.Patients,
+                    BackupUtils.DataType.Patients,
                     binding.patientCheckbox.isChecked
                 ) or getMask(
-                    ExportWorker.Companion.DataType.Healings,
+                    BackupUtils.DataType.Healings,
                     binding.healingCheckbox.isChecked
                 ) or getMask(
-                    ExportWorker.Companion.DataType.Payments,
+                    BackupUtils.DataType.Payments,
                     binding.paymentCheckbox.isChecked
                 )
             )
         )
     }
 
-    private fun getMask(type: ExportWorker.Companion.DataType, include: Boolean): Int {
+    private fun getMask(type: BackupUtils.DataType, include: Boolean): Int {
         return if (include) type.mask
         else 0
     }

@@ -30,22 +30,22 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
     private val patientMaps = mutableMapOf<Long, Long>()
     override suspend fun doWork(): Result {
         val dataType =
-            inputData.getInt(DATA_TYPE_KEY, ExportWorker.Companion.DataType.Patients.mask)
+            inputData.getInt(DATA_TYPE_KEY, BackupUtils.DataType.Patients.mask)
         val contentResolver = applicationContext.contentResolver
         val healersDatabase = DatabaseModule.provideHealersDatabase(applicationContext)
         val healersDao = DatabaseModule.provideHealersDao(healersDatabase)
         patientMaps.clear()
         return withContext(Dispatchers.IO) {
             try {
-                if (dataType and ExportWorker.Companion.DataType.Patients.mask > 0) {
+                if (dataType and BackupUtils.DataType.Patients.mask > 0) {
                     val result = importPatients(contentResolver, healersDao)
                     Timber.d("Patients import result = $result")
                 }
-                if (dataType and ExportWorker.Companion.DataType.Healings.mask > 0) {
+                if (dataType and BackupUtils.DataType.Healings.mask > 0) {
                     val result = importHealings(contentResolver, healersDao)
                     Timber.d("Healings import result = $result")
                 }
-                if (dataType and ExportWorker.Companion.DataType.Payments.mask > 0) {
+                if (dataType and BackupUtils.DataType.Payments.mask > 0) {
                     val result = importPayments(contentResolver, healersDao)
                     Timber.d("Payments import result = $result")
                 }
@@ -74,14 +74,14 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         contentResolver.openInputStream(fileUri)?.use { inputStream ->
             val csvReader = CsvReader(inputStream)
             val headings = csvReader.parseRow()
-            if (!verifyHeader(headings, ExportWorker.Companion.DataType.Patients)) {
+            if (!verifyHeader(headings, BackupUtils.DataType.Patients)) {
                 return ImportResult.InvalidFormat
             }
             do {
                 val row = csvReader.parseRow()
                 if (row.isNullOrEmpty()) break
-                if (row.size != ExportUtils.getExpectedSize(
-                        ExportWorker.Companion.DataType.Patients
+                if (row.size != BackupUtils.getExpectedSize(
+                        BackupUtils.DataType.Patients
                     )
                 ) {
                     failed += 1
@@ -123,14 +123,14 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         contentResolver.openInputStream(fileUri)?.use { inputStream ->
             val csvReader = CsvReader(inputStream)
             val headings = csvReader.parseRow()
-            if (!verifyHeader(headings, ExportWorker.Companion.DataType.Healings)) {
+            if (!verifyHeader(headings, BackupUtils.DataType.Healings)) {
                 return ImportResult.InvalidFormat
             }
             do {
                 val row = csvReader.parseRow()
                 if (row.isNullOrEmpty()) break
-                if (row.size != ExportUtils.getExpectedSize(
-                        ExportWorker.Companion.DataType.Healings
+                if (row.size != BackupUtils.getExpectedSize(
+                        BackupUtils.DataType.Healings
                     )
                 ) {
                     failed += 1
@@ -177,14 +177,14 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         contentResolver.openInputStream(fileUri)?.use { inputStream ->
             val csvReader = CsvReader(inputStream)
             val headings = csvReader.parseRow()
-            if (!verifyHeader(headings, ExportWorker.Companion.DataType.Payments)) {
+            if (!verifyHeader(headings, BackupUtils.DataType.Payments)) {
                 return ImportResult.InvalidFormat
             }
             do {
                 val row = csvReader.parseRow()
                 if (row.isNullOrEmpty()) break
-                if (row.size != ExportUtils.getExpectedSize(
-                        ExportWorker.Companion.DataType.Payments
+                if (row.size != BackupUtils.getExpectedSize(
+                        BackupUtils.DataType.Payments
                     )
                 ) {
                     failed += 1
@@ -220,10 +220,10 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
 
     private fun verifyHeader(
         headings: List<String>,
-        type: ExportWorker.Companion.DataType
+        type: BackupUtils.DataType
     ): Boolean {
-        if (headings.size != ExportUtils.getExpectedSize(type)) return false
-        val expectedHeaders = ExportUtils.getHeaders(type)
+        if (headings.size != BackupUtils.getExpectedSize(type)) return false
+        val expectedHeaders = BackupUtils.getHeaders(type)
         headings.forEachIndexed { index: Int, heading: String ->
             if (heading != expectedHeaders[index]) return false
         }
@@ -249,7 +249,11 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
 
         @SuppressLint("InlinedApi")
         val foregroundServiceType = ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
-        setForegroundCompat(PROGRESS_NOTIF_ID, notification, foregroundServiceType)
+        setForegroundCompat(
+            NotificationHelpers.NotificationIds.LocalBackupProgress,
+            notification,
+            foregroundServiceType
+        )
         setProgress(
             workDataOf(
                 PROGRESS_TEXT_KEY to message
@@ -262,7 +266,6 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         const val HEALINGS_FILE_URI_KEY = "healings_file_uri"
         const val PAYMENTS_FILE_URI_KEY = "payments_file_uri"
         const val DATA_TYPE_KEY = "data_type"
-        const val PROGRESS_NOTIF_ID = 300
         const val PROGRESS_TEXT_KEY = "progress_text"
         const val PendingIntentReqCode = 30
 

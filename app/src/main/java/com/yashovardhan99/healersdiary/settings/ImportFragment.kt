@@ -13,7 +13,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.yashovardhan99.core.backup_restore.ExportWorker
+import com.yashovardhan99.core.backup_restore.BackupUtils
 import com.yashovardhan99.core.utils.Icons
 import com.yashovardhan99.core.utils.buildHeader
 import com.yashovardhan99.healersdiary.R
@@ -42,7 +42,7 @@ class ImportFragment : Fragment() {
         registerForActivityResult(importDocumentContract) {
             Timber.d("Received uri for import patients = $it")
             if (it != null && viewModel.checkUri(it)) {
-                viewModel.selectType(ExportWorker.Companion.DataType.Patients, it)
+                viewModel.selectType(BackupUtils.DataType.Patients, it)
                 binding.patientsUpload.setCompoundDrawablesRelativeWithIntrinsicBounds(
                     R.drawable.check,
                     0,
@@ -58,7 +58,7 @@ class ImportFragment : Fragment() {
         registerForActivityResult(importDocumentContract) {
             Timber.d("Received uri for import healings = $it")
             if (it != null && viewModel.checkUri(it)) {
-                viewModel.selectType(ExportWorker.Companion.DataType.Healings, it)
+                viewModel.selectType(BackupUtils.DataType.Healings, it)
                 binding.healingsUpload.setCompoundDrawablesRelativeWithIntrinsicBounds(
                     R.drawable.check,
                     0,
@@ -74,7 +74,7 @@ class ImportFragment : Fragment() {
         registerForActivityResult(importDocumentContract) {
             Timber.d("Received uri for import payments = $it")
             if (it != null && viewModel.checkUri(it)) {
-                viewModel.selectType(ExportWorker.Companion.DataType.Payments, it)
+                viewModel.selectType(BackupUtils.DataType.Payments, it)
                 binding.paymentsUpload.setCompoundDrawablesRelativeWithIntrinsicBounds(
                     R.drawable.check,
                     0,
@@ -102,13 +102,13 @@ class ImportFragment : Fragment() {
         viewModel.setExport(false)
         val selected = args.selectedType
         binding.patientsUploadBox.visibility =
-            if (selected and ExportWorker.Companion.DataType.Patients.mask > 0) View.VISIBLE
+            if (selected and BackupUtils.DataType.Patients.mask > 0) View.VISIBLE
             else View.GONE
         binding.healingsUploadBox.visibility =
-            if (selected and ExportWorker.Companion.DataType.Healings.mask > 0) View.VISIBLE
+            if (selected and BackupUtils.DataType.Healings.mask > 0) View.VISIBLE
             else View.GONE
         binding.paymentsUploadBox.visibility =
-            if (selected and ExportWorker.Companion.DataType.Payments.mask > 0) View.VISIBLE
+            if (selected and BackupUtils.DataType.Payments.mask > 0) View.VISIBLE
             else View.GONE
         binding.patientsUploadBox.setOnClickListener {
             patientsImportLauncher.launch(arrayOf("text/csv", "text/comma-separated-values"))

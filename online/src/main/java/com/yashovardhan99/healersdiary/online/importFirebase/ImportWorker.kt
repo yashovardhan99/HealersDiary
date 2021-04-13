@@ -262,7 +262,11 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
             .cancel(OnboardingState.IMPORT_COMPLETE_NOTIF_ID)
         @SuppressLint("InlinedApi")
         val foregroundServiceType = ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
-        setForegroundCompat(PROGRESS_NOTIF_ID, notification, foregroundServiceType)
+        setForegroundCompat(
+            NotificationHelpers.NotificationIds.ImportV1Progress,
+            notification,
+            foregroundServiceType
+        )
     }
 
     private fun showDoneNotification(isSuccessful: Boolean, willRetry: Boolean) {
@@ -291,11 +295,10 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
             .setAutoCancel(true)
             .build()
         NotificationManagerCompat.from(applicationContext)
-            .notify(OnboardingState.IMPORT_COMPLETE_NOTIF_ID, notification)
+            .notify(NotificationHelpers.NotificationIds.ImportV1Completed, notification)
     }
 
     companion object {
-        private const val PROGRESS_NOTIF_ID = 100
         const val MAX_PROGRESS = 100
         const val INITIAL_PROGRESS = 10
         const val INITIAL_PROGRESS_FLOAT = 0.1f
