@@ -17,6 +17,10 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.yashovardhan99.core.backup_restore.BackupUtils
+import com.yashovardhan99.core.backup_restore.BackupUtils.Input.DATA_TYPE_KEY
+import com.yashovardhan99.core.backup_restore.BackupUtils.Input.HEALINGS_FILE_URI_KEY
+import com.yashovardhan99.core.backup_restore.BackupUtils.Input.PATIENTS_FILE_URI_KEY
+import com.yashovardhan99.core.backup_restore.BackupUtils.Input.PAYMENTS_FILE_URI_KEY
 import com.yashovardhan99.core.backup_restore.ExportWorker
 import com.yashovardhan99.core.backup_restore.ImportWorker
 import com.yashovardhan99.core.database.HealersDataStore
@@ -130,8 +134,12 @@ class BackupViewModel @Inject constructor(
     }
 
     fun deselectType(type: BackupUtils.DataType) {
-        selectedTypes = selectedTypes xor type.mask
-        checkedTypes = checkedTypes xor type.mask
+        if (selectedTypes and type.mask > 0) {
+            selectedTypes = selectedTypes xor type.mask
+        }
+        if (checkedTypes and type.mask > 0) {
+            checkedTypes = checkedTypes xor type.mask
+        }
         when (type) {
             BackupUtils.DataType.Healings -> healingsUri = Uri.EMPTY
             BackupUtils.DataType.Patients -> patientsUri = Uri.EMPTY
@@ -184,20 +192,20 @@ class BackupViewModel @Inject constructor(
 
     private suspend fun createBackup(): Boolean {
         if (checkedTypes == 0) return false
-        val workData = Data.Builder().putInt(BackupUtils.Input.DATA_TYPE_KEY, checkedTypes)
+        val workData = Data.Builder().putInt(DATA_TYPE_KEY, checkedTypes)
         if (checkedTypes and BackupUtils.DataType.Patients.mask > 0) workData
             .putString(
-                BackupUtils.Input.PATIENTS_FILE_URI_KEY,
+                PATIENTS_FILE_URI_KEY,
                 buildFileUri(BackupUtils.DataType.Patients).toString()
             )
         if (checkedTypes and BackupUtils.DataType.Healings.mask > 0) workData
             .putString(
-                BackupUtils.Input.HEALINGS_FILE_URI_KEY,
+                HEALINGS_FILE_URI_KEY,
                 buildFileUri(BackupUtils.DataType.Healings).toString()
             )
         if (checkedTypes and BackupUtils.DataType.Payments.mask > 0) workData
             .putString(
-                BackupUtils.Input.PAYMENTS_FILE_URI_KEY,
+                PAYMENTS_FILE_URI_KEY,
                 buildFileUri(BackupUtils.DataType.Payments).toString()
             )
         val workRequest = OneTimeWorkRequestBuilder<ExportWorker>()
@@ -216,20 +224,20 @@ class BackupViewModel @Inject constructor(
 
     fun importBackup(): Boolean {
         if (selectedTypes == 0) return false
-        val workData = Data.Builder().putInt(ImportWorker.DATA_TYPE_KEY, selectedTypes)
+        val workData = Data.Builder().putInt(DATA_TYPE_KEY, selectedTypes)
         if (selectedTypes and BackupUtils.DataType.Patients.mask > 0) workData
             .putString(
-                ImportWorker.PATIENTS_FILE_URI_KEY,
+                PATIENTS_FILE_URI_KEY,
                 patientsUri.toString()
             )
         if (selectedTypes and BackupUtils.DataType.Healings.mask > 0) workData
             .putString(
-                ImportWorker.HEALINGS_FILE_URI_KEY,
+                HEALINGS_FILE_URI_KEY,
                 healingsUri.toString()
             )
         if (selectedTypes and BackupUtils.DataType.Payments.mask > 0) workData
             .putString(
-                ImportWorker.PAYMENTS_FILE_URI_KEY,
+                PAYMENTS_FILE_URI_KEY,
                 paymentsUri.toString()
             )
         val workRequest = OneTimeWorkRequestBuilder<ImportWorker>()

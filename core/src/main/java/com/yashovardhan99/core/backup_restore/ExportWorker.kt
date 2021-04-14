@@ -193,25 +193,23 @@ class ExportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
             notification,
             foregroundServiceType
         )
-        setProgress(
-            getProgressData(progress, message, currentType)
-        )
+        setProgress(getProgressData(progress, message, currentType))
     }
 
     private fun getProgressData(
         progress: Int,
         message: String?,
         currentType: BackupUtils.DataType?
-    ) =
-        workDataOf(
-            BackupUtils.Progress.ProgressPercent to progress,
-            BackupUtils.Progress.ProgressMessage to message,
-            BackupUtils.Progress.RequiredBit to inputData.getInt(DATA_TYPE_KEY, 0),
-            BackupUtils.Progress.CurrentBit to (currentType?.mask ?: 0),
-            BackupUtils.Progress.ExportCounts to done,
-            BackupUtils.Progress.ExportTotal to total,
-            BackupUtils.Progress.FileErrorBit to errorBit,
-        )
+    ) = workDataOf(
+        BackupUtils.Progress.ProgressPercent to progress,
+        BackupUtils.Progress.ProgressMessage to message,
+        BackupUtils.Progress.RequiredBit to inputData.getInt(DATA_TYPE_KEY, 0),
+        BackupUtils.Progress.CurrentBit to (currentType?.mask ?: 0),
+        BackupUtils.Progress.ExportCounts to done,
+        BackupUtils.Progress.ExportTotal to total,
+        BackupUtils.Progress.FileErrorBit to errorBit,
+        BackupUtils.Progress.Timestamp to System.currentTimeMillis()
+    )
 
     companion object {
         const val PendingIntentReqCode = 30

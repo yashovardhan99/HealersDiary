@@ -62,6 +62,7 @@
             <com.google.android.material.progressindicator.LinearProgressIndicator
                 android:id="@+id/main_progress"
                 android:layout_width="match_parent"
+                android:indeterminate="false"
                 android:layout_height="wrap_content"
                 android:max="100"
                 android:layout_margin="8dp" />

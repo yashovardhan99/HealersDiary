@@ -1,5 +1,6 @@
 package com.yashovardhan99.healersdiary.settings
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +8,7 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.yashovardhan99.core.backup_restore.BackupUtils
@@ -67,12 +69,10 @@ class BackupFragment : Fragment() {
                 showExportNote()
             }
         }
-        lifecycleScope.launchWhenResumed {
-            viewModel.showProgress.collect {
-                if (it) findNavController().navigate(
-                    BackupFragmentDirections.actionBackupFragmentToBackupProgressFragment()
-                )
-            }
+        viewModel.showProgress.asLiveData().observe(viewLifecycleOwner) {
+            if (it) findNavController().navigate(
+                BackupFragmentDirections.actionBackupFragmentToBackupProgressFragment()
+            )
         }
         binding.start.setOnClickListener {
             if (binding.importExportToggle.checkedButtonId == R.id.export) {
@@ -118,6 +118,7 @@ class BackupFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("BinaryOperationInTimber")
     override fun onResume() {
         super.onResume()
         if (binding.patientCheckbox.isChecked) viewModel.selectType(
@@ -132,6 +133,12 @@ class BackupFragment : Fragment() {
             BackupUtils.DataType.Payments
         )
         else viewModel.deselectType(BackupUtils.DataType.Payments)
+        Timber.d(
+            "Checked => Patient = ${binding.patientCheckbox.isChecked}" +
+                " Healing = ${binding.healingCheckbox.isChecked} " +
+                "Payments = ${binding.paymentCheckbox.isChecked}"
+        )
+        Timber.d("Checked type = ${viewModel.checkedTypes}")
         binding.importBackup.isChecked = !viewModel.isExporting
         binding.export.isChecked = viewModel.isExporting
     }

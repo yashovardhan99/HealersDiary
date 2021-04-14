@@ -59,6 +59,7 @@ object BackupUtils {
         const val ProgressMessage = "progress_message" // Message being shown in notification
         const val RequiredBit = "required_bit" // The data type(s) bit required to be handled
         const val CurrentBit = "current_bit" // The data type bit being currently being handled
+        const val Timestamp = "timestamp" // Time in ms of the last update
 
         // IntArray will always be in order [Patients, Healings, Payments]
         const val ExportCounts = "export_count" // IntArray containing the no. of exports done
