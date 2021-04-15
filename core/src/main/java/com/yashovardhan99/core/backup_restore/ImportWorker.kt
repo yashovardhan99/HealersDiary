@@ -191,7 +191,9 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
             .setContentText(message)
             .setContentDeepLink(
                 applicationContext,
-                Uri.parse("healersdiary://com.yashovardhan99.healersdiary/backup/progress"),
+                Uri.parse(
+                    "healersdiary://com.yashovardhan99.healersdiary/backup/progress?uuid=$id"
+                ),
                 PendingIntentReqCode
             ).build()
 

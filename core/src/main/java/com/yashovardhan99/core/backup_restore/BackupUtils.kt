@@ -3,6 +3,7 @@ package com.yashovardhan99.core.backup_restore
 import com.yashovardhan99.core.database.Healing
 import com.yashovardhan99.core.database.Patient
 import com.yashovardhan99.core.database.Payment
+import kotlin.math.roundToInt
 
 object BackupUtils {
     fun getCsvRow(vararg fields: Any): String =
@@ -46,16 +47,57 @@ object BackupUtils {
         }
     }
 
+    fun getCurrentProgress(
+        currentMask: Int,
+        selectedMask: Int,
+        done: IntArray,
+        total: IntArray
+    ): Int {
+        var curProgress = 0
+        if (currentMask > DataType.Patients.mask && DataType.Patients in selectedMask)
+            curProgress += DataType.Patients.maxProgress
+        else if (currentMask == DataType.Patients.mask) curProgress +=
+            getTypeProgress(DataType.Patients, done[0], total[0])
+        if (currentMask > DataType.Healings.mask && DataType.Healings in selectedMask)
+            curProgress += DataType.Healings.maxProgress
+        else if (currentMask == DataType.Healings.mask) curProgress +=
+            getTypeProgress(DataType.Healings, done[1], total[1])
+        if (currentMask > DataType.Payments.mask && DataType.Payments in selectedMask)
+            curProgress += DataType.Payments.maxProgress
+        else if (currentMask == DataType.Payments.mask) curProgress +=
+            getTypeProgress(DataType.Payments, done[2], total[2])
+        return curProgress
+    }
+
+    fun getMaxProgress(
+        selectedMask: Int,
+    ): Int {
+        var max = 0
+        if (DataType.Patients in selectedMask) max += DataType.Patients.maxProgress
+        if (DataType.Healings in selectedMask) max += DataType.Healings.maxProgress
+        if (DataType.Payments in selectedMask) max += DataType.Payments.maxProgress
+        return max
+    }
+
+    private fun getTypeProgress(
+        type: DataType,
+        done: Int,
+        total: Int
+    ): Int {
+        return if (total == 0) 0
+        else (done.toFloat() / total * type.maxProgress).roundToInt()
+    }
+
     object Input {
         const val PATIENTS_FILE_URI_KEY = "patient_file_uri"
         const val HEALINGS_FILE_URI_KEY = "healings_file_uri"
         const val PAYMENTS_FILE_URI_KEY = "payments_file_uri"
         const val DATA_TYPE_KEY = "data_type"
+        const val ExportFolderUriKey = "export_folder_uri"
     }
 
     // Progress constants for sending updates and results
     object Progress {
-        const val ProgressPercent = "progress_percent" // Progress in 100
         const val ProgressMessage = "progress_message" // Message being shown in notification
         const val RequiredBit = "required_bit" // The data type(s) bit required to be handled
         const val CurrentBit = "current_bit" // The data type bit being currently being handled
@@ -71,9 +113,33 @@ object BackupUtils {
         const val InvalidFormatBit = "invalid_format_bit" // Bit of where invalid format was found
     }
 
-    sealed class DataType(val mask: Int, val idx: Int) {
-        object Patients : DataType(1 shl 0, 0)
-        object Healings : DataType(1 shl 1, 1)
-        object Payments : DataType(1 shl 2, 2)
+    sealed class DataType(val mask: Int, val idx: Int, val maxProgress: Int) {
+        object Patients : DataType(1 shl 0, 0, 10)
+        object Healings : DataType(1 shl 1, 1, 200)
+        object Payments : DataType(1 shl 2, 2, 40)
+    }
+
+    /**
+     * Check whether a [DataType] is included in a bit-mask.
+     * @param type Data type to check
+     * @return true if the data type is included in the given mask
+     */
+    operator fun Int.contains(type: DataType): Boolean {
+        return this and type.mask > 0
+    }
+
+    /**
+     * Include the data type in the bit.
+     */
+    operator fun Int.plus(type: DataType): Int {
+        return this or type.mask
+    }
+
+    /**
+     * Remove the data type from the bit, if present.
+     */
+    operator fun Int.minus(type: DataType): Int {
+        return if (type in this) this xor type.mask
+        else this
     }
 }

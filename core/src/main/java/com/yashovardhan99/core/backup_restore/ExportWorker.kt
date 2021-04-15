@@ -1,11 +1,15 @@
 package com.yashovardhan99.core.backup_restore
 
 import android.annotation.SuppressLint
+import android.app.Notification
+import android.app.PendingIntent
 import android.content.ContentResolver
 import android.content.Context
+import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.net.Uri
-import androidx.annotation.IntRange
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
@@ -52,14 +56,17 @@ class ExportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
                 if (dataType and BackupUtils.DataType.Payments.mask > 0) {
                     exportPayments(contentResolver, healersDao)
                 }
-                if (errorBit == dataType) Result.failure(getProgressData(0, null, null))
-                Result.success(getProgressData(100, null, null))
+                showDoneNotification(total.sum(), done.sum(), errorBit == dataType)
+                if (errorBit == dataType) Result.failure(getProgressData("Export failed", null))
+                else Result.success(getProgressData("Export completed", null))
             } catch (e: FileNotFoundException) {
                 e.printStackTrace()
-                Result.failure(getProgressData(0, e.message, null))
+                showDoneNotification(total.sum(), done.sum(), true)
+                Result.failure(getProgressData(e.message, null))
             } catch (e: IOException) {
                 e.printStackTrace()
-                Result.failure(getProgressData(0, e.message, null))
+                showDoneNotification(total.sum(), done.sum(), true)
+                Result.failure(getProgressData(e.message, null))
             }
         }
     }
@@ -82,7 +89,7 @@ class ExportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         }
         done[type.idx] = 0
         total[type.idx] = items.size
-        updateProgress(0, notificationMessage, type)
+        updateProgress(0, items.size, notificationMessage, type)
         val fileUri = Uri.parse(inputData.getString(uriKey)) ?: throw FileNotFoundException()
         contentResolver.openAssetFileDescriptor(fileUri, "w")?.use {
             it.createOutputStream().channel.truncate(0).close()
@@ -92,7 +99,7 @@ class ExportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
             items.forEachIndexed { index, item ->
                 done[type.idx] += 1
                 appendLine(getCsvRow(item))
-                updateProgress((index + 1) * 100 / items.size, notificationMessage, type)
+                updateProgress(index + 1, items.size, notificationMessage, type)
             }
             close()
         }?.close()
@@ -117,7 +124,7 @@ class ExportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
             }
         } catch (e: FileNotFoundException) {
             errorBit = errorBit or BackupUtils.DataType.Patients.mask
-            updateProgress(0, "Exporting Patients Failed", BackupUtils.DataType.Patients)
+            updateProgress(0, 0, "Exporting Patients Failed", BackupUtils.DataType.Patients)
         }
     }
 
@@ -140,7 +147,7 @@ class ExportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
             }
         } catch (e: FileNotFoundException) {
             errorBit = errorBit or BackupUtils.DataType.Healings.mask
-            updateProgress(0, "Exporting Healings Failed", BackupUtils.DataType.Healings)
+            updateProgress(0, 0, "Exporting Healings Failed", BackupUtils.DataType.Healings)
         }
     }
 
@@ -163,25 +170,29 @@ class ExportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
             }
         } catch (e: FileNotFoundException) {
             errorBit = errorBit or BackupUtils.DataType.Payments.mask
-            updateProgress(0, "Exporting Payments Failed", BackupUtils.DataType.Payments)
+            updateProgress(0, 0, "Exporting Payments Failed", BackupUtils.DataType.Payments)
         }
     }
 
     private suspend fun updateProgress(
-        @IntRange(from = 0, to = 100) progress: Int,
+        progress: Int,
+        max: Int,
         message: String,
         currentType: BackupUtils.DataType
     ) {
+        check(progress <= max)
         val notification = NotificationHelpers.getDefaultNotification(
             applicationContext,
             NotificationHelpers.Channel.LocalExport
         ).setContentTitle(applicationContext.getString(R.string.exporting_data))
             .setTypeProgress()
-            .setProgress(100, progress, false)
+            .setProgress(max, progress, false)
             .setContentText(message)
             .setContentDeepLink(
                 applicationContext,
-                Uri.parse("healersdiary://com.yashovardhan99.healersdiary/backup/progress"),
+                Uri.parse(
+                    "healersdiary://com.yashovardhan99.healersdiary/backup/progress?uuid=$id"
+                ),
                 PendingIntentReqCode
             )
             .build()
@@ -193,18 +204,53 @@ class ExportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
             notification,
             foregroundServiceType
         )
-        setProgress(getProgressData(progress, message, currentType))
+        setProgress(getProgressData(message, currentType))
+    }
+
+    private fun showDoneNotification(max: Int, count: Int, failed: Boolean) {
+        val intent = Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse(inputData.getString(BackupUtils.Input.ExportFolderUriKey))
+        )
+        val pendingIntent = PendingIntent.getActivity(
+            applicationContext,
+            PendingIntentReqCode,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val notification = NotificationHelpers.getDefaultNotification(
+            applicationContext,
+            NotificationHelpers.Channel.LocalExport
+        ).setCategory(if (failed) Notification.CATEGORY_ERROR else Notification.CATEGORY_PROGRESS)
+            .setAutoCancel(true)
+            .setStyle(
+                NotificationCompat.BigTextStyle().bigText(
+                    if (failed) "Something went wrong while exporting. Tap to resolve"
+                    else "$count of $max records were exported successfully"
+                )
+            )
+            .setContentTitle(if (failed) "Export Failed" else "Export Completed")
+            .run {
+                if (failed) setContentDeepLink(
+                    applicationContext,
+                    Uri.parse("healersdiary://com.yashovardhan99.healersdiary/backup"),
+                    PendingIntentReqCode
+                ) else setContentIntent(pendingIntent)
+            }.build()
+
+        NotificationManagerCompat.from(applicationContext)
+            .notify(NotificationHelpers.NotificationIds.LocalBackupCompleted, notification)
     }
 
     private fun getProgressData(
-        progress: Int,
         message: String?,
         currentType: BackupUtils.DataType?
     ) = workDataOf(
-        BackupUtils.Progress.ProgressPercent to progress,
         BackupUtils.Progress.ProgressMessage to message,
         BackupUtils.Progress.RequiredBit to inputData.getInt(DATA_TYPE_KEY, 0),
-        BackupUtils.Progress.CurrentBit to (currentType?.mask ?: 0),
+        BackupUtils.Progress.CurrentBit to
+            (currentType?.mask ?: inputData.getInt(DATA_TYPE_KEY, 0)),
         BackupUtils.Progress.ExportCounts to done,
         BackupUtils.Progress.ExportTotal to total,
         BackupUtils.Progress.FileErrorBit to errorBit,

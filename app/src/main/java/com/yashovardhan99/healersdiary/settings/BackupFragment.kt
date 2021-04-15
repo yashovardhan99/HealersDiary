@@ -70,8 +70,8 @@ class BackupFragment : Fragment() {
             }
         }
         viewModel.showProgress.asLiveData().observe(viewLifecycleOwner) {
-            if (it) findNavController().navigate(
-                BackupFragmentDirections.actionBackupFragmentToBackupProgressFragment()
+            if (it != null) findNavController().navigate(
+                BackupFragmentDirections.actionBackupFragmentToBackupProgressFragment(it.toString())
             )
         }
         binding.start.setOnClickListener {

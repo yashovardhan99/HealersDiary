@@ -11,6 +11,7 @@ import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.work.Data
 import androidx.work.WorkInfo
 import com.google.android.material.progressindicator.LinearProgressIndicator
@@ -20,12 +21,14 @@ import com.yashovardhan99.core.utils.buildHeader
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.FragmentBackupProgressBinding
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.UUID
 import kotlin.math.roundToInt
 import timber.log.Timber
 
 @AndroidEntryPoint
 class BackupProgressFragment : Fragment() {
     private val viewModel: BackupViewModel by activityViewModels()
+    private val args by navArgs<BackupProgressFragmentArgs>()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -39,17 +42,27 @@ class BackupProgressFragment : Fragment() {
                 findNavController().popBackStack()
             }
         }
-        viewModel.workObserver.observe(viewLifecycleOwner) { workInfo ->
-            when {
-                workInfo == null -> resetDisplay(binding)
-                workInfo.state == WorkInfo.State.ENQUEUED -> {
-                    Timber.d("Enqueued Work = $workInfo")
-                    resetDisplay(binding)
+        Timber.d("UUID received = ${args.uuid}")
+        viewModel.getWorkInfoLiveData(UUID.fromString(args.uuid))
+            .observe(viewLifecycleOwner) { workInfo ->
+                when {
+                    workInfo == null -> resetDisplay(binding)
+                    workInfo.state == WorkInfo.State.ENQUEUED -> {
+                        Timber.d("Enqueued Work = $workInfo")
+                        resetDisplay(binding)
+                    }
+                    workInfo.tags.contains("importWorker") -> showImportData(
+                        binding,
+                        if (workInfo.state == WorkInfo.State.RUNNING) workInfo.progress
+                        else workInfo.outputData
+                    )
+                    workInfo.tags.contains("exportWorker") -> showExportData(
+                        binding,
+                        if (workInfo.state == WorkInfo.State.RUNNING) workInfo.progress
+                        else workInfo.outputData
+                    )
                 }
-                workInfo.tags.contains("importWorker") -> showImportData(binding, workInfo.progress)
-                workInfo.tags.contains("exportWorker") -> showExportData(binding, workInfo.progress)
             }
-        }
         return binding.root
     }
 
@@ -78,47 +91,39 @@ class BackupProgressFragment : Fragment() {
         binding.subtitle.text = progress.getString(BackupUtils.Progress.ProgressMessage)
         val dataType = progress.getInt(BackupUtils.Progress.RequiredBit, 0)
         val current = progress.getInt(BackupUtils.Progress.CurrentBit, 0)
-        var curProgress = progress.getInt(BackupUtils.Progress.ProgressPercent, 0)
-        var max = 0
         val error = progress.getInt(BackupUtils.Progress.FileErrorBit, 0)
-        val done = progress.getIntArray(BackupUtils.Progress.ExportCounts)
-        val counts = progress.getIntArray(BackupUtils.Progress.ExportTotal)
+        val done = progress.getIntArray(BackupUtils.Progress.ExportCounts) ?: IntArray(3)
+        val counts = progress.getIntArray(BackupUtils.Progress.ExportTotal) ?: IntArray(3)
+        val curProgress = BackupUtils.getCurrentProgress(current, dataType, done, counts)
+        binding.mainProgress.max = BackupUtils.getMaxProgress(dataType)
+        binding.mainProgress.setProgressCompat(curProgress, true)
         if (dataType and BackupUtils.DataType.Patients.mask > 0) {
-            // patient included
-            max += 25
-            if (current > BackupUtils.DataType.Patients.mask) curProgress += 25
             binding.patientsBox.visibility = View.VISIBLE
             setExportSubView(
                 binding.patientStatus, binding.patientProgress,
                 error and BackupUtils.DataType.Patients.mask > 0,
-                done?.get(0) ?: 0, counts?.get(0) ?: 0,
+                done[0], counts[0],
                 current >= BackupUtils.DataType.Patients.mask
             )
         } else binding.patientsBox.visibility = View.GONE
         if (dataType and BackupUtils.DataType.Healings.mask > 0) {
-            max += 200
-            if (current > BackupUtils.DataType.Healings.mask) curProgress += 200
             binding.healingsBox.visibility = View.VISIBLE
             setExportSubView(
                 binding.healingStatus, binding.healingProgress,
                 error and BackupUtils.DataType.Healings.mask > 0,
-                done?.get(1) ?: 0, counts?.get(1) ?: 0,
+                done[1], counts[1],
                 current >= BackupUtils.DataType.Healings.mask
             )
         } else binding.healingsBox.visibility = View.GONE
         if (dataType and BackupUtils.DataType.Payments.mask > 0) {
-            max += 50
-            if (current > BackupUtils.DataType.Payments.mask) curProgress += 50
             binding.paymentsBox.visibility = View.VISIBLE
             setExportSubView(
                 binding.paymentStatus, binding.paymentProgress,
                 error and BackupUtils.DataType.Payments.mask > 0,
-                done?.get(2) ?: 0, counts?.get(2) ?: 0,
+                done[2], counts[2],
                 current >= BackupUtils.DataType.Payments.mask
             )
         } else binding.paymentsBox.visibility = View.GONE
-        binding.mainProgress.max = max
-        binding.mainProgress.setProgressCompat(curProgress, true)
     }
 
     private fun setExportSubView(

@@ -9,7 +9,6 @@ import androidx.core.database.getStringOrNull
 import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
@@ -18,6 +17,7 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.yashovardhan99.core.backup_restore.BackupUtils
 import com.yashovardhan99.core.backup_restore.BackupUtils.Input.DATA_TYPE_KEY
+import com.yashovardhan99.core.backup_restore.BackupUtils.Input.ExportFolderUriKey
 import com.yashovardhan99.core.backup_restore.BackupUtils.Input.HEALINGS_FILE_URI_KEY
 import com.yashovardhan99.core.backup_restore.BackupUtils.Input.PATIENTS_FILE_URI_KEY
 import com.yashovardhan99.core.backup_restore.BackupUtils.Input.PAYMENTS_FILE_URI_KEY
@@ -26,6 +26,7 @@ import com.yashovardhan99.core.backup_restore.ImportWorker
 import com.yashovardhan99.core.database.HealersDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -58,16 +59,8 @@ class BackupViewModel @Inject constructor(
         private set
     private val exportUri = dataStore.getExportLocation().onEach { exportUriCopy = it }
     val exportUriFlow = exportUri
-    private val allWorkObserver: LiveData<List<WorkInfo>> =
-        workManager.getWorkInfosForUniqueWorkLiveData("backupWorker").map { list ->
-            list.filter { it.state in setOf(WorkInfo.State.RUNNING, WorkInfo.State.ENQUEUED) }
-        }
-    private val showProgressInternal = MutableStateFlow(false)
-    val showProgress: StateFlow<Boolean> = showProgressInternal.asStateFlow()
-
-    val workObserver: LiveData<WorkInfo?> = allWorkObserver.map { list ->
-        list.firstOrNull { it.state == WorkInfo.State.RUNNING } ?: list.firstOrNull()
-    }
+    private val showProgressInternal = MutableStateFlow<UUID?>(null)
+    val showProgress: StateFlow<UUID?> = showProgressInternal.asStateFlow()
 
     @Suppress("BlockingMethodInNonBlockingContext")
     val exportLocation: Flow<String?> = exportUri.map { uri ->
@@ -193,6 +186,7 @@ class BackupViewModel @Inject constructor(
     private suspend fun createBackup(): Boolean {
         if (checkedTypes == 0) return false
         val workData = Data.Builder().putInt(DATA_TYPE_KEY, checkedTypes)
+            .putString(ExportFolderUriKey, exportUriCopy?.toString())
         if (checkedTypes and BackupUtils.DataType.Patients.mask > 0) workData
             .putString(
                 PATIENTS_FILE_URI_KEY,
@@ -218,7 +212,7 @@ class BackupViewModel @Inject constructor(
             workRequest
         )
         checkedTypes = 0
-        showProgressInternal.value = true
+        showProgressInternal.value = workRequest.id
         return true
     }
 
@@ -249,12 +243,16 @@ class BackupViewModel @Inject constructor(
             ExistingWorkPolicy.APPEND_OR_REPLACE,
             workRequest
         )
-        showProgressInternal.value = true
+        showProgressInternal.value = workRequest.id
         return true
     }
 
     fun resetShowProgress() {
-        showProgressInternal.value = false
+        showProgressInternal.value = null
+    }
+
+    fun getWorkInfoLiveData(uuid: UUID): LiveData<WorkInfo> {
+        return workManager.getWorkInfoByIdLiveData(uuid)
     }
 
     companion object {

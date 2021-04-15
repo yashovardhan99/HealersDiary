@@ -126,8 +126,9 @@ class ImportFragment : Fragment() {
         }
         lifecycleScope.launchWhenResumed {
             viewModel.showProgress.collect {
-                if (it) findNavController().navigate(
-                    ImportFragmentDirections.actionImportFragmentToBackupProgressFragment()
+                if (it != null) findNavController().navigate(
+                    ImportFragmentDirections
+                        .actionImportFragmentToBackupProgressFragment(it.toString())
                 )
             }
         }

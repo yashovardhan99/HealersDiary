@@ -47,7 +47,6 @@
             app:argType="long" />
         <deepLink
             android:id="@+id/deepLink"
-            android:autoVerify="true"
             app:action="ACTION_VIEW"
             app:uri="healersdiary://com.yashovardhan99.healersdiary/patients?patient_id={patientId}" />
         <action
@@ -97,6 +96,10 @@
             app:destination="@id/backupProgressFragment"
             app:launchSingleTop="true"
             app:popUpTo="@id/settings" />
+        <deepLink
+            android:id="@+id/deepLink4"
+            app:uri="healersdiary://com.yashovardhan99.healersdiary/backup"
+            app:action="ACTION_VIEW" />
     </fragment>
     <fragment
         tools:layout="@layout/fragment_import"
@@ -120,7 +123,10 @@
         android:label="BackupProgressFragment">
         <deepLink
             android:id="@+id/deepLink3"
-            app:uri="healersdiary://com.yashovardhan99.healersdiary/backup/progress"
+            app:uri="healersdiary://com.yashovardhan99.healersdiary/backup/progress?uuid={uuid}"
             app:action="ACTION_VIEW" />
+        <argument
+            android:name="uuid"
+            app:argType="string" />
     </fragment>
 </navigation>
