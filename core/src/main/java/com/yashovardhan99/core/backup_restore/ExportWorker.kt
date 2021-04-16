@@ -18,6 +18,8 @@ import com.yashovardhan99.core.backup_restore.BackupUtils.Input.DATA_TYPE_KEY
 import com.yashovardhan99.core.backup_restore.BackupUtils.Input.HEALINGS_FILE_URI_KEY
 import com.yashovardhan99.core.backup_restore.BackupUtils.Input.PATIENTS_FILE_URI_KEY
 import com.yashovardhan99.core.backup_restore.BackupUtils.Input.PAYMENTS_FILE_URI_KEY
+import com.yashovardhan99.core.backup_restore.BackupUtils.contains
+import com.yashovardhan99.core.backup_restore.BackupUtils.plus
 import com.yashovardhan99.core.database.DatabaseModule
 import com.yashovardhan99.core.database.HealersDao
 import com.yashovardhan99.core.database.Healing
@@ -47,13 +49,13 @@ class ExportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         val healersDao = DatabaseModule.provideHealersDao(healersDatabase)
         return withContext(Dispatchers.IO) {
             try {
-                if (dataType and BackupUtils.DataType.Patients.mask > 0) {
+                if (BackupUtils.DataType.Patients in dataType) {
                     exportPatients(contentResolver, healersDao)
                 }
-                if (dataType and BackupUtils.DataType.Healings.mask > 0) {
+                if (BackupUtils.DataType.Healings in dataType) {
                     exportHealings(contentResolver, healersDao)
                 }
-                if (dataType and BackupUtils.DataType.Payments.mask > 0) {
+                if (BackupUtils.DataType.Payments in dataType) {
                     exportPayments(contentResolver, healersDao)
                 }
                 showDoneNotification(total.sum(), done.sum(), errorBit == dataType)
@@ -123,7 +125,7 @@ class ExportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
                 )
             }
         } catch (e: FileNotFoundException) {
-            errorBit = errorBit or BackupUtils.DataType.Patients.mask
+            errorBit += BackupUtils.DataType.Patients
             updateProgress(0, 0, "Exporting Patients Failed", BackupUtils.DataType.Patients)
         }
     }
@@ -146,7 +148,7 @@ class ExportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
                 )
             }
         } catch (e: FileNotFoundException) {
-            errorBit = errorBit or BackupUtils.DataType.Healings.mask
+            errorBit += BackupUtils.DataType.Healings
             updateProgress(0, 0, "Exporting Healings Failed", BackupUtils.DataType.Healings)
         }
     }
@@ -169,7 +171,7 @@ class ExportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
                 )
             }
         } catch (e: FileNotFoundException) {
-            errorBit = errorBit or BackupUtils.DataType.Payments.mask
+            errorBit += BackupUtils.DataType.Payments
             updateProgress(0, 0, "Exporting Payments Failed", BackupUtils.DataType.Payments)
         }
     }

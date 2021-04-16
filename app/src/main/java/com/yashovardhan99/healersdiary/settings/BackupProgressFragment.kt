@@ -16,6 +16,7 @@ import androidx.work.Data
 import androidx.work.WorkInfo
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.yashovardhan99.core.backup_restore.BackupUtils
+import com.yashovardhan99.core.backup_restore.BackupUtils.contains
 import com.yashovardhan99.core.utils.Icons
 import com.yashovardhan99.core.utils.buildHeader
 import com.yashovardhan99.healersdiary.R
@@ -97,29 +98,29 @@ class BackupProgressFragment : Fragment() {
         val curProgress = BackupUtils.getCurrentProgress(current, dataType, done, counts)
         binding.mainProgress.max = BackupUtils.getMaxProgress(dataType)
         binding.mainProgress.setProgressCompat(curProgress, true)
-        if (dataType and BackupUtils.DataType.Patients.mask > 0) {
+        if (BackupUtils.DataType.Patients in dataType) {
             binding.patientsBox.visibility = View.VISIBLE
             setExportSubView(
                 binding.patientStatus, binding.patientProgress,
-                error and BackupUtils.DataType.Patients.mask > 0,
+                BackupUtils.DataType.Patients in error,
                 done[0], counts[0],
-                current >= BackupUtils.DataType.Patients.mask
+                current >= BackupUtils.DataType.Patients.mask,
             )
         } else binding.patientsBox.visibility = View.GONE
-        if (dataType and BackupUtils.DataType.Healings.mask > 0) {
+        if (BackupUtils.DataType.Healings in dataType) {
             binding.healingsBox.visibility = View.VISIBLE
             setExportSubView(
                 binding.healingStatus, binding.healingProgress,
-                error and BackupUtils.DataType.Healings.mask > 0,
+                BackupUtils.DataType.Healings in error,
                 done[1], counts[1],
                 current >= BackupUtils.DataType.Healings.mask
             )
         } else binding.healingsBox.visibility = View.GONE
-        if (dataType and BackupUtils.DataType.Payments.mask > 0) {
+        if (BackupUtils.DataType.Payments in dataType) {
             binding.paymentsBox.visibility = View.VISIBLE
             setExportSubView(
                 binding.paymentStatus, binding.paymentProgress,
-                error and BackupUtils.DataType.Payments.mask > 0,
+                BackupUtils.DataType.Payments in error,
                 done[2], counts[2],
                 current >= BackupUtils.DataType.Payments.mask
             )
@@ -175,32 +176,32 @@ class BackupProgressFragment : Fragment() {
         val error = progress.getInt(BackupUtils.Progress.InvalidFormatBit, 0)
         val success = progress.getIntArray(BackupUtils.Progress.ImportSuccess)
         val failed = progress.getIntArray(BackupUtils.Progress.ImportFailure)
-        if (dataType and BackupUtils.DataType.Patients.mask > 0) {
+        if (BackupUtils.DataType.Patients in dataType) {
             // patient included
             binding.patientsBox.visibility = View.VISIBLE
             setImportSubViews(
                 binding.patientStatus, binding.patientProgress,
-                error and BackupUtils.DataType.Patients.mask > 0,
+                BackupUtils.DataType.Patients in error,
                 success?.get(0) ?: 0, failed?.get(0) ?: 0,
                 current >= BackupUtils.DataType.Patients.mask,
                 current > BackupUtils.DataType.Patients.mask
             )
         } else binding.patientsBox.visibility = View.GONE
-        if (dataType and BackupUtils.DataType.Healings.mask > 0) {
+        if (BackupUtils.DataType.Healings in dataType) {
             binding.healingsBox.visibility = View.VISIBLE
             setImportSubViews(
                 binding.healingStatus, binding.healingProgress,
-                error and BackupUtils.DataType.Healings.mask > 0,
+                BackupUtils.DataType.Healings in error,
                 success?.get(1) ?: 0, failed?.get(1) ?: 0,
                 current >= BackupUtils.DataType.Healings.mask,
                 current > BackupUtils.DataType.Healings.mask
             )
         } else binding.healingsBox.visibility = View.GONE
-        if (dataType and BackupUtils.DataType.Payments.mask > 0) {
+        if (BackupUtils.DataType.Payments in dataType) {
             binding.paymentsBox.visibility = View.VISIBLE
             setImportSubViews(
                 binding.paymentStatus, binding.paymentProgress,
-                error and BackupUtils.DataType.Payments.mask > 0,
+                BackupUtils.DataType.Payments in error,
                 success?.get(2) ?: 0, failed?.get(2) ?: 0,
                 current >= BackupUtils.DataType.Payments.mask,
                 current > BackupUtils.DataType.Payments.mask

@@ -12,6 +12,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.yashovardhan99.core.backup_restore.BackupUtils
+import com.yashovardhan99.core.backup_restore.BackupUtils.contains
 import com.yashovardhan99.core.getColorFromAttr
 import com.yashovardhan99.core.utils.Icons
 import com.yashovardhan99.core.utils.buildHeader
@@ -101,7 +102,7 @@ class BackupFragment : Fragment() {
             binding.start.isEnabled = viewModel.checkedTypes != 0
             if (!viewModel.isExporting && viewModel.checkedTypes > 0) {
                 showImportNote(
-                    viewModel.checkedTypes and BackupUtils.DataType.Patients.mask > 0
+                    BackupUtils.DataType.Patients in viewModel.checkedTypes
                 )
             } else showExportNote()
         }
@@ -111,7 +112,7 @@ class BackupFragment : Fragment() {
             binding.start.isEnabled = viewModel.checkedTypes != 0
             if (!viewModel.isExporting && viewModel.checkedTypes > 0) {
                 showImportNote(
-                    viewModel.checkedTypes and BackupUtils.DataType.Patients.mask > 0
+                    BackupUtils.DataType.Patients in viewModel.checkedTypes
                 )
             } else showExportNote()
         }

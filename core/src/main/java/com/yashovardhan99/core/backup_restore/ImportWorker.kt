@@ -16,6 +16,8 @@ import com.yashovardhan99.core.backup_restore.BackupUtils.Input.DATA_TYPE_KEY
 import com.yashovardhan99.core.backup_restore.BackupUtils.Input.HEALINGS_FILE_URI_KEY
 import com.yashovardhan99.core.backup_restore.BackupUtils.Input.PATIENTS_FILE_URI_KEY
 import com.yashovardhan99.core.backup_restore.BackupUtils.Input.PAYMENTS_FILE_URI_KEY
+import com.yashovardhan99.core.backup_restore.BackupUtils.contains
+import com.yashovardhan99.core.backup_restore.BackupUtils.plus
 import com.yashovardhan99.core.database.DatabaseModule
 import com.yashovardhan99.core.database.HealersDao
 import com.yashovardhan99.core.database.Healing
@@ -50,13 +52,13 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         patientMaps.clear()
         return withContext(Dispatchers.IO) {
             try {
-                if (dataType and BackupUtils.DataType.Patients.mask > 0) {
+                if (BackupUtils.DataType.Patients in dataType) {
                     importPatients(contentResolver, healersDao)
                 }
-                if (dataType and BackupUtils.DataType.Healings.mask > 0) {
+                if (BackupUtils.DataType.Healings in dataType) {
                     importHealings(contentResolver, healersDao)
                 }
-                if (dataType and BackupUtils.DataType.Payments.mask > 0) {
+                if (BackupUtils.DataType.Payments in dataType) {
                     importPayments(contentResolver, healersDao)
                 }
                 showDoneNotification(success.sum(), failures.sum(), errorBit == dataType)
@@ -90,7 +92,7 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
             val csvReader = CsvReader(inputStream)
             val headings = csvReader.parseRow()
             if (!verifyHeader(headings, type)) {
-                errorBit = errorBit or type.mask
+                errorBit += type
                 inputStream.close()
                 return
             }

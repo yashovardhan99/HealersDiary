@@ -21,6 +21,9 @@ import com.yashovardhan99.core.backup_restore.BackupUtils.Input.ExportFolderUriK
 import com.yashovardhan99.core.backup_restore.BackupUtils.Input.HEALINGS_FILE_URI_KEY
 import com.yashovardhan99.core.backup_restore.BackupUtils.Input.PATIENTS_FILE_URI_KEY
 import com.yashovardhan99.core.backup_restore.BackupUtils.Input.PAYMENTS_FILE_URI_KEY
+import com.yashovardhan99.core.backup_restore.BackupUtils.contains
+import com.yashovardhan99.core.backup_restore.BackupUtils.minus
+import com.yashovardhan99.core.backup_restore.BackupUtils.plus
 import com.yashovardhan99.core.backup_restore.ExportWorker
 import com.yashovardhan99.core.backup_restore.ImportWorker
 import com.yashovardhan99.core.database.HealersDataStore
@@ -80,7 +83,7 @@ class BackupViewModel @Inject constructor(
     }
 
     fun selectType(type: BackupUtils.DataType) {
-        checkedTypes = checkedTypes or type.mask
+        checkedTypes += type
     }
 
     fun checkUri(uri: Uri): Boolean {
@@ -118,7 +121,7 @@ class BackupViewModel @Inject constructor(
     }
 
     fun selectType(type: BackupUtils.DataType, uri: Uri) {
-        selectedTypes = selectedTypes or type.mask
+        selectedTypes += type
         when (type) {
             BackupUtils.DataType.Healings -> healingsUri = uri
             BackupUtils.DataType.Patients -> patientsUri = uri
@@ -127,12 +130,8 @@ class BackupViewModel @Inject constructor(
     }
 
     fun deselectType(type: BackupUtils.DataType) {
-        if (selectedTypes and type.mask > 0) {
-            selectedTypes = selectedTypes xor type.mask
-        }
-        if (checkedTypes and type.mask > 0) {
-            checkedTypes = checkedTypes xor type.mask
-        }
+        selectedTypes -= type
+        checkedTypes -= type
         when (type) {
             BackupUtils.DataType.Healings -> healingsUri = Uri.EMPTY
             BackupUtils.DataType.Patients -> patientsUri = Uri.EMPTY
@@ -187,21 +186,18 @@ class BackupViewModel @Inject constructor(
         if (checkedTypes == 0) return false
         val workData = Data.Builder().putInt(DATA_TYPE_KEY, checkedTypes)
             .putString(ExportFolderUriKey, exportUriCopy?.toString())
-        if (checkedTypes and BackupUtils.DataType.Patients.mask > 0) workData
-            .putString(
-                PATIENTS_FILE_URI_KEY,
-                buildFileUri(BackupUtils.DataType.Patients).toString()
-            )
-        if (checkedTypes and BackupUtils.DataType.Healings.mask > 0) workData
-            .putString(
-                HEALINGS_FILE_URI_KEY,
-                buildFileUri(BackupUtils.DataType.Healings).toString()
-            )
-        if (checkedTypes and BackupUtils.DataType.Payments.mask > 0) workData
-            .putString(
-                PAYMENTS_FILE_URI_KEY,
-                buildFileUri(BackupUtils.DataType.Payments).toString()
-            )
+        if (BackupUtils.DataType.Patients in checkedTypes) workData.putString(
+            PATIENTS_FILE_URI_KEY,
+            buildFileUri(BackupUtils.DataType.Patients).toString()
+        )
+        if (BackupUtils.DataType.Healings in checkedTypes) workData.putString(
+            HEALINGS_FILE_URI_KEY,
+            buildFileUri(BackupUtils.DataType.Healings).toString()
+        )
+        if (BackupUtils.DataType.Payments in checkedTypes) workData.putString(
+            PAYMENTS_FILE_URI_KEY,
+            buildFileUri(BackupUtils.DataType.Payments).toString()
+        )
         val workRequest = OneTimeWorkRequestBuilder<ExportWorker>()
             .setInputData(workData.build())
             .addTag("exportWorker")
@@ -219,21 +215,18 @@ class BackupViewModel @Inject constructor(
     fun importBackup(): Boolean {
         if (selectedTypes == 0) return false
         val workData = Data.Builder().putInt(DATA_TYPE_KEY, selectedTypes)
-        if (selectedTypes and BackupUtils.DataType.Patients.mask > 0) workData
-            .putString(
-                PATIENTS_FILE_URI_KEY,
-                patientsUri.toString()
-            )
-        if (selectedTypes and BackupUtils.DataType.Healings.mask > 0) workData
-            .putString(
-                HEALINGS_FILE_URI_KEY,
-                healingsUri.toString()
-            )
-        if (selectedTypes and BackupUtils.DataType.Payments.mask > 0) workData
-            .putString(
-                PAYMENTS_FILE_URI_KEY,
-                paymentsUri.toString()
-            )
+        if (BackupUtils.DataType.Patients in selectedTypes) workData.putString(
+            PATIENTS_FILE_URI_KEY,
+            patientsUri.toString()
+        )
+        if (BackupUtils.DataType.Healings in selectedTypes) workData.putString(
+            HEALINGS_FILE_URI_KEY,
+            healingsUri.toString()
+        )
+        if (BackupUtils.DataType.Payments in selectedTypes) workData.putString(
+            PAYMENTS_FILE_URI_KEY,
+            paymentsUri.toString()
+        )
         val workRequest = OneTimeWorkRequestBuilder<ImportWorker>()
             .setInputData(workData.build())
             .addTag("importWorker")

@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.yashovardhan99.core.backup_restore.BackupUtils
+import com.yashovardhan99.core.backup_restore.BackupUtils.contains
 import com.yashovardhan99.core.utils.Icons
 import com.yashovardhan99.core.utils.buildHeader
 import com.yashovardhan99.healersdiary.R
@@ -102,13 +103,13 @@ class ImportFragment : Fragment() {
         viewModel.setExport(false)
         val selected = args.selectedType
         binding.patientsUploadBox.visibility =
-            if (selected and BackupUtils.DataType.Patients.mask > 0) View.VISIBLE
+            if (BackupUtils.DataType.Patients in selected) View.VISIBLE
             else View.GONE
         binding.healingsUploadBox.visibility =
-            if (selected and BackupUtils.DataType.Healings.mask > 0) View.VISIBLE
+            if (BackupUtils.DataType.Healings in selected) View.VISIBLE
             else View.GONE
         binding.paymentsUploadBox.visibility =
-            if (selected and BackupUtils.DataType.Payments.mask > 0) View.VISIBLE
+            if (BackupUtils.DataType.Payments in selected) View.VISIBLE
             else View.GONE
         binding.patientsUploadBox.setOnClickListener {
             patientsImportLauncher.launch(arrayOf("text/csv", "text/comma-separated-values"))
