@@ -66,6 +66,7 @@ dependencies {
     kapt(Dependencies.Hilt.android_compiler)
     kapt(Dependencies.Hilt.compiler)
     implementation(Dependencies.Hilt.view_model)
+    implementation(Dependencies.Hilt.worker)
 
     implementation(Dependencies.Android.datastore)
 

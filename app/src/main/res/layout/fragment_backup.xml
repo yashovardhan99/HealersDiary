@@ -4,7 +4,6 @@
     xmlns:bind="http://schemas.android.com/apk/res-auto">
 
     <data>
-
         <variable
             name="header"
             type="com.yashovardhan99.core.utils.Header" />
@@ -102,7 +101,7 @@
         <com.google.android.material.button.MaterialButton
             android:layout_width="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/import_note"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/last_backup_time"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:padding="8dp"
@@ -110,6 +109,32 @@
             android:id="@+id/start"
             android:layout_height="wrap_content"
             android:text="@string/start" />
+
+        <TextView
+            android:padding="16dp"
+            android:id="@+id/last_backup_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/start"
+            app:layout_constraintBottom_toTopOf="@id/last_backup_note"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@string/last_backup_time"
+            android:textAppearance="@style/body1" />
+
+        <TextView
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:id="@+id/last_backup_note"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/last_backup_time"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@string/last_backup_note"
+            android:textAppearance="@style/body2" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

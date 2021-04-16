@@ -10,6 +10,7 @@ import android.content.pm.ServiceInfo
 import android.net.Uri
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
@@ -20,8 +21,10 @@ import com.yashovardhan99.core.backup_restore.BackupUtils.Input.PATIENTS_FILE_UR
 import com.yashovardhan99.core.backup_restore.BackupUtils.Input.PAYMENTS_FILE_URI_KEY
 import com.yashovardhan99.core.backup_restore.BackupUtils.contains
 import com.yashovardhan99.core.backup_restore.BackupUtils.plus
+import com.yashovardhan99.core.database.BackupState
 import com.yashovardhan99.core.database.DatabaseModule
 import com.yashovardhan99.core.database.HealersDao
+import com.yashovardhan99.core.database.HealersDataStore
 import com.yashovardhan99.core.database.Healing
 import com.yashovardhan99.core.database.Patient
 import com.yashovardhan99.core.database.Payment
@@ -29,13 +32,22 @@ import com.yashovardhan99.core.utils.NotificationHelpers
 import com.yashovardhan99.core.utils.NotificationHelpers.setContentDeepLink
 import com.yashovardhan99.core.utils.NotificationHelpers.setForegroundCompat
 import com.yashovardhan99.core.utils.NotificationHelpers.setTypeProgress
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 import java.io.FileNotFoundException
 import java.io.IOException
+import java.time.Instant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 
-class ExportWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
+@HiltWorker
+class ExportWorker @AssistedInject constructor(
+    @Assisted context: Context,
+    @Assisted params: WorkerParameters,
+    val dataStore: HealersDataStore
+) : CoroutineWorker(context, params) {
+
     private val done = IntArray(3)
     private val total = IntArray(3)
     private var errorBit = 0
@@ -49,6 +61,7 @@ class ExportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         val healersDao = DatabaseModule.provideHealersDao(healersDatabase)
         return withContext(Dispatchers.IO) {
             try {
+                dataStore.updateBackupState(BackupState.Running)
                 if (BackupUtils.DataType.Patients in dataType) {
                     exportPatients(contentResolver, healersDao)
                 }
@@ -209,7 +222,7 @@ class ExportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         setProgress(getProgressData(message, currentType))
     }
 
-    private fun showDoneNotification(max: Int, count: Int, failed: Boolean) {
+    private suspend fun showDoneNotification(max: Int, count: Int, failed: Boolean) {
         val intent = Intent(
             Intent.ACTION_VIEW,
             Uri.parse(inputData.getString(BackupUtils.Input.ExportFolderUriKey))
@@ -243,6 +256,10 @@ class ExportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
 
         NotificationManagerCompat.from(applicationContext)
             .notify(NotificationHelpers.NotificationIds.LocalBackupCompleted, notification)
+
+        // Save backup state in dataStore
+        if (failed) dataStore.updateBackupState(BackupState.LastRunFailed(Instant.now()))
+        else dataStore.updateBackupState(BackupState.LastRunSuccess(Instant.now(), done))
     }
 
     private fun getProgressData(

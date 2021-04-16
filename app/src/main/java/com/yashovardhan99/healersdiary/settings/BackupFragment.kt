@@ -11,15 +11,21 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import com.yashovardhan99.core.backup_restore.BackupUtils
 import com.yashovardhan99.core.backup_restore.BackupUtils.contains
+import com.yashovardhan99.core.database.BackupState
 import com.yashovardhan99.core.getColorFromAttr
 import com.yashovardhan99.core.utils.Icons
 import com.yashovardhan99.core.utils.buildHeader
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.FragmentBackupBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import kotlinx.coroutines.flow.firstOrNull
 import timber.log.Timber
 
@@ -64,15 +70,59 @@ class BackupFragment : Fragment() {
                 }
             }
         }
-        lifecycleScope.launchWhenResumed {
-            viewModel.exportLocation.collect {
-                hideImportNote()
-            }
-        }
         viewModel.showProgress.asLiveData().observe(viewLifecycleOwner) {
             if (it != null) findNavController().navigate(
                 BackupFragmentDirections.actionBackupFragmentToBackupProgressFragment(it.toString())
             )
+        }
+        viewModel.getBackupState().asLiveData().observe(viewLifecycleOwner) { backupState ->
+            when (backupState) {
+                is BackupState.LastRunFailed -> {
+                    binding.lastBackupTime.visibility = View.VISIBLE
+                    binding.lastBackupNote.visibility = View.VISIBLE
+                    setLastBackupTime(backupState.instant)
+                    binding.lastBackupNote.setText(R.string.backup_failed)
+                }
+                is BackupState.LastRunSuccess -> {
+                    binding.lastBackupTime.visibility = View.VISIBLE
+                    binding.lastBackupNote.visibility = View.VISIBLE
+                    setLastBackupTime(backupState.instant)
+                    val (patientsCount, healingsCount, paymentsCount) = backupState.backedUp
+                    val patients = resources.getQuantityString(
+                        R.plurals.n_patients, patientsCount, patientsCount
+                    )
+                    val healings = resources.getQuantityString(
+                        R.plurals.n_healings, healingsCount, healingsCount
+                    )
+                    val payments = resources.getQuantityString(
+                        R.plurals.n_payments, paymentsCount, paymentsCount
+                    )
+                    Timber.d("${backupState.backedUp}")
+                    Timber.d("$patients $healings $payments")
+                    val str = when {
+                        patientsCount == 0 -> {
+                            when {
+                                healingsCount == 0 -> payments
+                                paymentsCount == 0 -> healings
+                                else -> getString(R.string.join_2, healings, payments)
+                            }
+                        }
+                        healingsCount == 0 -> {
+                            when (paymentsCount) {
+                                0 -> patients
+                                else -> getString(R.string.join_2, patients, payments)
+                            }
+                        }
+                        paymentsCount == 0 -> getString(R.string.join_2, patients, healings)
+                        else -> getString(R.string.join_3, patients, healings, payments)
+                    }
+                    binding.lastBackupNote.text = getString(R.string.last_backup_note, str)
+                }
+                else -> {
+                    binding.lastBackupTime.visibility = View.GONE
+                    binding.lastBackupNote.visibility = View.GONE
+                }
+            }
         }
         binding.start.setOnClickListener {
             if (binding.importExportToggle.checkedButtonId == R.id.export) {
@@ -115,7 +165,24 @@ class BackupFragment : Fragment() {
                 )
             } else hideImportNote()
         }
+
+        viewModel.errorMessage.asLiveData().observe(viewLifecycleOwner) {
+            if (it != null) {
+                Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG).show()
+                viewModel.resetError()
+            }
+        }
+
         return binding.root
+    }
+
+    private fun setLastBackupTime(instant: Instant) {
+        binding.lastBackupTime.text = getString(
+            R.string.last_backup_time,
+            LocalDateTime.ofInstant(
+                instant, ZoneId.systemDefault()
+            ).format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT))
+        )
     }
 
     @SuppressLint("BinaryOperationInTimber")

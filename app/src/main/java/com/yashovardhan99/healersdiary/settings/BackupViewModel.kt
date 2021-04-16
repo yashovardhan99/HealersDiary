@@ -26,6 +26,7 @@ import com.yashovardhan99.core.backup_restore.BackupUtils.minus
 import com.yashovardhan99.core.backup_restore.BackupUtils.plus
 import com.yashovardhan99.core.backup_restore.ExportWorker
 import com.yashovardhan99.core.backup_restore.ImportWorker
+import com.yashovardhan99.core.database.BackupState
 import com.yashovardhan99.core.database.HealersDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -64,18 +65,19 @@ class BackupViewModel @Inject constructor(
     val exportUriFlow = exportUri
     private val showProgressInternal = MutableStateFlow<UUID?>(null)
     val showProgress: StateFlow<UUID?> = showProgressInternal.asStateFlow()
+    private val errorMessageInternal = MutableStateFlow<String?>(null)
+    val errorMessage: StateFlow<String?> = errorMessageInternal.asStateFlow()
 
-    @Suppress("BlockingMethodInNonBlockingContext")
-    val exportLocation: Flow<String?> = exportUri.map { uri ->
-        uri?.let {
-            getFileName(it)
-        }
-    }
     private val documentFile = exportUri.map { uri ->
         uri?.let {
             Timber.d("Mapping export location for uri = $uri")
             DocumentFile.fromTreeUri(context, it)?.getChildDocumentFile()
         }
+    }
+
+    fun getBackupState(): Flow<BackupState> {
+        return dataStore.getBackupState()
+            .onEach { Timber.d("Got backup state = $it") }
     }
 
     fun setExport(isExport: Boolean) {
@@ -87,23 +89,32 @@ class BackupViewModel @Inject constructor(
     }
 
     fun checkUri(uri: Uri): Boolean {
-        contentResolver.query(
-            uri, null, null, null, null, null
-        )?.use { cursor ->
-            if (!cursor.moveToFirst()) return false
-            Timber.d("Column names = ${cursor.columnNames.toList()}")
+        try {
+            contentResolver.query(
+                uri, null, null, null, null, null
+            )?.use { cursor ->
+                if (!cursor.moveToFirst()) return false
+                Timber.d("Column names = ${cursor.columnNames.toList()}")
 
-            val sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE)
-            val size = if (!cursor.isNull(sizeIndex)) cursor.getString(sizeIndex)
-            else "Unknown"
-            Timber.d("Size = $size")
-            cursor.close()
-            return true
-        } ?: return false
+                val sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE)
+                val size = if (!cursor.isNull(sizeIndex)) cursor.getString(sizeIndex)
+                else "Unknown"
+                Timber.d("Size = $size")
+                cursor.close()
+                return true
+            } ?: return false
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return false
+        }
     }
 
     fun isReadyForImport(): Boolean {
         return (checkedTypes == selectedTypes)
+    }
+
+    fun resetError() {
+        errorMessageInternal.value = null
     }
 
     fun getFileName(uri: Uri): String? {
@@ -144,10 +155,16 @@ class BackupViewModel @Inject constructor(
             uri,
             Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         )
-        DocumentFile.fromTreeUri(context, uri)?.getChildDocumentFile()?.uri?.let {
+        DocumentFile.fromTreeUri(context, uri)?.getChildDocumentFile()?.let {
+            Timber.d("Is dir = ${it.isDirectory} Exists = ${it.exists()}")
             viewModelScope.launch(Dispatchers.IO) {
-                dataStore.updateExportLocation(it)
-                createBackup()
+                dataStore.updateExportLocation(it.uri)
+                if (it.isDirectory) {
+                    createBackup()
+                } else {
+                    errorMessageInternal.value =
+                        "Can't access the folder ${it.name}. Please select another folder."
+                }
             }
         }
     }
