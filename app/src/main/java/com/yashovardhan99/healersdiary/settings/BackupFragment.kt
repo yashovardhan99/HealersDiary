@@ -20,7 +20,6 @@ import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.FragmentBackupBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import timber.log.Timber
 
@@ -52,7 +51,7 @@ class BackupFragment : Fragment() {
             when (checkedId) {
                 R.id.export -> if (isChecked) {
                     viewModel.setExport(true)
-                    showExportNote()
+                    hideImportNote()
                 }
                 R.id.import_backup -> if (isChecked) {
                     viewModel.setExport(false)
@@ -61,13 +60,13 @@ class BackupFragment : Fragment() {
                             viewModel.checkedTypes and
                                 BackupUtils.DataType.Patients.mask > 0
                         )
-                    } else showExportNote()
+                    } else hideImportNote()
                 }
             }
         }
         lifecycleScope.launchWhenResumed {
             viewModel.exportLocation.collect {
-                showExportNote()
+                hideImportNote()
             }
         }
         viewModel.showProgress.asLiveData().observe(viewLifecycleOwner) {
@@ -94,7 +93,7 @@ class BackupFragment : Fragment() {
             binding.start.isEnabled = viewModel.checkedTypes != 0
             if (!viewModel.isExporting && viewModel.checkedTypes > 0) {
                 showImportNote(isChecked)
-            } else showExportNote()
+            } else hideImportNote()
         }
         binding.healingCheckbox.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) viewModel.selectType(BackupUtils.DataType.Healings)
@@ -104,7 +103,7 @@ class BackupFragment : Fragment() {
                 showImportNote(
                     BackupUtils.DataType.Patients in viewModel.checkedTypes
                 )
-            } else showExportNote()
+            } else hideImportNote()
         }
         binding.paymentCheckbox.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) viewModel.selectType(BackupUtils.DataType.Payments)
@@ -114,7 +113,7 @@ class BackupFragment : Fragment() {
                 showImportNote(
                     BackupUtils.DataType.Patients in viewModel.checkedTypes
                 )
-            } else showExportNote()
+            } else hideImportNote()
         }
         return binding.root
     }
@@ -160,24 +159,8 @@ class BackupFragment : Fragment() {
         binding.importNote.visibility = View.VISIBLE
     }
 
-    private fun showExportNote() {
-        if (!viewModel.isExporting) {
-            binding.importNote.visibility = View.GONE
-            return
-        }
-        lifecycleScope.launchWhenStarted {
-            val exportLocation = viewModel.exportLocation.first()
-            if (exportLocation.isNullOrBlank()) {
-                binding.importNote.visibility = View.GONE
-            } else {
-                binding.importNote.text =
-                    getString(R.string.exporting_to, exportLocation)
-                binding.importNote.visibility = View.VISIBLE
-            }
-        }
-        context?.getColorFromAttr(R.attr.colorOnBackground)?.let {
-            binding.importNote.setTextColor(it)
-        }
+    private fun hideImportNote() {
+        binding.importNote.visibility = View.GONE
     }
 
     private fun goToImport() {
