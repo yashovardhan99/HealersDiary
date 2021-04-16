@@ -249,8 +249,7 @@ class ExportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
     ) = workDataOf(
         BackupUtils.Progress.ProgressMessage to message,
         BackupUtils.Progress.RequiredBit to inputData.getInt(DATA_TYPE_KEY, 0),
-        BackupUtils.Progress.CurrentBit to
-            (currentType?.mask ?: inputData.getInt(DATA_TYPE_KEY, 0)),
+        BackupUtils.Progress.CurrentBit to (currentType?.mask ?: BackupUtils.DataType.DoneMask),
         BackupUtils.Progress.ExportCounts to done,
         BackupUtils.Progress.ExportTotal to total,
         BackupUtils.Progress.FileErrorBit to errorBit,

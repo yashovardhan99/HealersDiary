@@ -50,8 +50,8 @@ object BackupUtils {
     fun getCurrentProgress(
         currentMask: Int,
         selectedMask: Int,
-        done: IntArray,
-        total: IntArray
+        done: IntArray = IntArray(3),
+        total: IntArray = IntArray(3)
     ): Int {
         var curProgress = 0
         if (currentMask > DataType.Patients.mask && DataType.Patients in selectedMask)
@@ -117,6 +117,9 @@ object BackupUtils {
         object Patients : DataType(1 shl 0, 0, 10)
         object Healings : DataType(1 shl 1, 1, 200)
         object Payments : DataType(1 shl 2, 2, 40)
+        companion object {
+            const val DoneMask = 7
+        }
     }
 
     /**

@@ -1,10 +1,13 @@
 package com.yashovardhan99.core.backup_restore
 
 import android.annotation.SuppressLint
+import android.app.Notification
 import android.content.ContentResolver
 import android.content.Context
 import android.content.pm.ServiceInfo
 import android.net.Uri
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
@@ -22,6 +25,7 @@ import com.yashovardhan99.core.utils.NotificationHelpers
 import com.yashovardhan99.core.utils.NotificationHelpers.setContentDeepLink
 import com.yashovardhan99.core.utils.NotificationHelpers.setForegroundCompat
 import com.yashovardhan99.core.utils.NotificationHelpers.setTypeProgress
+import com.yashovardhan99.core.utils.Request
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.Date
@@ -55,13 +59,17 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
                 if (dataType and BackupUtils.DataType.Payments.mask > 0) {
                     importPayments(contentResolver, healersDao)
                 }
-                Result.success()
+                showDoneNotification(success.sum(), failures.sum(), errorBit == dataType)
+                if (errorBit == dataType) Result.failure(getProgressData("Import failed", null))
+                Result.success(getProgressData("Import Completed", null))
             } catch (e: FileNotFoundException) {
                 e.printStackTrace()
-                Result.failure()
+                showDoneNotification(success.sum(), failures.sum(), true)
+                Result.failure(getProgressData("Import failed", null))
             } catch (e: IOException) {
                 e.printStackTrace()
-                Result.failure()
+                showDoneNotification(success.sum(), failures.sum(), true)
+                Result.failure(getProgressData("Import failed", null))
             }
         }
     }
@@ -95,6 +103,7 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
                     if (result) success[type.idx] += 1
                     else failures[type.idx] += 1
                 }
+                updateProgress(notificationMessage, type)
             } while (row.isNotEmpty())
             inputStream.close()
         }
@@ -207,13 +216,39 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         setProgress(getProgressData(message, currentType))
     }
 
+    private fun showDoneNotification(success: Int, failed: Int, error: Boolean) {
+        val notification = NotificationHelpers.getDefaultNotification(
+            applicationContext,
+            NotificationHelpers.Channel.LocalImport
+        ).setCategory(if (error) Notification.CATEGORY_ERROR else Notification.CATEGORY_PROGRESS)
+            .setAutoCancel(true)
+            .setStyle(
+                NotificationCompat.BigTextStyle().bigText(
+                    if (error) "Something went wrong while importing. Tap to resolve"
+                    else "$success of ${success + failed} records were imported successfully"
+                )
+            )
+            .setContentTitle(if (error) "Import Failed" else "Import Completed")
+            .setContentDeepLink(
+                applicationContext,
+                if (error) Uri.parse("healersdiary://com.yashovardhan99.healersdiary/backup")
+                else Request.ViewDashboard.getUri(),
+                PendingIntentReqCode
+            )
+            .build()
+
+        NotificationManagerCompat.from(applicationContext)
+            .notify(NotificationHelpers.NotificationIds.LocalBackupCompleted, notification)
+    }
+
     private fun getProgressData(
         message: String?,
         currentType: BackupUtils.DataType?
     ) = workDataOf(
         BackupUtils.Progress.ProgressMessage to message,
         BackupUtils.Progress.RequiredBit to inputData.getInt(DATA_TYPE_KEY, 0),
-        BackupUtils.Progress.CurrentBit to (currentType?.mask ?: 0),
+        BackupUtils.Progress.CurrentBit to
+            (currentType?.mask ?: BackupUtils.DataType.DoneMask),
         BackupUtils.Progress.ImportSuccess to success,
         BackupUtils.Progress.ImportFailure to failures,
         BackupUtils.Progress.InvalidFormatBit to errorBit,

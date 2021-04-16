@@ -172,15 +172,11 @@ class BackupProgressFragment : Fragment() {
         binding.subtitle.text = progress.getString(BackupUtils.Progress.ProgressMessage)
         val dataType = progress.getInt(BackupUtils.Progress.RequiredBit, 0)
         val current = progress.getInt(BackupUtils.Progress.CurrentBit, 0)
-        var curProgress = 0
-        var max = 0
         val error = progress.getInt(BackupUtils.Progress.InvalidFormatBit, 0)
         val success = progress.getIntArray(BackupUtils.Progress.ImportSuccess)
         val failed = progress.getIntArray(BackupUtils.Progress.ImportFailure)
         if (dataType and BackupUtils.DataType.Patients.mask > 0) {
             // patient included
-            max += 25
-            if (current > BackupUtils.DataType.Patients.mask) curProgress += 25
             binding.patientsBox.visibility = View.VISIBLE
             setImportSubViews(
                 binding.patientStatus, binding.patientProgress,
@@ -191,8 +187,6 @@ class BackupProgressFragment : Fragment() {
             )
         } else binding.patientsBox.visibility = View.GONE
         if (dataType and BackupUtils.DataType.Healings.mask > 0) {
-            max += 200
-            if (current > BackupUtils.DataType.Healings.mask) curProgress += 200
             binding.healingsBox.visibility = View.VISIBLE
             setImportSubViews(
                 binding.healingStatus, binding.healingProgress,
@@ -203,8 +197,6 @@ class BackupProgressFragment : Fragment() {
             )
         } else binding.healingsBox.visibility = View.GONE
         if (dataType and BackupUtils.DataType.Payments.mask > 0) {
-            max += 50
-            if (current > BackupUtils.DataType.Payments.mask) curProgress += 50
             binding.paymentsBox.visibility = View.VISIBLE
             setImportSubViews(
                 binding.paymentStatus, binding.paymentProgress,
@@ -214,8 +206,11 @@ class BackupProgressFragment : Fragment() {
                 current > BackupUtils.DataType.Payments.mask
             )
         } else binding.paymentsBox.visibility = View.GONE
-        binding.mainProgress.max = max
-        binding.mainProgress.setProgressCompat(curProgress, true)
+        binding.mainProgress.max = BackupUtils.getMaxProgress(dataType)
+        binding.mainProgress.setProgressCompat(
+            BackupUtils.getCurrentProgress(current, dataType),
+            true
+        )
     }
 
     private fun setImportSubViews(
@@ -227,18 +222,14 @@ class BackupProgressFragment : Fragment() {
         ready: Boolean,
         done: Boolean
     ) {
+        progressBar.setColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
         if (ready) {
             statusTextView.text = if (failed == 0) getString(R.string.import_success, success)
             else getString(R.string.import_partial, success, failed)
-            if (!done) {
-                progressBar.setColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
-            } else {
+            if (done) {
                 progressBar.isIndeterminate = false
                 progressBar.max = 100
                 progressBar.setProgressCompat(100, true)
-                progressBar.setColor(
-                    ContextCompat.getColor(requireContext(), android.R.color.holo_green_light)
-                )
             }
         } else {
             progressBar.progress = 0
