@@ -9,6 +9,7 @@ import android.net.Uri
 import androidx.annotation.StringRes
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
@@ -21,7 +22,9 @@ import com.yashovardhan99.core.backup_restore.BackupUtils.contains
 import com.yashovardhan99.core.backup_restore.BackupUtils.plus
 import com.yashovardhan99.core.database.DatabaseModule
 import com.yashovardhan99.core.database.HealersDao
+import com.yashovardhan99.core.database.HealersDataStore
 import com.yashovardhan99.core.database.Healing
+import com.yashovardhan99.core.database.ImportState
 import com.yashovardhan99.core.database.Patient
 import com.yashovardhan99.core.database.Payment
 import com.yashovardhan99.core.utils.NotificationHelpers
@@ -29,13 +32,20 @@ import com.yashovardhan99.core.utils.NotificationHelpers.setContentDeepLink
 import com.yashovardhan99.core.utils.NotificationHelpers.setForegroundCompat
 import com.yashovardhan99.core.utils.NotificationHelpers.setTypeProgress
 import com.yashovardhan99.core.utils.Request
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.Date
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
+@HiltWorker
+class ImportWorker @AssistedInject constructor(
+    @Assisted context: Context,
+    @Assisted params: WorkerParameters,
+    val dataStore: HealersDataStore
+) : CoroutineWorker(context, params) {
     private val patientMaps = mutableMapOf<Long, Long>()
     private val success = IntArray(3)
     private val failures = IntArray(3)
@@ -44,6 +54,7 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
     override suspend fun doWork(): Result {
         success.indices.forEach { success[it] = 0 }
         failures.indices.forEach { failures[it] = 0 }
+        dataStore.updateImportState(ImportState.Running)
         errorBit = 0
         val dataType =
             inputData.getInt(DATA_TYPE_KEY, BackupUtils.DataType.Patients.mask)
@@ -225,7 +236,7 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         setProgress(getProgressData(message, currentType))
     }
 
-    private fun showDoneNotification(success: Int, failed: Int, error: Boolean) {
+    private suspend fun showDoneNotification(success: Int, failed: Int, error: Boolean) {
         val notification = NotificationHelpers.getDefaultNotification(
             applicationContext,
             NotificationHelpers.Channel.LocalImport
@@ -256,6 +267,10 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
 
         NotificationManagerCompat.from(applicationContext)
             .notify(NotificationHelpers.NotificationIds.LocalBackupCompleted, notification)
+
+        // Save ImportState in dataStore
+        if (error) dataStore.updateImportState(ImportState.LastRunFailed(errorBit))
+        else dataStore.updateImportState(ImportState.LastRunSuccess)
     }
 
     private fun getProgressData(

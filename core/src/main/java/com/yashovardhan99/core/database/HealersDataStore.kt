@@ -38,6 +38,21 @@ sealed class OnboardingState(internal val value: Int) {
     }
 }
 
+sealed class ImportState(internal val value: Int) {
+    object Unknown : ImportState(0)
+    object Running : ImportState(1)
+    object LastRunSuccess : ImportState(2)
+    class LastRunFailed(val bitMask: Int) : ImportState(3) {
+        companion object {
+            val BitMaskPrefKey = intPreferencesKey("import_fail_bitmask")
+        }
+    }
+
+    companion object {
+        val PrefKey = intPreferencesKey("import_state")
+    }
+}
+
 sealed class BackupState(internal val value: Int) {
     object Unknown : BackupState(0)
     object Running : BackupState(1)
@@ -71,6 +86,28 @@ sealed class BackupState(internal val value: Int) {
 @Singleton
 class HealersDataStore @Inject constructor(@ApplicationContext context: Context) {
     private val dataStore: DataStore<Preferences> = context.createDataStore("healersDatastore")
+
+    fun getImportState(): Flow<ImportState> {
+        return dataStore.data.map { preferences ->
+            when (preferences[ImportState.PrefKey]) {
+                1 -> ImportState.Running
+                2 -> ImportState.LastRunSuccess
+                3 -> ImportState.LastRunFailed(
+                    preferences[ImportState.LastRunFailed.BitMaskPrefKey] ?: 0
+                )
+                else -> ImportState.Unknown
+            }
+        }
+    }
+
+    suspend fun updateImportState(state: ImportState) {
+        dataStore.edit { preferences ->
+            preferences[ImportState.PrefKey] = state.value
+            if (state is ImportState.LastRunFailed) {
+                preferences[ImportState.LastRunFailed.BitMaskPrefKey] = state.bitMask
+            }
+        }
+    }
 
     fun getBackupState(): Flow<BackupState> {
         return dataStore.data.map { preferences ->

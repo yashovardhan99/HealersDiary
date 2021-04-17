@@ -28,6 +28,7 @@ import com.yashovardhan99.core.backup_restore.ExportWorker
 import com.yashovardhan99.core.backup_restore.ImportWorker
 import com.yashovardhan99.core.database.BackupState
 import com.yashovardhan99.core.database.HealersDataStore
+import com.yashovardhan99.core.database.ImportState
 import com.yashovardhan99.healersdiary.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -79,6 +80,16 @@ class BackupViewModel @Inject constructor(
     fun getBackupState(): Flow<BackupState> {
         return dataStore.getBackupState()
             .onEach { Timber.d("Got backup state = $it") }
+    }
+
+    fun getImportState(): Flow<ImportState> {
+        return dataStore.getImportState()
+    }
+
+    fun clearImportState() {
+        viewModelScope.launch {
+            dataStore.updateImportState(ImportState.Unknown)
+        }
     }
 
     fun setExport(isExport: Boolean) {
@@ -264,6 +275,12 @@ class BackupViewModel @Inject constructor(
 
     fun getWorkInfoLiveData(uuid: UUID): LiveData<WorkInfo> {
         return workManager.getWorkInfoByIdLiveData(uuid)
+    }
+
+    fun setImportMask(mask: Int) {
+        checkedTypes = mask
+        selectedTypes = 0
+        setExport(false)
     }
 
     companion object {

@@ -4,6 +4,7 @@
     xmlns:bind="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="header"
             type="com.yashovardhan99.core.utils.Header" />
@@ -18,13 +19,76 @@
             bind:header="@{header}"
             layout="@layout/header" />
 
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="0dp"
+            app:cardElevation="0dp"
+            android:id="@+id/error_card"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/icon"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="8dp"
+            android:visibility="visible"
+            app:contentPadding="16dp"
+            android:layout_marginEnd="8dp"
+            app:cardBackgroundColor="?attr/colorError">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/error_icon"
+                    android:padding="8dp"
+                    android:layout_alignTop="@id/error_description"
+                    android:layout_alignBottom="@id/error_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_baseline_error_24"
+                    app:tint="?attr/colorOnError"
+                    android:importantForAccessibility="no" />
+
+                <TextView
+                    android:padding="8dp"
+                    android:textAppearance="@style/body1"
+                    android:id="@+id/error_description"
+                    android:layout_toEndOf="@id/error_icon"
+                    android:textColor="?attr/colorOnError"
+                    android:text="@string/import_failed_message"
+                    android:layout_alignParentTop="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/error_dismiss"
+                    android:layout_toStartOf="@id/error_retry"
+                    android:layout_alignBaseline="@id/error_retry"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:textColor="?attr/colorOnError"
+                    android:text="Dismiss" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Retry"
+                    android:id="@+id/error_retry"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@id/error_description"
+                    android:textColor="?attr/colorOnError"
+                    style="@style/Widget.MaterialComponents.Button.TextButton" />
+            </RelativeLayout>
+        </com.google.android.material.card.MaterialCardView>
+
         <LinearLayout
             android:layout_margin="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/checkboxes"
+            app:layout_constraintTop_toBottomOf="@id/error_card"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/icon"
             app:layout_constraintVertical_chainStyle="packed"
             app:layout_constraintBottom_toTopOf="@id/import_export_toggle"
             app:layout_constraintEnd_toEndOf="parent"
@@ -115,6 +179,7 @@
             android:id="@+id/last_backup_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textAlignment="center"
             app:layout_constraintTop_toBottomOf="@id/start"
             app:layout_constraintBottom_toTopOf="@id/last_backup_note"
             app:layout_constraintStart_toStartOf="parent"
@@ -125,6 +190,7 @@
         <TextView
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
+            android:textAlignment="center"
             android:id="@+id/last_backup_note"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

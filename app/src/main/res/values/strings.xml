@@ -151,5 +151,6 @@
     <string name="backup_failed">Backup failed</string>
     <string name="cant_find_backup">Can\'t find the backup folder</string>
     <string name="cant_access_folder">Can\'t access the folder %s. Please select another folder.</string>
+    <string name="import_failed_message">Your last import didn\'t complete successfully.</string>
 </resources>
 

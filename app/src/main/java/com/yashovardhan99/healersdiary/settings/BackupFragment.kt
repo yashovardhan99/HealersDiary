@@ -19,6 +19,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.yashovardhan99.core.backup_restore.BackupUtils
 import com.yashovardhan99.core.backup_restore.BackupUtils.contains
 import com.yashovardhan99.core.database.BackupState
+import com.yashovardhan99.core.database.ImportState
 import com.yashovardhan99.core.getColorFromAttr
 import com.yashovardhan99.core.utils.Icons
 import com.yashovardhan99.core.utils.buildHeader
@@ -140,6 +141,15 @@ class BackupFragment : Fragment() {
                 }
             }
         }
+        viewModel.getImportState().asLiveData().observe(viewLifecycleOwner) { importState ->
+            if (importState is ImportState.LastRunFailed) {
+                binding.errorCard.visibility = View.VISIBLE
+                binding.errorRetry.setOnClickListener { goToImport(importState.bitMask) }
+                binding.errorDismiss.setOnClickListener { viewModel.clearImportState() }
+            } else {
+                binding.errorCard.visibility = View.GONE
+            }
+        }
         binding.start.setOnClickListener {
             if (binding.importExportToggle.checkedButtonId == R.id.export) {
                 viewModel.setExport(true)
@@ -246,21 +256,28 @@ class BackupFragment : Fragment() {
         binding.importNote.visibility = View.GONE
     }
 
-    private fun goToImport() {
-        findNavController().navigate(
-            BackupFragmentDirections.actionBackupFragmentToImportFragment(
-                getMask(
-                    BackupUtils.DataType.Patients,
-                    binding.patientCheckbox.isChecked
-                ) or getMask(
-                    BackupUtils.DataType.Healings,
-                    binding.healingCheckbox.isChecked
-                ) or getMask(
-                    BackupUtils.DataType.Payments,
-                    binding.paymentCheckbox.isChecked
+    private fun goToImport(mask: Int? = null) {
+        if (mask != null) {
+            viewModel.setImportMask(mask)
+            findNavController().navigate(
+                BackupFragmentDirections.actionBackupFragmentToImportFragment(mask)
+            )
+        } else {
+            findNavController().navigate(
+                BackupFragmentDirections.actionBackupFragmentToImportFragment(
+                    getMask(
+                        BackupUtils.DataType.Patients,
+                        binding.patientCheckbox.isChecked
+                    ) or getMask(
+                        BackupUtils.DataType.Healings,
+                        binding.healingCheckbox.isChecked
+                    ) or getMask(
+                        BackupUtils.DataType.Payments,
+                        binding.paymentCheckbox.isChecked
+                    )
                 )
             )
-        )
+        }
     }
 
     private fun openFiles(uri: Uri) {
@@ -268,7 +285,11 @@ class BackupFragment : Fragment() {
             startActivity(Intent(Intent.ACTION_VIEW, uri))
         } catch (e: ActivityNotFoundException) {
             Timber.w(e, "Error opening file uri %s", uri.toString())
-            Snackbar.make(binding.root, getString(R.string.cant_find_backup), Snackbar.LENGTH_SHORT)
+            Snackbar.make(
+                binding.root,
+                getString(R.string.cant_find_backup),
+                Snackbar.LENGTH_SHORT
+            )
                 .show()
         }
     }
