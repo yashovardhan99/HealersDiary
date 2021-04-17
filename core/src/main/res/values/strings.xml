@@ -39,5 +39,21 @@
     <string name="partially_successful">Some entries were imported successfully</string>
     <string name="successful">Import was successful</string>
     <string name="importing_data">Importing Data</string>
-
+    <string name="export_completed">Export completed</string>
+    <string name="export_failed">Export failed</string>
+    <string name="exporting_patients">Exporting Patients</string>
+    <string name="exporting_patients_failed">Exporting Patients Failed</string>
+    <string name="exporting_healings">Exporting Healings</string>
+    <string name="exporting_healings_failed">Exporting Healings Failed</string>
+    <string name="exporting_payments">Exporting Payments</string>
+    <string name="exporting_payments_failed">Exporting Payments Failed</string>
+    <string name="something_went_wrong_exporting">Something went wrong while exporting. Tap to resolve</string>
+    <string name="exported_successfully">%d of %d records were exported successfully</string>
+    <string name="import_failed">Import failed</string>
+    <string name="import_completed">Import Completed</string>
+    <string name="importing_patients">Importing Patients</string>
+    <string name="importing_healings">Importing Healings</string>
+    <string name="importing_payments">Importing Payments</string>
+    <string name="something_went_wrong_importing">Something went wrong while importing. Tap to resolve</string>
+    <string name="imported_successfully">%d of %d records were imported successfully</string>
 </resources>

@@ -28,6 +28,7 @@ import com.yashovardhan99.core.backup_restore.ExportWorker
 import com.yashovardhan99.core.backup_restore.ImportWorker
 import com.yashovardhan99.core.database.BackupState
 import com.yashovardhan99.core.database.HealersDataStore
+import com.yashovardhan99.healersdiary.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.UUID
@@ -163,7 +164,7 @@ class BackupViewModel @Inject constructor(
                     createBackup()
                 } else {
                     errorMessageInternal.value =
-                        "Can't access the folder ${it.name}. Please select another folder."
+                        context.getString(R.string.cant_access_folder, it.name)
                 }
             }
         }

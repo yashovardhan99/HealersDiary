@@ -41,7 +41,11 @@ sealed class OnboardingState(internal val value: Int) {
 sealed class BackupState(internal val value: Int) {
     object Unknown : BackupState(0)
     object Running : BackupState(1)
-    class LastRunSuccess(val instant: Instant, val backedUp: IntArray) : BackupState(2) {
+    class LastRunSuccess(
+        val instant: Instant,
+        val backedUp: IntArray,
+        val exportFolder: Uri
+    ) : BackupState(2) {
         companion object {
             val TimePrefKey = longPreferencesKey("backup_time")
             val BackupPrefKeys = arrayOf(
@@ -49,6 +53,7 @@ sealed class BackupState(internal val value: Int) {
                 intPreferencesKey("backup_healings"),
                 intPreferencesKey("backup_payments")
             )
+            val locationPrefKey = stringPreferencesKey("last_backup_location")
         }
     }
 
@@ -77,7 +82,8 @@ class HealersDataStore @Inject constructor(@ApplicationContext context: Context)
                     } ?: Instant.EPOCH,
                     IntArray(3) { idx ->
                         preferences[BackupState.LastRunSuccess.BackupPrefKeys[idx]] ?: 0
-                    }
+                    },
+                    Uri.parse(preferences[BackupState.LastRunSuccess.locationPrefKey] ?: "")
                 )
                 3 -> BackupState.LastRunFailed(
                     preferences[BackupState.LastRunSuccess.TimePrefKey]?.let {
@@ -105,6 +111,8 @@ class HealersDataStore @Inject constructor(@ApplicationContext context: Context)
                     state.backedUp.forEachIndexed { index, count ->
                         preferences[BackupState.LastRunSuccess.BackupPrefKeys[index]] = count
                     }
+                    preferences[BackupState.LastRunSuccess.locationPrefKey] =
+                        state.exportFolder.toString()
                 }
                 else -> Unit
             }

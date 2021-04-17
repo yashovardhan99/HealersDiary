@@ -1,6 +1,10 @@
 package com.yashovardhan99.healersdiary.settings
 
 import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -80,12 +84,18 @@ class BackupFragment : Fragment() {
                 is BackupState.LastRunFailed -> {
                     binding.lastBackupTime.visibility = View.VISIBLE
                     binding.lastBackupNote.visibility = View.VISIBLE
+                    context?.getColorFromAttr(R.attr.colorError)?.let {
+                        binding.lastBackupNote.setTextColor(it)
+                    }
                     setLastBackupTime(backupState.instant)
                     binding.lastBackupNote.setText(R.string.backup_failed)
+                    binding.lastBackupTime.setOnClickListener(null)
+                    binding.lastBackupNote.setOnClickListener(null)
                 }
                 is BackupState.LastRunSuccess -> {
                     binding.lastBackupTime.visibility = View.VISIBLE
                     binding.lastBackupNote.visibility = View.VISIBLE
+                    binding.lastBackupNote.setTextColor(Color.BLACK)
                     setLastBackupTime(backupState.instant)
                     val (patientsCount, healingsCount, paymentsCount) = backupState.backedUp
                     val patients = resources.getQuantityString(
@@ -117,6 +127,12 @@ class BackupFragment : Fragment() {
                         else -> getString(R.string.join_3, patients, healings, payments)
                     }
                     binding.lastBackupNote.text = getString(R.string.last_backup_note, str)
+                    binding.lastBackupNote.setOnClickListener {
+                        openFiles(backupState.exportFolder)
+                    }
+                    binding.lastBackupTime.setOnClickListener {
+                        openFiles(backupState.exportFolder)
+                    }
                 }
                 else -> {
                     binding.lastBackupTime.visibility = View.GONE
@@ -245,6 +261,16 @@ class BackupFragment : Fragment() {
                 )
             )
         )
+    }
+
+    private fun openFiles(uri: Uri) {
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, uri))
+        } catch (e: ActivityNotFoundException) {
+            Timber.w(e, "Error opening file uri %s", uri.toString())
+            Snackbar.make(binding.root, getString(R.string.cant_find_backup), Snackbar.LENGTH_SHORT)
+                .show()
+        }
     }
 
     private fun getMask(type: BackupUtils.DataType, include: Boolean): Int {

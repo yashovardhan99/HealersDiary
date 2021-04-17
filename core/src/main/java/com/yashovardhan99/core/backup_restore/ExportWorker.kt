@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.net.Uri
+import androidx.annotation.StringRes
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.hilt.work.HiltWorker
@@ -72,16 +73,18 @@ class ExportWorker @AssistedInject constructor(
                     exportPayments(contentResolver, healersDao)
                 }
                 showDoneNotification(total.sum(), done.sum(), errorBit == dataType)
-                if (errorBit == dataType) Result.failure(getProgressData("Export failed", null))
-                else Result.success(getProgressData("Export completed", null))
+                if (errorBit == dataType) Result.failure(
+                    getProgressData(R.string.export_failed, null)
+                )
+                else Result.success(getProgressData(R.string.export_completed, null))
             } catch (e: FileNotFoundException) {
                 e.printStackTrace()
                 showDoneNotification(total.sum(), done.sum(), true)
-                Result.failure(getProgressData(e.message, null))
+                Result.failure(getProgressData(R.string.export_failed, null))
             } catch (e: IOException) {
                 e.printStackTrace()
                 showDoneNotification(total.sum(), done.sum(), true)
-                Result.failure(getProgressData(e.message, null))
+                Result.failure(getProgressData(R.string.export_failed, null))
             }
         }
     }
@@ -90,7 +93,7 @@ class ExportWorker @AssistedInject constructor(
     private suspend inline fun <T> export(
         contentResolver: ContentResolver,
         uriKey: String,
-        notificationMessage: String,
+        @StringRes notificationMessage: Int,
         header: String,
         items: List<T>,
         crossinline getCsvRow: (T) -> String
@@ -125,7 +128,7 @@ class ExportWorker @AssistedInject constructor(
             export(
                 contentResolver,
                 PATIENTS_FILE_URI_KEY,
-                "Exporting Patients",
+                R.string.exporting_patients,
                 BackupUtils.getCsvRow(
                     Patient::id.name, Patient::name.name, Patient::charge.name, Patient::due.name,
                     Patient::notes.name, Patient::lastModified.name, Patient::created.name
@@ -139,7 +142,12 @@ class ExportWorker @AssistedInject constructor(
             }
         } catch (e: FileNotFoundException) {
             errorBit += BackupUtils.DataType.Patients
-            updateProgress(0, 0, "Exporting Patients Failed", BackupUtils.DataType.Patients)
+            updateProgress(
+                0,
+                0,
+                R.string.exporting_patients_failed,
+                BackupUtils.DataType.Patients
+            )
         }
     }
 
@@ -148,7 +156,7 @@ class ExportWorker @AssistedInject constructor(
             export(
                 contentResolver,
                 HEALINGS_FILE_URI_KEY,
-                "Exporting Healings",
+                R.string.exporting_healings,
                 BackupUtils.getCsvRow(
                     Healing::id.name, Healing::time.name, Healing::charge.name,
                     Healing::notes.name, Healing::patientId.name
@@ -162,7 +170,12 @@ class ExportWorker @AssistedInject constructor(
             }
         } catch (e: FileNotFoundException) {
             errorBit += BackupUtils.DataType.Healings
-            updateProgress(0, 0, "Exporting Healings Failed", BackupUtils.DataType.Healings)
+            updateProgress(
+                0,
+                0,
+                R.string.exporting_healings_failed,
+                BackupUtils.DataType.Healings
+            )
         }
     }
 
@@ -171,7 +184,7 @@ class ExportWorker @AssistedInject constructor(
             export(
                 contentResolver,
                 PAYMENTS_FILE_URI_KEY,
-                "Exporting Payments",
+                R.string.exporting_payments,
                 BackupUtils.getCsvRow(
                     Payment::id.name, Payment::time.name, Payment::amount.name,
                     Payment::notes.name, Payment::patientId.name
@@ -185,14 +198,19 @@ class ExportWorker @AssistedInject constructor(
             }
         } catch (e: FileNotFoundException) {
             errorBit += BackupUtils.DataType.Payments
-            updateProgress(0, 0, "Exporting Payments Failed", BackupUtils.DataType.Payments)
+            updateProgress(
+                0,
+                0,
+                R.string.exporting_payments_failed,
+                BackupUtils.DataType.Payments
+            )
         }
     }
 
     private suspend fun updateProgress(
         progress: Int,
         max: Int,
-        message: String,
+        @StringRes message: Int,
         currentType: BackupUtils.DataType
     ) {
         check(progress <= max)
@@ -202,7 +220,7 @@ class ExportWorker @AssistedInject constructor(
         ).setContentTitle(applicationContext.getString(R.string.exporting_data))
             .setTypeProgress()
             .setProgress(max, progress, false)
-            .setContentText(message)
+            .setContentText(applicationContext.getString(message))
             .setContentDeepLink(
                 applicationContext,
                 Uri.parse(
@@ -241,11 +259,15 @@ class ExportWorker @AssistedInject constructor(
             .setAutoCancel(true)
             .setStyle(
                 NotificationCompat.BigTextStyle().bigText(
-                    if (failed) "Something went wrong while exporting. Tap to resolve"
-                    else "$count of $max records were exported successfully"
+                    if (failed)
+                        applicationContext.getString(R.string.something_went_wrong_exporting)
+                    else applicationContext.getString(R.string.exported_successfully, count, max)
                 )
             )
-            .setContentTitle(if (failed) "Export Failed" else "Export Completed")
+            .setContentTitle(
+                applicationContext
+                    .getString(if (failed) R.string.export_failed else R.string.export_completed)
+            )
             .run {
                 if (failed) setContentDeepLink(
                     applicationContext,
@@ -259,14 +281,20 @@ class ExportWorker @AssistedInject constructor(
 
         // Save backup state in dataStore
         if (failed) dataStore.updateBackupState(BackupState.LastRunFailed(Instant.now()))
-        else dataStore.updateBackupState(BackupState.LastRunSuccess(Instant.now(), done))
+        else dataStore.updateBackupState(
+            BackupState.LastRunSuccess(
+                Instant.now(),
+                done,
+                Uri.parse(inputData.getString(BackupUtils.Input.ExportFolderUriKey))
+            )
+        )
     }
 
     private fun getProgressData(
-        message: String?,
+        @StringRes message: Int,
         currentType: BackupUtils.DataType?
     ) = workDataOf(
-        BackupUtils.Progress.ProgressMessage to message,
+        BackupUtils.Progress.ProgressMessage to applicationContext.getString(message),
         BackupUtils.Progress.RequiredBit to inputData.getInt(DATA_TYPE_KEY, 0),
         BackupUtils.Progress.CurrentBit to (currentType?.mask ?: BackupUtils.DataType.DoneMask),
         BackupUtils.Progress.ExportCounts to done,

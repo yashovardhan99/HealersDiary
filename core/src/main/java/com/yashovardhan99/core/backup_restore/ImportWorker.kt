@@ -6,6 +6,7 @@ import android.content.ContentResolver
 import android.content.Context
 import android.content.pm.ServiceInfo
 import android.net.Uri
+import androidx.annotation.StringRes
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.CoroutineWorker
@@ -62,16 +63,18 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
                     importPayments(contentResolver, healersDao)
                 }
                 showDoneNotification(success.sum(), failures.sum(), errorBit == dataType)
-                if (errorBit == dataType) Result.failure(getProgressData("Import failed", null))
-                Result.success(getProgressData("Import Completed", null))
+                if (errorBit == dataType) Result.failure(
+                    getProgressData(R.string.import_failed, null)
+                )
+                Result.success(getProgressData(R.string.import_completed, null))
             } catch (e: FileNotFoundException) {
                 e.printStackTrace()
                 showDoneNotification(success.sum(), failures.sum(), true)
-                Result.failure(getProgressData("Import failed", null))
+                Result.failure(getProgressData(R.string.import_failed, null))
             } catch (e: IOException) {
                 e.printStackTrace()
                 showDoneNotification(success.sum(), failures.sum(), true)
-                Result.failure(getProgressData("Import failed", null))
+                Result.failure(getProgressData(R.string.import_failed, null))
             }
         }
     }
@@ -80,7 +83,7 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
     private suspend inline fun import(
         contentResolver: ContentResolver,
         uriKey: String,
-        notificationMessage: String,
+        @StringRes notificationMessage: Int,
         type: BackupUtils.DataType,
         insertRow: (List<String>) -> Boolean,
     ) {
@@ -115,7 +118,7 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         import(
             contentResolver,
             PATIENTS_FILE_URI_KEY,
-            "Importing Patients",
+            R.string.importing_patients,
             BackupUtils.DataType.Patients
         ) { row ->
             try {
@@ -135,7 +138,9 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
 
     private suspend fun importHealings(contentResolver: ContentResolver, dao: HealersDao) {
         import(
-            contentResolver, HEALINGS_FILE_URI_KEY, "Importing Healings",
+            contentResolver,
+            HEALINGS_FILE_URI_KEY,
+            R.string.importing_healings,
             BackupUtils.DataType.Healings
         ) { row ->
             try {
@@ -157,7 +162,9 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
 
     private suspend fun importPayments(contentResolver: ContentResolver, dao: HealersDao) {
         import(
-            contentResolver, PAYMENTS_FILE_URI_KEY, "Importing Payments",
+            contentResolver,
+            PAYMENTS_FILE_URI_KEY,
+            R.string.importing_payments,
             BackupUtils.DataType.Payments
         ) { row ->
             try {
@@ -190,7 +197,7 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
     }
 
     private suspend fun updateProgress(
-        message: String,
+        @StringRes message: Int,
         currentType: BackupUtils.DataType?
     ) {
         val notification = NotificationHelpers.getDefaultNotification(
@@ -199,7 +206,7 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         ).setContentTitle(applicationContext.getString(R.string.importing_data))
             .setTypeProgress()
             .setProgress(0, 0, true)
-            .setContentText(message)
+            .setContentText(applicationContext.getString(message))
             .setContentDeepLink(
                 applicationContext,
                 Uri.parse(
@@ -226,11 +233,19 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
             .setAutoCancel(true)
             .setStyle(
                 NotificationCompat.BigTextStyle().bigText(
-                    if (error) "Something went wrong while importing. Tap to resolve"
-                    else "$success of ${success + failed} records were imported successfully"
+                    if (error) applicationContext.getString(R.string.something_went_wrong_importing)
+                    else applicationContext.getString(
+                        R.string.imported_successfully,
+                        success,
+                        success + failed
+                    )
                 )
             )
-            .setContentTitle(if (error) "Import Failed" else "Import Completed")
+            .setContentTitle(
+                applicationContext.getString(
+                    if (error) R.string.import_failed else R.string.import_completed
+                )
+            )
             .setContentDeepLink(
                 applicationContext,
                 if (error) Uri.parse("healersdiary://com.yashovardhan99.healersdiary/backup")
@@ -244,10 +259,10 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
     }
 
     private fun getProgressData(
-        message: String?,
+        @StringRes message: Int,
         currentType: BackupUtils.DataType?
     ) = workDataOf(
-        BackupUtils.Progress.ProgressMessage to message,
+        BackupUtils.Progress.ProgressMessage to applicationContext.getString(message),
         BackupUtils.Progress.RequiredBit to inputData.getInt(DATA_TYPE_KEY, 0),
         BackupUtils.Progress.CurrentBit to
             (currentType?.mask ?: BackupUtils.DataType.DoneMask),
