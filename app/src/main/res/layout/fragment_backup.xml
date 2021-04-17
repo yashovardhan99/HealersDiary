@@ -29,7 +29,7 @@
             app:layout_constraintTop_toBottomOf="@id/icon"
             android:layout_marginTop="8dp"
             android:layout_marginStart="8dp"
-            android:visibility="visible"
+            android:visibility="gone"
             app:contentPadding="16dp"
             android:layout_marginEnd="8dp"
             app:cardBackgroundColor="?attr/colorError">
@@ -165,7 +165,7 @@
         <com.google.android.material.button.MaterialButton
             android:layout_width="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/import_note"
-            app:layout_constraintBottom_toTopOf="@id/last_backup_time"
+            app:layout_constraintBottom_toTopOf="@id/bottom_20"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:padding="8dp"
@@ -174,13 +174,21 @@
             android:layout_height="wrap_content"
             android:text="@string/start" />
 
+        <androidx.constraintlayout.widget.Guideline
+            android:layout_width="wrap_content"
+            android:id="@+id/bottom_20"
+            android:layout_height="wrap_content"
+            app:layout_constraintGuide_percent="0.8"
+            android:orientation="horizontal" />
+
         <TextView
-            android:padding="16dp"
+            android:padding="8dp"
             android:id="@+id/last_backup_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:layout_constraintVertical_chainStyle="packed"
             android:textAlignment="center"
-            app:layout_constraintTop_toBottomOf="@id/start"
+            app:layout_constraintTop_toBottomOf="@id/bottom_20"
             app:layout_constraintBottom_toTopOf="@id/last_backup_note"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
