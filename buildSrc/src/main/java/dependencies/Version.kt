@@ -21,7 +21,7 @@ object Version {
         private const val patch = 0
 
         private val buildType: BuildType = BuildType.BETA
-        private const val buildCode = 2
+        private const val buildCode = 3
 
         private const val standard = (major * 100 + minor) * 100 + patch
         val versionCode = (standard * 10 + buildType.typeCode) * 100 + buildCode
@@ -69,7 +69,7 @@ object Version {
         const val hilt = "1.0.0-alpha03"
         const val hilt_android = "2.31.2-alpha"
         const val timber = "4.7.1"
-        const val gradle = "4.1.2"
+        const val gradle = "4.1.3"
         const val oss_app = "17.0.0"
         const val oss_root = "0.10.2"
         const val crashlytics = "2.4.1"

@@ -121,6 +121,7 @@ dependencies {
     kapt(Dependencies.Hilt.android_compiler)
     kapt(Dependencies.Hilt.compiler)
     api(Dependencies.Hilt.view_model)
+    implementation(Dependencies.Hilt.worker)
 
     api(Dependencies.timber)
 

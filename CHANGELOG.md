@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.0.0-beta03] - 2021-06-02
+### Added
+- Added local backup + restore (CSV) ability.
+
 ## [2.0.0-beta02] - 2021-04-12
 ### Added
 - Patient created events now show up in dashboard
@@ -176,7 +180,8 @@ See Pull Request #5
 - Add new healing record for patient
 - View healing logs
 
-[Unreleased]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-beta02...HEAD
+[Unreleased]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-beta03...HEAD
+[2.0.0-beta03]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-beta02...v2.0.0-beta03
 [2.0.0-beta02]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-beta01...v2.0.0-beta02
 [2.0.0-beta01]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-alpha06...v2.0.0-beta01
 [2.0.0-alpha06]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-alpha05...v2.0.0-alpha06

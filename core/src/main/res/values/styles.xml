@@ -42,4 +42,12 @@
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:textSize">18sp</item>
     </style>
+
+    <style name="body1" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="fontFamily">@font/lato</item>
+    </style>
+    <style name="body2" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="fontFamily">@font/lato</item>
+    </style>
+
 </resources>

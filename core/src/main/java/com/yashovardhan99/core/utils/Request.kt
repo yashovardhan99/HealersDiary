@@ -3,7 +3,7 @@ package com.yashovardhan99.core.utils
 import android.net.Uri
 
 sealed class Request(vararg val path: String) {
-    val uriBuilder: Uri.Builder
+    protected val uriBuilder: Uri.Builder
         get() = Uri.Builder().scheme(SCHEME).authority(AUTHORITY).apply {
             for (segment in path) appendPath(segment)
         }
@@ -38,17 +38,19 @@ sealed class Request(vararg val path: String) {
         }
     }
 
-    data class UpdateHealing(val patientId: Long, val healingId: Long) : Request("activities", "edit_healing") {
+    data class UpdateHealing(val patientId: Long, val healingId: Long) :
+        Request("activities", "edit_healing") {
         override fun getUri(): Uri {
             return super.uriBuilder.appendQueryParameter(PATIENT_ID, patientId.toString())
-                    .appendQueryParameter(HEALING_ID, healingId.toString()).build()
+                .appendQueryParameter(HEALING_ID, healingId.toString()).build()
         }
     }
 
-    data class UpdatePayment(val patientId: Long, val paymentId: Long) : Request("activities", "edit_payment") {
+    data class UpdatePayment(val patientId: Long, val paymentId: Long) :
+        Request("activities", "edit_payment") {
         override fun getUri(): Uri {
             return super.uriBuilder.appendQueryParameter(PATIENT_ID, patientId.toString())
-                    .appendQueryParameter(PAYMENT_ID, paymentId.toString()).build()
+                .appendQueryParameter(PAYMENT_ID, paymentId.toString()).build()
         }
     }
 
@@ -64,17 +66,31 @@ sealed class Request(vararg val path: String) {
 
         private fun Uri.getLong(key: String): Long {
             return getQueryParameter(key)?.toLongOrNull()
-                    ?: throw IllegalArgumentException("Invalid/missing query parameters for key=$key")
+                ?: throw IllegalArgumentException("Invalid/missing query parameters for key=$key")
         }
 
         fun fromUri(uri: Uri): Request {
-            if (uri.scheme != SCHEME) throw IllegalArgumentException("Unknown scheme: ${uri.scheme}")
-            if (uri.authority != AUTHORITY) throw IllegalArgumentException("Unknown authority: ${uri.authority}")
+            if (uri.scheme != SCHEME)
+                throw IllegalArgumentException("Unknown scheme: ${uri.scheme}")
+            if (uri.authority != AUTHORITY)
+                throw IllegalArgumentException("Unknown authority: ${uri.authority}")
             return when (uri.lastPathSegment) {
-                "new_healing" -> if (uri.queryParameterNames.contains(PATIENT_ID)) NewHealing(uri.getLong(PATIENT_ID)) else NewHealing()
-                "new_payment" -> if (uri.queryParameterNames.contains(PATIENT_ID)) NewPayment(uri.getLong(PATIENT_ID)) else NewPayment()
+                "new_healing" -> if (uri.queryParameterNames.contains(PATIENT_ID)) NewHealing(
+                    uri.getLong(
+                        PATIENT_ID
+                    )
+                ) else NewHealing()
+                "new_payment" -> if (uri.queryParameterNames.contains(PATIENT_ID)) NewPayment(
+                    uri.getLong(
+                        PATIENT_ID
+                    )
+                ) else NewPayment()
                 "new_patient" -> NewPatient
-                "new_activity" -> if (uri.queryParameterNames.contains(PATIENT_ID)) NewActivity(uri.getLong(PATIENT_ID)) else NewActivity()
+                "new_activity" -> if (uri.queryParameterNames.contains(PATIENT_ID)) NewActivity(
+                    uri.getLong(
+                        PATIENT_ID
+                    )
+                ) else NewActivity()
                 "edit_patient" -> UpdatePatient(uri.getLong(PATIENT_ID))
                 "patients" -> ViewPatient(uri.getLong(PATIENT_ID))
                 "edit_healing" -> UpdateHealing(uri.getLong(PATIENT_ID), uri.getLong(HEALING_ID))

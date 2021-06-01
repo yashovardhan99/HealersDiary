@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="header"
+            type="com.yashovardhan99.core.utils.Header" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/heading"
+            bind:header="@{header}"
+            layout="@layout/header" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/upload_files"
+            android:textAppearance="@style/h2"
+            android:layout_margin="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/icon"
+            app:layout_constraintBottom_toTopOf="@id/uploads"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <LinearLayout
+            android:layout_margin="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/uploads"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintBottom_toTopOf="@id/import_note"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:gravity="fill"
+            android:orientation="vertical">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/patients_upload_box"
+                android:layout_width="match_parent"
+                app:cardElevation="8dp"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:drawablePadding="8dp"
+                        android:padding="12dp"
+                        android:textAppearance="@style/subtitle"
+                        android:textSize="14sp"
+                        android:gravity="center_vertical"
+                        android:textAllCaps="true"
+                        android:layout_alignParentStart="true"
+                        android:id="@+id/patients_upload"
+                        android:layout_width="wrap_content"
+                        android:text="@string/patients"
+                        android:layout_height="wrap_content"
+                        app:drawableStartCompat="@drawable/ic_baseline_cloud_upload_24" />
+
+                    <TextView
+                        android:textColor="@color/colorPrimary"
+                        android:layout_alignParentEnd="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:id="@+id/patients_file_name"
+                        android:layout_margin="8dp"
+                        android:text="@string/patients"
+                        android:visibility="gone" />
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/healings_upload_box"
+                android:layout_marginTop="0.5dp"
+                android:layout_width="match_parent"
+                app:cardElevation="8dp"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:drawablePadding="8dp"
+                        android:padding="12dp"
+                        android:textAppearance="@style/subtitle"
+                        android:textSize="14sp"
+                        android:gravity="center_vertical"
+                        android:textAllCaps="true"
+                        android:layout_alignParentStart="true"
+                        android:id="@+id/healings_upload"
+                        android:layout_width="wrap_content"
+                        android:text="@string/healings"
+                        android:layout_height="wrap_content"
+                        app:drawableStartCompat="@drawable/ic_baseline_cloud_upload_24" />
+
+                    <TextView
+                        android:textColor="@color/colorPrimary"
+                        android:layout_margin="8dp"
+                        android:layout_centerVertical="true"
+                        android:visibility="gone"
+                        android:layout_alignParentEnd="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/healings_file_name"
+                        android:text="@string/healings" />
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/payments_upload_box"
+                app:cardElevation="8dp"
+                android:layout_width="match_parent"
+                android:layout_marginTop="0.5dp"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:drawablePadding="8dp"
+                        android:padding="12dp"
+                        android:textAppearance="@style/subtitle"
+                        android:textSize="14sp"
+                        android:gravity="center_vertical"
+                        android:textAllCaps="true"
+                        android:layout_alignParentStart="true"
+                        android:id="@+id/payments_upload"
+                        android:layout_width="wrap_content"
+                        android:text="@string/payments"
+                        android:layout_height="wrap_content"
+                        app:drawableStartCompat="@drawable/ic_baseline_cloud_upload_24" />
+
+                    <TextView
+                        android:textColor="@color/colorPrimary"
+                        android:layout_margin="8dp"
+                        android:visibility="gone"
+                        android:layout_alignParentEnd="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:id="@+id/payments_file_name"
+                        android:text="@string/payments" />
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:textAppearance="@style/subtitle2"
+            android:textColor="?attr/colorOnBackground"
+            android:textSize="16sp"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:id="@+id/import_note"
+            app:layout_constraintTop_toBottomOf="@id/uploads"
+            app:layout_constraintBottom_toTopOf="@id/import_backup"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_margin="8dp"
+            android:textAlignment="center"
+            android:text="@string/might_be_overwrriten_note" />
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="match_parent"
+            app:layout_constraintTop_toBottomOf="@id/import_note"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:padding="8dp"
+            android:layout_margin="16dp"
+            android:enabled="false"
+            android:id="@+id/import_backup"
+            android:layout_height="wrap_content"
+            android:text="@string/import_text" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
