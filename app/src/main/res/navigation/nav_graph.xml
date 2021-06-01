@@ -47,7 +47,6 @@
             app:argType="long" />
         <deepLink
             android:id="@+id/deepLink"
-            android:autoVerify="true"
             app:action="ACTION_VIEW"
             app:uri="healersdiary://com.yashovardhan99.healersdiary/patients?patient_id={patientId}" />
         <action
@@ -79,5 +78,55 @@
         android:id="@+id/settings"
         android:name="com.yashovardhan99.healersdiary.settings.SettingsFragment"
         android:label="SettingsFragment"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_settings">
+        <action
+            android:id="@+id/action_settings_to_backupFragment"
+            app:destination="@id/backupFragment" />
+    </fragment>
+    <fragment
+        tools:layout="@layout/fragment_backup"
+        android:id="@+id/backupFragment"
+        android:name="com.yashovardhan99.healersdiary.settings.BackupFragment"
+        android:label="BackupFragment">
+        <action
+            android:id="@+id/action_backupFragment_to_importFragment"
+            app:destination="@id/importFragment" />
+        <action
+            android:id="@+id/action_backupFragment_to_backupProgressFragment"
+            app:destination="@id/backupProgressFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/settings" />
+        <deepLink
+            android:id="@+id/deepLink4"
+            app:uri="healersdiary://com.yashovardhan99.healersdiary/backup"
+            app:action="ACTION_VIEW" />
+    </fragment>
+    <fragment
+        tools:layout="@layout/fragment_import"
+        android:id="@+id/importFragment"
+        android:name="com.yashovardhan99.healersdiary.settings.ImportFragment"
+        android:label="ImportFragment">
+        <argument
+            android:name="selectedType"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <action
+            android:id="@+id/action_importFragment_to_backupProgressFragment"
+            app:destination="@id/backupProgressFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/settings" />
+    </fragment>
+    <fragment
+        tools:layout="@layout/fragment_backup_progress"
+        android:id="@+id/backupProgressFragment"
+        android:name="com.yashovardhan99.healersdiary.settings.BackupProgressFragment"
+        android:label="BackupProgressFragment">
+        <deepLink
+            android:id="@+id/deepLink3"
+            app:uri="healersdiary://com.yashovardhan99.healersdiary/backup/progress?uuid={uuid}"
+            app:action="ACTION_VIEW" />
+        <argument
+            android:name="uuid"
+            app:argType="string" />
+    </fragment>
 </navigation>

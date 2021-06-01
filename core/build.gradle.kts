@@ -32,7 +32,10 @@ android {
     buildTypes {
         getByName("release") {
             minifyEnabled(true)
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     compileOptions {
@@ -63,8 +66,11 @@ dependencies {
     kapt(Dependencies.Hilt.android_compiler)
     kapt(Dependencies.Hilt.compiler)
     implementation(Dependencies.Hilt.view_model)
+    implementation(Dependencies.Hilt.worker)
 
     implementation(Dependencies.Android.datastore)
+
+    implementation(Dependencies.Android.workmanager)
 
     implementation(Dependencies.Room.runtime)
     kapt(Dependencies.Room.compiler)

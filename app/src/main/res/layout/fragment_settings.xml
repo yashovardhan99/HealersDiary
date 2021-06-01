@@ -63,6 +63,14 @@
                     android:textAppearance="@style/h1" />
 
                 <com.google.android.material.button.MaterialButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/backup_sync_group_name"
+                    android:id="@+id/backup" />
+
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/open_source"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="match_parent"
