@@ -6,7 +6,6 @@ import com.yashovardhan99.core.setToStartOfDay
 import com.yashovardhan99.core.setToStartOfLastMonth
 import com.yashovardhan99.core.setToStartOfMonth
 import com.yashovardhan99.core.toLocalDateTime
-import com.yashovardhan99.core.utils.ActivityParent
 import com.yashovardhan99.core.utils.HealingParent
 import com.yashovardhan99.core.utils.PaymentParent
 import com.yashovardhan99.core.utils.Request
@@ -21,6 +20,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.combineTransform
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
@@ -76,23 +76,29 @@ class DashboardViewModel @Inject constructor(repository: DashboardRepository) : 
                 it.toUiActivity(patientsFlow.first())
             }.insertSeparators()
         }
-    val statsFlow = patientsFlow.combine(activitiesFlow) { patients, activities ->
-        val healings: List<ActivityParent.Activity> =
-            activities.filterIsInstance<ActivityParent.Activity>()
-                .filter { it.type is ActivityParent.Activity.Type.HEALING }
-        // val payments: List<ActivityParent.Activity> =
-        //     activities.filterIsInstance<ActivityParent.Activity>()
-        //         .filter { it.type is ActivityParent.Activity.Type.PAYMENT }
-        val healingsThisMonth = healings.filter { !it.time.before(thisMonth.time) }
-        val healingsLastMonth = healings - healingsThisMonth
-        val healingsToday = healings.filter { !it.time.before(today.time) }
-        val earningsThisMonth = healingsThisMonth.sumOf { it.amount }.toDouble() / 100
-        val earningsLastMonth = healingsLastMonth.sumOf { it.amount }.toDouble() / 100
+    private val todayDate = today.time.toLocalDateTime().toLocalDate()
+    private val thisMonthDate = thisMonth.time.toLocalDateTime().toLocalDate()
+    private val lastMonthDate = lastMonth.time.toLocalDateTime().toLocalDate()
+
+    private val healingsToday = repository.getHealingCountBetween(todayDate, todayDate)
+    private val healingsThisMonth = repository.getHealingCountBetween(thisMonthDate, todayDate)
+    private val earnedThisMonth = repository.getHealingAmountBetween(thisMonthDate, todayDate)
+    private val earnedLastMonth =
+        repository.getHealingAmountBetween(lastMonthDate, thisMonthDate.minusDays(1))
+
+    val statsFlow = combineTransform(
+        healingsToday,
+        healingsThisMonth,
+        earnedThisMonth,
+        earnedLastMonth
+    ) { todayCount, thisMonthCount, thisMonthAmount, lastMonthAmount ->
         val stats = listOf(
-            healingsToday(healingsToday.size), healingsThisMonth(healingsThisMonth.size),
-            earnedThisMonth(earningsThisMonth), earnedLastMonth(earningsLastMonth)
+            healingsToday(todayCount),
+            healingsThisMonth(thisMonthCount),
+            earnedThisMonth(thisMonthAmount.toDouble() / 100),
+            earnedLastMonth(lastMonthAmount.toDouble() / 100)
         )
-        stats
+        emit(stats)
     }.onStart {
         val emptyStats = listOf(
             healingsToday(0),

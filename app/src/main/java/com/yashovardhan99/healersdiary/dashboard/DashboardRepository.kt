@@ -11,6 +11,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 
 /**
  * Database repository for the database.
@@ -60,5 +61,31 @@ class DashboardRepository @Inject constructor(private val healersDao: HealersDao
      */
     fun getActivitiesStarting(startDate: LocalDate): Flow<List<Activity>> {
         return healersDao.getActivities(startDate.atStartOfDay())
+    }
+
+    /**
+     * Get total count of all healings done between the specified dates
+     * @param startDate The date after which we want to count healings (inclusive)
+     * @param endDateInclusive The date before which we want to count healings (inclusive)
+     * @return The total count of all healings between the specified dates
+     */
+    fun getHealingCountBetween(startDate: LocalDate, endDateInclusive: LocalDate): Flow<Int> {
+        return healersDao.getHealingCountBetween(
+            startDate.atStartOfDay(),
+            endDateInclusive.plusDays(1).atStartOfDay().minusNanos(1)
+        ).distinctUntilChanged()
+    }
+
+    /**
+     * Get total charges of all healings done between the specified dates
+     * @param startDate The date after which we want to add healings (inclusive)
+     * @param endDateInclusive The date before which we want to add healings (inclusive)
+     * @return The total sum of charges of all healings between the specified dates
+     */
+    fun getHealingAmountBetween(startDate: LocalDate, endDateInclusive: LocalDate): Flow<Long> {
+        return healersDao.getHealingAmountBetween(
+            startDate.atStartOfDay(),
+            endDateInclusive.plusDays(1).atStartOfDay().minusNanos(1)
+        ).distinctUntilChanged().map { it ?: 0 }
     }
 }
