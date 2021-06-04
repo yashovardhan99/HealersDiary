@@ -12,6 +12,7 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
+import androidx.paging.cachedIn
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -74,10 +75,9 @@ class HomeFragment : Fragment() {
                 statAdapter.submitList(stats)
             }
         }
-        lifecycleScope.launchWhenCreated {
+        lifecycleScope.launchWhenStarted {
             // collect latest stats and activities
-            viewModel.activitiesFlow.collectLatest { activities ->
-                Timber.d("$activities")
+            viewModel.activitiesFlow.cachedIn(this).collectLatest { activities ->
                 activityAdapter.submitData(activities)
             }
         }
