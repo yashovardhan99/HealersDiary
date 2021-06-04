@@ -1,11 +1,16 @@
 package com.yashovardhan99.healersdiary.dashboard
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
+import androidx.paging.insertSeparators
+import androidx.paging.map
 import com.yashovardhan99.core.database.Patient
 import com.yashovardhan99.core.setToStartOfDay
 import com.yashovardhan99.core.setToStartOfLastMonth
 import com.yashovardhan99.core.setToStartOfMonth
 import com.yashovardhan99.core.toLocalDateTime
+import com.yashovardhan99.core.utils.ActivityParent
 import com.yashovardhan99.core.utils.HealingParent
 import com.yashovardhan99.core.utils.PaymentParent
 import com.yashovardhan99.core.utils.Request
@@ -13,7 +18,7 @@ import com.yashovardhan99.core.utils.Stat.Companion.earnedLastMonth
 import com.yashovardhan99.core.utils.Stat.Companion.earnedThisMonth
 import com.yashovardhan99.core.utils.Stat.Companion.healingsThisMonth
 import com.yashovardhan99.core.utils.Stat.Companion.healingsToday
-import com.yashovardhan99.core.utils.Utils.insertSeparators
+import com.yashovardhan99.core.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.Calendar
 import javax.inject.Inject
@@ -21,8 +26,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.combineTransform
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import timber.log.Timber
 
@@ -69,12 +72,21 @@ class DashboardViewModel @Inject constructor(repository: DashboardRepository) : 
         }.sortedByDescending { it.lastModified }
     }
 
-    val activitiesFlow = repository
-        .getActivitiesStarting(lastMonth.time.toLocalDateTime().toLocalDate())
-        .map { list ->
-            list.map {
-                it.toUiActivity(patientsFlow.first())
-            }.insertSeparators()
+    val activitiesFlow = repository.getAllActivities()
+        .cachedIn(viewModelScope)
+        .combine(patientsFlow) { pagingData, patients ->
+            pagingData.map { it.toUiActivity(patients) }
+                .insertSeparators { before, after ->
+                    when {
+                        before == null && after != null -> ActivityParent.ActivitySeparator(
+                            Utils.getHeading(after.time)
+                        )
+                        before != null && after != null &&
+                            Utils.getHeading(before.time) != Utils.getHeading(after.time) ->
+                            ActivityParent.ActivitySeparator(Utils.getHeading(after.time))
+                        else -> null
+                    }
+                }
         }
     private val todayDate = today.time.toLocalDateTime().toLocalDate()
     private val thisMonthDate = thisMonth.time.toLocalDateTime().toLocalDate()

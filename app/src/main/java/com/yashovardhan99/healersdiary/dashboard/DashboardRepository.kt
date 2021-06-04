@@ -1,5 +1,8 @@
 package com.yashovardhan99.healersdiary.dashboard
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.yashovardhan99.core.database.Activity
 import com.yashovardhan99.core.database.HealersDao
 import com.yashovardhan99.core.database.Healing
@@ -61,6 +64,18 @@ class DashboardRepository @Inject constructor(private val healersDao: HealersDao
      */
     fun getActivitiesStarting(startDate: LocalDate): Flow<List<Activity>> {
         return healersDao.getActivities(startDate.atStartOfDay())
+    }
+
+    /**
+     * Get all activities
+     * @return pager of a list of all activities
+     */
+    fun getAllActivities(): Flow<PagingData<Activity>> {
+        return Pager(
+            config = PagingConfig(pageSize = 20, enablePlaceholders = false)
+        ) {
+            healersDao.getAllActivities()
+        }.flow
     }
 
     /**

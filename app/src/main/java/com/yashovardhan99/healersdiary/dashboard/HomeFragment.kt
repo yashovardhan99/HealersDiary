@@ -10,6 +10,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
+import androidx.paging.CombinedLoadStates
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -62,7 +64,7 @@ class HomeFragment : Fragment() {
             stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         }
         val emptyStateAdapter = EmptyStateAdapter(false, EmptyState.DASHBOARD)
-        // concatting all adapters
+        // concatenating all adapters
         binding.recycler.adapter =
             ConcatAdapter(statAdapter, headerAdapter, activityAdapter, emptyStateAdapter)
         lifecycleScope.launchWhenStarted {
@@ -72,15 +74,23 @@ class HomeFragment : Fragment() {
                 statAdapter.submitList(stats)
             }
         }
-        lifecycleScope.launchWhenStarted {
+        lifecycleScope.launchWhenCreated {
             // collect latest stats and activities
             viewModel.activitiesFlow.collectLatest { activities ->
                 Timber.d("$activities")
-                headerAdapter.isVisible = activities.isNotEmpty()
-                emptyStateAdapter.isVisible = activities.isNullOrEmpty()
+                activityAdapter.submitData(activities)
+            }
+        }
+        lifecycleScope.launchWhenStarted {
+            activityAdapter.loadStateFlow.collectLatest { loadStates: CombinedLoadStates ->
+                val showEmpty =
+                    loadStates.refresh is LoadState.NotLoading &&
+                        loadStates.append.endOfPaginationReached &&
+                        activityAdapter.itemCount == 0
+                headerAdapter.isVisible = !showEmpty
+                emptyStateAdapter.isVisible = showEmpty
                 headerAdapter.notifyDataSetChanged()
                 emptyStateAdapter.notifyDataSetChanged()
-                activityAdapter.submitList(activities)
             }
         }
         // Using grid layout to allow stats on top.
@@ -93,7 +103,6 @@ class HomeFragment : Fragment() {
             }
         }
         binding.recycler.layoutManager = layoutManager
-        Timber.d("Setting up thumbfastscroller")
         return binding.root
     }
 
