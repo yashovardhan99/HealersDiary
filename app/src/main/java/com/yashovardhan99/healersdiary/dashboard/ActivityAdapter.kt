@@ -3,9 +3,6 @@ package com.yashovardhan99.healersdiary.dashboard
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -16,7 +13,6 @@ import com.yashovardhan99.healersdiary.databinding.ActivitySeparatorBinding
 
 private const val VIEW_TYPE_ACTIVITY = 0
 private const val VIEW_TYPE_SEPARATOR = 1
-private const val VIEW_TYPE_LOADING = 2
 
 /**
  * Adapter for Activities (healings and payments)
@@ -32,7 +28,6 @@ class ActivityAdapter(private val onClick: (ActivityParent, View) -> Unit) :
      * @param view The inflated view
      */
     sealed class ActivityParentViewHolder(
-        val viewLifecycleOwner: LifecycleOwner?,
         val view: View
     ) :
         RecyclerView.ViewHolder(view) {
@@ -40,52 +35,23 @@ class ActivityAdapter(private val onClick: (ActivityParent, View) -> Unit) :
         /**
          * bind the viewholder with click listener and data
          */
-        abstract fun bind(activity: ActivityParent?, onClick: (ActivityParent, View) -> Unit)
+        abstract fun bind(activity: ActivityParent, onClick: (ActivityParent, View) -> Unit)
 
         /**
          * View holder for an activity
          * @param binding The activity card binding inflated
          */
         class ActivityViewHolder(
-            lifecycleOwner: LifecycleOwner?,
             val binding: ActivityCardBinding
         ) :
-            ActivityParentViewHolder(lifecycleOwner, binding.root) {
+            ActivityParentViewHolder(binding.root) {
 
-            init {
-                binding.skeleton.nameSkeleton.isVisible = false
-                binding.skeleton.iconSkeleton.isVisible = false
-                binding.skeleton.amountSkeleton.isVisible = false
-                binding.skeleton.typeSkeleton.isVisible = false
-            }
-
-            override fun bind(activity: ActivityParent?, onClick: (ActivityParent, View) -> Unit) {
-                if (activity != null) {
-                    if (activity !is ActivityParent.Activity) throw IllegalArgumentException()
-                    binding.activity = activity
-                    binding.root.setOnClickListener { onClick(activity, binding.root) }
-                    binding.root.transitionName =
-                        "activity_trans_pos_${activity.id}_${activity.type.description}"
-                    binding.skeleton.nameSkeleton.startHideAnimation()
-                    binding.skeleton.amountSkeleton.startHideAnimation()
-                    binding.skeleton.typeSkeleton.startHideAnimation()
-                    binding.skeleton.iconSkeleton.startHideAnimation()
-                } else {
-                    binding.root.setOnClickListener(null)
-                    binding.activity = null
-                    binding.skeleton.nameSkeleton.isVisible = true
-                    binding.skeleton.amountSkeleton.isVisible = true
-                    binding.skeleton.iconSkeleton.isVisible = true
-                    binding.skeleton.typeSkeleton.isVisible = true
-                }
-            }
-
-            private fun View.startHideAnimation() {
-                if (!isVisible) return
-                animate().apply { duration = 200 }
-                    .alpha(0f)
-                    .withEndAction { visibility = View.GONE }
-                    .start()
+            override fun bind(activity: ActivityParent, onClick: (ActivityParent, View) -> Unit) {
+                if (activity !is ActivityParent.Activity) throw IllegalArgumentException()
+                binding.activity = activity
+                binding.root.setOnClickListener { onClick(activity, binding.root) }
+                binding.root.transitionName =
+                    "activity_trans_pos_${activity.id}_${activity.type.description}"
             }
         }
 
@@ -94,11 +60,10 @@ class ActivityAdapter(private val onClick: (ActivityParent, View) -> Unit) :
          * @param binding an inflated ActivitySeparatorBinding
          */
         class SeparatorViewHolder(
-            viewTreeLifecycleOwner: LifecycleOwner?,
             val binding: ActivitySeparatorBinding
         ) :
-            ActivityParentViewHolder(viewTreeLifecycleOwner, binding.root) {
-            override fun bind(activity: ActivityParent?, onClick: (ActivityParent, View) -> Unit) {
+            ActivityParentViewHolder(binding.root) {
+            override fun bind(activity: ActivityParent, onClick: (ActivityParent, View) -> Unit) {
                 if (activity !is ActivityParent.ActivitySeparator) throw IllegalArgumentException()
                 binding.heading = activity.heading
             }
@@ -112,30 +77,23 @@ class ActivityAdapter(private val onClick: (ActivityParent, View) -> Unit) :
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             VIEW_TYPE_ACTIVITY -> ActivityParentViewHolder.ActivityViewHolder(
-                parent.findViewTreeLifecycleOwner(),
                 ActivityCardBinding.inflate(inflater, parent, false)
             )
             VIEW_TYPE_SEPARATOR -> ActivityParentViewHolder.SeparatorViewHolder(
-                parent.findViewTreeLifecycleOwner(),
                 ActivitySeparatorBinding.inflate(inflater, parent, false)
-            )
-            VIEW_TYPE_LOADING -> ActivityParentViewHolder.ActivityViewHolder(
-                parent.findViewTreeLifecycleOwner(),
-                ActivityCardBinding.inflate(inflater, parent, false)
             )
             else -> throw IllegalArgumentException()
         }
     }
 
     override fun onBindViewHolder(holder: ActivityParentViewHolder, position: Int) {
-        holder.bind(getItem(position), onClick)
+        getItem(position)?.let { holder.bind(it, onClick) }
     }
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
             is ActivityParent.Activity -> VIEW_TYPE_ACTIVITY
             is ActivityParent.ActivitySeparator -> VIEW_TYPE_SEPARATOR
-            null -> VIEW_TYPE_LOADING
             else -> throw IllegalArgumentException()
         }
     }

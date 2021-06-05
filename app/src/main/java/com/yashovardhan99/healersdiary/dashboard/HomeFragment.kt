@@ -20,6 +20,7 @@ import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialFadeThrough
 import com.yashovardhan99.core.analytics.AnalyticsEvent
 import com.yashovardhan99.core.transitionDurationLarge
+import com.yashovardhan99.core.utils.ActivityLoadStateAdapter
 import com.yashovardhan99.core.utils.ActivityParent
 import com.yashovardhan99.core.utils.EmptyState
 import com.yashovardhan99.core.utils.EmptyStateAdapter
@@ -61,13 +62,19 @@ class HomeFragment : Fragment() {
             stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         }
         val headerAdapter = HeaderAdapter(false)
+        val activityLoadStateAdapter = ActivityLoadStateAdapter()
         val activityAdapter = ActivityAdapter(::goToPatient).apply {
             stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         }
         val emptyStateAdapter = EmptyStateAdapter(false, EmptyState.DASHBOARD)
         // concatenating all adapters
         binding.recycler.adapter =
-            ConcatAdapter(statAdapter, headerAdapter, activityAdapter, emptyStateAdapter)
+            ConcatAdapter(
+                statAdapter,
+                headerAdapter,
+                activityAdapter.withLoadStateFooter(activityLoadStateAdapter),
+                emptyStateAdapter
+            )
         lifecycleScope.launchWhenStarted {
             // collect latest stats and activities
             viewModel.statsFlow.collectLatest { stats ->
