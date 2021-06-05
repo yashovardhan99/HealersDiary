@@ -6,6 +6,10 @@
 
     <data>
 
+        <import type="com.yashovardhan99.core.R" />
+
+        <import type="android.view.View" />
+
         <variable
             name="activity"
             type="com.yashovardhan99.core.utils.ActivityParent.Activity" />
@@ -16,7 +20,8 @@
         android:layout_height="wrap_content"
         android:paddingTop="2dp"
         android:paddingBottom="2dp"
-        app:cardCornerRadius="0dp">
+        app:cardCornerRadius="0dp"
+        android:animateLayoutChanges="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -29,7 +34,8 @@
                 android:layout_marginStart="24dp"
                 android:importantForAccessibility="no"
                 android:padding="2dp"
-                android:src="@{activity.type.icon.drawable}"
+                android:src="@{activity!=null ? activity.type.icon.drawable : R.drawable.check}"
+                android:visibility="@{activity!=null? View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -41,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="@{activity.type.description}"
+                android:text='@{activity != null ? activity.type.description : R.string.empty}'
                 android:textAppearance="@style/subtitle2"
                 app:layout_constraintStart_toEndOf="@id/icon"
                 app:layout_constraintTop_toTopOf="parent"
@@ -51,7 +57,7 @@
                 android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{activity.patient.name}"
+                android:text='@{activity.patient.name ?? null}'
                 android:textAppearance="@style/subtitle"
                 app:layout_constraintStart_toStartOf="@id/activity_type"
                 app:layout_constraintTop_toBottomOf="@id/activity_type"
@@ -66,7 +72,8 @@
                 android:textAppearance="@style/h2"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                bind:amountText="@{activity.amount}"
+                bind:amountText="@{activity != null ? activity.amount : 0}"
+                android:visibility="@{activity != null ? View.VISIBLE : View.GONE}"
                 tools:text="@string/sample_money" />
 
             <TextView
@@ -79,8 +86,12 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/amount"
-                bind:date="@{activity.time}"
+                bind:date="@{activity.time ?? null}"
                 tools:text="@tools:sample/date/day_of_week" />
+
+            <include
+                layout="@layout/activity_placeholder_card"
+                android:id="@+id/skeleton" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>

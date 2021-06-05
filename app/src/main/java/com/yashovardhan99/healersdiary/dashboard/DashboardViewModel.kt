@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.combineTransform
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import timber.log.Timber
 
@@ -38,6 +39,9 @@ import timber.log.Timber
 @HiltViewModel
 class DashboardViewModel @Inject constructor(repository: DashboardRepository) : ViewModel() {
     private val patientsFlow = repository.patients // just a list of all patients
+    private val patientsMap = patientsFlow.map { list ->
+        list.associateBy { patient -> patient.id }
+    }
 
     // get dates for starting today, this month and last month
     // used in calculations for stats
@@ -57,15 +61,14 @@ class DashboardViewModel @Inject constructor(repository: DashboardRepository) : 
      * Patients list sorted by last modified
      * Includes - associated healings and payments done
      */
-    val patientsList = healings.combine(patientsFlow) { healings, patients ->
-        val patientsMap = patients.associateBy { it.id }
+    val patientsList = healings.combine(patientsMap) { healings, patientsMap ->
         Timber.d(patientsMap.toString())
         Timber.d("Healings 1 = $healings")
         val patientWithHealings = healings.groupBy {
             patientsMap[it.patientId] ?: Patient.MissingPatient
         }
         // setting no. of healings today and this month for patients list page
-        patients.map { patient ->
+        patientsMap.values.map { patient ->
             val today = patientWithHealings[patient]?.count { it.time >= today.time } ?: 0
             val thisMonth = patientWithHealings[patient]?.count { it.time >= thisMonth.time } ?: 0
             patient.copy(healingsToday = today, healingsThisMonth = thisMonth)
@@ -74,8 +77,8 @@ class DashboardViewModel @Inject constructor(repository: DashboardRepository) : 
 
     val activitiesFlow = repository.getAllActivities()
         .cachedIn(viewModelScope)
-        .combine(patientsFlow) { pagingData, patients ->
-            pagingData.map { it.toUiActivity(patients) }
+        .combine(patientsMap) { pagingData, patientsMap ->
+            pagingData.map { it.toUiActivity(patientsMap) }
                 .insertSeparators { before, after ->
                     when {
                         before == null && after != null -> ActivityParent.ActivitySeparator(

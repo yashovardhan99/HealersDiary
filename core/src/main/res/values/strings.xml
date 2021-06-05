@@ -56,4 +56,5 @@
     <string name="importing_payments">Importing Payments</string>
     <string name="something_went_wrong_importing">Something went wrong while importing. Tap to resolve</string>
     <string name="imported_successfully">%d of %d records were imported successfully</string>
+    <string name="empty" translatable="false" />
 </resources>

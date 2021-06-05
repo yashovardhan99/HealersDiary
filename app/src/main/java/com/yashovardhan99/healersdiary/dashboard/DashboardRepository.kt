@@ -72,7 +72,7 @@ class DashboardRepository @Inject constructor(private val healersDao: HealersDao
      */
     fun getAllActivities(): Flow<PagingData<Activity>> {
         return Pager(
-            config = PagingConfig(pageSize = 40, jumpThreshold = 20)
+            config = PagingConfig(pageSize = 80, jumpThreshold = 100)
         ) {
             healersDao.getAllActivities()
         }.flow

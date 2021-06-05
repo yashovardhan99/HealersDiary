@@ -10,7 +10,7 @@ import androidx.databinding.BindingAdapter
 import com.yashovardhan99.core.R
 import java.math.BigDecimal
 import java.text.NumberFormat
-import java.util.*
+import java.util.Date
 
 @BindingAdapter("amountText")
 fun setAmountText(view: TextView, amount: Long) {
@@ -19,14 +19,16 @@ fun setAmountText(view: TextView, amount: Long) {
 }
 
 @BindingAdapter("date")
-fun setFormattedDate(view: TextView, date: Date) {
-    view.text = DateUtils.getRelativeTimeSpanString(date.time, Date().time, DateUtils.MINUTE_IN_MILLIS)
+fun setFormattedDate(view: TextView, date: Date?) {
+    view.text = if (date == null) ""
+    else DateUtils.getRelativeTimeSpanString(date.time, Date().time, DateUtils.MINUTE_IN_MILLIS)
 }
 
 @BindingAdapter("healingsToday")
 fun setHealingsToday(view: TextView, healings: Int) {
     val today = view.context.resources.getString(R.string.today)
-    view.text = view.context.resources.getQuantityString(R.plurals.healing, healings, healings, today)
+    view.text =
+        view.context.resources.getQuantityString(R.plurals.healing, healings, healings, today)
 }
 
 @BindingAdapter("healingsThisMonth")
