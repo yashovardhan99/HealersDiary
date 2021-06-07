@@ -72,7 +72,8 @@ class HomeFragment : Fragment() {
             ConcatAdapter(
                 statAdapter,
                 headerAdapter,
-                activityAdapter.withLoadStateFooter(activityLoadStateAdapter),
+                activityAdapter,
+                activityLoadStateAdapter,
                 emptyStateAdapter
             )
         lifecycleScope.launchWhenStarted {
@@ -90,6 +91,7 @@ class HomeFragment : Fragment() {
         }
         lifecycleScope.launchWhenStarted {
             activityAdapter.loadStateFlow.collectLatest { loadStates: CombinedLoadStates ->
+                activityLoadStateAdapter.loadState = loadStates.append
                 val showEmpty =
                     loadStates.refresh is LoadState.NotLoading &&
                         loadStates.append.endOfPaginationReached &&

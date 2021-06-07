@@ -35,21 +35,25 @@ class ActivityAdapter(private val onClick: (ActivityParent, View) -> Unit) :
         /**
          * bind the viewholder with click listener and data
          */
-        abstract fun bind(activity: ActivityParent, onClick: (ActivityParent, View) -> Unit)
+        abstract fun bind(activity: ActivityParent)
 
         /**
          * View holder for an activity
          * @param binding The activity card binding inflated
          */
         class ActivityViewHolder(
+            onClick: (Int, View) -> Unit,
             val binding: ActivityCardBinding
         ) :
             ActivityParentViewHolder(binding.root) {
 
-            override fun bind(activity: ActivityParent, onClick: (ActivityParent, View) -> Unit) {
+            init {
+                binding.root.setOnClickListener { onClick(bindingAdapterPosition, binding.root) }
+            }
+
+            override fun bind(activity: ActivityParent) {
                 if (activity !is ActivityParent.Activity) throw IllegalArgumentException()
                 binding.activity = activity
-                binding.root.setOnClickListener { onClick(activity, binding.root) }
                 binding.root.transitionName =
                     "activity_trans_pos_${activity.id}_${activity.type.description}"
             }
@@ -63,7 +67,7 @@ class ActivityAdapter(private val onClick: (ActivityParent, View) -> Unit) :
             val binding: ActivitySeparatorBinding
         ) :
             ActivityParentViewHolder(binding.root) {
-            override fun bind(activity: ActivityParent, onClick: (ActivityParent, View) -> Unit) {
+            override fun bind(activity: ActivityParent) {
                 if (activity !is ActivityParent.ActivitySeparator) throw IllegalArgumentException()
                 binding.heading = activity.heading
             }
@@ -77,6 +81,7 @@ class ActivityAdapter(private val onClick: (ActivityParent, View) -> Unit) :
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             VIEW_TYPE_ACTIVITY -> ActivityParentViewHolder.ActivityViewHolder(
+                ::onClick,
                 ActivityCardBinding.inflate(inflater, parent, false)
             )
             VIEW_TYPE_SEPARATOR -> ActivityParentViewHolder.SeparatorViewHolder(
@@ -86,8 +91,13 @@ class ActivityAdapter(private val onClick: (ActivityParent, View) -> Unit) :
         }
     }
 
+    private fun onClick(position: Int, view: View) {
+        val item = getItem(position)
+        if (item is ActivityParent.Activity) onClick(item, view)
+    }
+
     override fun onBindViewHolder(holder: ActivityParentViewHolder, position: Int) {
-        getItem(position)?.let { holder.bind(it, onClick) }
+        getItem(position)?.let { holder.bind(it) }
     }
 
     override fun getItemViewType(position: Int): Int {
