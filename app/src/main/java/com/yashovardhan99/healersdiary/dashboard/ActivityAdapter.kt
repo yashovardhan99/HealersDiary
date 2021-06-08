@@ -7,12 +7,14 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.yashovardhan99.core.utils.ActivityParent
+import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.dashboard.ActivityAdapter.ActivityParentViewHolder
 import com.yashovardhan99.healersdiary.databinding.ActivityCardBinding
 import com.yashovardhan99.healersdiary.databinding.ActivitySeparatorBinding
+import timber.log.Timber
 
-private const val VIEW_TYPE_ACTIVITY = 0
-private const val VIEW_TYPE_SEPARATOR = 1
+private const val VIEW_TYPE_ACTIVITY = R.layout.activity_card
+private const val VIEW_TYPE_SEPARATOR = R.layout.activity_separator
 
 /**
  * Adapter for Activities (healings and payments)
@@ -48,10 +50,12 @@ class ActivityAdapter(private val onClick: (ActivityParent, View) -> Unit) :
             ActivityParentViewHolder(binding.root) {
 
             init {
+                Timber.d("Creating ActivityViewHolder")
                 binding.root.setOnClickListener { onClick(bindingAdapterPosition, binding.root) }
             }
 
             override fun bind(activity: ActivityParent) {
+                Timber.d("Binding ActivityViewHolder")
                 if (activity !is ActivityParent.Activity) throw IllegalArgumentException()
                 binding.activity = activity
                 binding.root.transitionName =
@@ -119,7 +123,7 @@ class ActivityDiffUtils : DiffUtil.ItemCallback<ActivityParent>() {
     ): Boolean {
         return when {
             oldItem is ActivityParent.Activity && newItem is ActivityParent.Activity ->
-                oldItem.id == newItem.id
+                oldItem.id == newItem.id && oldItem.type == newItem.type
             oldItem is ActivityParent.ActivitySeparator &&
                 newItem is ActivityParent.ActivitySeparator -> oldItem.heading == newItem.heading
             else -> false

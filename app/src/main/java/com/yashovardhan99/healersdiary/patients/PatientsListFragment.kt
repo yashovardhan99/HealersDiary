@@ -15,12 +15,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialFadeThrough
 import com.yashovardhan99.core.analytics.AnalyticsEvent
+import com.yashovardhan99.core.database.Patient
 import com.yashovardhan99.core.transitionDurationLarge
+import com.yashovardhan99.core.utils.EmptyState
+import com.yashovardhan99.core.utils.EmptyStateAdapter
+import com.yashovardhan99.core.utils.Icons
+import com.yashovardhan99.core.utils.buildHeader
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.dashboard.DashboardViewModel
-import com.yashovardhan99.core.database.Patient
 import com.yashovardhan99.healersdiary.databinding.FragmentPatientsListBinding
-import com.yashovardhan99.core.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
@@ -28,21 +31,32 @@ import timber.log.Timber
 @AndroidEntryPoint
 class PatientsListFragment : Fragment() {
     private val viewModel: DashboardViewModel by activityViewModels()
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         val binding = FragmentPatientsListBinding.inflate(inflater, container, false)
         binding.header = context?.run {
-            buildHeader(R.drawable.list, R.string.patients, Icons.CustomButton(R.drawable.add_person, R.string.add_new_patient))
+            buildHeader(
+                R.drawable.list,
+                R.string.patients,
+                Icons.CustomButton(R.drawable.add_person, R.string.add_new_patient)
+            )
         }
         val patientListAdapter = PatientListAdapter(::openPatientDetail)
         binding.toolbar.optionsIcon.setOnClickListener { viewModel.addNewPatient() }
-        val emptyStateAdapter = EmptyStateAdapter(false, EmptyState.PATIENTS)
+        val emptyStateAdapter = EmptyStateAdapter()
         binding.recycler.adapter = ConcatAdapter(patientListAdapter, emptyStateAdapter)
-        binding.recycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        binding.recycler.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         lifecycleScope.launchWhenStarted {
             viewModel.patientsList.collect { patients ->
                 patientListAdapter.submitList(patients)
-                emptyStateAdapter.isVisible = patients.isEmpty()
-                emptyStateAdapter.notifyDataSetChanged()
+                emptyStateAdapter.submitList(
+                    if (patients.isEmpty()) listOf(EmptyState.PATIENTS)
+                    else emptyList()
+                )
             }
         }
         return binding.root
@@ -66,8 +80,10 @@ class PatientsListFragment : Fragment() {
     }
 
     private fun openPatientDetail(patient: Patient, view: View) {
-        AnalyticsEvent.Select(AnalyticsEvent.Content.Patient(patient.id), AnalyticsEvent.Screen.PatientList,
-                AnalyticsEvent.SelectReason.Open).trackEvent()
+        AnalyticsEvent.Select(
+            AnalyticsEvent.Content.Patient(patient.id), AnalyticsEvent.Screen.PatientList,
+            AnalyticsEvent.SelectReason.Open
+        ).trackEvent()
         exitTransition = MaterialElevationScale(false).apply {
             duration = transitionDurationLarge
         }
@@ -77,7 +93,7 @@ class PatientsListFragment : Fragment() {
         val patientDetailTransName = resources.getString(R.string.patient_detail_transition)
         val extras = FragmentNavigatorExtras(view to patientDetailTransName)
         val direction = PatientsListFragmentDirections
-                .actionPatientsToPatientDetailFragment(patient.id)
+            .actionPatientsToPatientDetailFragment(patient.id)
         Timber.d("Patient selected = $patient")
         viewModel.setPatientId(patient.id)
         findNavController().navigate(direction, extras)

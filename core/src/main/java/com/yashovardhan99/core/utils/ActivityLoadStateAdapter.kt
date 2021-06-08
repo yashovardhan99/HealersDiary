@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.yashovardhan99.core.R
 import com.yashovardhan99.core.databinding.LayoutActivityFooterBinding
 
 class ActivityLoadStateAdapter : LoadStateAdapter<ActivityLoadStateAdapter.LoadStateViewHolder>() {
@@ -42,5 +43,9 @@ class ActivityLoadStateAdapter : LoadStateAdapter<ActivityLoadStateAdapter.LoadS
         return LoadStateViewHolder.ProgressViewHolder(
             LayoutActivityFooterBinding.inflate(inflater, parent, false)
         )
+    }
+
+    override fun getStateViewType(loadState: LoadState): Int {
+        return R.layout.layout_activity_footer
     }
 }

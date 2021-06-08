@@ -2,6 +2,7 @@ package com.yashovardhan99.healersdiary.dashboard
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.insertSeparators
 import androidx.paging.map
@@ -29,6 +30,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.combineTransform
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEmpty
 import kotlinx.coroutines.flow.onStart
 import timber.log.Timber
 
@@ -93,6 +95,7 @@ class DashboardViewModel @Inject constructor(repository: DashboardRepository) : 
                     }
                 }
         }.flowOn(Dispatchers.IO)
+        .onEmpty { emit(PagingData.empty()) }
     private val todayDate = today.time.toLocalDateTime().toLocalDate()
     private val thisMonthDate = thisMonth.time.toLocalDateTime().toLocalDate()
     private val lastMonthDate = lastMonth.time.toLocalDateTime().toLocalDate()

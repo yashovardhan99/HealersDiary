@@ -15,7 +15,6 @@ import androidx.paging.LoadState
 import androidx.paging.cachedIn
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialFadeThrough
 import com.yashovardhan99.core.analytics.AnalyticsEvent
@@ -58,28 +57,28 @@ class HomeFragment : Fragment() {
             findNavController().navigate(R.id.settings)
         }
         // Creating different adapters
-        val statAdapter = StatAdapter().apply {
-            stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-        }
-        val headerAdapter = HeaderAdapter(false)
+        val statAdapter = StatAdapter()
+        val headerAdapter = HeaderAdapter()
         val activityLoadStateAdapter = ActivityLoadStateAdapter()
-        val activityAdapter = ActivityAdapter(::goToPatient).apply {
-            stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-        }
-        val emptyStateAdapter = EmptyStateAdapter(false, EmptyState.DASHBOARD)
+        val activityAdapter = ActivityAdapter(::goToPatient)
+        val emptyStateAdapter = EmptyStateAdapter()
         // concatenating all adapters
+        val concatAdapterConfig = ConcatAdapter.Config.Builder()
+            .setIsolateViewTypes(false)
+            .build()
         binding.recycler.adapter =
             ConcatAdapter(
+                concatAdapterConfig,
                 statAdapter,
                 headerAdapter,
                 activityAdapter,
                 activityLoadStateAdapter,
                 emptyStateAdapter
             )
+        binding.recycler.recycledViewPool.setMaxRecycledViews(R.layout.activity_card, 20)
         lifecycleScope.launchWhenStarted {
             // collect latest stats and activities
             viewModel.statsFlow.collectLatest { stats ->
-                Timber.d("$stats")
                 statAdapter.submitList(stats)
             }
         }
@@ -92,14 +91,17 @@ class HomeFragment : Fragment() {
         lifecycleScope.launchWhenStarted {
             activityAdapter.loadStateFlow.collectLatest { loadStates: CombinedLoadStates ->
                 activityLoadStateAdapter.loadState = loadStates.append
-                val showEmpty =
-                    loadStates.refresh is LoadState.NotLoading &&
-                        loadStates.append.endOfPaginationReached &&
-                        activityAdapter.itemCount == 0
-                headerAdapter.isVisible = !showEmpty
-                emptyStateAdapter.isVisible = showEmpty
-                headerAdapter.notifyDataSetChanged()
-                emptyStateAdapter.notifyDataSetChanged()
+                val showEmpty = loadStates.refresh is LoadState.NotLoading &&
+                    loadStates.append.endOfPaginationReached &&
+                    activityAdapter.itemCount == 0
+                headerAdapter.submitList(
+                    if (showEmpty) emptyList()
+                    else listOf(getString(R.string.recent_activity))
+                )
+                emptyStateAdapter.submitList(
+                    if (showEmpty) listOf(EmptyState.DASHBOARD)
+                    else emptyList()
+                )
             }
         }
         // Using grid layout to allow stats on top.
@@ -145,10 +147,10 @@ class HomeFragment : Fragment() {
             },
             AnalyticsEvent.Screen.Dashboard, AnalyticsEvent.SelectReason.Open
         ).trackEvent()
-        exitTransition = MaterialElevationScale(true).apply {
+        exitTransition = MaterialElevationScale(false).apply {
             duration = transitionDurationLarge
         }
-        reenterTransition = MaterialElevationScale(false).apply {
+        reenterTransition = MaterialElevationScale(true).apply {
             duration = transitionDurationLarge
         }
         val patientDetailTransName = resources.getString(R.string.patient_detail_transition)

@@ -26,7 +26,6 @@ import com.yashovardhan99.core.utils.Header.Companion.buildHeader
 import com.yashovardhan99.core.utils.HeaderAdapter
 import com.yashovardhan99.core.utils.Icons
 import com.yashovardhan99.core.utils.StatAdapter
-import com.yashovardhan99.core.utils.buildHeader
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.dashboard.DashboardViewModel
 import com.yashovardhan99.healersdiary.databinding.FragmentPatientDetailBinding
@@ -78,7 +77,7 @@ class PatientDetailFragment : Fragment() {
                 ActivityType.PAYMENT -> goToPayments()
             }
         }
-        val headerAdapter = HeaderAdapter(false)
+        val headerAdapter = HeaderAdapter()
         val activityAdapter = ActivityAdapter { activity ->
             if (activity !is ActivityParent.Activity) return@ActivityAdapter
             when (activity.type) {
@@ -87,7 +86,7 @@ class PatientDetailFragment : Fragment() {
                 ActivityParent.Activity.Type.PATIENT -> Unit
             }
         }
-        val emptyStatAdapter = EmptyStateAdapter(false, EmptyState.DASHBOARD)
+        val emptyStatAdapter = EmptyStateAdapter()
         binding.recycler.adapter =
             ConcatAdapter(statAdapter, headerAdapter, activityAdapter, emptyStatAdapter)
         binding.recycler.layoutManager =
@@ -109,10 +108,14 @@ class PatientDetailFragment : Fragment() {
             viewModel.getStatWithActivities(args.patientId).collect { (stats, activities) ->
                 statAdapter.submitList(stats)
                 activityAdapter.submitList(activities)
-                headerAdapter.isVisible = activities.isNotEmpty()
-                headerAdapter.notifyDataSetChanged()
-                emptyStatAdapter.isVisible = activities.isEmpty()
-                emptyStatAdapter.notifyDataSetChanged()
+                headerAdapter.submitList(
+                    if (activities.isEmpty()) emptyList()
+                    else listOf(getString(R.string.recent_activity))
+                )
+                emptyStatAdapter.submitList(
+                    if (activities.isEmpty()) listOf(EmptyState.DASHBOARD)
+                    else emptyList()
+                )
             }
         }
 
