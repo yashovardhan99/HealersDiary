@@ -12,7 +12,6 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
-import androidx.paging.cachedIn
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.transition.MaterialElevationScale
@@ -30,6 +29,7 @@ import com.yashovardhan99.core.utils.buildHeader
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.FragmentHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
@@ -84,7 +84,7 @@ class HomeFragment : Fragment() {
         }
         lifecycleScope.launchWhenStarted {
             // collect latest stats and activities
-            viewModel.activitiesFlow.cachedIn(this).collectLatest { activities ->
+            viewModel.activitiesFlow.collect { activities ->
                 activityAdapter.submitData(activities)
             }
         }

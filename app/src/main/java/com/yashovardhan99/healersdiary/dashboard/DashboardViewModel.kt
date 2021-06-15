@@ -23,12 +23,10 @@ import com.yashovardhan99.core.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.Calendar
 import javax.inject.Inject
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.combineTransform
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEmpty
 import kotlinx.coroutines.flow.onStart
@@ -94,8 +92,9 @@ class DashboardViewModel @Inject constructor(repository: DashboardRepository) : 
                         else -> null
                     }
                 }
-        }.flowOn(Dispatchers.IO)
-        .onEmpty { emit(PagingData.empty()) }
+        }.onEmpty { emit(PagingData.empty()) }
+        .cachedIn(viewModelScope)
+
     private val todayDate = today.time.toLocalDateTime().toLocalDate()
     private val thisMonthDate = thisMonth.time.toLocalDateTime().toLocalDate()
     private val lastMonthDate = lastMonth.time.toLocalDateTime().toLocalDate()
