@@ -20,6 +20,9 @@
             android:layout_height="wrap_content"
             android:text="@{heading}"
             android:textAppearance="@style/subtitle"
+            android:textSize="24sp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
             tools:text="@tools:sample/date/mmddyy" />
 
     </LinearLayout>

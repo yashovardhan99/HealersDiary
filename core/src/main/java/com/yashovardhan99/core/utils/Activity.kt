@@ -19,5 +19,20 @@ sealed class ActivityParent {
             object PAYMENT : Type(R.string.payment_received, Icons.CustomStatic(R.drawable.card))
             object PATIENT : Type(R.string.patient_added, Icons.CustomStatic(R.drawable.add_person))
         }
+
+        companion object {
+            fun getSeparator(
+                before: Activity?,
+                after: Activity?
+            ) = when {
+                before == null && after != null -> ActivitySeparator(
+                    Utils.getHeading(after.time)
+                )
+                before != null && after != null &&
+                    Utils.getHeading(before.time) != Utils.getHeading(after.time) ->
+                    ActivitySeparator(Utils.getHeading(after.time))
+                else -> null
+            }
+        }
     }
 }

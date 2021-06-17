@@ -5,10 +5,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.yashovardhan99.core.R
 import com.yashovardhan99.core.databinding.LayoutStatBoxBinding
 
-class StatAdapter(val onClick: (Stat) -> Unit = {}) : ListAdapter<Stat, StatAdapter.StatViewHolder>(StatDiffUtil()) {
-    class StatViewHolder(val binding: LayoutStatBoxBinding) : RecyclerView.ViewHolder(binding.root) {
+class StatAdapter(
+    private val onClick: (Stat) -> Unit = {}
+) : ListAdapter<Stat, StatAdapter.StatViewHolder>(StatDiffUtil()) {
+    class StatViewHolder(val binding: LayoutStatBoxBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(stat: Stat, onClick: (Stat) -> Unit) {
             binding.stat = stat
             binding.root.setOnClickListener { onClick(stat) }
@@ -16,12 +20,19 @@ class StatAdapter(val onClick: (Stat) -> Unit = {}) : ListAdapter<Stat, StatAdap
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StatViewHolder {
-        return StatViewHolder(LayoutStatBoxBinding.inflate(
-                LayoutInflater.from(parent.context), parent, false))
+        return StatViewHolder(
+            LayoutStatBoxBinding.inflate(
+                LayoutInflater.from(parent.context), parent, false
+            )
+        )
     }
 
     override fun onBindViewHolder(holder: StatViewHolder, position: Int) {
         holder.bind(getItem(position), onClick)
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return R.layout.layout_stat_box
     }
 }
 
@@ -33,5 +44,4 @@ class StatDiffUtil : DiffUtil.ItemCallback<Stat>() {
     override fun areContentsTheSame(oldItem: Stat, newItem: Stat): Boolean {
         return oldItem == newItem
     }
-
 }
