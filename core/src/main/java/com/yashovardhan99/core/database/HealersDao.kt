@@ -353,6 +353,41 @@ abstract class HealersDao {
         startDate: LocalDateTime,
         endDate: LocalDateTime
     ): Flow<Long?>
+
+    /**
+     * Get count of all healings done between the specified times for a specific patient
+     * @param startDate The time after which we want to count healings (inclusive)
+     * @param endDate The time before which we want to count healings (inclusive)
+     * @param patientId The patient whose healings are required
+     * @return The number of healings between the specified time period
+     */
+    @Query(
+        "SELECT COUNT(*) FROM healings  WHERE time BETWEEN :startDate AND :endDate" +
+            " AND patient_id = :patientId"
+    )
+    abstract fun getHealingCountBetween(
+        startDate: LocalDateTime,
+        endDate: LocalDateTime,
+        patientId: Long
+    ): Flow<Int>
+
+    /**
+     * Get total charges of all healings done between the specified times for a specific patient
+     * @param startDate The time after which we want to add healings (inclusive)
+     * @param endDate The time before which we want to add healings (inclusive)
+     * @param patientId The patient whose healings are queried
+     * @return The total sum of charges of all healings between the specified time period
+     */
+    @Query(
+        "SELECT SUM(charge) FROM healings  WHERE time BETWEEN :startDate AND :endDate " +
+            "AND patient_id = :patientId"
+    )
+    abstract fun getHealingAmountBetween(
+        startDate: LocalDateTime,
+        endDate: LocalDateTime,
+        patientId: Long
+    ): Flow<Long?>
+
     /**
      * Delete all healings for a particular patient. Should not be used directly
      * @param patientId The patient whose healings are to be deleted.

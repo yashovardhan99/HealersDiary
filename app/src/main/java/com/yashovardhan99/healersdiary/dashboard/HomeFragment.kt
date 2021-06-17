@@ -60,7 +60,7 @@ class HomeFragment : Fragment() {
         val statAdapter = StatAdapter()
         val headerAdapter = HeaderAdapter()
         val activityLoadStateAdapter = ActivityLoadStateAdapter()
-        val activityAdapter = ActivityAdapter(::goToPatient)
+        val activityAdapter = ActivityAdapter(false, ::goToPatient)
         val emptyStateAdapter = EmptyStateAdapter()
         // concatenating all adapters
         val concatAdapterConfig = ConcatAdapter.Config.Builder()

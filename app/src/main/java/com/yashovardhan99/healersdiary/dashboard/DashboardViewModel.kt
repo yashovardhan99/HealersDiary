@@ -11,7 +11,7 @@ import com.yashovardhan99.core.setToStartOfDay
 import com.yashovardhan99.core.setToStartOfLastMonth
 import com.yashovardhan99.core.setToStartOfMonth
 import com.yashovardhan99.core.toLocalDateTime
-import com.yashovardhan99.core.utils.ActivityParent
+import com.yashovardhan99.core.utils.ActivityParent.Activity.Companion.getSeparator
 import com.yashovardhan99.core.utils.HealingParent
 import com.yashovardhan99.core.utils.PaymentParent
 import com.yashovardhan99.core.utils.Request
@@ -19,8 +19,8 @@ import com.yashovardhan99.core.utils.Stat.Companion.earnedLastMonth
 import com.yashovardhan99.core.utils.Stat.Companion.earnedThisMonth
 import com.yashovardhan99.core.utils.Stat.Companion.healingsThisMonth
 import com.yashovardhan99.core.utils.Stat.Companion.healingsToday
-import com.yashovardhan99.core.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.math.BigDecimal
 import java.util.Calendar
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -82,15 +82,7 @@ class DashboardViewModel @Inject constructor(repository: DashboardRepository) : 
         .combine(patientsMap) { pagingData, patientsMap ->
             pagingData.map { it.toUiActivity(patientsMap) }
                 .insertSeparators { before, after ->
-                    when {
-                        before == null && after != null -> ActivityParent.ActivitySeparator(
-                            Utils.getHeading(after.time)
-                        )
-                        before != null && after != null &&
-                            Utils.getHeading(before.time) != Utils.getHeading(after.time) ->
-                            ActivityParent.ActivitySeparator(Utils.getHeading(after.time))
-                        else -> null
-                    }
+                    getSeparator(before, after)
                 }
         }.onEmpty { emit(PagingData.empty()) }
         .cachedIn(viewModelScope)
@@ -114,16 +106,16 @@ class DashboardViewModel @Inject constructor(repository: DashboardRepository) : 
         val stats = listOf(
             healingsToday(todayCount),
             healingsThisMonth(thisMonthCount),
-            earnedThisMonth(thisMonthAmount.toDouble() / 100),
-            earnedLastMonth(lastMonthAmount.toDouble() / 100)
+            earnedThisMonth(thisMonthAmount.toBigDecimal().movePointLeft(2)),
+            earnedLastMonth(lastMonthAmount.toBigDecimal().movePointLeft(2))
         )
         emit(stats)
     }.onStart {
         val emptyStats = listOf(
             healingsToday(0),
             healingsThisMonth(0),
-            earnedThisMonth(0.0),
-            earnedLastMonth(0.0)
+            earnedThisMonth(BigDecimal.ZERO),
+            earnedLastMonth(BigDecimal.ZERO)
         )
         emit(emptyStats)
     }

@@ -12,6 +12,8 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.paging.CombinedLoadStates
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.transition.MaterialContainerTransform
@@ -27,10 +29,12 @@ import com.yashovardhan99.core.utils.HeaderAdapter
 import com.yashovardhan99.core.utils.Icons
 import com.yashovardhan99.core.utils.StatAdapter
 import com.yashovardhan99.healersdiary.R
+import com.yashovardhan99.healersdiary.dashboard.ActivityAdapter
 import com.yashovardhan99.healersdiary.dashboard.DashboardViewModel
 import com.yashovardhan99.healersdiary.databinding.FragmentPatientDetailBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -57,7 +61,7 @@ class PatientDetailFragment : Fragment() {
         val binding = FragmentPatientDetailBinding.inflate(inflater, container, false)
         binding.header = context?.run {
             buildHeader(
-                Icons.Close, viewModel.patient.value?.name ?: getString(R.string.loading),
+                Icons.Close, getString(R.string.loading),
                 Icons.CustomButton(R.drawable.edit, R.string.edit_patient)
             )
         }
@@ -75,10 +79,11 @@ class PatientDetailFragment : Fragment() {
             when (stat.type) {
                 ActivityType.HEALING -> goToHealings()
                 ActivityType.PAYMENT -> goToPayments()
+                ActivityType.PATIENT -> Unit
             }
         }
         val headerAdapter = HeaderAdapter()
-        val activityAdapter = ActivityAdapter { activity ->
+        val activityAdapter = ActivityAdapter(true) { activity, _ ->
             if (activity !is ActivityParent.Activity) return@ActivityAdapter
             when (activity.type) {
                 ActivityParent.Activity.Type.HEALING -> goToHealings()
@@ -86,9 +91,14 @@ class PatientDetailFragment : Fragment() {
                 ActivityParent.Activity.Type.PATIENT -> Unit
             }
         }
-        val emptyStatAdapter = EmptyStateAdapter()
+        val emptyStateAdapter = EmptyStateAdapter()
+        val concatAdapterConfig = ConcatAdapter.Config.Builder()
+            .setIsolateViewTypes(false)
+            .build()
         binding.recycler.adapter =
-            ConcatAdapter(statAdapter, headerAdapter, activityAdapter, emptyStatAdapter)
+            ConcatAdapter(
+                concatAdapterConfig, statAdapter, headerAdapter, activityAdapter, emptyStateAdapter
+            )
         binding.recycler.layoutManager =
             GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false).apply {
                 spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -105,17 +115,30 @@ class PatientDetailFragment : Fragment() {
         }
 
         lifecycleScope.launchWhenStarted {
-            viewModel.getStatWithActivities(args.patientId).collect { (stats, activities) ->
-                statAdapter.submitList(stats)
-                activityAdapter.submitList(activities)
+            viewModel.activities.collect { activities ->
+                activityAdapter.submitData(activities)
+            }
+        }
+        lifecycleScope.launchWhenStarted {
+            activityAdapter.loadStateFlow.collectLatest { loadStates: CombinedLoadStates ->
+                // activityLoadStateAdapter.loadState = loadStates.append
+                val showEmpty = loadStates.refresh is LoadState.NotLoading &&
+                    loadStates.append.endOfPaginationReached &&
+                    activityAdapter.itemCount == 0
                 headerAdapter.submitList(
-                    if (activities.isEmpty()) emptyList()
+                    if (showEmpty) emptyList()
                     else listOf(getString(R.string.recent_activity))
                 )
-                emptyStatAdapter.submitList(
-                    if (activities.isEmpty()) listOf(EmptyState.DASHBOARD)
+                emptyStateAdapter.submitList(
+                    if (showEmpty) listOf(EmptyState.DASHBOARD)
                     else emptyList()
                 )
+            }
+        }
+
+        lifecycleScope.launchWhenStarted {
+            viewModel.stats.collectLatest { stats ->
+                statAdapter.submitList(stats)
             }
         }
 
