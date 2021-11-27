@@ -64,14 +64,14 @@ object Version {
      */
     object Dependencies {
         const val play_services_coroutines = "1.4.1"
-        const val kotlin = "1.4.30"
+        const val kotlin = "1.4.31"
         const val material = "1.3.0"
         const val hilt = "1.0.0-alpha03"
         const val hilt_android = "2.31.2-alpha"
         const val timber = "4.7.1"
         const val gradle = "4.1.3"
         const val oss_app = "17.0.0"
-        const val oss_root = "0.10.2"
+        const val oss_root = "0.10.4"
         const val crashlytics = "2.4.1"
         const val google_services = "4.3.5"
         const val play_services_auth = "19.0.0"
