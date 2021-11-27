@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.0.0-beta04] - 2021-11-27
+### Added
+- Added unlimited scrolling list on Dashboard!
+
+### Changed
+- Memory optimizations for different lists across app
+- Faster query for stats on dashboard
+
 ## [2.0.0-beta03] - 2021-06-02
 ### Added
 - Added local backup + restore (CSV) ability.
@@ -180,7 +188,8 @@ See Pull Request #5
 - Add new healing record for patient
 - View healing logs
 
-[Unreleased]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-beta03...HEAD
+[Unreleased]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-beta04...HEAD
+[2.0.0-beta03]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-beta03...v2.0.0-beta04
 [2.0.0-beta03]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-beta02...v2.0.0-beta03
 [2.0.0-beta02]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-beta01...v2.0.0-beta02
 [2.0.0-beta01]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-alpha06...v2.0.0-beta01
