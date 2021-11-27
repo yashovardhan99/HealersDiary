@@ -10,13 +10,15 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
+import androidx.paging.CombinedLoadStates
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialFadeThrough
 import com.yashovardhan99.core.analytics.AnalyticsEvent
 import com.yashovardhan99.core.transitionDurationLarge
+import com.yashovardhan99.core.utils.ActivityLoadStateAdapter
 import com.yashovardhan99.core.utils.ActivityParent
 import com.yashovardhan99.core.utils.EmptyState
 import com.yashovardhan99.core.utils.EmptyStateAdapter
@@ -27,6 +29,7 @@ import com.yashovardhan99.core.utils.buildHeader
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.FragmentHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
@@ -54,33 +57,51 @@ class HomeFragment : Fragment() {
             findNavController().navigate(R.id.settings)
         }
         // Creating different adapters
-        val statAdapter = StatAdapter().apply {
-            stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-        }
-        val headerAdapter = HeaderAdapter(false)
-        val activityAdapter = ActivityAdapter(::goToPatient).apply {
-            stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-        }
-        val emptyStateAdapter = EmptyStateAdapter(false, EmptyState.DASHBOARD)
-        // concatting all adapters
+        val statAdapter = StatAdapter()
+        val headerAdapter = HeaderAdapter()
+        val activityLoadStateAdapter = ActivityLoadStateAdapter()
+        val activityAdapter = ActivityAdapter(false, ::goToPatient)
+        val emptyStateAdapter = EmptyStateAdapter()
+        // concatenating all adapters
+        val concatAdapterConfig = ConcatAdapter.Config.Builder()
+            .setIsolateViewTypes(false)
+            .build()
         binding.recycler.adapter =
-            ConcatAdapter(statAdapter, headerAdapter, activityAdapter, emptyStateAdapter)
+            ConcatAdapter(
+                concatAdapterConfig,
+                statAdapter,
+                headerAdapter,
+                activityAdapter,
+                activityLoadStateAdapter,
+                emptyStateAdapter
+            )
+        binding.recycler.recycledViewPool.setMaxRecycledViews(R.layout.activity_card, 20)
         lifecycleScope.launchWhenStarted {
             // collect latest stats and activities
             viewModel.statsFlow.collectLatest { stats ->
-                Timber.d("$stats")
                 statAdapter.submitList(stats)
             }
         }
         lifecycleScope.launchWhenStarted {
             // collect latest stats and activities
-            viewModel.activitiesFlow.collectLatest { activities ->
-                Timber.d("$activities")
-                headerAdapter.isVisible = activities.isNotEmpty()
-                emptyStateAdapter.isVisible = activities.isNullOrEmpty()
-                headerAdapter.notifyDataSetChanged()
-                emptyStateAdapter.notifyDataSetChanged()
-                activityAdapter.submitList(activities)
+            viewModel.activitiesFlow.collect { activities ->
+                activityAdapter.submitData(activities)
+            }
+        }
+        lifecycleScope.launchWhenStarted {
+            activityAdapter.loadStateFlow.collectLatest { loadStates: CombinedLoadStates ->
+                activityLoadStateAdapter.loadState = loadStates.append
+                val showEmpty = loadStates.refresh is LoadState.NotLoading &&
+                    loadStates.append.endOfPaginationReached &&
+                    activityAdapter.itemCount == 0
+                headerAdapter.submitList(
+                    if (showEmpty) emptyList()
+                    else listOf(getString(R.string.recent_activity))
+                )
+                emptyStateAdapter.submitList(
+                    if (showEmpty) listOf(EmptyState.DASHBOARD)
+                    else emptyList()
+                )
             }
         }
         // Using grid layout to allow stats on top.
@@ -93,7 +114,6 @@ class HomeFragment : Fragment() {
             }
         }
         binding.recycler.layoutManager = layoutManager
-        Timber.d("Setting up thumbfastscroller")
         return binding.root
     }
 
@@ -127,10 +147,10 @@ class HomeFragment : Fragment() {
             },
             AnalyticsEvent.Screen.Dashboard, AnalyticsEvent.SelectReason.Open
         ).trackEvent()
-        exitTransition = MaterialElevationScale(true).apply {
+        exitTransition = MaterialElevationScale(false).apply {
             duration = transitionDurationLarge
         }
-        reenterTransition = MaterialElevationScale(false).apply {
+        reenterTransition = MaterialElevationScale(true).apply {
             duration = transitionDurationLarge
         }
         val patientDetailTransName = resources.getString(R.string.patient_detail_transition)

@@ -16,7 +16,8 @@
         android:layout_height="wrap_content"
         android:paddingTop="2dp"
         android:paddingBottom="2dp"
-        app:cardCornerRadius="0dp">
+        app:cardCornerRadius="0dp"
+        android:animateLayoutChanges="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -41,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="@{activity.type.description}"
+                android:text='@{activity.type.description}'
                 android:textAppearance="@style/subtitle2"
                 app:layout_constraintStart_toEndOf="@id/icon"
                 app:layout_constraintTop_toTopOf="parent"
@@ -51,7 +52,7 @@
                 android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{activity.patient.name}"
+                android:text='@{activity.patient.name}'
                 android:textAppearance="@style/subtitle"
                 app:layout_constraintStart_toStartOf="@id/activity_type"
                 app:layout_constraintTop_toBottomOf="@id/activity_type"
@@ -81,6 +82,7 @@
                 app:layout_constraintTop_toBottomOf="@id/amount"
                 bind:date="@{activity.time}"
                 tools:text="@tools:sample/date/day_of_week" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>

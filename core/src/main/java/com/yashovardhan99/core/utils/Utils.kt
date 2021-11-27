@@ -3,7 +3,12 @@ package com.yashovardhan99.core.utils
 import android.text.format.DateUtils
 import com.yashovardhan99.core.setToStartOfMonth
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+import kotlin.experimental.ExperimentalTypeInference
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
 
 object Utils {
     private val thisWeek = Calendar.getInstance().apply {
@@ -11,22 +16,46 @@ object Utils {
     }.time
     private val thisMonth = Calendar.getInstance().apply { setToStartOfMonth() }.time
 
-    fun List<ActivityParent.Activity>.insertSeparators(): List<ActivityParent> {
-        val listWithSeparator = mutableListOf<ActivityParent>()
-        forEachIndexed { index, activity ->
-            if (index == 0 || getHeading(activity.time) != getHeading(get(index - 1).time)) {
-                listWithSeparator.add(ActivityParent.ActivitySeparator(getHeading(activity.time)))
-            }
-            listWithSeparator.add(activity)
-        }
-        return listWithSeparator
-    }
-
     fun getHeading(date: Date): String {
         return when {
-            date.after(thisWeek) -> DateUtils.getRelativeTimeSpanString(date.time, Date().time, DateUtils.DAY_IN_MILLIS).toString()
-            !date.before(thisMonth) -> DateUtils.getRelativeTimeSpanString(date.time, Date().time, DateUtils.WEEK_IN_MILLIS).toString()
+            date.after(thisWeek) -> DateUtils.getRelativeTimeSpanString(
+                date.time, Date().time, DateUtils.DAY_IN_MILLIS
+            ).toString()
+
+            !date.before(thisMonth) -> DateUtils.getRelativeTimeSpanString(
+                date.time,
+                Date().time,
+                DateUtils.WEEK_IN_MILLIS
+            ).toString()
             else -> SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(date)
         }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    @OptIn(ExperimentalTypeInference::class)
+    fun <T1, T2, T3, T4, T5, T6, R> combineTransform(
+        flow: Flow<T1>,
+        flow2: Flow<T2>,
+        flow3: Flow<T3>,
+        flow4: Flow<T4>,
+        flow5: Flow<T5>,
+        flow6: Flow<T6>,
+        @BuilderInference transform: suspend FlowCollector<R>.(T1, T2, T3, T4, T5, T6) -> Unit
+    ): Flow<R> = kotlinx.coroutines.flow.combineTransform(
+        flow,
+        flow2,
+        flow3,
+        flow4,
+        flow5,
+        flow6
+    ) { args: Array<*> ->
+        transform(
+            args[0] as T1,
+            args[1] as T2,
+            args[2] as T3,
+            args[3] as T4,
+            args[4] as T5,
+            args[5] as T6
+        )
     }
 }

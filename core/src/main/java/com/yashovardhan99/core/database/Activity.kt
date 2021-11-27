@@ -26,7 +26,8 @@ data class Activity(
     @ColumnInfo(name = "patient_id") val patientId: Long,
     val type: ActivityType
 ) {
-    fun toUiActivity(patientList: List<Patient>): ActivityParent.Activity =
+
+    fun toUiActivity(patient: Patient) =
         ActivityParent.Activity(
             id = id,
             time = time.toDate(),
@@ -36,7 +37,20 @@ data class Activity(
                 ActivityType.PATIENT -> ActivityParent.Activity.Type.PATIENT
             },
             amount = amount,
-            patient = patientList.find { it.id == patientId } ?: Patient.MissingPatient
+            patient = patient
+        )
+
+    fun toUiActivity(patientList: Map<Long, Patient>): ActivityParent.Activity =
+        ActivityParent.Activity(
+            id = id,
+            time = time.toDate(),
+            type = when (type) {
+                ActivityType.HEALING -> ActivityParent.Activity.Type.HEALING
+                ActivityType.PAYMENT -> ActivityParent.Activity.Type.PAYMENT
+                ActivityType.PATIENT -> ActivityParent.Activity.Type.PATIENT
+            },
+            amount = amount,
+            patient = patientList[patientId] ?: Patient.MissingPatient
         )
 }
 
