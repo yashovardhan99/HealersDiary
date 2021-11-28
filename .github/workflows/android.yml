@@ -3,7 +3,7 @@ name: Android CI
 on:
   push:
     branches: [ master ]
-    paths-ignore: ["*.md"]
+    paths-ignore: [ "*.md" ]
   pull_request:
 
 jobs:
@@ -83,6 +83,7 @@ jobs:
         run: ./gradlew testDebug
 
       - name: Output test results
+        if: always()
         uses: actions/upload-artifact@v2
         with:
           name: Unit test results
@@ -94,8 +95,8 @@ jobs:
     timeout-minutes: 60
     strategy:
       matrix:
-        api_level: [21, 27, 30]
-        target: [default, google_apis]
+        api_level: [ 21, 27, 30 ]
+        target: [ default, google_apis ]
         exclude:
           # Excluding as 30-default is not supported by emulator yet
           - api_level: 30
@@ -137,6 +138,7 @@ jobs:
           script: ./gradlew core:connectedDebugAndroidTest app:connectedDebugAndroidTest
 
       - name: Output test results
+        if: always()
         uses: actions/upload-artifact@v2
         with:
           name: Instrumented test results (${{ matrix.api_level }}-${{ matrix.target }})
