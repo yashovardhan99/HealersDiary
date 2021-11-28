@@ -5,6 +5,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -47,6 +48,8 @@ fun LocalDate.formatDate(): String =
 fun LocalTime.formatTime(): String =
     DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM).format(this)
 
-fun LocalDateTime.toEpochMilli() = atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+fun LocalDateTime.toEpochMilli(zoneId: ZoneId = ZoneId.systemDefault()) =
+    atZone(zoneId).toInstant().toEpochMilli()
 
-fun Instant.toLocalDateTime(): LocalDateTime = atZone(ZoneId.systemDefault()).toLocalDateTime()
+fun Instant.toLocalDateTime(zoneId: ZoneId = ZoneId.systemDefault()): LocalDateTime =
+    atZone(zoneId).toLocalDateTime()
