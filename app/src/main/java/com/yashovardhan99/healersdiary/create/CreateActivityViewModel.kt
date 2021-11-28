@@ -5,33 +5,44 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yashovardhan99.core.analytics.AnalyticsEvent
-import com.yashovardhan99.core.database.*
-import com.yashovardhan99.core.setToStartOfDay
+import com.yashovardhan99.core.database.ActivityType
+import com.yashovardhan99.core.database.Healing
+import com.yashovardhan99.core.database.Patient
+import com.yashovardhan99.core.database.Payment
+import com.yashovardhan99.core.database.toPatient
+import com.yashovardhan99.core.getStartOfDay
+import com.yashovardhan99.core.toDate
+import com.yashovardhan99.core.toLocalDateTime
 import com.yashovardhan99.core.utils.Request
 import com.yashovardhan99.healersdiary.dashboard.DashboardRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import java.math.BigDecimal
+import java.time.LocalDateTime
+import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.math.BigDecimal
-import java.util.*
-import javax.inject.Inject
 
 @HiltViewModel
 class CreateActivityViewModel @Inject constructor(
-        private val dashboardRepository: DashboardRepository,
-        private val createRepository: CreateRepository,
-        private val savedStateHandle: SavedStateHandle
+    private val dashboardRepository: DashboardRepository,
+    private val createRepository: CreateRepository,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     var selectedPatient: Patient? = null
         private set
-    private val today = Calendar.getInstance().apply { setToStartOfDay() }.time
-    private val healings = dashboardRepository.getHealingsStarting(today)
+    private val today = LocalDateTime.now().getStartOfDay()
+    private val healings = dashboardRepository.getHealingsStarting(today.toDate())
     private val patientsFlow = dashboardRepository.patients
     private val _selectedPatient = MutableStateFlow<Patient?>(null)
     val selectedPatientFlow: StateFlow<Patient?> = _selectedPatient
-    private val _activityCalendar = MutableStateFlow(Calendar.getInstance())
-    val activityCalendar: StateFlow<Calendar> = _activityCalendar
+    private val _activityTime = MutableStateFlow(LocalDateTime.now())
+    val activityTime: StateFlow<LocalDateTime> = _activityTime
     private val _selectedActivityType = MutableStateFlow<ActivityType?>(null)
     val selectedActivityType: StateFlow<ActivityType?> = _selectedActivityType
     val patients = healings.combine(patientsFlow) { healings, patients ->
@@ -40,7 +51,8 @@ class CreateActivityViewModel @Inject constructor(
             patientsMap[it.patientId] ?: Patient.MissingPatient
         }
         patients.map { patient ->
-            val healingsToday = patientWithHealings[patient]?.count { it.time >= today } ?: 0
+            val healingsToday =
+                patientWithHealings[patient]?.count { it.time >= today.toDate() } ?: 0
             patient.copy(healingsToday = healingsToday)
         }
     }.distinctUntilChanged().conflate()
@@ -55,8 +67,8 @@ class CreateActivityViewModel @Inject constructor(
         _error.value = false
     }
 
-    fun setActivityCalendar(calendar: Calendar) {
-        _activityCalendar.value = calendar
+    fun setActivityTime(time: LocalDateTime) {
+        _activityTime.value = time
     }
 
     fun selectPatient(patient: Patient?) {
@@ -67,7 +79,8 @@ class CreateActivityViewModel @Inject constructor(
     }
 
     suspend fun getPatientDetails(patientId: Long): Patient? {
-        val savedPatient: Patient? = savedStateHandle.get<Bundle?>("patient-$patientId")?.toPatient()
+        val savedPatient: Patient? =
+            savedStateHandle.get<Bundle?>("patient-$patientId")?.toPatient()
         if (savedPatient != null) return savedPatient
         return dashboardRepository.getPatient(patientId).also {
             savedStateHandle["patient-$patientId"] = it?.toBundle()
@@ -94,18 +107,15 @@ class CreateActivityViewModel @Inject constructor(
                 ActivityType.HEALING -> {
                     val healing = createRepository.getHealing(activityId)
                     if (healing != null)
-                        setActivityCalendar(Calendar.getInstance().apply {
-                            time = healing.time
-                        })
+                        setActivityTime(healing.time.toLocalDateTime())
                     _healingEdit.value = healing
                 }
                 ActivityType.PAYMENT -> {
                     val payment = createRepository.getPayment(activityId)
-                    if (payment != null) setActivityCalendar(Calendar.getInstance().apply {
-                        time = payment.time
-                    })
+                    if (payment != null) setActivityTime(payment.time.toLocalDateTime())
                     _paymentEdit.value = payment
                 }
+                else -> throw IllegalArgumentException("activityType must be either ${ActivityType.HEALING} or ${ActivityType.PATIENT}")
             }
         }
     }
@@ -117,10 +127,17 @@ class CreateActivityViewModel @Inject constructor(
     fun createHealing(charge: String, notes: String, pid: Long) {
         try {
             _error.value = false
-            val chargeInLong = if (charge.isBlank()) 0 else BigDecimal(charge).movePointRight(2).longValueExact()
+            val chargeInLong =
+                if (charge.isBlank()) 0 else BigDecimal(charge).movePointRight(2).longValueExact()
             val current = getHealing().value
-            val healing = if (current != null) Healing(current.id, _activityCalendar.value.time, chargeInLong, notes, pid)
-            else Healing(0, _activityCalendar.value.time, chargeInLong, notes, pid)
+            val healing = if (current != null) Healing(
+                current.id,
+                _activityTime.value.toDate(),
+                chargeInLong,
+                notes,
+                pid
+            )
+            else Healing(0, _activityTime.value.toDate(), chargeInLong, notes, pid)
             viewModelScope.launch {
                 if (current != null) {
                     createRepository.updateHealing(current, healing)
@@ -146,9 +163,14 @@ class CreateActivityViewModel @Inject constructor(
         try {
             _error.value = false
             val current = getPayment().value
-            val amountInLong = if (amount.isBlank()) 0L else BigDecimal(amount).movePointRight(2).longValueExact()
-            val payment = current?.copy(time = _activityCalendar.value.time, amount = amountInLong, notes = notes)
-                    ?: Payment(0, _activityCalendar.value.time, amountInLong, notes, pid)
+            val amountInLong =
+                if (amount.isBlank()) 0L else BigDecimal(amount).movePointRight(2).longValueExact()
+            val payment = current?.copy(
+                time = _activityTime.value.toDate(),
+                amount = amountInLong,
+                notes = notes
+            )
+                ?: Payment(0, _activityTime.value.toDate(), amountInLong, notes, pid)
             viewModelScope.launch {
                 if (current != null) {
                     createRepository.updatePayment(current, payment)
