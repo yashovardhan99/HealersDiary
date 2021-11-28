@@ -14,10 +14,8 @@ import com.yashovardhan99.core.database.Patient
 import com.yashovardhan99.core.database.Payment
 import com.yashovardhan99.core.database.toHealing
 import com.yashovardhan99.core.database.toPayment
-import com.yashovardhan99.core.setToStartOfDay
-import com.yashovardhan99.core.setToStartOfLastMonth
-import com.yashovardhan99.core.setToStartOfMonth
-import com.yashovardhan99.core.toLocalDateTime
+import com.yashovardhan99.core.getStartOfLastMonth
+import com.yashovardhan99.core.getStartOfMonth
 import com.yashovardhan99.core.utils.ActivityParent
 import com.yashovardhan99.core.utils.ActivityParent.Activity.Companion.getSeparator
 import com.yashovardhan99.core.utils.HealingParent
@@ -35,7 +33,7 @@ import com.yashovardhan99.core.utils.Utils.getHeading
 import com.yashovardhan99.healersdiary.create.CreateRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.math.BigDecimal
-import java.util.Calendar
+import java.time.LocalDate
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -60,9 +58,9 @@ class PatientDetailViewModel @Inject constructor(
     val patient: Flow<Patient?> = _patient.distinctUntilChanged { old, new ->
         old == new
     }
-    private val today = Calendar.getInstance().apply { setToStartOfDay() }
-    private val thisMonth = Calendar.getInstance().apply { setToStartOfMonth() }
-    private val lastMonth = Calendar.getInstance().apply { setToStartOfLastMonth() }
+    private val todayDate = LocalDate.now()
+    private val thisMonthDate = todayDate.getStartOfMonth()
+    private val lastMonthDate = todayDate.getStartOfLastMonth()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val activities = patient.filterNotNull().flatMapLatest { patient ->
@@ -70,15 +68,11 @@ class PatientDetailViewModel @Inject constructor(
             .map { pagingData ->
                 pagingData.map { it.toUiActivity(patient) }
                     .insertSeparators { before: ActivityParent.Activity?,
-                        after: ActivityParent.Activity? ->
+                                        after: ActivityParent.Activity? ->
                         getSeparator(before, after)
                     }
             }
     }.onEmpty { emit(PagingData.empty()) }.cachedIn(viewModelScope)
-
-    private val todayDate = today.time.toLocalDateTime().toLocalDate()
-    private val thisMonthDate = thisMonth.time.toLocalDateTime().toLocalDate()
-    private val lastMonthDate = lastMonth.time.toLocalDateTime().toLocalDate()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val healingsToday = patient.filterNotNull().flatMapLatest { patient ->

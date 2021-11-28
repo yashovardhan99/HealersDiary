@@ -10,13 +10,13 @@ import com.yashovardhan99.core.database.Healing
 import com.yashovardhan99.core.database.Patient
 import com.yashovardhan99.core.database.Payment
 import com.yashovardhan99.core.database.toPatient
-import com.yashovardhan99.core.getStartOfDay
 import com.yashovardhan99.core.toDate
 import com.yashovardhan99.core.toLocalDateTime
 import com.yashovardhan99.core.utils.Request
 import com.yashovardhan99.healersdiary.dashboard.DashboardRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.math.BigDecimal
+import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,9 +34,7 @@ class CreateActivityViewModel @Inject constructor(
     private val createRepository: CreateRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    var selectedPatient: Patient? = null
-        private set
-    private val today = LocalDateTime.now().getStartOfDay()
+    private val today = LocalDate.now()
     private val healings = dashboardRepository.getHealingsStarting(today.toDate())
     private val patientsFlow = dashboardRepository.patients
     private val _selectedPatient = MutableStateFlow<Patient?>(null)
@@ -72,13 +70,12 @@ class CreateActivityViewModel @Inject constructor(
     }
 
     fun selectPatient(patient: Patient?) {
-        if (patient != null) selectedPatient = patient
         viewModelScope.launch {
             _selectedPatient.emit(patient)
         }
     }
 
-    suspend fun getPatientDetails(patientId: Long): Patient? {
+    private suspend fun getPatientDetails(patientId: Long): Patient? {
         val savedPatient: Patient? =
             savedStateHandle.get<Bundle?>("patient-$patientId")?.toPatient()
         if (savedPatient != null) return savedPatient

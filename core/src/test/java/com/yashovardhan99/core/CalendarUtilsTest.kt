@@ -161,34 +161,35 @@ class CalendarUtilsTest {
     }
 
     @Test
-    fun localDateTime_startDate() {
-        val localDateTime = LocalDateTime.of(2021, Month.FEBRUARY, 28, 18, 31, 10, 100)
-        val startOfDay = localDateTime.getStartOfDay()
-        val time = startOfDay.toLocalTime()
-        assertThat(time.toNanoOfDay()).isEqualTo(0)
-        assertThat(startOfDay.dayOfMonth).isEqualTo(28)
-        assertThat(startOfDay.month).isEquivalentAccordingToCompareTo(Month.FEBRUARY)
-        assertThat(startOfDay.year).isEqualTo(2021)
+    fun localDateTime_startMonth() {
+        val localDate = LocalDate.of(2021, Month.FEBRUARY, 28)
+        val startOfMonth = localDate.getStartOfMonth()
+        assertThat(startOfMonth.dayOfMonth).isEqualTo(1)
+        assertThat(startOfMonth.month).isEquivalentAccordingToCompareTo(Month.FEBRUARY)
+        assertThat(startOfMonth.year).isEqualTo(2021)
     }
 
     @Test
-    fun localDateTime_startDate_endTime() {
-        val localDateTime = LocalDateTime.of(2021, Month.FEBRUARY, 28, 23, 59, 59, 999_999_999)
-        val startOfDay = localDateTime.getStartOfDay()
-        val time = startOfDay.toLocalTime()
-        assertThat(time.toNanoOfDay()).isEqualTo(0)
-        assertThat(startOfDay.dayOfMonth).isEqualTo(28)
-        assertThat(startOfDay.month).isEquivalentAccordingToCompareTo(Month.FEBRUARY)
-        assertThat(startOfDay.year).isEqualTo(2021)
+    fun localDateTime_startLastMonth() {
+        val localDate = LocalDate.of(2021, Month.MARCH, 31)
+        val startOfMonth = localDate.getStartOfLastMonth()
+        assertThat(startOfMonth.dayOfMonth).isEqualTo(1)
+        assertThat(startOfMonth.month).isEquivalentAccordingToCompareTo(Month.FEBRUARY)
+        assertThat(startOfMonth.year).isEqualTo(2021)
     }
 
     @Test
-    fun localDateTime_startDate_startTime() {
-        val localDateTime = LocalDateTime.of(2021, Month.FEBRUARY, 28, 0, 0, 0)
-        val startOfDay = localDateTime.getStartOfDay()
-        val time = startOfDay.toLocalTime()
-        assertThat(time.toNanoOfDay()).isEqualTo(0)
-        assertThat(startOfDay).isEquivalentAccordingToCompareTo(localDateTime)
+    fun localDate_toDate_utc() {
+        val localDate = LocalDate.of(2020, Month.MAY, 12)
+        val date = localDate.toDate(ZoneId.of("UTC"))
+        assertThat(date.time).isEqualTo(1589241600000)
+    }
+
+    @Test
+    fun localDate_toDate_ist() {
+        val localDate = LocalDate.of(2020, Month.MAY, 12)
+        val date = localDate.toDate(ZoneId.of("Asia/Kolkata"))
+        assertThat(date.time).isEqualTo(1589221800000)
     }
 
     @Test

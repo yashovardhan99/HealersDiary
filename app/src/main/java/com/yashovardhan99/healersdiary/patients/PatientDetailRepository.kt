@@ -6,10 +6,8 @@ import androidx.paging.PagingData
 import com.yashovardhan99.core.database.Activity
 import com.yashovardhan99.core.database.HealersDao
 import com.yashovardhan99.core.database.Healing
-import com.yashovardhan99.core.database.Patient
 import com.yashovardhan99.core.database.Payment
 import java.time.LocalDate
-import java.util.Date
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
@@ -19,11 +17,6 @@ import kotlinx.coroutines.flow.map
 @Singleton
 class PatientDetailRepository @Inject constructor(private val healersDao: HealersDao) {
     suspend fun getPatient(patientId: Long) = healersDao.getPatient(patientId)
-    fun getHealings(patientId: Long, startDate: Date) =
-        healersDao.getRecentHealings(patientId, startDate)
-
-    fun getPayments(patientId: Long, startDate: Date) =
-        healersDao.getRecentPayments(patientId, startDate)
 
     fun getAllHealings(patientId: Long): Flow<PagingData<Healing>> {
         return Pager(
@@ -90,10 +83,6 @@ class PatientDetailRepository @Inject constructor(private val healersDao: Healer
             endDateInclusive.plusDays(1).atStartOfDay().minusNanos(1),
             patientId
         ).distinctUntilChanged().map { it ?: 0 }
-    }
-
-    suspend fun updatePatient(patient: Patient) {
-        healersDao.updatePatient(patient)
     }
 
     suspend fun deleteHealing(healing: Healing) {
