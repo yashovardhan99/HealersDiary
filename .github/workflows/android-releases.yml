@@ -6,7 +6,7 @@ on:
 
 jobs:
   validation:
-    name: "Gradle wrapper Validation"
+    name: Gradle wrapper Validation
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -226,7 +226,7 @@ jobs:
 
       - name: Get release details
         id: get_release
-        uses: bruceadams/get-release@v1.2.2
+        uses: bruceadams/get-release@v1.2.3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -263,3 +263,37 @@ jobs:
         with:
           name: Healers-Diary-${{ steps.get_release.outputs.tag_name }}.apk
           path: ${{steps.sign_apk.outputs.signedReleaseFile}}
+
+  # Create a PR to merge changes in desired branch
+  merge-release:
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        name: Checkout
+
+      - name: Get release details
+        id: get_release
+        uses: bruceadams/get-release@v1.2.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set merge branch as production if not a prerelease
+        if: steps.get_release.outputs.prerelease != 'true'
+        run: echo "branch=releases/production" >> $GITHUB_ENV
+
+      - name: Set merge branch as beta if it is a prerelease
+        if: steps.get_release.outputs.prerelease == 'true' && contains( steps.get_release.outputs.tag_name, 'beta')
+        run: echo "branch=releases/beta" >> $GITHUB_ENV
+
+      - name: Create Release pull request
+        uses: repo-sync/pull-request@v2
+        with:
+          pr_title: ${{ steps.get_release.outputs.tag_name }} Release
+          pr_body: ${{ steps.get_release.outputs.body }}
+          source_branch: master
+          destination_branch: ${{ env.branch }}
+          pr_label: release
+          pr_assignee: yashovardhan99
+          pr_reviewer: yashovardhan99
+          github_token: ${{ secrets.GITHUB_TOKEN }}
