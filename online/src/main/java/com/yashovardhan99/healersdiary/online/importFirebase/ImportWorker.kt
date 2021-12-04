@@ -39,8 +39,7 @@ import com.yashovardhan99.healersdiary.online.DaggerOnlineComponent
 import com.yashovardhan99.healersdiary.online.R
 import dagger.hilt.android.EntryPointAccessors
 import java.math.BigDecimal
-import java.time.LocalDateTime
-import java.util.Date
+import java.util.*
 import javax.inject.Inject
 import kotlin.math.roundToInt
 import kotlinx.coroutines.tasks.await
@@ -179,7 +178,8 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         healings.forEachIndexed { index, healing ->
             val dbHealing = Healing(
                 0,
-                healing.getDate(Firestore.CREATED_KEY)?.toLocalDateTime() ?: LocalDateTime.now(),
+                healing.getDate(Firestore.CREATED_KEY)?.toLocalDateTime()
+                    ?: Date().toLocalDateTime(),
                 charge, "", id
             )
             insertHealing(dbHealing)
