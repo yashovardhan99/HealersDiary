@@ -2,21 +2,20 @@ package com.yashovardhan99.core.database
 
 import androidx.room.ColumnInfo
 import androidx.room.DatabaseView
-import com.yashovardhan99.core.toDate
 import com.yashovardhan99.core.utils.ActivityParent
 import java.time.LocalDateTime
 
 @DatabaseView(
     "SELECT id, time, charge AS amount, notes, patient_id, 'healing' as type " +
-        "FROM healings " +
-        "UNION " +
-        "SELECT id, time, amount, notes, patient_id, 'payment' as type " +
-        "FROM payments " +
-        "UNION " +
-        "SELECT id, created as time, due as amount, name as notes, " +
-        "id as patient_id, 'patient' AS type " +
-        "FROM patients " +
-        "ORDER BY time DESC"
+            "FROM healings " +
+            "UNION " +
+            "SELECT id, time, amount, notes, patient_id, 'payment' as type " +
+            "FROM payments " +
+            "UNION " +
+            "SELECT id, created as time, due as amount, name as notes, " +
+            "id as patient_id, 'patient' AS type " +
+            "FROM patients " +
+            "ORDER BY time DESC"
 )
 data class Activity(
     val id: Long,
@@ -30,7 +29,7 @@ data class Activity(
     fun toUiActivity(patient: Patient) =
         ActivityParent.Activity(
             id = id,
-            time = time.toDate(),
+            time = time,
             type = when (type) {
                 ActivityType.HEALING -> ActivityParent.Activity.Type.HEALING
                 ActivityType.PAYMENT -> ActivityParent.Activity.Type.PAYMENT
@@ -43,7 +42,7 @@ data class Activity(
     fun toUiActivity(patientList: Map<Long, Patient>): ActivityParent.Activity =
         ActivityParent.Activity(
             id = id,
-            time = time.toDate(),
+            time = time,
             type = when (type) {
                 ActivityType.HEALING -> ActivityParent.Activity.Type.HEALING
                 ActivityType.PAYMENT -> ActivityParent.Activity.Type.PAYMENT

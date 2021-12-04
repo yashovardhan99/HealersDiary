@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/layout/activity_card.xml" value="0.28396739130434784" />
+        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/layout/activity_inner_card.xml" value="0.21927083333333333" />
         <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/layout/item_card_healing.xml" value="0.21927083333333333" />
       </map>
     </option>

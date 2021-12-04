@@ -23,13 +23,13 @@ object Utils {
     fun getDateHeading(localDate: LocalDate): String {
         val period = Period.between(localDate, today)
         return when {
-            period.days < 7 && today.month == localDate.month -> DateUtils.getRelativeTimeSpanString(
+            period.days < 7 && today.month == localDate.month && today.year == localDate.year -> DateUtils.getRelativeTimeSpanString(
                 localDate.toEpochMilliAtDayStart(),
                 today.toEpochMilliAtDayStart(),
                 DateUtils.DAY_IN_MILLIS
             ).toString()
 
-            localDate.month == today.month -> DateUtils.getRelativeTimeSpanString(
+            localDate.month == today.month && today.year == localDate.year -> DateUtils.getRelativeTimeSpanString(
                 localDate.toEpochMilliAtDayStart(),
                 today.toEpochMilliAtDayStart(),
                 DateUtils.WEEK_IN_MILLIS
