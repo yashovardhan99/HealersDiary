@@ -16,7 +16,7 @@ import com.yashovardhan99.core.database.toHealing
 import com.yashovardhan99.core.database.toPayment
 import com.yashovardhan99.core.getStartOfLastMonth
 import com.yashovardhan99.core.getStartOfMonth
-import com.yashovardhan99.core.toDate
+import com.yashovardhan99.core.toLocalDateTime
 import com.yashovardhan99.core.utils.ActivityParent
 import com.yashovardhan99.core.utils.ActivityParent.Activity.Companion.getSeparator
 import com.yashovardhan99.core.utils.HealingParent
@@ -30,7 +30,7 @@ import com.yashovardhan99.core.utils.Stat.Companion.healingsThisMonth
 import com.yashovardhan99.core.utils.Stat.Companion.healingsToday
 import com.yashovardhan99.core.utils.Stat.Companion.paymentDue
 import com.yashovardhan99.core.utils.Utils.combineTransform
-import com.yashovardhan99.core.utils.Utils.getHeading
+import com.yashovardhan99.core.utils.Utils.getDateHeading
 import com.yashovardhan99.healersdiary.create.CreateRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.math.BigDecimal
@@ -145,12 +145,12 @@ class PatientDetailViewModel @Inject constructor(
                 .insertSeparators { before: HealingParent.Healing?, after: HealingParent.Healing? ->
                     if (before == null && after == null) null
                     else if (before == null && after != null) HealingParent.HealingSeparator(
-                        getHeading(after.time.toDate())
+                        getDateHeading(after.time.toLocalDate())
                     )
                     else if (before != null && after != null) {
-                        if (getHeading(before.time.toDate()) != getHeading(after.time.toDate()))
+                        if (getDateHeading(before.time.toLocalDate()) != getDateHeading(after.time.toLocalDate()))
                             HealingParent.HealingSeparator(
-                                getHeading(after.time.toDate())
+                                getDateHeading(after.time.toLocalDate())
                             )
                         else null
                     } else null
@@ -164,12 +164,14 @@ class PatientDetailViewModel @Inject constructor(
                 .insertSeparators { before, after ->
                     if (before == null && after == null) null
                     else if (before == null && after != null) PaymentParent.PaymentSeparator(
-                        getHeading(after.time)
+                        getDateHeading(after.time.toLocalDateTime().toLocalDate())
                     )
                     else if (before != null && after != null) {
-                        if (getHeading(before.time) != getHeading(after.time))
+                        if (getDateHeading(before.time.toLocalDateTime().toLocalDate()) !=
+                            getDateHeading(after.time.toLocalDateTime().toLocalDate())
+                        )
                             PaymentParent.PaymentSeparator(
-                                getHeading(after.time)
+                                getDateHeading(after.time.toLocalDateTime().toLocalDate())
                             )
                         else null
                     } else null

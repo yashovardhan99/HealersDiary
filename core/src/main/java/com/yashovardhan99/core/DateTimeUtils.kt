@@ -34,6 +34,9 @@ fun LocalTime.formatTime(): String =
 fun LocalDateTime.toEpochMilli(zoneId: ZoneId = ZoneId.systemDefault()) = atZone(zoneId)
     .toInstant().toEpochMilli()
 
+fun LocalDate.toEpochMilliAtDayStart(zoneId: ZoneId = ZoneId.systemDefault()) =
+    atStartOfDay().toEpochMilli(zoneId)
+
 fun Instant.toLocalDateTime(zoneId: ZoneId = ZoneId.systemDefault()): LocalDateTime = atZone(zoneId)
     .toLocalDateTime()
 
