@@ -1,28 +1,26 @@
 package com.yashovardhan99.core.utils
 
 import android.text.format.DateUtils
-import com.yashovardhan99.core.setToStartOfMonth
+import com.yashovardhan99.core.getStartOfMonth
+import com.yashovardhan99.core.toDate
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
+import java.time.LocalDate
+import java.util.*
 import kotlin.experimental.ExperimentalTypeInference
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 
 object Utils {
-    private val thisWeek = Calendar.getInstance().apply {
-        add(Calendar.WEEK_OF_YEAR, -1)
-    }.time
-    private val thisMonth = Calendar.getInstance().apply { setToStartOfMonth() }.time
+    private val thisWeekDate = LocalDate.now().minusWeeks(1)
+    private val thisMonthDate = LocalDate.now().getStartOfMonth()
 
     fun getHeading(date: Date): String {
         return when {
-            date.after(thisWeek) -> DateUtils.getRelativeTimeSpanString(
+            date.after(thisWeekDate.toDate()) -> DateUtils.getRelativeTimeSpanString(
                 date.time, Date().time, DateUtils.DAY_IN_MILLIS
             ).toString()
 
-            !date.before(thisMonth) -> DateUtils.getRelativeTimeSpanString(
+            !date.before(thisMonthDate.toDate()) -> DateUtils.getRelativeTimeSpanString(
                 date.time,
                 Date().time,
                 DateUtils.WEEK_IN_MILLIS
