@@ -27,7 +27,7 @@ import com.yashovardhan99.core.database.Healing
 import com.yashovardhan99.core.database.ImportState
 import com.yashovardhan99.core.database.Patient
 import com.yashovardhan99.core.database.Payment
-import com.yashovardhan99.core.toLocalDateTime
+import com.yashovardhan99.core.getLocalDateTimeFromMillis
 import com.yashovardhan99.core.utils.NotificationHelpers
 import com.yashovardhan99.core.utils.NotificationHelpers.setContentDeepLink
 import com.yashovardhan99.core.utils.NotificationHelpers.setForegroundCompat
@@ -37,8 +37,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import java.io.FileNotFoundException
 import java.io.IOException
-import java.time.Instant
-import java.util.Date
+import java.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -162,7 +161,7 @@ class ImportWorker @AssistedInject constructor(
                     return@import false
                 }
                 val healing = Healing(
-                    row[0].toLong(), Instant.ofEpochMilli(row[1].toLong()).toLocalDateTime(),
+                    row[0].toLong(), getLocalDateTimeFromMillis(row[1].toLong()),
                     row[2].toLong(), row[3], patientId
                 )
                 dao.insertHealing(healing)

@@ -2,10 +2,15 @@ package com.yashovardhan99.core.database
 
 import android.os.Bundle
 import androidx.core.os.bundleOf
-import androidx.room.*
+import androidx.room.ColumnInfo
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.Index
+import androidx.room.PrimaryKey
+import androidx.room.Relation
+import androidx.room.TypeConverters
+import com.yashovardhan99.core.getLocalDateTimeFromMillis
 import com.yashovardhan99.core.toEpochMilli
-import com.yashovardhan99.core.toLocalDateTime
-import java.time.Instant
 import java.time.LocalDateTime
 
 @TypeConverters(DateConverter::class)
@@ -29,7 +34,7 @@ data class Healing(
 fun Bundle.toHealing(): Healing {
     val dateTime = getLong("time", -1).let {
         if (it == -1L) LocalDateTime.now()
-        else Instant.ofEpochMilli(it).toLocalDateTime()
+        else getLocalDateTimeFromMillis(it)
     }
     return Healing(
         getLong("id"),

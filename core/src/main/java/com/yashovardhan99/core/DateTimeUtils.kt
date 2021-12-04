@@ -7,7 +7,7 @@ import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
-import java.util.Date
+import java.util.*
 
 fun LocalDate.getStartOfMonth(): LocalDate = withDayOfMonth(1)
 fun LocalDate.getStartOfLastMonth(): LocalDate = getStartOfMonth().minusMonths(1)
@@ -36,3 +36,6 @@ fun LocalDateTime.toEpochMilli(zoneId: ZoneId = ZoneId.systemDefault()) = atZone
 
 fun Instant.toLocalDateTime(zoneId: ZoneId = ZoneId.systemDefault()): LocalDateTime = atZone(zoneId)
     .toLocalDateTime()
+
+fun getLocalDateTimeFromMillis(epochMilli: Long) =
+    Instant.ofEpochMilli(epochMilli).toLocalDateTime()

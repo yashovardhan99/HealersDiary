@@ -20,8 +20,8 @@ import com.google.android.material.timepicker.TimeFormat
 import com.yashovardhan99.core.analytics.AnalyticsEvent
 import com.yashovardhan99.core.formatDate
 import com.yashovardhan99.core.formatTime
+import com.yashovardhan99.core.getLocalDateTimeFromMillis
 import com.yashovardhan99.core.toEpochMilli
-import com.yashovardhan99.core.toLocalDateTime
 import com.yashovardhan99.core.utils.Icons
 import com.yashovardhan99.core.utils.buildHeader
 import com.yashovardhan99.healersdiary.R
@@ -30,7 +30,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.NumberFormat
-import java.time.Instant
 import java.time.LocalDateTime
 import java.time.LocalTime
 import kotlinx.coroutines.flow.collect
@@ -153,7 +152,7 @@ class NewPaymentFragment : Fragment() {
             .build()
         datePicker.addOnPositiveButtonClickListener {
             val localTime = viewModel.activityTime.value.toLocalTime()
-            val localDate = Instant.ofEpochMilli(it).toLocalDateTime().toLocalDate()
+            val localDate = getLocalDateTimeFromMillis(it).toLocalDate()
             val pickedDateTime = LocalDateTime.of(localDate, localTime)
             viewModel.setActivityTime(pickedDateTime)
             showTimePicker()

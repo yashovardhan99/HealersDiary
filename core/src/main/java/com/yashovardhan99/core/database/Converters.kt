@@ -1,9 +1,8 @@
 package com.yashovardhan99.core.database
 
 import androidx.room.TypeConverter
+import com.yashovardhan99.core.getLocalDateTimeFromMillis
 import com.yashovardhan99.core.toEpochMilli
-import com.yashovardhan99.core.toLocalDateTime
-import java.time.Instant
 import java.time.LocalDateTime
 import java.util.*
 
@@ -20,7 +19,7 @@ class DateConverter {
 
     @TypeConverter
     fun timestampToLocalDateTime(value: Long?): LocalDateTime? {
-        return value?.let { Instant.ofEpochMilli(it).toLocalDateTime() }
+        return value?.let { getLocalDateTimeFromMillis(it) }
     }
 
     @TypeConverter
