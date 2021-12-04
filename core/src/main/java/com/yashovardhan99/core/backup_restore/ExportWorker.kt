@@ -29,6 +29,7 @@ import com.yashovardhan99.core.database.HealersDataStore
 import com.yashovardhan99.core.database.Healing
 import com.yashovardhan99.core.database.Patient
 import com.yashovardhan99.core.database.Payment
+import com.yashovardhan99.core.toEpochMilli
 import com.yashovardhan99.core.utils.NotificationHelpers
 import com.yashovardhan99.core.utils.NotificationHelpers.setContentDeepLink
 import com.yashovardhan99.core.utils.NotificationHelpers.setForegroundCompat
@@ -164,7 +165,7 @@ class ExportWorker @AssistedInject constructor(
                 dao.getAllHealings(),
             ) { healing ->
                 BackupUtils.getCsvRow(
-                    healing.id, healing.time.time, healing.charge,
+                    healing.id, healing.time.toEpochMilli(), healing.charge,
                     healing.notes, healing.patientId
                 )
             }

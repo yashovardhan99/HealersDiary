@@ -1,10 +1,11 @@
 package com.yashovardhan99.core.database
 
 import androidx.room.TypeConverter
+import com.yashovardhan99.core.toEpochMilli
 import com.yashovardhan99.core.toLocalDateTime
+import java.time.Instant
 import java.time.LocalDateTime
-import java.time.ZoneId
-import java.util.Date
+import java.util.*
 
 class DateConverter {
     @TypeConverter
@@ -19,12 +20,12 @@ class DateConverter {
 
     @TypeConverter
     fun timestampToLocalDateTime(value: Long?): LocalDateTime? {
-        return fromTimestamp(value)?.toLocalDateTime()
+        return value?.let { Instant.ofEpochMilli(it).toLocalDateTime() }
     }
 
     @TypeConverter
     fun localDateTimeToTimestamp(dateTime: LocalDateTime?): Long? {
-        return dateTime?.atZone(ZoneId.systemDefault())?.toInstant()?.toEpochMilli()
+        return dateTime?.toEpochMilli()
     }
 }
 

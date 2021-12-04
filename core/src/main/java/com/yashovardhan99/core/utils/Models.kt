@@ -1,20 +1,29 @@
 package com.yashovardhan99.core.utils
 
+import com.yashovardhan99.core.toDate
+import com.yashovardhan99.core.toLocalDateTime
 import java.util.*
 
 sealed class HealingParent {
     data class HealingSeparator(val heading: String) : HealingParent()
     data class Healing(
-            val id: Long,
-            val time: Date,
-            val charge: Long,
-            val notes: String,
-            val patientId: Long) : HealingParent() {
-        fun toDatabaseHealing() = com.yashovardhan99.core.database.Healing(id, time, charge, notes, patientId)
+        val id: Long,
+        val time: Date,
+        val charge: Long,
+        val notes: String,
+        val patientId: Long
+    ) : HealingParent() {
+        fun toDatabaseHealing() = com.yashovardhan99.core.database.Healing(
+            id,
+            time.toLocalDateTime(),
+            charge,
+            notes,
+            patientId
+        )
 
         companion object {
             fun com.yashovardhan99.core.database.Healing.toUiHealing(): Healing {
-                return Healing(id, time, charge, notes, patientId)
+                return Healing(id, time.toDate(), charge, notes, patientId)
             }
         }
     }
@@ -23,12 +32,14 @@ sealed class HealingParent {
 sealed class PaymentParent {
     data class PaymentSeparator(val heading: String) : PaymentParent()
     data class Payment(
-            val id: Long,
-            val time: Date,
-            val amount: Long,
-            val notes: String,
-            val patientId: Long) : PaymentParent() {
-        fun toDatabasePayment() = com.yashovardhan99.core.database.Payment(id, time, amount, notes, patientId)
+        val id: Long,
+        val time: Date,
+        val amount: Long,
+        val notes: String,
+        val patientId: Long
+    ) : PaymentParent() {
+        fun toDatabasePayment() =
+            com.yashovardhan99.core.database.Payment(id, time, amount, notes, patientId)
 
         companion object {
             fun com.yashovardhan99.core.database.Payment.toUiPayment(): Payment {

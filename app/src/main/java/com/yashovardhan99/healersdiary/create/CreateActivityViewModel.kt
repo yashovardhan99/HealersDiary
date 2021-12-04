@@ -35,7 +35,7 @@ class CreateActivityViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val today = LocalDate.now()
-    private val healings = dashboardRepository.getHealingsStarting(today.toDate())
+    private val healings = dashboardRepository.getHealingsStarting(today)
     private val patientsFlow = dashboardRepository.patients
     private val _selectedPatient = MutableStateFlow<Patient?>(null)
     val selectedPatientFlow: StateFlow<Patient?> = _selectedPatient
@@ -50,7 +50,7 @@ class CreateActivityViewModel @Inject constructor(
         }
         patients.map { patient ->
             val healingsToday =
-                patientWithHealings[patient]?.count { it.time >= today.toDate() } ?: 0
+                patientWithHealings[patient]?.count { it.time >= today.atStartOfDay() } ?: 0
             patient.copy(healingsToday = healingsToday)
         }
     }.distinctUntilChanged().conflate()
@@ -104,7 +104,7 @@ class CreateActivityViewModel @Inject constructor(
                 ActivityType.HEALING -> {
                     val healing = createRepository.getHealing(activityId)
                     if (healing != null)
-                        setActivityTime(healing.time.toLocalDateTime())
+                        setActivityTime(healing.time)
                     _healingEdit.value = healing
                 }
                 ActivityType.PAYMENT -> {
@@ -129,12 +129,12 @@ class CreateActivityViewModel @Inject constructor(
             val current = getHealing().value
             val healing = if (current != null) Healing(
                 current.id,
-                _activityTime.value.toDate(),
+                _activityTime.value,
                 chargeInLong,
                 notes,
                 pid
             )
-            else Healing(0, _activityTime.value.toDate(), chargeInLong, notes, pid)
+            else Healing(0, _activityTime.value, chargeInLong, notes, pid)
             viewModelScope.launch {
                 if (current != null) {
                     createRepository.updateHealing(current, healing)

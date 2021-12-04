@@ -7,10 +7,8 @@ import androidx.paging.cachedIn
 import androidx.paging.insertSeparators
 import androidx.paging.map
 import com.yashovardhan99.core.database.Patient
-import com.yashovardhan99.core.setToStartOfDay
-import com.yashovardhan99.core.setToStartOfLastMonth
-import com.yashovardhan99.core.setToStartOfMonth
-import com.yashovardhan99.core.toLocalDateTime
+import com.yashovardhan99.core.getStartOfLastMonth
+import com.yashovardhan99.core.getStartOfMonth
 import com.yashovardhan99.core.utils.ActivityParent.Activity.Companion.getSeparator
 import com.yashovardhan99.core.utils.HealingParent
 import com.yashovardhan99.core.utils.PaymentParent
@@ -21,7 +19,7 @@ import com.yashovardhan99.core.utils.Stat.Companion.healingsThisMonth
 import com.yashovardhan99.core.utils.Stat.Companion.healingsToday
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.math.BigDecimal
-import java.util.Calendar
+import java.time.LocalDate
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -45,16 +43,12 @@ class DashboardViewModel @Inject constructor(repository: DashboardRepository) : 
         list.associateBy { patient -> patient.id }
     }
 
-    // get dates for starting today, this month and last month
-    // used in calculations for stats
-    private val today = Calendar.getInstance().apply {
-        setToStartOfDay()
-    }
-    private val thisMonth = Calendar.getInstance().apply { setToStartOfMonth() }
-    private val lastMonth = Calendar.getInstance().apply { setToStartOfLastMonth() }
+    private val todayDate = LocalDate.now()
+    private val thisMonthDate = todayDate.getStartOfMonth()
+    private val lastMonthDate = todayDate.getStartOfLastMonth()
 
     // healing and payments flow starting last month (eg. If it's february, include all activity starting January
-    private val healings = repository.getHealingsStarting(lastMonth.time)
+    private val healings = repository.getHealingsStarting(lastMonthDate)
 
     // current selected patient (for inner pages)
     private var currentPatientId = -1L
@@ -71,8 +65,10 @@ class DashboardViewModel @Inject constructor(repository: DashboardRepository) : 
         }
         // setting no. of healings today and this month for patients list page
         patientsMap.values.map { patient ->
-            val today = patientWithHealings[patient]?.count { it.time >= today.time } ?: 0
-            val thisMonth = patientWithHealings[patient]?.count { it.time >= thisMonth.time } ?: 0
+            val today =
+                patientWithHealings[patient]?.count { it.time >= todayDate.atStartOfDay() } ?: 0
+            val thisMonth =
+                patientWithHealings[patient]?.count { it.time >= thisMonthDate.atStartOfDay() } ?: 0
             patient.copy(healingsToday = today, healingsThisMonth = thisMonth)
         }.sortedByDescending { it.lastModified }
     }
@@ -86,10 +82,6 @@ class DashboardViewModel @Inject constructor(repository: DashboardRepository) : 
                 }
         }.onEmpty { emit(PagingData.empty()) }
         .cachedIn(viewModelScope)
-
-    private val todayDate = today.time.toLocalDateTime().toLocalDate()
-    private val thisMonthDate = thisMonth.time.toLocalDateTime().toLocalDate()
-    private val lastMonthDate = lastMonth.time.toLocalDateTime().toLocalDate()
 
     private val healingsToday = repository.getHealingCountBetween(todayDate, todayDate)
     private val healingsThisMonth = repository.getHealingCountBetween(thisMonthDate, todayDate)
@@ -166,9 +158,9 @@ class DashboardViewModel @Inject constructor(repository: DashboardRepository) : 
     init {
         Timber.d(
             """
-                DATES: Today = ${today.time}
-                This month = ${thisMonth.time}
-                Last month = ${lastMonth.time}
+                DATES: Today = $todayDate
+                This month = $thisMonthDate
+                Last month = $lastMonthDate
             """.trimIndent()
         )
     }
