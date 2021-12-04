@@ -16,6 +16,7 @@ import com.yashovardhan99.core.database.toHealing
 import com.yashovardhan99.core.database.toPayment
 import com.yashovardhan99.core.getStartOfLastMonth
 import com.yashovardhan99.core.getStartOfMonth
+import com.yashovardhan99.core.toDate
 import com.yashovardhan99.core.utils.ActivityParent
 import com.yashovardhan99.core.utils.ActivityParent.Activity.Companion.getSeparator
 import com.yashovardhan99.core.utils.HealingParent
@@ -144,12 +145,12 @@ class PatientDetailViewModel @Inject constructor(
                 .insertSeparators { before: HealingParent.Healing?, after: HealingParent.Healing? ->
                     if (before == null && after == null) null
                     else if (before == null && after != null) HealingParent.HealingSeparator(
-                        getHeading(after.time)
+                        getHeading(after.time.toDate())
                     )
                     else if (before != null && after != null) {
-                        if (getHeading(before.time) != getHeading(after.time))
+                        if (getHeading(before.time.toDate()) != getHeading(after.time.toDate()))
                             HealingParent.HealingSeparator(
-                                getHeading(after.time)
+                                getHeading(after.time.toDate())
                             )
                         else null
                     } else null

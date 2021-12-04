@@ -8,9 +8,12 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.databinding.BindingAdapter
 import com.yashovardhan99.core.R
+import com.yashovardhan99.core.toEpochMilli
 import java.math.BigDecimal
 import java.text.NumberFormat
-import java.util.Date
+import java.time.Instant
+import java.time.LocalDateTime
+import java.util.*
 
 @BindingAdapter("amountText")
 fun setAmountText(view: TextView, amount: Long) {
@@ -22,6 +25,16 @@ fun setAmountText(view: TextView, amount: Long) {
 fun setFormattedDate(view: TextView, date: Date?) {
     view.text = if (date == null) ""
     else DateUtils.getRelativeTimeSpanString(date.time, Date().time, DateUtils.MINUTE_IN_MILLIS)
+}
+
+@BindingAdapter("dateTime")
+fun setFormattedDateTime(view: TextView, dateTime: LocalDateTime?) {
+    view.text = if (dateTime == null) ""
+    else DateUtils.getRelativeTimeSpanString(
+        dateTime.toEpochMilli(),
+        Instant.now().toEpochMilli(),
+        DateUtils.MINUTE_IN_MILLIS
+    )
 }
 
 @BindingAdapter("healingsToday")
