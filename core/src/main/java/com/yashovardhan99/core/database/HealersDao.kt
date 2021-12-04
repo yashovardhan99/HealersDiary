@@ -10,9 +10,8 @@ import androidx.room.Transaction
 import androidx.room.Update
 import com.yashovardhan99.core.DangerousDatabase
 import com.yashovardhan99.core.InternalDatabase
-import com.yashovardhan99.core.toDate
+import com.yashovardhan99.core.toLocalDateTime
 import java.time.LocalDateTime
-import java.util.Date
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -105,34 +104,6 @@ abstract class HealersDao {
     abstract fun getAllPayments(patientId: Long): PagingSource<Int, Payment>
 
     /**
-     * Get all healings for a particular patient, starting after a particular date
-     * @param patientId The id of the patient
-     * @param startDate The date after which we want all the healings
-     * @return A flow of the list of all healings found
-     */
-    @Deprecated(
-        "Use paging to get all healings instead",
-        ReplaceWith("getAllHealings(patientId)"),
-        DeprecationLevel.ERROR
-    )
-    @Query("SELECT * FROM healings WHERE patient_id = :patientId AND time>=:startDate")
-    abstract fun getRecentHealings(patientId: Long, startDate: Date): Flow<List<Healing>>
-
-    /**
-     * Get all payments for a particular patient, starting after a particular date
-     * @param patientId The id of the patient
-     * @param startDate The date after which we want all the payments
-     * @return A flow of the list of all payments found
-     */
-    @Deprecated(
-        "Use paging to get all payments instead",
-        ReplaceWith("getAllPayments(patientId)"),
-        DeprecationLevel.ERROR
-    )
-    @Query("SELECT * FROM payments WHERE patient_id = :patientId AND time>=:startDate")
-    abstract fun getRecentPayments(patientId: Long, startDate: Date): Flow<List<Payment>>
-
-    /**
      * Update a patient record
      * @param patient the patient data to be updated
      */
@@ -152,7 +123,7 @@ abstract class HealersDao {
      * Update a payment record. Do not use directly.
      *
      * Use [updatePayment] instead.
-     * @param healing The healing to update
+     * @param payment The payment to update
      */
     @Update(entity = Payment::class, onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun internalUpdatePayment(payment: Payment)
@@ -222,7 +193,7 @@ abstract class HealersDao {
         updatePatient(
             patient.copy(
                 due = patient.due + healing.charge,
-                lastModified = maxOf(patient.lastModified, healing.time.toDate())
+                lastModified = maxOf(patient.lastModified, healing.time)
             )
         )
         return insertHealing(healing)
@@ -240,7 +211,7 @@ abstract class HealersDao {
         updatePatient(
             patient.copy(
                 due = patient.due - payment.amount,
-                lastModified = maxOf(patient.lastModified, payment.time)
+                lastModified = maxOf(patient.lastModified, payment.time.toLocalDateTime())
             )
         )
         return insertPayment(payment)

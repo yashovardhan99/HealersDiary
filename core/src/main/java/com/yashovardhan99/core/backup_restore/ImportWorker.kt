@@ -135,9 +135,13 @@ class ImportWorker @AssistedInject constructor(
         ) { row ->
             try {
                 val patient = Patient(
-                    row[0].toLong(), row[1],
-                    row[2].toLong(), row[3].toLong(), row[4],
-                    Date(row[5].toLong()), Date(row[6].toLong())
+                    row[0].toLong(),
+                    row[1],
+                    row[2].toLong(),
+                    row[3].toLong(),
+                    row[4],
+                    getLocalDateTimeFromMillis(row[5].toLong()),
+                    getLocalDateTimeFromMillis(row[6].toLong())
                 )
                 val id = dao.insertPatient(patient)
                 patientMaps[patient.id] = id

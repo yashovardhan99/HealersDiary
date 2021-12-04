@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yashovardhan99.core.analytics.AnalyticsEvent
 import com.yashovardhan99.core.database.Patient
-import com.yashovardhan99.core.toDate
 import com.yashovardhan99.core.utils.Request
 import com.yashovardhan99.healersdiary.create.CreateRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -86,7 +85,7 @@ class NewPatientViewModel @Inject constructor(private val repository: CreateRepo
     ) {
         val updatedPatient = patient.copy(
             name = name, charge = chargeInLong,
-            due = dueInLong, notes = notes, lastModified = LocalDateTime.now().toDate()
+            due = dueInLong, notes = notes, lastModified = LocalDateTime.now()
         )
         viewModelScope.launch {
             repository.updatePatient(updatedPatient)
@@ -102,7 +101,7 @@ class NewPatientViewModel @Inject constructor(private val repository: CreateRepo
     private fun createNew(name: String, chargeInLong: Long, dueInLong: Long, notes: String) {
         val dateTime = LocalDateTime.now()
         val patient =
-            Patient(0, name, chargeInLong, dueInLong, notes, dateTime.toDate(), dateTime.toDate())
+            Patient(0, name, chargeInLong, dueInLong, notes, dateTime, dateTime)
         viewModelScope.launch {
             val pid = repository.insertNewPatient(patient)
             Timber.d("New patient inserted; pid = $pid")

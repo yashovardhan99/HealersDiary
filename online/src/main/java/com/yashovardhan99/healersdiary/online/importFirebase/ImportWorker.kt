@@ -131,8 +131,8 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
                 patient.getAmount(Firestore.CHARGE_KEY),
                 patient.getAmount(Firestore.DUE_KEY),
                 patient.getString(Firestore.NOTES_KEY) ?: "",
-                Date(),
-                patient.getDate(Firestore.CREATED_KEY) ?: Date()
+                Date().toLocalDateTime(),
+                (patient.getDate(Firestore.CREATED_KEY) ?: Date()).toLocalDateTime()
             )
             val id = dao.insertPatient(dbPatient)
             Timber.d("Inserted $dbPatient for id = $id")

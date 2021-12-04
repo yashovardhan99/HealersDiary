@@ -137,8 +137,13 @@ class ExportWorker @AssistedInject constructor(
                 dao.getAllPatients().first(),
             ) { patient ->
                 BackupUtils.getCsvRow(
-                    patient.id, patient.name, patient.charge,
-                    patient.due, patient.notes, patient.lastModified.time, patient.created.time
+                    patient.id,
+                    patient.name,
+                    patient.charge,
+                    patient.due,
+                    patient.notes,
+                    patient.lastModified.toEpochMilli(),
+                    patient.created.toEpochMilli()
                 )
             }
         } catch (e: FileNotFoundException) {
