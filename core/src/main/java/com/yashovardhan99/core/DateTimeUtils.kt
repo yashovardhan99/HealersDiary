@@ -33,5 +33,5 @@ fun LocalDate.toEpochMilliAtDayStart(zoneId: ZoneId = ZoneId.systemDefault()) =
 fun Instant.toLocalDateTime(zoneId: ZoneId = ZoneId.systemDefault()): LocalDateTime = atZone(zoneId)
     .toLocalDateTime()
 
-fun getLocalDateTimeFromMillis(epochMilli: Long) =
-    Instant.ofEpochMilli(epochMilli).toLocalDateTime()
+fun getLocalDateTimeFromMillis(epochMilli: Long, zoneId: ZoneId = ZoneId.systemDefault()) =
+    Instant.ofEpochMilli(epochMilli).toLocalDateTime(zoneId)
