@@ -54,6 +54,7 @@ dependencies {
     kapt(Dependencies.Hilt.compiler)
     implementation(Dependencies.Hilt.view_model)
     implementation(Dependencies.Android.fragment_ktx)
+    implementation(Dependencies.Android.Lifecycle.common_java8)
 
     implementation(Dependencies.Firebase.bom)
     implementation(Dependencies.Firebase.analytics)

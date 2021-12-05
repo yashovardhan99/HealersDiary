@@ -27,6 +27,7 @@ import com.yashovardhan99.core.database.Healing
 import com.yashovardhan99.core.database.ImportState
 import com.yashovardhan99.core.database.Patient
 import com.yashovardhan99.core.database.Payment
+import com.yashovardhan99.core.getLocalDateTimeFromMillis
 import com.yashovardhan99.core.utils.NotificationHelpers
 import com.yashovardhan99.core.utils.NotificationHelpers.setContentDeepLink
 import com.yashovardhan99.core.utils.NotificationHelpers.setForegroundCompat
@@ -36,7 +37,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import java.io.FileNotFoundException
 import java.io.IOException
-import java.util.Date
+import java.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -134,9 +135,13 @@ class ImportWorker @AssistedInject constructor(
         ) { row ->
             try {
                 val patient = Patient(
-                    row[0].toLong(), row[1],
-                    row[2].toLong(), row[3].toLong(), row[4],
-                    Date(row[5].toLong()), Date(row[6].toLong())
+                    row[0].toLong(),
+                    row[1],
+                    row[2].toLong(),
+                    row[3].toLong(),
+                    row[4],
+                    getLocalDateTimeFromMillis(row[5].toLong()),
+                    getLocalDateTimeFromMillis(row[6].toLong())
                 )
                 val id = dao.insertPatient(patient)
                 patientMaps[patient.id] = id
@@ -160,7 +165,7 @@ class ImportWorker @AssistedInject constructor(
                     return@import false
                 }
                 val healing = Healing(
-                    row[0].toLong(), Date(row[1].toLong()),
+                    row[0].toLong(), getLocalDateTimeFromMillis(row[1].toLong()),
                     row[2].toLong(), row[3], patientId
                 )
                 dao.insertHealing(healing)
@@ -184,7 +189,7 @@ class ImportWorker @AssistedInject constructor(
                     return@import false
                 }
                 val payment = Payment(
-                    row[0].toLong(), Date(row[1].toLong()),
+                    row[0].toLong(), getLocalDateTimeFromMillis(row[1].toLong()),
                     row[2].toLong(), row[3], patientId
                 )
                 dao.insertPayment(payment)
@@ -280,7 +285,7 @@ class ImportWorker @AssistedInject constructor(
         BackupUtils.Progress.ProgressMessage to applicationContext.getString(message),
         BackupUtils.Progress.RequiredBit to inputData.getInt(DATA_TYPE_KEY, 0),
         BackupUtils.Progress.CurrentBit to
-            (currentType?.mask ?: BackupUtils.DataType.DoneMask),
+                (currentType?.mask ?: BackupUtils.DataType.DoneMask),
         BackupUtils.Progress.ImportSuccess to success,
         BackupUtils.Progress.ImportFailure to failures,
         BackupUtils.Progress.InvalidFormatBit to errorBit,

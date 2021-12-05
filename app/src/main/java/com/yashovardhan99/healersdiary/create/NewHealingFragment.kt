@@ -18,34 +18,45 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.yashovardhan99.core.analytics.AnalyticsEvent
+import com.yashovardhan99.core.formatDate
+import com.yashovardhan99.core.formatTime
+import com.yashovardhan99.core.getLocalDateTimeFromMillis
+import com.yashovardhan99.core.toEpochMilli
 import com.yashovardhan99.core.utils.Icons
 import com.yashovardhan99.core.utils.buildHeader
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.FragmentNewHealingBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
-import timber.log.Timber
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.NumberFormat
-import java.text.SimpleDateFormat
-import java.util.*
+import java.time.LocalDateTime
+import java.time.LocalTime
+import kotlinx.coroutines.flow.collect
+import timber.log.Timber
 
 @AndroidEntryPoint
 class NewHealingFragment : Fragment() {
     private val args: NewHealingFragmentArgs by navArgs()
     private val viewModel: CreateActivityViewModel by activityViewModels()
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         val binding = FragmentNewHealingBinding.inflate(inflater, container, false)
         binding.name.text = args.patientName
         binding.chargeBox.prefixText = NumberFormat.getCurrencyInstance().currency?.symbol ?: ""
-        val chargeString = BigDecimal(args.defaultCharge).movePointLeft(2).setScale(2, RoundingMode.HALF_EVEN).toPlainString()
+        val chargeString =
+            BigDecimal(args.defaultCharge).movePointLeft(2).setScale(2, RoundingMode.HALF_EVEN)
+                .toPlainString()
         binding.chargeEdit.setText(chargeString)
         binding.chargeEdit.setOnFocusChangeListener { _, hasFocus ->
             val inputText = binding.chargeEdit.text.toString()
             try {
                 if (!hasFocus && inputText.isNotBlank()) {
-                    val edited = BigDecimal(inputText).setScale(2, RoundingMode.HALF_EVEN).toPlainString()
+                    val edited =
+                        BigDecimal(inputText).setScale(2, RoundingMode.HALF_EVEN).toPlainString()
                     binding.chargeEdit.setText(edited)
                 } else if (inputText.isNotBlank() && chargeString == inputText) {
                     binding.chargeEdit.selectAll()
@@ -55,12 +66,16 @@ class NewHealingFragment : Fragment() {
                 binding.chargeEdit.text?.clear()
             }
         }
-        viewModel.activityCalendar.asLiveData().observe(viewLifecycleOwner) { calendar ->
-            binding.dateEdit.setText(SimpleDateFormat.getDateInstance().format(calendar.time))
-            binding.timeEdit.setText(SimpleDateFormat.getTimeInstance().format(calendar.time))
+        viewModel.activityTime.asLiveData().observe(viewLifecycleOwner) { time ->
+            binding.dateEdit.setText(time.formatDate())
+            binding.timeEdit.setText(time.formatTime())
         }
         binding.header = context?.run {
-            buildHeader(Icons.Back, if (viewModel.getHealing().value != null) R.string.edit_healing else R.string.new_healing, Icons.Save)
+            buildHeader(
+                Icons.Back,
+                if (viewModel.getHealing().value != null) R.string.edit_healing else R.string.new_healing,
+                Icons.Save
+            )
         }
         binding.heading.icon.setOnClickListener {
             if (!findNavController().popBackStack()) activity?.finish()
@@ -72,7 +87,11 @@ class NewHealingFragment : Fragment() {
         binding.newHealing.setOnClickListener { save(binding) }
         viewModel.error.asLiveData().observe(viewLifecycleOwner) { error ->
             if (error) {
-                Snackbar.make(binding.newHealing, resources.getString(R.string.error_creating_activity), Snackbar.LENGTH_LONG)
+                Snackbar.make(
+                    binding.newHealing,
+                    resources.getString(R.string.error_creating_activity),
+                    Snackbar.LENGTH_LONG
+                ).show()
                 viewModel.resetError()
             }
         }
@@ -80,11 +99,13 @@ class NewHealingFragment : Fragment() {
         lifecycleScope.launchWhenStarted {
             viewModel.getHealing().collect { healing ->
                 if (healing != null) {
-                    val chargeStringEdit = BigDecimal(healing.charge).movePointLeft(2).setScale(2, RoundingMode.HALF_EVEN).toPlainString()
+                    val chargeStringEdit = BigDecimal(healing.charge).movePointLeft(2)
+                        .setScale(2, RoundingMode.HALF_EVEN).toPlainString()
                     binding.chargeEdit.setText(chargeStringEdit)
                     binding.notesEdit.setText(healing.notes)
                     binding.newHealing.setText(R.string.update)
-                    binding.header = context?.run { buildHeader(Icons.Back, R.string.edit_healing, Icons.Save) }
+                    binding.header =
+                        context?.run { buildHeader(Icons.Back, R.string.edit_healing, Icons.Save) }
                 }
             }
         }
@@ -103,50 +124,39 @@ class NewHealingFragment : Fragment() {
     }
 
     private fun showTimePicker() {
-        val calendar = viewModel.activityCalendar.value
+        val time = viewModel.activityTime.value
         val timePicker = MaterialTimePicker.Builder()
-                .setTimeFormat(if (DateFormat.is24HourFormat(context)) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H)
-                .setHour(calendar.get(Calendar.HOUR_OF_DAY))
-                .setMinute(calendar.get(Calendar.MINUTE))
-                .build()
+            .setTimeFormat(if (DateFormat.is24HourFormat(context)) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H)
+            .setHour(time.hour)
+            .setMinute(time.minute)
+            .build()
         timePicker.show(childFragmentManager, "timePicker")
         timePicker.addOnPositiveButtonClickListener {
-            val setCalendar = Calendar.getInstance().apply {
-                timeInMillis = viewModel.activityCalendar.value.timeInMillis
-                set(Calendar.HOUR_OF_DAY, timePicker.hour)
-                set(Calendar.MINUTE, timePicker.minute)
-                set(Calendar.SECOND, 0)
-            }
-            val cur = Calendar.getInstance()
-            Timber.d("Calendar set = ${setCalendar.time}")
-            if (setCalendar > cur) viewModel.setActivityCalendar(cur)
-            else viewModel.setActivityCalendar(setCalendar)
+            val pickedDate = viewModel.activityTime.value.toLocalDate()
+            val pickedTime = LocalTime.of(timePicker.hour, timePicker.minute)
+            val pickedDateTime = LocalDateTime.of(pickedDate, pickedTime)
+            val currentTime = LocalDateTime.now()
+            Timber.d("Time picked = $pickedTime")
+            if (pickedDateTime > currentTime) viewModel.setActivityTime(currentTime)
+            else viewModel.setActivityTime(pickedDateTime)
         }
     }
 
     private fun showDatePicker() {
+        val currentDateTime = LocalDateTime.now()
         val constraints = CalendarConstraints.Builder()
-                .setEnd(Calendar.getInstance().timeInMillis)
-                .setValidator(DateValidatorPointBackward.now())
-                .build()
-        val setCalendar = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
-            val calendar = viewModel.activityCalendar.value
-            set(Calendar.DATE, calendar.get(Calendar.DATE))
-            set(Calendar.MONTH, calendar.get(Calendar.MONTH))
-            set(Calendar.YEAR, calendar.get(Calendar.YEAR))
-        }
+            .setEnd(currentDateTime.toEpochMilli())
+            .setValidator(DateValidatorPointBackward.now())
+            .build()
         val datePicker = MaterialDatePicker.Builder.datePicker()
-                .setCalendarConstraints(constraints)
-                .setSelection(setCalendar.timeInMillis)
-                .build()
+            .setCalendarConstraints(constraints)
+            .setSelection(viewModel.activityTime.value.toEpochMilli())
+            .build()
         datePicker.addOnPositiveButtonClickListener {
-            val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-                    .apply { timeInMillis = it }
-            viewModel.setActivityCalendar(Calendar.getInstance().apply {
-                set(Calendar.YEAR, calendar.get(Calendar.YEAR))
-                set(Calendar.MONTH, calendar.get(Calendar.MONTH))
-                set(Calendar.DATE, calendar.get(Calendar.DATE))
-            })
+            val localTime = viewModel.activityTime.value.toLocalTime()
+            val localDate = getLocalDateTimeFromMillis(it).toLocalDate()
+            val pickedDateTime = LocalDateTime.of(localDate, localTime)
+            viewModel.setActivityTime(pickedDateTime)
             showTimePicker()
         }
         datePicker.show(childFragmentManager, "datePicker")

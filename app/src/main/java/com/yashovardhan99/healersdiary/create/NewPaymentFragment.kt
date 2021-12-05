@@ -18,34 +18,44 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.yashovardhan99.core.analytics.AnalyticsEvent
+import com.yashovardhan99.core.formatDate
+import com.yashovardhan99.core.formatTime
+import com.yashovardhan99.core.getLocalDateTimeFromMillis
+import com.yashovardhan99.core.toEpochMilli
 import com.yashovardhan99.core.utils.Icons
 import com.yashovardhan99.core.utils.buildHeader
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.FragmentNewPaymentBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
-import timber.log.Timber
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.NumberFormat
-import java.text.SimpleDateFormat
-import java.util.*
+import java.time.LocalDateTime
+import java.time.LocalTime
+import kotlinx.coroutines.flow.collect
+import timber.log.Timber
 
 @AndroidEntryPoint
 class NewPaymentFragment : Fragment() {
     private val args: NewPaymentFragmentArgs by navArgs()
     private val viewModel: CreateActivityViewModel by activityViewModels()
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         val binding = FragmentNewPaymentBinding.inflate(inflater, container, false)
         binding.name.text = args.patientName
         binding.amountBox.prefixText = NumberFormat.getCurrencyInstance().currency?.symbol ?: ""
-        val dueString = NumberFormat.getCurrencyInstance().format(BigDecimal(args.currentDue).movePointLeft(2))
+        val dueString =
+            NumberFormat.getCurrencyInstance().format(BigDecimal(args.currentDue).movePointLeft(2))
         binding.due.text = resources.getString(R.string.due_amount, dueString)
         binding.amountEdit.setOnFocusChangeListener { _, hasFocus ->
             val inputText = binding.amountEdit.text.toString()
             try {
                 if (!hasFocus && inputText.isNotBlank()) {
-                    val edited = BigDecimal(inputText).setScale(2, RoundingMode.HALF_EVEN).toPlainString()
+                    val edited =
+                        BigDecimal(inputText).setScale(2, RoundingMode.HALF_EVEN).toPlainString()
                     binding.amountEdit.setText(edited)
                 } else if (inputText.isNotBlank() && BigDecimal(inputText) == BigDecimal.ZERO) {
                     binding.amountEdit.selectAll()
@@ -55,12 +65,16 @@ class NewPaymentFragment : Fragment() {
                 binding.amountEdit.text?.clear()
             }
         }
-        viewModel.activityCalendar.asLiveData().observe(viewLifecycleOwner) { calendar ->
-            binding.dateEdit.setText(SimpleDateFormat.getDateInstance().format(calendar.time))
-            binding.timeEdit.setText(SimpleDateFormat.getTimeInstance().format(calendar.time))
+        viewModel.activityTime.asLiveData().observe(viewLifecycleOwner) { time ->
+            binding.dateEdit.setText(time.formatDate())
+            binding.timeEdit.setText(time.formatTime())
         }
         binding.header = context?.run {
-            buildHeader(Icons.Back, if (viewModel.getPayment().value != null) R.string.edit_payment else R.string.new_payment, Icons.Save)
+            buildHeader(
+                Icons.Back,
+                if (viewModel.getPayment().value != null) R.string.edit_payment else R.string.new_payment,
+                Icons.Save
+            )
         }
         binding.heading.icon.setOnClickListener {
             if (!findNavController().popBackStack()) activity?.finish()
@@ -72,18 +86,24 @@ class NewPaymentFragment : Fragment() {
         binding.timeEdit.setOnClickListener { showTimePicker() }
         viewModel.error.asLiveData().observe(viewLifecycleOwner) { error ->
             if (error) {
-                Snackbar.make(binding.newPayment, resources.getString(R.string.error_creating_activity), Snackbar.LENGTH_LONG)
+                Snackbar.make(
+                    binding.newPayment,
+                    resources.getString(R.string.error_creating_activity),
+                    Snackbar.LENGTH_LONG
+                )
                 viewModel.resetError()
             }
         }
         lifecycleScope.launchWhenStarted {
             viewModel.getPayment().collect { payment ->
                 if (payment != null) {
-                    val edited = BigDecimal(payment.amount).movePointLeft(2).setScale(2, RoundingMode.HALF_EVEN).toPlainString()
+                    val edited = BigDecimal(payment.amount).movePointLeft(2)
+                        .setScale(2, RoundingMode.HALF_EVEN).toPlainString()
                     binding.amountEdit.setText(edited)
                     binding.notesEdit.setText(payment.notes)
                     binding.newPayment.setText(R.string.update)
-                    binding.header = context?.run { buildHeader(Icons.Back, R.string.edit_payment, Icons.Save) }
+                    binding.header =
+                        context?.run { buildHeader(Icons.Back, R.string.edit_payment, Icons.Save) }
                 }
             }
         }
@@ -102,50 +122,39 @@ class NewPaymentFragment : Fragment() {
     }
 
     private fun showTimePicker() {
-        val calendar = viewModel.activityCalendar.value
+        val time = viewModel.activityTime.value
         val timePicker = MaterialTimePicker.Builder()
-                .setTimeFormat(if (DateFormat.is24HourFormat(context)) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H)
-                .setHour(calendar.get(Calendar.HOUR_OF_DAY))
-                .setMinute(calendar.get(Calendar.MINUTE))
-                .build()
+            .setTimeFormat(if (DateFormat.is24HourFormat(context)) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H)
+            .setHour(time.hour)
+            .setMinute(time.minute)
+            .build()
         timePicker.show(childFragmentManager, "timePicker")
         timePicker.addOnPositiveButtonClickListener {
-            val setCalendar = Calendar.getInstance().apply {
-                timeInMillis = viewModel.activityCalendar.value.timeInMillis
-                set(Calendar.HOUR_OF_DAY, timePicker.hour)
-                set(Calendar.MINUTE, timePicker.minute)
-                set(Calendar.SECOND, 0)
-            }
-            val cur = Calendar.getInstance()
-            Timber.d("Calendar set = ${setCalendar.time}")
-            if (setCalendar > cur) viewModel.setActivityCalendar(cur)
-            else viewModel.setActivityCalendar(setCalendar)
+            val pickedDate = viewModel.activityTime.value.toLocalDate()
+            val pickedTime = LocalTime.of(timePicker.hour, timePicker.minute)
+            val pickedDateTime = LocalDateTime.of(pickedDate, pickedTime)
+            val currentTime = LocalDateTime.now()
+            Timber.d("Time picked = $pickedTime")
+            if (pickedDateTime > currentTime) viewModel.setActivityTime(currentTime)
+            else viewModel.setActivityTime(pickedDateTime)
         }
     }
 
     private fun showDatePicker() {
+        val currentDateTime = LocalDateTime.now()
         val constraints = CalendarConstraints.Builder()
-                .setEnd(Calendar.getInstance().timeInMillis)
-                .setValidator(DateValidatorPointBackward.now())
-                .build()
-        val setCalendar = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
-            val calendar = viewModel.activityCalendar.value
-            set(Calendar.DATE, calendar.get(Calendar.DATE))
-            set(Calendar.MONTH, calendar.get(Calendar.MONTH))
-            set(Calendar.YEAR, calendar.get(Calendar.YEAR))
-        }
+            .setEnd(currentDateTime.toEpochMilli())
+            .setValidator(DateValidatorPointBackward.now())
+            .build()
         val datePicker = MaterialDatePicker.Builder.datePicker()
-                .setCalendarConstraints(constraints)
-                .setSelection(setCalendar.timeInMillis)
-                .build()
+            .setCalendarConstraints(constraints)
+            .setSelection(viewModel.activityTime.value.toEpochMilli())
+            .build()
         datePicker.addOnPositiveButtonClickListener {
-            val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-                    .apply { timeInMillis = it }
-            viewModel.setActivityCalendar(Calendar.getInstance().apply {
-                set(Calendar.YEAR, calendar.get(Calendar.YEAR))
-                set(Calendar.MONTH, calendar.get(Calendar.MONTH))
-                set(Calendar.DATE, calendar.get(Calendar.DATE))
-            })
+            val localTime = viewModel.activityTime.value.toLocalTime()
+            val localDate = getLocalDateTimeFromMillis(it).toLocalDate()
+            val pickedDateTime = LocalDateTime.of(localDate, localTime)
+            viewModel.setActivityTime(pickedDateTime)
             showTimePicker()
         }
         datePicker.show(childFragmentManager, "datePicker")

@@ -1,33 +1,40 @@
 package com.yashovardhan99.core.utils
 
 import android.text.format.DateUtils
-import com.yashovardhan99.core.setToStartOfMonth
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
+import com.yashovardhan99.core.toEpochMilliAtDayStart
+import java.time.LocalDate
+import java.time.Period
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatterBuilder
+import java.time.format.TextStyle
+import java.time.temporal.ChronoField
 import kotlin.experimental.ExperimentalTypeInference
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 
 object Utils {
-    private val thisWeek = Calendar.getInstance().apply {
-        add(Calendar.WEEK_OF_YEAR, -1)
-    }.time
-    private val thisMonth = Calendar.getInstance().apply { setToStartOfMonth() }.time
+    private val today = LocalDate.now()
+    private val formatter: DateTimeFormatter = DateTimeFormatterBuilder()
+        .appendText(ChronoField.MONTH_OF_YEAR, TextStyle.FULL)
+        .appendLiteral(' ')
+        .appendValue(ChronoField.YEAR)
+        .toFormatter()
 
-    fun getHeading(date: Date): String {
+    fun getDateHeading(localDate: LocalDate): String {
+        val period = Period.between(localDate, today)
         return when {
-            date.after(thisWeek) -> DateUtils.getRelativeTimeSpanString(
-                date.time, Date().time, DateUtils.DAY_IN_MILLIS
+            period.days < 7 && today.month == localDate.month && today.year == localDate.year -> DateUtils.getRelativeTimeSpanString(
+                localDate.toEpochMilliAtDayStart(),
+                today.toEpochMilliAtDayStart(),
+                DateUtils.DAY_IN_MILLIS
             ).toString()
 
-            !date.before(thisMonth) -> DateUtils.getRelativeTimeSpanString(
-                date.time,
-                Date().time,
+            localDate.month == today.month && today.year == localDate.year -> DateUtils.getRelativeTimeSpanString(
+                localDate.toEpochMilliAtDayStart(),
+                today.toEpochMilliAtDayStart(),
                 DateUtils.WEEK_IN_MILLIS
             ).toString()
-            else -> SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(date)
+            else -> localDate.format(formatter)
         }
     }
 
