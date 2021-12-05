@@ -189,7 +189,7 @@ class ImportWorker @AssistedInject constructor(
                     return@import false
                 }
                 val payment = Payment(
-                    row[0].toLong(), Date(row[1].toLong()),
+                    row[0].toLong(), getLocalDateTimeFromMillis(row[1].toLong()),
                     row[2].toLong(), row[3], patientId
                 )
                 dao.insertPayment(payment)

@@ -13,18 +13,11 @@ import java.math.BigDecimal
 import java.text.NumberFormat
 import java.time.Instant
 import java.time.LocalDateTime
-import java.util.*
 
 @BindingAdapter("amountText")
 fun setAmountText(view: TextView, amount: Long) {
     val amtInDecimal = BigDecimal(amount).movePointLeft(2)
     view.text = NumberFormat.getCurrencyInstance().format(amtInDecimal)
-}
-
-@BindingAdapter("date")
-fun setFormattedDate(view: TextView, date: Date?) {
-    view.text = if (date == null) ""
-    else DateUtils.getRelativeTimeSpanString(date.time, Date().time, DateUtils.MINUTE_IN_MILLIS)
 }
 
 @BindingAdapter("dateTime")

@@ -10,8 +10,6 @@ import com.yashovardhan99.core.database.Healing
 import com.yashovardhan99.core.database.Patient
 import com.yashovardhan99.core.database.Payment
 import com.yashovardhan99.core.database.toPatient
-import com.yashovardhan99.core.toDate
-import com.yashovardhan99.core.toLocalDateTime
 import com.yashovardhan99.core.utils.Request
 import com.yashovardhan99.healersdiary.dashboard.DashboardRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -109,7 +107,7 @@ class CreateActivityViewModel @Inject constructor(
                 }
                 ActivityType.PAYMENT -> {
                     val payment = createRepository.getPayment(activityId)
-                    if (payment != null) setActivityTime(payment.time.toLocalDateTime())
+                    if (payment != null) setActivityTime(payment.time)
                     _paymentEdit.value = payment
                 }
                 else -> throw IllegalArgumentException("activityType must be either ${ActivityType.HEALING} or ${ActivityType.PATIENT}")
@@ -163,11 +161,11 @@ class CreateActivityViewModel @Inject constructor(
             val amountInLong =
                 if (amount.isBlank()) 0L else BigDecimal(amount).movePointRight(2).longValueExact()
             val payment = current?.copy(
-                time = _activityTime.value.toDate(),
+                time = _activityTime.value,
                 amount = amountInLong,
                 notes = notes
             )
-                ?: Payment(0, _activityTime.value.toDate(), amountInLong, notes, pid)
+                ?: Payment(0, _activityTime.value, amountInLong, notes, pid)
             viewModelScope.launch {
                 if (current != null) {
                     createRepository.updatePayment(current, payment)

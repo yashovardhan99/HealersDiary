@@ -3,11 +3,11 @@ package com.yashovardhan99.core
 import com.google.common.truth.Truth.assertThat
 import java.time.Instant
 import java.time.LocalDate
-import org.junit.Test
 import java.time.LocalDateTime
 import java.time.Month
 import java.time.ZoneId
 import java.util.*
+import org.junit.Test
 
 /**
  * Tests for DateTimeUtils.kt functions
@@ -42,20 +42,6 @@ class DateTimeUtilsTest {
     }
 
     @Test
-    fun toDate_utc() {
-        val localDateTime = LocalDateTime.of(2020, Month.MAY, 12, 8, 26, 23)
-        val date = localDateTime.toDate(ZoneId.of("UTC"))
-        assertThat(date.time).isEqualTo(1589271983000)
-    }
-
-    @Test
-    fun toDate_ist() {
-        val localDateTime = LocalDateTime.of(2020, Month.MAY, 12, 13, 56, 23)
-        val date = localDateTime.toDate(ZoneId.of("Asia/Kolkata"))
-        assertThat(date.time).isEqualTo(1589271983000)
-    }
-
-    @Test
     fun localDateTime_startMonth() {
         val localDate = LocalDate.of(2021, Month.FEBRUARY, 28)
         val startOfMonth = localDate.getStartOfMonth()
@@ -71,20 +57,6 @@ class DateTimeUtilsTest {
         assertThat(startOfMonth.dayOfMonth).isEqualTo(1)
         assertThat(startOfMonth.month).isEquivalentAccordingToCompareTo(Month.FEBRUARY)
         assertThat(startOfMonth.year).isEqualTo(2021)
-    }
-
-    @Test
-    fun localDate_toDate_utc() {
-        val localDate = LocalDate.of(2020, Month.MAY, 12)
-        val date = localDate.toDate(ZoneId.of("UTC"))
-        assertThat(date.time).isEqualTo(1589241600000)
-    }
-
-    @Test
-    fun localDate_toDate_ist() {
-        val localDate = LocalDate.of(2020, Month.MAY, 12)
-        val date = localDate.toDate(ZoneId.of("Asia/Kolkata"))
-        assertThat(date.time).isEqualTo(1589221800000)
     }
 
     @Test

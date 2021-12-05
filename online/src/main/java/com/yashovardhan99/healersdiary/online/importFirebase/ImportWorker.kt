@@ -193,7 +193,7 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         payments.forEachIndexed { index, payment ->
             val dbPayment = Payment(
                 0,
-                payment.getDate(Firestore.CREATED_KEY) ?: Date(),
+                (payment.getDate(Firestore.CREATED_KEY) ?: Date()).toLocalDateTime(),
                 payment.getAmount(Firestore.AMOUNT_KEY),
                 "", id
             )

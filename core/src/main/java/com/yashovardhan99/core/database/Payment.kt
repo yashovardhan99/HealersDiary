@@ -2,46 +2,54 @@ package com.yashovardhan99.core.database
 
 import android.os.Bundle
 import androidx.core.os.bundleOf
-import androidx.room.*
-import java.util.*
+import androidx.room.ColumnInfo
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.Index
+import androidx.room.PrimaryKey
+import androidx.room.Relation
+import androidx.room.TypeConverters
+import com.yashovardhan99.core.getLocalDateTimeFromMillis
+import com.yashovardhan99.core.toEpochMilli
+import java.time.LocalDateTime
 
 @TypeConverters(DateConverter::class)
 @Entity(tableName = "payments", indices = [Index("time"), Index("patient_id")])
 data class Payment(
-        @PrimaryKey(autoGenerate = true) val id: Long,
-        val time: Date,
-        val amount: Long,
-        val notes: String,
-        @ColumnInfo(name = "patient_id") val patientId: Long
+    @PrimaryKey(autoGenerate = true) val id: Long,
+    val time: LocalDateTime,
+    val amount: Long,
+    val notes: String,
+    @ColumnInfo(name = "patient_id") val patientId: Long
 ) {
     fun toBundle() = bundleOf(
-            "id" to id,
-            "time" to time.time,
-            "amount" to amount,
-            "notes" to notes,
-            "pid" to patientId,
+        "id" to id,
+        "time" to time.toEpochMilli(),
+        "amount" to amount,
+        "notes" to notes,
+        "pid" to patientId,
     )
 }
 
 fun Bundle.toPayment(): Payment {
-    val date = getLong("time", -1).let {
-        if (it == -1L) Date()
-        else Date(it)
+    val dateTime = getLong("time", -1).let {
+        if (it == -1L) LocalDateTime.now()
+        else getLocalDateTimeFromMillis(it)
     }
     return Payment(
-            getLong("id"),
-            date,
-            getLong("amount"),
-            getString("notes", ""),
-            getLong("pid"),
+        getLong("id"),
+        dateTime,
+        getLong("amount"),
+        getString("notes", ""),
+        getLong("pid"),
     )
 }
 
 data class PatientWithPayments(
-        @Embedded val patient: Patient,
-        @Relation(
-                parentColumn = "id",
-                entityColumn = "patient_id"
-        )
-        val payments: List<Payment>
+    @Embedded val patient: Patient,
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "patient_id"
+    )
+    val payments: List<Payment>
 )

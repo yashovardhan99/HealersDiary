@@ -1,7 +1,6 @@
 package com.yashovardhan99.core.utils
 
 import java.time.LocalDateTime
-import java.util.*
 
 sealed class HealingParent {
     data class HealingSeparator(val heading: String) : HealingParent()
@@ -32,7 +31,7 @@ sealed class PaymentParent {
     data class PaymentSeparator(val heading: String) : PaymentParent()
     data class Payment(
         val id: Long,
-        val time: Date,
+        val time: LocalDateTime,
         val amount: Long,
         val notes: String,
         val patientId: Long

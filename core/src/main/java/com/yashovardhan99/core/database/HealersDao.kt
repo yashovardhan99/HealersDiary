@@ -10,7 +10,6 @@ import androidx.room.Transaction
 import androidx.room.Update
 import com.yashovardhan99.core.DangerousDatabase
 import com.yashovardhan99.core.InternalDatabase
-import com.yashovardhan99.core.toLocalDateTime
 import java.time.LocalDateTime
 import kotlinx.coroutines.flow.Flow
 
@@ -211,7 +210,7 @@ abstract class HealersDao {
         updatePatient(
             patient.copy(
                 due = patient.due - payment.amount,
-                lastModified = maxOf(patient.lastModified, payment.time.toLocalDateTime())
+                lastModified = maxOf(patient.lastModified, payment.time)
             )
         )
         return insertPayment(payment)
