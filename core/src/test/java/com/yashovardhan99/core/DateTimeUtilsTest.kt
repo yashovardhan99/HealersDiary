@@ -135,4 +135,32 @@ class DateTimeUtilsTest {
         val localDateTime = LocalDateTime.of(2021, Month.MAY, 12, 20, 8, 5)
         assertThat(localDateTime.formatTime()).isEqualTo("20:08:05")
     }
+
+    @Test
+    fun localDate_toEpochMilliAtDayStart_ist() {
+        val localDate = LocalDate.of(2021, 2, 24)
+        val epochMilli = localDate.toEpochMilliAtDayStart(ZoneId.of("Asia/Kolkata"))
+        assertThat(epochMilli).isEqualTo(1614105000000)
+    }
+
+    @Test
+    fun localDate_toEpochMilliAtDayStart_utc() {
+        val localDate = LocalDate.of(2021, 2, 24)
+        val epochMilli = localDate.toEpochMilliAtDayStart(ZoneId.of("UTC"))
+        assertThat(epochMilli).isEqualTo(1614124800000)
+    }
+
+    @Test
+    fun getLocalDateTimeFromMillis_utc() {
+        val localDateTime = getLocalDateTimeFromMillis(1614124800000, ZoneId.of("UTC"))
+        val expected = LocalDateTime.of(2021, 2, 24, 0, 0)
+        assertThat(localDateTime).isEquivalentAccordingToCompareTo(expected)
+    }
+
+    @Test
+    fun getLocalDateTimeFromMillis_ist() {
+        val localDateTime = getLocalDateTimeFromMillis(1614124800000, ZoneId.of("Asia/Kolkata"))
+        val expected = LocalDateTime.of(2021, 2, 24, 5, 30)
+        assertThat(localDateTime).isEquivalentAccordingToCompareTo(expected)
+    }
 }
