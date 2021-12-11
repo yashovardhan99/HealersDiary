@@ -5,6 +5,7 @@ import java.io.IOException
 import java.io.InputStream
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class CsvReader(private val bufferedReader: BufferedReader) {
     constructor(inputStream: InputStream) : this(inputStream.bufferedReader())
@@ -38,7 +39,7 @@ class CsvReader(private val bufferedReader: BufferedReader) {
                 try {
                     bufferedReader.readLine()
                 } catch (e: IOException) {
-                    e.printStackTrace()
+                    Timber.e(e)
                     ""
                 }
             } ?: break
@@ -46,10 +47,10 @@ class CsvReader(private val bufferedReader: BufferedReader) {
                 when {
                     // comma outside quotes OR just after a quote (End of quote block)
                     c == ',' && (
-                        curState == State.Field ||
-                            curState == State.Delimiter ||
-                            curState == State.InsideQuote
-                        )
+                            curState == State.Field ||
+                                    curState == State.Delimiter ||
+                                    curState == State.InsideQuote
+                            )
                     -> {
 
                         curRow.add(curEntry.toString())
