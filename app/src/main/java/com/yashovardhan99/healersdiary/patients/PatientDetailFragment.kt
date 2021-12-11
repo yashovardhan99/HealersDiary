@@ -83,14 +83,14 @@ class PatientDetailFragment : Fragment() {
             }
         }
         val headerAdapter = HeaderAdapter()
-        val activityAdapter = ActivityAdapter(true) { activity, _ ->
+        val activityAdapter = ActivityAdapter(true, { activity, _ ->
             if (activity !is ActivityParent.Activity) return@ActivityAdapter
             when (activity.type) {
                 ActivityParent.Activity.Type.HEALING -> goToHealings()
                 ActivityParent.Activity.Type.PAYMENT -> goToPayments()
                 ActivityParent.Activity.Type.PATIENT -> Unit
             }
-        }
+        })
         val emptyStateAdapter = EmptyStateAdapter()
         val concatAdapterConfig = ConcatAdapter.Config.Builder()
             .setIsolateViewTypes(false)
@@ -123,8 +123,8 @@ class PatientDetailFragment : Fragment() {
             activityAdapter.loadStateFlow.collectLatest { loadStates: CombinedLoadStates ->
                 // activityLoadStateAdapter.loadState = loadStates.append
                 val showEmpty = loadStates.refresh is LoadState.NotLoading &&
-                    loadStates.append.endOfPaginationReached &&
-                    activityAdapter.itemCount == 0
+                        loadStates.append.endOfPaginationReached &&
+                        activityAdapter.itemCount == 0
                 headerAdapter.submitList(
                     if (showEmpty) emptyList()
                     else listOf(getString(R.string.recent_activity))
