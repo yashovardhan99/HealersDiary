@@ -1,14 +1,20 @@
 package com.yashovardhan99.healersdiary.dashboard
 
+import android.os.Bundle
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.insertSeparators
 import androidx.paging.map
+import com.yashovardhan99.core.analytics.AnalyticsEvent
 import com.yashovardhan99.core.database.Patient
+import com.yashovardhan99.core.database.toHealing
+import com.yashovardhan99.core.database.toPayment
 import com.yashovardhan99.core.getStartOfLastMonth
 import com.yashovardhan99.core.getStartOfMonth
+import com.yashovardhan99.core.utils.ActivityParent
 import com.yashovardhan99.core.utils.ActivityParent.Activity.Companion.getSeparator
 import com.yashovardhan99.core.utils.HealingParent
 import com.yashovardhan99.core.utils.PaymentParent
@@ -17,6 +23,7 @@ import com.yashovardhan99.core.utils.Stat.Companion.earnedLastMonth
 import com.yashovardhan99.core.utils.Stat.Companion.earnedThisMonth
 import com.yashovardhan99.core.utils.Stat.Companion.healingsThisMonth
 import com.yashovardhan99.core.utils.Stat.Companion.healingsToday
+import com.yashovardhan99.healersdiary.create.CreateRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -28,6 +35,7 @@ import kotlinx.coroutines.flow.combineTransform
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEmpty
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 /**
@@ -37,7 +45,11 @@ import timber.log.Timber
  * @see DashboardRepository
  */
 @HiltViewModel
-class DashboardViewModel @Inject constructor(repository: DashboardRepository) : ViewModel() {
+class DashboardViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle,
+    private val repository: DashboardRepository,
+    private val createRepository: CreateRepository
+) : ViewModel() {
     private val patientsFlow = repository.patients // just a list of all patients
     private val patientsMap = patientsFlow.map { list ->
         list.associateBy { patient -> patient.id }
@@ -154,6 +166,84 @@ class DashboardViewModel @Inject constructor(repository: DashboardRepository) : 
     fun editPayment(payment: PaymentParent.Payment) {
         _requests.value = Request.UpdatePayment(payment.patientId, payment.id)
     }
+
+    fun editActivity(activity: ActivityParent.Activity) {
+        when (activity.type) {
+            ActivityParent.Activity.Type.HEALING -> _requests.value =
+                Request.UpdateHealing(activity.patient.id, activity.id)
+            ActivityParent.Activity.Type.PATIENT -> _requests.value =
+                Request.UpdatePatient(activity.patient.id)
+            ActivityParent.Activity.Type.PAYMENT -> _requests.value =
+                Request.UpdatePayment(activity.patient.id, activity.id)
+        }
+    }
+
+    fun deleteActivity(activity: ActivityParent.Activity) {
+        savedStateHandle["deleted_activity"] = null
+        when (activity.type) {
+            ActivityParent.Activity.Type.HEALING -> deleteHealing(activity)
+            ActivityParent.Activity.Type.PAYMENT -> deletePayment(activity)
+            ActivityParent.Activity.Type.PATIENT ->
+                throw IllegalArgumentException("$activity cannot be of type ${ActivityParent.Activity.Type.PATIENT}")
+        }
+    }
+
+    private fun deleteHealing(activity: ActivityParent.Activity) {
+        if (activity.type != ActivityParent.Activity.Type.HEALING)
+            throw IllegalArgumentException("$activity must be of type ${ActivityParent.Activity.Type.HEALING}")
+        viewModelScope.launch {
+            createRepository.getHealing(activity.id)?.let { healing ->
+                savedStateHandle["deleted_healing"] = healing.toBundle()
+                savedStateHandle["deleted_type"] = "healing"
+                repository.deleteHealing(healing)
+                AnalyticsEvent.Content.Healing(healing.patientId).trackDelete()
+            }
+        }
+    }
+
+
+    fun undoDeleteActivity(): Boolean {
+        val type: String = savedStateHandle.remove("deleted_type") ?: return false
+        return when (type) {
+            "healing" -> undoDeleteHealing()
+            "payment" -> undoDeletePayment()
+            else -> false
+        }
+    }
+
+    private fun undoDeleteHealing(): Boolean {
+        val healing = savedStateHandle.remove<Bundle>("deleted_healing")?.toHealing()
+            ?: return false
+        viewModelScope.launch {
+            createRepository.insertNewHealing(healing)
+            AnalyticsEvent.Content.Healing(healing.patientId).trackUndoDelete()
+        }
+        return true
+    }
+
+    private fun deletePayment(activity: ActivityParent.Activity) {
+        if (activity.type != ActivityParent.Activity.Type.PAYMENT)
+            throw IllegalArgumentException("$activity must be of type ${ActivityParent.Activity.Type.PAYMENT}")
+        viewModelScope.launch {
+            createRepository.getPayment(activity.id)?.let { payment ->
+                savedStateHandle["deleted_payment"] = payment.toBundle()
+                savedStateHandle["deleted_type"] = "payment"
+                repository.deletePayment(payment)
+                AnalyticsEvent.Content.Payment(payment.patientId).trackDelete()
+            }
+        }
+    }
+
+    private fun undoDeletePayment(): Boolean {
+        val payment = savedStateHandle.remove<Bundle>("deleted_payment")?.toPayment()
+            ?: return false
+        viewModelScope.launch {
+            createRepository.insertNewPayment(payment)
+            AnalyticsEvent.Content.Payment(payment.patientId).trackUndoDelete()
+        }
+        return true
+    }
+
 
     init {
         Timber.d(

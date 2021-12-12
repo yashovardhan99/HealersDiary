@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -16,6 +17,7 @@ import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialContainerTransform
 import com.yashovardhan99.core.analytics.AnalyticsEvent
 import com.yashovardhan99.core.database.ActivityType
@@ -42,6 +44,7 @@ class PatientDetailFragment : Fragment() {
     private val args: PatientDetailFragmentArgs by navArgs()
     val viewModel: PatientDetailViewModel by viewModels()
     private val dashboardViewModel: DashboardViewModel by activityViewModels()
+    private lateinit var binding: FragmentPatientDetailBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -58,7 +61,7 @@ class PatientDetailFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentPatientDetailBinding.inflate(inflater, container, false)
+        binding = FragmentPatientDetailBinding.inflate(inflater, container, false)
         binding.header = context?.run {
             buildHeader(
                 Icons.Close, getString(R.string.loading),
@@ -83,14 +86,14 @@ class PatientDetailFragment : Fragment() {
             }
         }
         val headerAdapter = HeaderAdapter()
-        val activityAdapter = ActivityAdapter(true) { activity, _ ->
+        val activityAdapter = ActivityAdapter(true, { activity, _ ->
             if (activity !is ActivityParent.Activity) return@ActivityAdapter
             when (activity.type) {
                 ActivityParent.Activity.Type.HEALING -> goToHealings()
                 ActivityParent.Activity.Type.PAYMENT -> goToPayments()
                 ActivityParent.Activity.Type.PATIENT -> Unit
             }
-        }
+        }, ::editActivity, ::deleteActivity)
         val emptyStateAdapter = EmptyStateAdapter()
         val concatAdapterConfig = ConcatAdapter.Config.Builder()
             .setIsolateViewTypes(false)
@@ -123,8 +126,8 @@ class PatientDetailFragment : Fragment() {
             activityAdapter.loadStateFlow.collectLatest { loadStates: CombinedLoadStates ->
                 // activityLoadStateAdapter.loadState = loadStates.append
                 val showEmpty = loadStates.refresh is LoadState.NotLoading &&
-                    loadStates.append.endOfPaginationReached &&
-                    activityAdapter.itemCount == 0
+                        loadStates.append.endOfPaginationReached &&
+                        activityAdapter.itemCount == 0
                 headerAdapter.submitList(
                     if (showEmpty) emptyList()
                     else listOf(getString(R.string.recent_activity))
@@ -163,6 +166,26 @@ class PatientDetailFragment : Fragment() {
         val action = PatientDetailFragmentDirections
             .actionPatientDetailFragmentToPaymentListFragment(args.patientId)
         findNavController().navigate(action)
+    }
+
+    private fun editActivity(activity: ActivityParent.Activity) {
+        dashboardViewModel.editActivity(activity)
+    }
+
+    private fun deleteActivity(activity: ActivityParent.Activity) {
+        dashboardViewModel.deleteActivity(activity)
+        Snackbar.make(binding.root, R.string.deleted, Snackbar.LENGTH_LONG)
+            .setActionTextColor(
+                ContextCompat.getColor(
+                    binding.root.context,
+                    R.color.colorSecondary
+                )
+            )
+            .setAction(R.string.undo) {
+                val done = dashboardViewModel.undoDeleteActivity()
+                Timber.d("Undo = $done")
+            }
+            .show()
     }
 
     override fun onResume() {
