@@ -128,6 +128,20 @@ class ActivityAdapter(
                 binding.activity = activity
                 binding.root.transitionName =
                     "activity_trans_pos_${activity.id}_${activity.type.description}"
+                if (activity.type !is ActivityParent.Activity.Type.PATIENT) {
+                    binding.root.setOnCreateContextMenuListener { menu, _, _ ->
+                        menu.add(R.string.edit).setOnMenuItemClickListener { _ ->
+                            onRequestEdit(activity)
+                            true
+                        }
+                        menu.add(R.string.delete).setOnMenuItemClickListener { _ ->
+                            onRequestDelete(activity)
+                            true
+                        }
+                    }
+                } else {
+                    binding.root.setOnCreateContextMenuListener(null)
+                }
             }
         }
     }
