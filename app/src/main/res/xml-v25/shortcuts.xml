@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.yashovardhan99.healersdiary">
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/check"
+        android:shortcutId="newHealing"
+        android:shortcutShortLabel="@string/new_healing">
+        <intent
+            android:action="android.intent.action.INSERT"
+            android:targetPackage="com.yashovardhan99.healersdiary.debug"
+            android:targetClass="com.yashovardhan99.healersdiary.create.CreateNewActivity"
+            android:data="healersdiary://com.yashovardhan99.healersdiary/activities/new_healing/"/>
+    </shortcut>
+</shortcuts>
