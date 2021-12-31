@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity() {
             DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container)
-                as NavHostFragment
+                    as NavHostFragment
         navController = navHostFragment.navController
         binding.bottomNav.setupWithNavController(navController)
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
@@ -104,8 +104,15 @@ class MainActivity : AppCompatActivity() {
                 viewModel.resetRequest()
             }
         }
+        // Handle intents
         if (intent.action == Intent.ACTION_VIEW) {
             intent = intent.setData(null).setAction(null)
+        } else if (intent.action == Intent.ACTION_INSERT) {
+            intent.data?.let {
+                val request = Request.fromUri(it)
+                handleRequest(request)
+                intent = intent.setData(null).setAction(null)
+            }
         }
     }
 }

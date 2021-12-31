@@ -3,13 +3,13 @@
     package="com.yashovardhan99.healersdiary">
     <shortcut
         android:enabled="true"
-        android:icon="@drawable/check"
+        android:icon="@drawable/shortcut_new_healing"
         android:shortcutId="newHealing"
         android:shortcutShortLabel="@string/new_healing">
         <intent
             android:action="android.intent.action.INSERT"
-            android:targetPackage="com.yashovardhan99.healersdiary.debug"
-            android:targetClass="com.yashovardhan99.healersdiary.create.CreateNewActivity"
-            android:data="healersdiary://com.yashovardhan99.healersdiary/activities/new_healing/"/>
+            android:data="healersdiary://com.yashovardhan99.healersdiary/activities/new_healing/"
+            android:targetClass="com.yashovardhan99.healersdiary.dashboard.MainActivity"
+            android:targetPackage="com.yashovardhan99.healersdiary.debug" />
     </shortcut>
 </shortcuts>

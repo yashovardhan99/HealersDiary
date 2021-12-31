@@ -29,10 +29,12 @@
 
         <activity
             android:name=".dashboard.MainActivity"
+            android:exported="true"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.INSERT" />
                 <data
                     android:host="com.yashovardhan99.healersdiary"
                     android:scheme="healersdiary" />
@@ -40,12 +42,7 @@
         </activity>
         <activity
             android:name=".create.CreateNewActivity"
-            android:exported="true"
-            android:windowSoftInputMode="adjustResize">
-            <intent-filter>
-                <action android:name="android.intent.action.INSERT" />
-            </intent-filter>
-        </activity>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".patients.NewPatientActivity"
             android:windowSoftInputMode="adjustResize" />
