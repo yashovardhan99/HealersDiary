@@ -3,12 +3,23 @@
     package="com.yashovardhan99.healersdiary">
     <shortcut
         android:enabled="true"
-        android:icon="@drawable/shortcut_new_healing"
+        android:icon="@mipmap/shortcut_new_healing"
         android:shortcutId="newHealing"
         android:shortcutShortLabel="@string/new_healing">
         <intent
             android:action="android.intent.action.INSERT"
             android:data="healersdiary://com.yashovardhan99.healersdiary/activities/new_healing/"
+            android:targetClass="com.yashovardhan99.healersdiary.dashboard.MainActivity"
+            android:targetPackage="com.yashovardhan99.healersdiary.debug" />
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@mipmap/shortcut_new_payment"
+        android:shortcutId="newPayment"
+        android:shortcutShortLabel="@string/new_payment">
+        <intent
+            android:action="android.intent.action.INSERT"
+            android:data="healersdiary://com.yashovardhan99.healersdiary/activities/new_payment"
             android:targetClass="com.yashovardhan99.healersdiary.dashboard.MainActivity"
             android:targetPackage="com.yashovardhan99.healersdiary.debug" />
     </shortcut>
