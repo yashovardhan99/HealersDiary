@@ -1,6 +1,8 @@
 package com.yashovardhan99.healersdiary.dashboard
 
 import android.os.Bundle
+import androidx.core.app.Person
+import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -23,20 +25,16 @@ import com.yashovardhan99.core.utils.Stat.Companion.earnedLastMonth
 import com.yashovardhan99.core.utils.Stat.Companion.earnedThisMonth
 import com.yashovardhan99.core.utils.Stat.Companion.healingsThisMonth
 import com.yashovardhan99.core.utils.Stat.Companion.healingsToday
+import com.yashovardhan99.healersdiary.ShortcutData
 import com.yashovardhan99.healersdiary.create.CreateRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.math.BigDecimal
 import java.time.LocalDate
 import javax.inject.Inject
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.combineTransform
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEmpty
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.launch
-import timber.log.Timber
+import kotlin.math.min
 
 /**
  * Viewmodel shared between all top level destinations and some inner destinations
@@ -126,6 +124,9 @@ class DashboardViewModel @Inject constructor(
 
     private val _requests = MutableStateFlow<Request?>(null)
     val requests: StateFlow<Request?> = _requests
+    private val _shortcuts = MutableSharedFlow<ShortcutData>(2)
+    val shortcuts: SharedFlow<ShortcutData> = _shortcuts
+
     fun viewPatient(patientId: Long) {
         _requests.value = Request.ViewPatient(patientId)
     }
@@ -242,6 +243,41 @@ class DashboardViewModel @Inject constructor(
             AnalyticsEvent.Content.Payment(payment.patientId).trackUndoDelete()
         }
         return true
+    }
+
+    fun requestShortcuts(maxShortcutCount: Int) {
+        Timber.d("Shortcut count = $maxShortcutCount")
+        viewModelScope.launch {
+            val patients = patientsFlow.first().sortedByDescending { it.lastModified }
+                .take(min(maxShortcutCount - 2, 2))
+            Timber.d("Patients being taken for shortcuts = $patients")
+            for (patient in patients) {
+                val person = Person.Builder()
+                    .setName(patient.name)
+                    .setBot(false)
+                    .build()
+                _shortcuts.emit(ShortcutData(patient.id, patient.name, person))
+            }
+        }
+    }
+
+    fun updateShortcuts(dynamicShortcuts: List<ShortcutInfoCompat>) {
+        viewModelScope.launch {
+            val shortcuts =
+                dynamicShortcuts.associateBy { it.id.removePrefix("patient_").toLong() }
+            shortcuts.forEach {
+                Timber.d("Shortcut = ${it.value.id} ${it.value.shortLabel}")
+                val patient = repository.getPatient(it.key)
+                if (patient == null) Timber.d("TODO: Delete shortcut ${it.value.id}") //todo
+                else if (patient.name != it.value.shortLabel) _shortcuts.emit(
+                    ShortcutData(
+                        patient.id,
+                        patient.name,
+                        Person.Builder().setName(patient.name).setBot(false).build()
+                    )
+                )
+            }
+        }
     }
 
 
