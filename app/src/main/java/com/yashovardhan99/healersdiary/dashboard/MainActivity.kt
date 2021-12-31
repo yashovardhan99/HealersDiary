@@ -108,8 +108,9 @@ class MainActivity : AppCompatActivity() {
         if (intent.action == Intent.ACTION_VIEW) {
             intent = intent.setData(null).setAction(null)
         } else if (intent.action == Intent.ACTION_INSERT) {
+            Timber.d("Intent received = $intent; data = ${intent.data}; Extras = ${intent.extras}")
             intent.data?.let {
-                val request = Request.fromUri(it)
+                val request = Request.fromUri(it, intent.extras)
                 handleRequest(request)
                 intent = intent.setData(null).setAction(null)
             }

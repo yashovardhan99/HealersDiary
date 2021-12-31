@@ -15,7 +15,7 @@
             android:action="android.intent.action.INSERT"
             android:data="healersdiary://com.yashovardhan99.healersdiary/activities/new_healing/"
             android:targetClass="com.yashovardhan99.healersdiary.dashboard.MainActivity"
-            android:targetPackage="com.yashovardhan99.healersdiary" />
+            android:targetPackage="com.yashovardhan99.healersdiary.debug" />
     </shortcut>
     <shortcut
         android:enabled="true"
@@ -31,7 +31,7 @@
             android:action="android.intent.action.INSERT"
             android:data="healersdiary://com.yashovardhan99.healersdiary/activities/new_payment"
             android:targetClass="com.yashovardhan99.healersdiary.dashboard.MainActivity"
-            android:targetPackage="com.yashovardhan99.healersdiary" />
+            android:targetPackage="com.yashovardhan99.healersdiary.debug" />
     </shortcut>
 
     <capability android:name="actions.intent.CREATE_THING">
@@ -42,7 +42,7 @@
             android:action="android.intent.action.INSERT"
             android:data="healersdiary://com.yashovardhan99.healersdiary/create_new"
             android:targetClass="com.yashovardhan99.healersdiary.dashboard.MainActivity"
-            android:targetPackage="com.yashovardhan99.healersdiary">
+            android:targetPackage="com.yashovardhan99.healersdiary.debug">
             <parameter
                 android:name="thing.name"
                 android:key="create_type" />
