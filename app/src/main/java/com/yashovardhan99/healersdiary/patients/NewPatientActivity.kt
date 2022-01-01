@@ -8,6 +8,9 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.Person
+import androidx.core.content.pm.ShortcutInfoCompat
+import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.asLiveData
@@ -19,6 +22,7 @@ import com.yashovardhan99.core.utils.Request
 import com.yashovardhan99.core.utils.buildHeader
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.create.CreateNewActivity
+import com.yashovardhan99.healersdiary.dashboard.MainActivity
 import com.yashovardhan99.healersdiary.databinding.ActivityNewPatientBinding
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -43,7 +47,10 @@ class NewPatientActivity : AppCompatActivity() {
     private val viewModel: NewPatientViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = DataBindingUtil.setContentView<ActivityNewPatientBinding>(this, R.layout.activity_new_patient)
+        val binding = DataBindingUtil.setContentView<ActivityNewPatientBinding>(
+            this,
+            R.layout.activity_new_patient
+        )
         // setting the request data in the ViewModel
         intent.data?.let {
             viewModel.setRequest(it)
@@ -71,7 +78,8 @@ class NewPatientActivity : AppCompatActivity() {
             val inputText = (v as TextInputEditText).text.toString()
             try {
                 if (!hasFocus && inputText.isNotBlank()) {
-                    val edited = BigDecimal(inputText).setScale(2, RoundingMode.HALF_EVEN).toPlainString()
+                    val edited =
+                        BigDecimal(inputText).setScale(2, RoundingMode.HALF_EVEN).toPlainString()
                     v.setText(edited)
                 } else if (inputText.isNotBlank() && BigDecimal(inputText) == BigDecimal.ZERO) {
                     v.selectAll()
@@ -92,12 +100,36 @@ class NewPatientActivity : AppCompatActivity() {
         }
         // Here, the result in ViewModel is observed to either indicate successful creation/editing or deletion
         viewModel.result.asLiveData().observe(this) { result ->
+            val patient = viewModel.patient.value
+            Timber.d("Patient = $patient")
             when (result) {
                 is NewPatientViewModel.Companion.Result.Success -> {
                     // On create/edit -> go to the patient detail fragment
-                    Intent(Intent.ACTION_VIEW, Request.ViewPatient(result.patientId).getUri()).also { res ->
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Request.ViewPatient(result.patientId).getUri()
+                    ).also { res ->
                         setResult(Activity.RESULT_OK, res)
                         Timber.d("Setting result = $res")
+                        if (patient != null) {
+                            // Push dynamic shortcut for new/updated patient
+                            val intent = Intent(Intent.ACTION_VIEW)
+                                .setClass(this, MainActivity::class.java)
+                                .setData(Request.ViewPatient(result.patientId).getUri())
+                            val person =
+                                Person.Builder().setName(patient.name).setBot(false).build()
+                            val shortcutInfo =
+                                ShortcutInfoCompat.Builder(this, "patient_${result.patientId}")
+                                    .setShortLabel(patient.name)
+                                    .setPerson(person)
+                                    .setIntent(intent)
+                                    .addCapabilityBinding(
+                                        "actions.intent.GET_THING",
+                                        "thing.name",
+                                        listOf(patient.name)
+                                    ).build()
+                            ShortcutManagerCompat.pushDynamicShortcut(this, shortcutInfo)
+                        }
                         finish()
                     }
                 }
@@ -108,6 +140,17 @@ class NewPatientActivity : AppCompatActivity() {
                         Timber.d("Patient deleted!")
                         finish()
                     }
+                    if (patient?.id != null) {
+                        ShortcutManagerCompat.disableShortcuts(
+                            this,
+                            listOf("patient_${patient.id}"),
+                            getString(R.string.patient_deleted)
+                        )
+                        ShortcutManagerCompat.removeDynamicShortcuts(
+                            this,
+                            listOf("patient_${patient.id}")
+                        )
+                    }
                 }
                 NewPatientViewModel.Companion.Result.Unset -> {
                 }
@@ -116,7 +159,11 @@ class NewPatientActivity : AppCompatActivity() {
         // For displaying errors
         viewModel.error.asLiveData().observe(this) { error ->
             if (error) {
-                Snackbar.make(binding.newPatient, R.string.error_creating_activity, Snackbar.LENGTH_LONG).show()
+                Snackbar.make(
+                    binding.newPatient,
+                    R.string.error_creating_activity,
+                    Snackbar.LENGTH_LONG
+                ).show()
                 viewModel.resetError() // To avoid error re-propagating. TODO: Change this flow to a channel to avoid this
             }
         }
@@ -126,7 +173,9 @@ class NewPatientActivity : AppCompatActivity() {
             if (patient != null) {
                 binding.nameEdit.setText(patient.name)
                 binding.newPatient.setText(R.string.update)
-                binding.chargeEdit.setText(patient.charge.toBigDecimal().movePointLeft(2).toPlainString())
+                binding.chargeEdit.setText(
+                    patient.charge.toBigDecimal().movePointLeft(2).toPlainString()
+                )
                 binding.dueEdit.setText(patient.due.toBigDecimal().movePointLeft(2).toPlainString())
                 binding.notesEdit.setText(patient.notes)
                 binding.header = buildHeader(Icons.Close, R.string.edit_patient, Icons.Delete)
@@ -153,16 +202,16 @@ class NewPatientActivity : AppCompatActivity() {
      */
     private fun delete() {
         AlertDialog.Builder(this)
-                .setTitle(R.string.delete)
-                .setMessage(R.string.delete_warning_message)
-                .setIcon(R.drawable.ic_baseline_delete_forever_24)
-                .setPositiveButton(R.string.delete) { dialogInterface: DialogInterface, _: Int ->
-                    viewModel.deletePatient()
-                    dialogInterface.dismiss()
-                }
-                .setNegativeButton(R.string.cancel) { dialogInterface: DialogInterface, _: Int ->
-                    dialogInterface.dismiss()
-                }.show()
+            .setTitle(R.string.delete)
+            .setMessage(R.string.delete_warning_message)
+            .setIcon(R.drawable.ic_baseline_delete_forever_24)
+            .setPositiveButton(R.string.delete) { dialogInterface: DialogInterface, _: Int ->
+                viewModel.deletePatient()
+                dialogInterface.dismiss()
+            }
+            .setNegativeButton(R.string.cancel) { dialogInterface: DialogInterface, _: Int ->
+                dialogInterface.dismiss()
+            }.show()
     }
 
     /**

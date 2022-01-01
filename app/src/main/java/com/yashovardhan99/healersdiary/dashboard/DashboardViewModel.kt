@@ -2,7 +2,6 @@ package com.yashovardhan99.healersdiary.dashboard
 
 import android.os.Bundle
 import androidx.core.app.Person
-import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -34,7 +33,6 @@ import timber.log.Timber
 import java.math.BigDecimal
 import java.time.LocalDate
 import javax.inject.Inject
-import kotlin.math.min
 
 /**
  * Viewmodel shared between all top level destinations and some inner destinations
@@ -126,7 +124,7 @@ class DashboardViewModel @Inject constructor(
     val requests: StateFlow<Request?> = _requests
     private val _shortcuts = MutableSharedFlow<ShortcutData>(2)
     val shortcuts: SharedFlow<ShortcutData> = _shortcuts
-
+    
     fun viewPatient(patientId: Long) {
         _requests.value = Request.ViewPatient(patientId)
     }
@@ -249,31 +247,19 @@ class DashboardViewModel @Inject constructor(
         Timber.d("Shortcut count = $maxShortcutCount")
         viewModelScope.launch {
             val patients = patientsFlow.first().sortedByDescending { it.lastModified }
-                .take(min(maxShortcutCount - 2, 2))
+                .take(maxShortcutCount - 2).withIndex()
             Timber.d("Patients being taken for shortcuts = $patients")
             for (patient in patients) {
                 val person = Person.Builder()
-                    .setName(patient.name)
+                    .setName(patient.value.name)
                     .setBot(false)
                     .build()
-                _shortcuts.emit(ShortcutData(patient.id, patient.name, person))
-            }
-        }
-    }
-
-    fun updateShortcuts(dynamicShortcuts: List<ShortcutInfoCompat>) {
-        viewModelScope.launch {
-            val shortcuts =
-                dynamicShortcuts.associateBy { it.id.removePrefix("patient_").toLong() }
-            shortcuts.forEach {
-                Timber.d("Shortcut = ${it.value.id} ${it.value.shortLabel}")
-                val patient = repository.getPatient(it.key)
-                if (patient == null) Timber.d("TODO: Delete shortcut ${it.value.id}") //todo
-                else if (patient.name != it.value.shortLabel) _shortcuts.emit(
+                _shortcuts.emit(
                     ShortcutData(
-                        patient.id,
-                        patient.name,
-                        Person.Builder().setName(patient.name).setBot(false).build()
+                        patient.value.id,
+                        patient.value.name,
+                        person,
+                        patient.index
                     )
                 )
             }

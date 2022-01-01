@@ -8,13 +8,13 @@ import com.yashovardhan99.core.database.Patient
 import com.yashovardhan99.core.utils.Request
 import com.yashovardhan99.healersdiary.create.CreateRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.math.BigDecimal
-import java.time.LocalDateTime
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.math.BigDecimal
+import java.time.LocalDateTime
+import javax.inject.Inject
 
 /**
  * ViewModel used by [NewPatientActivity].
@@ -91,6 +91,7 @@ class NewPatientViewModel @Inject constructor(private val repository: CreateRepo
             repository.updatePatient(updatedPatient)
             Timber.d("Patient updated; pid = ${patient.id}")
             AnalyticsEvent.Content.Patient(patient.id).trackEdit()
+            _patient.emit(updatedPatient)
             _result.emit(Result.Success(patient.id))
         }
     }
@@ -106,6 +107,7 @@ class NewPatientViewModel @Inject constructor(private val repository: CreateRepo
             val pid = repository.insertNewPatient(patient)
             Timber.d("New patient inserted; pid = $pid")
             AnalyticsEvent.Content.Patient(pid).trackCreate()
+            _patient.emit(patient.copy(id = pid))
             _result.emit(Result.Success(pid))
         }
     }

@@ -48,4 +48,18 @@
                 android:key="create_type" />
         </intent>
     </capability>
+    <capability android:name="actions.intent.GET_THING">
+        <shortcut-fulfillment>
+            <parameter android:name="thing.name" />
+        </shortcut-fulfillment>
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="healersdiary://com.yashovardhan99.healersdiary/patients"
+            android:targetClass="com.yashovardhan99.healersdiary.dashboard.MainActivity"
+            android:targetPackage="com.yashovardhan99.healersdiary.debug">
+            <parameter
+                android:name="thing.name"
+                android:key="patient_name" />
+        </intent>
+    </capability>
 </shortcuts>

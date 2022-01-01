@@ -87,10 +87,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // If no dynamic shortcuts are there, request some
         if (ShortcutManagerCompat.getDynamicShortcuts(this).isEmpty()) {
             viewModel.requestShortcuts(ShortcutManagerCompat.getMaxShortcutCountPerActivity(this))
-        } else {
-            viewModel.updateShortcuts(ShortcutManagerCompat.getDynamicShortcuts(this))
         }
 
         val binding =
@@ -126,6 +125,12 @@ class MainActivity : AppCompatActivity() {
                         .setShortLabel(it.label)
                         .setPerson(it.person)
                         .setIntent(intent)
+                        .setRank(it.rank)
+                        .addCapabilityBinding(
+                            "actions.intent.GET_THING",
+                            "thing.name",
+                            listOf(it.label)
+                        )
                         .build()
                 ShortcutManagerCompat.pushDynamicShortcut(this@MainActivity, shortcutInfo)
             }
