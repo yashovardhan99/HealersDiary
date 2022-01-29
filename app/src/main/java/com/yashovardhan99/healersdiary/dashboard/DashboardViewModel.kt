@@ -250,15 +250,10 @@ class DashboardViewModel @Inject constructor(
                 .take(maxShortcutCount - 2).withIndex()
             Timber.d("Patients being taken for shortcuts = $patients")
             for (patient in patients) {
-                val person = Person.Builder()
-                    .setName(patient.value.name)
-                    .setBot(false)
-                    .build()
                 _shortcuts.emit(
                     ShortcutData(
                         patient.value.id,
                         patient.value.name,
-                        person,
                         patient.index
                     )
                 )

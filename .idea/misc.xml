@@ -3,42 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/drawable/home.xml" value="0.22708333333333333" />
-        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/drawable/ic_baseline_cloud_upload_24.xml" value="0.22708333333333333" />
-        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/drawable/ic_baseline_error_24.xml" value="0.22708333333333333" />
-        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.22708333333333333" />
-        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/drawable/list.xml" value="0.22708333333333333" />
-        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/drawable/recycler_item_selecter.xml" value="0.22708333333333333" />
-        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/drawable/shortcut_new_healing.xml" value="0.22708333333333333" />
-        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/drawable/shortcut_new_payment.xml" value="0.22708333333333333" />
-        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/drawable/shortcut_new_payment_foreground.xml" value="0.4036458333333333" />
-        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/drawable/test_icon.xml" value="0.22708333333333333" />
-        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/drawable/white_circle.xml" value="0.22708333333333333" />
-        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/layout/activity_card.xml" value="0.28396739130434784" />
-        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/layout/activity_inner_card.xml" value="0.21927083333333333" />
-        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/layout/item_card_healing.xml" value="0.21927083333333333" />
-        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/layout/item_card_payment.xml" value="0.3333333333333333" />
-        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.22708333333333333" />
-        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.22708333333333333" />
-        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/mipmap-anydpi-v26/shortcut_new_healing.xml" value="0.4036458333333333" />
-        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/mipmap-anydpi-v26/shortcut_new_payment.xml" value="0.4036458333333333" />
-        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/xml/actions.xml" value="0.2658514492753623" />
-        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/core/src/main/res/drawable/app_logo_background.xml" value="0.22708333333333333" />
-        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/core/src/main/res/drawable/app_logo_drawable.xml" value="0.22708333333333333" />
-        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/core/src/main/res/drawable/archive.xml" value="0.22708333333333333" />
-        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/core/src/main/res/drawable/back.xml" value="0.22708333333333333" />
-        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/core/src/main/res/drawable/card.xml" value="0.22708333333333333" />
-        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/core/src/main/res/drawable/check.xml" value="0.23854166666666668" />
-        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/core/src/main/res/drawable/clock.xml" value="0.22708333333333333" />
-        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/core/src/main/res/drawable/ic_full_logo.xml" value="0.22708333333333333" />
+        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/drawable/shortcut_new_healing_foreground.xml" value="0.1685" />
+        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/mipmap-anydpi-v26/shortcut_new_healing.xml" value="0.1" />
       </map>
     </option>
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
-    <output url="file://$PROJECT_DIR$/build/classes" />
-  </component>
-  <component name="ProjectType">
-    <option name="id" value="Android" />
-  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11" project-jdk-type="JavaSDK" />
 </project>

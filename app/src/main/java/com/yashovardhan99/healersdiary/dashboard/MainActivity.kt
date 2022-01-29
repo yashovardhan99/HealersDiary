@@ -2,10 +2,14 @@ package com.yashovardhan99.healersdiary.dashboard
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.TypedValue
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.Person
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
+import androidx.core.graphics.drawable.IconCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
@@ -14,6 +18,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.yashovardhan99.core.utils.PatientProfileDrawable
 import com.yashovardhan99.core.utils.Request
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.RequestContract
@@ -117,13 +122,26 @@ class MainActivity : AppCompatActivity() {
         }
         lifecycleScope.launchWhenCreated {
             viewModel.shortcuts.collect {
+                val px = TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP, 120f, resources.displayMetrics
+                ).toInt()
+                val icon = IconCompat.createWithAdaptiveBitmap(
+                    PatientProfileDrawable(it.label).toBitmap(px, px)
+                )
                 val intent = Intent(Intent.ACTION_VIEW)
                     .setClass(this@MainActivity, this@MainActivity::class.java)
                     .setData(Request.ViewPatient(it.patientId).getUri())
+                val person = Person.Builder()
+                    .setName(it.label)
+                    .setKey("patient_${it.patientId}")
+                    .setBot(false)
+                    .setIcon(icon)
+                    .build()
                 val shortcutInfo =
                     ShortcutInfoCompat.Builder(this@MainActivity, "patient_${it.patientId}")
                         .setShortLabel(it.label)
-                        .setPerson(it.person)
+                        .setPerson(person)
+                        .setIcon(icon)
                         .setIntent(intent)
                         .setRank(it.rank)
                         .addCapabilityBinding(

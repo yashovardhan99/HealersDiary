@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -11,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.Person
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
+import androidx.core.graphics.drawable.IconCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.widget.doAfterTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.asLiveData
@@ -18,6 +21,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.yashovardhan99.core.analytics.AnalyticsEvent
 import com.yashovardhan99.core.utils.Icons
+import com.yashovardhan99.core.utils.PatientProfileDrawable
 import com.yashovardhan99.core.utils.Request
 import com.yashovardhan99.core.utils.buildHeader
 import com.yashovardhan99.healersdiary.R
@@ -112,17 +116,28 @@ class NewPatientActivity : AppCompatActivity() {
                         setResult(Activity.RESULT_OK, res)
                         Timber.d("Setting result = $res")
                         if (patient != null) {
+                            val px = TypedValue.applyDimension(
+                                TypedValue.COMPLEX_UNIT_DIP, 120f, resources.displayMetrics
+                            ).toInt()
+                            val icon = IconCompat.createWithAdaptiveBitmap(
+                                PatientProfileDrawable(patient.name).toBitmap(px, px)
+                            )
                             // Push dynamic shortcut for new/updated patient
                             val intent = Intent(Intent.ACTION_VIEW)
                                 .setClass(this, MainActivity::class.java)
                                 .setData(Request.ViewPatient(result.patientId).getUri())
-                            val person =
-                                Person.Builder().setName(patient.name).setBot(false).build()
+                            val person = Person.Builder()
+                                .setName(patient.name)
+                                .setBot(false)
+                                .setIcon(icon)
+                                .setKey("patient_${patient.id}")
+                                .build()
                             val shortcutInfo =
                                 ShortcutInfoCompat.Builder(this, "patient_${result.patientId}")
                                     .setShortLabel(patient.name)
                                     .setPerson(person)
                                     .setIntent(intent)
+                                    .setIcon(icon)
                                     .addCapabilityBinding(
                                         "actions.intent.GET_THING",
                                         "thing.name",
