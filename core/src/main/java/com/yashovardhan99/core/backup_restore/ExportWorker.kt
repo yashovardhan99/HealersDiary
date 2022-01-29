@@ -198,7 +198,7 @@ class ExportWorker @AssistedInject constructor(
                 dao.getAllPayments(),
             ) { payment ->
                 BackupUtils.getCsvRow(
-                    payment.id, payment.time, payment.amount,
+                    payment.id, payment.time.toEpochMilli(), payment.amount,
                     payment.notes, payment.patientId
                 )
             }
