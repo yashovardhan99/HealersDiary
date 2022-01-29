@@ -2,20 +2,29 @@ package com.yashovardhan99.healersdiary.dashboard
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.TypedValue
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.Person
+import androidx.core.content.pm.ShortcutInfoCompat
+import androidx.core.content.pm.ShortcutManagerCompat
+import androidx.core.graphics.drawable.IconCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.yashovardhan99.core.utils.PatientProfileDrawable
 import com.yashovardhan99.core.utils.Request
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.RequestContract
 import com.yashovardhan99.healersdiary.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 
 /**
@@ -82,12 +91,19 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // If no dynamic shortcuts are there, request some
+        if (ShortcutManagerCompat.getDynamicShortcuts(this).isEmpty()) {
+            viewModel.requestShortcuts(ShortcutManagerCompat.getMaxShortcutCountPerActivity(this))
+        }
+
         val binding =
             DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container)
-                as NavHostFragment
+                    as NavHostFragment
         navController = navHostFragment.navController
+
         binding.bottomNav.setupWithNavController(navController)
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
             Timber.d("$controller Dest = $destination args = $arguments")
@@ -104,8 +120,55 @@ class MainActivity : AppCompatActivity() {
                 viewModel.resetRequest()
             }
         }
-        if (intent.action == Intent.ACTION_VIEW) {
-            intent = intent.setData(null).setAction(null)
+        lifecycleScope.launchWhenCreated {
+            viewModel.shortcuts.collect {
+                val px = TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP, 120f, resources.displayMetrics
+                ).toInt()
+                val icon = IconCompat.createWithAdaptiveBitmap(
+                    PatientProfileDrawable(it.label).toBitmap(px, px)
+                )
+                val intent = Intent(Intent.ACTION_VIEW)
+                    .setClass(this@MainActivity, this@MainActivity::class.java)
+                    .setData(Request.ViewPatient(it.patientId).getUri())
+                val person = Person.Builder()
+                    .setName(it.label)
+                    .setKey("patient_${it.patientId}")
+                    .setBot(false)
+                    .setIcon(icon)
+                    .build()
+                val shortcutInfo =
+                    ShortcutInfoCompat.Builder(this@MainActivity, "patient_${it.patientId}")
+                        .setShortLabel(it.label)
+                        .setPerson(person)
+                        .setIcon(icon)
+                        .setIntent(intent)
+                        .setRank(it.rank)
+                        .addCapabilityBinding(
+                            "actions.intent.GET_THING",
+                            "thing.name",
+                            listOf(it.label)
+                        )
+                        .build()
+                ShortcutManagerCompat.pushDynamicShortcut(this@MainActivity, shortcutInfo)
+            }
         }
+
+        // Handle intents
+        Timber.d("Intent received = $intent; data = ${intent.data}; Extras = ${intent.extras}")
+        if (intent.action == Intent.ACTION_VIEW) {
+            intent.data?.let {
+                val request = Request.fromUri(it, intent.extras)
+                getRequestContract.launch(request)
+                intent = intent.setData(null).setAction(null)
+            }
+        } else if (intent.action == Intent.ACTION_INSERT) {
+            intent.data?.let {
+                val request = Request.fromUri(it, intent.extras)
+                getRequestContract.launch(request)
+                intent = intent.setData(null).setAction(null)
+            }
+        }
+
     }
 }

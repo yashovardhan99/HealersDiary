@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -23,13 +24,8 @@ import com.yashovardhan99.core.analytics.AnalyticsEvent
 import com.yashovardhan99.core.database.ActivityType
 import com.yashovardhan99.core.getColorFromAttr
 import com.yashovardhan99.core.transitionDurationLarge
-import com.yashovardhan99.core.utils.ActivityParent
-import com.yashovardhan99.core.utils.EmptyState
-import com.yashovardhan99.core.utils.EmptyStateAdapter
+import com.yashovardhan99.core.utils.*
 import com.yashovardhan99.core.utils.Header.Companion.buildHeader
-import com.yashovardhan99.core.utils.HeaderAdapter
-import com.yashovardhan99.core.utils.Icons
-import com.yashovardhan99.core.utils.StatAdapter
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.dashboard.ActivityAdapter
 import com.yashovardhan99.healersdiary.dashboard.DashboardViewModel
@@ -71,6 +67,7 @@ class PatientDetailFragment : Fragment() {
         binding.toolbar.icon.setOnClickListener { findNavController().navigateUp() }
         viewModel.setPatientId(args.patientId)
         dashboardViewModel.setPatientId(args.patientId)
+        context?.let { ShortcutManagerCompat.reportShortcutUsed(it, "patient_${args.patientId}") }
         viewModel.patient.asLiveData().observe(viewLifecycleOwner) { patient ->
             Timber.d("Patient = $patient")
             binding.header = buildHeader(

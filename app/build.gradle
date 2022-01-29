@@ -85,6 +85,7 @@ dependencies {
     implementation(Dependencies.Android.constraint_layout)
     implementation(Dependencies.Android.recycler_view)
     implementation(Dependencies.Android.ktx_core)
+    implementation(Dependencies.Android.google_shortcuts)
     implementation(Dependencies.Android.activity_ktx)
     implementation(Dependencies.Android.fragment_ktx)
     implementation(Dependencies.Android.multidex)

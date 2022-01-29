@@ -5,6 +5,7 @@ import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.asLiveData
@@ -27,13 +28,13 @@ import com.yashovardhan99.core.utils.buildHeader
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.FragmentNewPaymentBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import timber.log.Timber
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.NumberFormat
 import java.time.LocalDateTime
 import java.time.LocalTime
-import kotlinx.coroutines.flow.collect
-import timber.log.Timber
 
 @AndroidEntryPoint
 class NewPaymentFragment : Fragment() {
@@ -118,6 +119,9 @@ class NewPaymentFragment : Fragment() {
     private fun save(binding: FragmentNewPaymentBinding) {
         val amount = binding.amountEdit.text.toString()
         val notes = binding.notesEdit.text.toString()
+        context?.let {
+            ShortcutManagerCompat.reportShortcutUsed(it, "newPayment")
+        }
         viewModel.createPayment(amount, notes, args.patientId)
     }
 

@@ -5,6 +5,7 @@ import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.asLiveData
@@ -27,13 +28,13 @@ import com.yashovardhan99.core.utils.buildHeader
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.FragmentNewHealingBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import timber.log.Timber
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.NumberFormat
 import java.time.LocalDateTime
 import java.time.LocalTime
-import kotlinx.coroutines.flow.collect
-import timber.log.Timber
 
 @AndroidEntryPoint
 class NewHealingFragment : Fragment() {
@@ -120,6 +121,9 @@ class NewHealingFragment : Fragment() {
     private fun save(binding: FragmentNewHealingBinding) {
         val charge = binding.chargeEdit.text.toString()
         val notes = binding.notesEdit.text.toString()
+        context?.let {
+            ShortcutManagerCompat.reportShortcutUsed(it, "newHealing")
+        }
         viewModel.createHealing(charge, notes, args.patientId)
     }
 

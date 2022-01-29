@@ -5,26 +5,17 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yashovardhan99.core.analytics.AnalyticsEvent
-import com.yashovardhan99.core.database.ActivityType
-import com.yashovardhan99.core.database.Healing
-import com.yashovardhan99.core.database.Patient
-import com.yashovardhan99.core.database.Payment
-import com.yashovardhan99.core.database.toPatient
+import com.yashovardhan99.core.database.*
 import com.yashovardhan99.core.utils.Request
 import com.yashovardhan99.healersdiary.dashboard.DashboardRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.inject.Inject
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.conflate
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @HiltViewModel
 class CreateActivityViewModel @Inject constructor(

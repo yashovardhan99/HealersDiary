@@ -1,6 +1,8 @@
 package com.yashovardhan99.core.utils
 
 import android.net.Uri
+import android.os.Bundle
+import java.util.*
 
 sealed class Request(val path: Iterable<String>) {
     protected val uriBuilder: Uri.Builder
@@ -70,12 +72,21 @@ sealed class Request(val path: Iterable<String>) {
                 ?: throw IllegalArgumentException("Invalid/missing query parameters for key=$key")
         }
 
-        fun fromUri(uri: Uri): Request {
+        fun fromUri(uri: Uri, extras: Bundle? = null): Request {
             if (uri.scheme != SCHEME)
                 throw IllegalArgumentException("Unknown scheme: ${uri.scheme}")
             if (uri.authority != AUTHORITY)
                 throw IllegalArgumentException("Unknown authority: ${uri.authority}")
             return when (uri.lastPathSegment) {
+                "create_new" -> if (extras != null && extras.containsKey("create_type")) {
+                    val type = extras.getString("create_type")?.toLowerCase(Locale.getDefault())
+                        ?: return NewActivity()
+                    when {
+                        type.contains("healing") -> NewHealing()
+                        type.contains("payment") -> NewPayment()
+                        else -> NewActivity()
+                    }
+                } else NewActivity()
                 "new_healing" -> if (uri.queryParameterNames.contains(PATIENT_ID)) NewHealing(
                     uri.getLong(
                         PATIENT_ID
