@@ -14,8 +14,8 @@ object Version {
      */
     object AppVersion {
         const val minSdk = 21
-        const val targetSdk = 30
-        const val compileSdk = 30
+        const val targetSdk = 31
+        const val compileSdk = 31
         private const val major = 2
         private const val minor = 0
         private const val patch = 0
@@ -63,12 +63,12 @@ object Version {
      * @see dependencies.Dependencies
      */
     object Dependencies {
-        const val play_services_coroutines = "1.4.1"
-        const val kotlin = "1.4.31"
-        const val material = "1.3.0"
-        const val hilt = "1.0.0-alpha03"
-        const val hilt_android = "2.31.2-alpha"
-        const val timber = "4.7.1"
+        const val play_services_coroutines = "1.6.0"
+        const val kotlin = "1.6.0"
+        const val material = "1.5.0"
+        const val hilt = "1.0.0"
+        const val hilt_android = "2.40.5"
+        const val timber = "5.0.1"
         const val gradle = "4.1.3"
         const val oss_app = "17.0.0"
         const val oss_root = "0.10.4"
@@ -82,20 +82,21 @@ object Version {
          * @see dependencies.Dependencies.Android
          */
         object Androidx {
-            const val app_compat = "1.2.0"
-            const val constraint_layout = "2.0.4"
-            const val recycler = "1.1.0"
+            const val splashscreen = "1.0.0-beta01"
+            const val app_compat = "1.4.1"
+            const val constraint_layout = "2.1.3"
+            const val recycler = "1.2.1"
             const val multidex = "2.0.1"
-            const val ktx_core = "1.3.2"
+            const val ktx_core = "1.7.0"
             const val google_shortcuts = "1.0.0"
-            const val lifecycle = "2.3.0"
-            const val room = "2.3.0-beta02"
-            const val navigation = "2.3.1"
-            const val paging = "3.0.0-beta01"
-            const val datastore = "1.0.0-alpha06"
-            const val activity = "1.2.0"
-            const val fragment = "1.3.0"
-            const val workmanager = "2.5.0"
+            const val lifecycle = "2.4.0"
+            const val room = "2.4.1"
+            const val navigation = "2.4.0"
+            const val paging = "3.1.0"
+            const val datastore = "1.0.0"
+            const val activity = "1.4.0"
+            const val fragment = "1.4.1"
+            const val workmanager = "2.7.1"
         }
     }
 }

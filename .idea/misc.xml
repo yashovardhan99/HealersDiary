@@ -3,11 +3,22 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.2135" />
         <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/drawable/shortcut_new_healing_foreground.xml" value="0.1685" />
+        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/layout/activity_splash.xml" value="0.28804347826086957" />
+        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/layout/fragment_onboarding.xml" value="0.16875" />
+        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2135" />
         <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/mipmap-anydpi-v26/shortcut_new_healing.xml" value="0.1" />
+        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/core/src/main/res/drawable/app_logo_background.xml" value="0.341" />
+        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/core/src/main/res/drawable/app_logo_drawable.xml" value="0.2135" />
+        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/core/src/main/res/drawable/ic_full_logo.xml" value="0.2135" />
+        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/core/src/main/res/drawable/ic_launcher_foreground.xml" value="0.2135" />
+        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/core/src/main/res/layout/empty_dashboard.xml" value="0.20625" />
+        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/core/src/main/res/layout/layout_activity_footer.xml" value="0.16875" />
+        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/core/src/main/res/layout/layout_stat_box.xml" value="0.20625" />
       </map>
     </option>
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11" project-jdk-type="JavaSDK" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK" />
 </project>

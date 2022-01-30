@@ -79,7 +79,7 @@ sealed class Request(val path: Iterable<String>) {
                 throw IllegalArgumentException("Unknown authority: ${uri.authority}")
             return when (uri.lastPathSegment) {
                 "create_new" -> if (extras != null && extras.containsKey("create_type")) {
-                    val type = extras.getString("create_type")?.toLowerCase(Locale.getDefault())
+                    val type = extras.getString("create_type")?.lowercase(Locale.getDefault())
                         ?: return NewActivity()
                     when {
                         type.contains("healing") -> NewHealing()

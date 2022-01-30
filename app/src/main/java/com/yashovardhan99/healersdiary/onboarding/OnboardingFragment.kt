@@ -27,7 +27,11 @@ class OnboardingFragment : Fragment() {
      * View model shared across activity
      */
     val viewModel: OnboardingViewModel by activityViewModels()
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         // data binding
         val binding = FragmentOnboardingBinding.inflate(inflater, container, false)
         // Setting link for disclaimer
@@ -44,16 +48,18 @@ class OnboardingFragment : Fragment() {
                         binding.importOnline.visibility = View.VISIBLE
                     }
                     OnboardingState.OnboardingCompleted -> {
-                        binding.importOnline.visibility = View.GONE
-                        binding.getStarted.visibility = View.GONE
-                        binding.disclaimer.visibility = View.GONE
+                        binding.getStarted.isEnabled = false
+                        binding.importOnline.isEnabled = false
                     }
                     OnboardingState.OnboardingRequired -> {
+                        binding.getStarted.isEnabled = true
+                        binding.importOnline.isEnabled = true
                         binding.importOnline.visibility = View.VISIBLE
                         binding.getStarted.visibility = View.VISIBLE
                         binding.disclaimer.visibility = View.VISIBLE
                     }
                     OnboardingState.Importing -> importOnline()
+                    else -> {}
                 }
             }
         }
@@ -64,7 +70,8 @@ class OnboardingFragment : Fragment() {
         }
 
         binding.getStarted.setOnClickListener {
-            NotificationManagerCompat.from(requireContext()).cancel(OnboardingState.IMPORT_COMPLETE_NOTIF_ID)
+            NotificationManagerCompat.from(requireContext())
+                .cancel(OnboardingState.IMPORT_COMPLETE_NOTIF_ID)
             viewModel.getStarted()
         }
         binding.importOnline.setOnClickListener { importOnline() }

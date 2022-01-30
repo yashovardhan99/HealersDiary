@@ -16,15 +16,17 @@ import javax.inject.Inject
  * Viewmodel used by Splash screen in onboarding flow
  */
 @HiltViewModel
-class OnboardingViewModel @Inject constructor(private val dataStore: HealersDataStore,
-                                              private val repository: OnboardingRepository) : ViewModel() {
+class OnboardingViewModel @Inject constructor(
+    private val dataStore: HealersDataStore,
+    private val repository: OnboardingRepository
+) : ViewModel() {
 
 
     /**
      * Live data of onboarding preferences fetched from datastore
      */
     private val _onboardingPrefs =
-            MutableStateFlow<OnboardingState>(OnboardingState.OnboardingRequired)
+        MutableStateFlow<OnboardingState>(OnboardingState.Fetching)
     val onboardingPrefs: StateFlow<OnboardingState> = _onboardingPrefs
 
     private val _importRequested: MutableSharedFlow<Boolean> = MutableSharedFlow()
@@ -64,6 +66,7 @@ class OnboardingViewModel @Inject constructor(private val dataStore: HealersData
     suspend fun clearAll() {
         AnalyticsEvent.Onboarding.ClearAll.trackEvent()
         dataStore.updateOnboardingState(OnboardingState.OnboardingRequired)
+        Timber.d("Updated onboarding state to Required")
         repository.deleteAll()
     }
 }

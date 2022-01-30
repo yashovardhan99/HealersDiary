@@ -3,23 +3,21 @@ package com.yashovardhan99.core.database
 import android.content.Context
 import android.net.Uri
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.core.longPreferencesKey
-import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.createDataStore
+import androidx.datastore.preferences.core.*
+import androidx.datastore.preferences.preferencesDataStore
 import com.yashovardhan99.core.database.OnboardingState.Companion.toOnboardingState
 import dagger.hilt.android.qualifiers.ApplicationContext
-import java.time.Instant
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
+import java.time.Instant
+import javax.inject.Inject
+import javax.inject.Singleton
+
+val Context.datastore: DataStore<Preferences> by preferencesDataStore("healersDatastore")
 
 sealed class OnboardingState(internal val value: Int) {
+    object Fetching: OnboardingState(-1) // To indicate that the state is being fetched
     object OnboardingRequired : OnboardingState(0)
     object ImportCompleted : OnboardingState(1)
     object OnboardingCompleted : OnboardingState(2)
@@ -85,8 +83,7 @@ sealed class BackupState(internal val value: Int) {
 
 @Singleton
 class HealersDataStore @Inject constructor(@ApplicationContext context: Context) {
-    private val dataStore: DataStore<Preferences> = context.createDataStore("healersDatastore")
-
+    private val dataStore = context.datastore
     fun getImportState(): Flow<ImportState> {
         return dataStore.data.map { preferences ->
             when (preferences[ImportState.PrefKey]) {
