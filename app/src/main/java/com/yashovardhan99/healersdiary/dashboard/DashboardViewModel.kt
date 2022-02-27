@@ -1,16 +1,21 @@
 package com.yashovardhan99.healersdiary.dashboard
 
+import android.os.Bundle
+import androidx.core.app.Person
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.insertSeparators
 import androidx.paging.map
+import com.yashovardhan99.core.analytics.AnalyticsEvent
 import com.yashovardhan99.core.database.Patient
-import com.yashovardhan99.core.setToStartOfDay
-import com.yashovardhan99.core.setToStartOfLastMonth
-import com.yashovardhan99.core.setToStartOfMonth
-import com.yashovardhan99.core.toLocalDateTime
+import com.yashovardhan99.core.database.toHealing
+import com.yashovardhan99.core.database.toPayment
+import com.yashovardhan99.core.getStartOfLastMonth
+import com.yashovardhan99.core.getStartOfMonth
+import com.yashovardhan99.core.utils.ActivityParent
 import com.yashovardhan99.core.utils.ActivityParent.Activity.Companion.getSeparator
 import com.yashovardhan99.core.utils.HealingParent
 import com.yashovardhan99.core.utils.PaymentParent
@@ -19,18 +24,15 @@ import com.yashovardhan99.core.utils.Stat.Companion.earnedLastMonth
 import com.yashovardhan99.core.utils.Stat.Companion.earnedThisMonth
 import com.yashovardhan99.core.utils.Stat.Companion.healingsThisMonth
 import com.yashovardhan99.core.utils.Stat.Companion.healingsToday
+import com.yashovardhan99.healersdiary.ShortcutData
+import com.yashovardhan99.healersdiary.create.CreateRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.math.BigDecimal
-import java.util.Calendar
-import javax.inject.Inject
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.combineTransform
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEmpty
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.math.BigDecimal
+import java.time.LocalDate
+import javax.inject.Inject
 
 /**
  * Viewmodel shared between all top level destinations and some inner destinations
@@ -39,22 +41,22 @@ import timber.log.Timber
  * @see DashboardRepository
  */
 @HiltViewModel
-class DashboardViewModel @Inject constructor(repository: DashboardRepository) : ViewModel() {
+class DashboardViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle,
+    private val repository: DashboardRepository,
+    private val createRepository: CreateRepository
+) : ViewModel() {
     private val patientsFlow = repository.patients // just a list of all patients
     private val patientsMap = patientsFlow.map { list ->
         list.associateBy { patient -> patient.id }
     }
 
-    // get dates for starting today, this month and last month
-    // used in calculations for stats
-    private val today = Calendar.getInstance().apply {
-        setToStartOfDay()
-    }
-    private val thisMonth = Calendar.getInstance().apply { setToStartOfMonth() }
-    private val lastMonth = Calendar.getInstance().apply { setToStartOfLastMonth() }
+    private val todayDate = LocalDate.now()
+    private val thisMonthDate = todayDate.getStartOfMonth()
+    private val lastMonthDate = todayDate.getStartOfLastMonth()
 
     // healing and payments flow starting last month (eg. If it's february, include all activity starting January
-    private val healings = repository.getHealingsStarting(lastMonth.time)
+    private val healings = repository.getHealingsStarting(lastMonthDate)
 
     // current selected patient (for inner pages)
     private var currentPatientId = -1L
@@ -71,8 +73,10 @@ class DashboardViewModel @Inject constructor(repository: DashboardRepository) : 
         }
         // setting no. of healings today and this month for patients list page
         patientsMap.values.map { patient ->
-            val today = patientWithHealings[patient]?.count { it.time >= today.time } ?: 0
-            val thisMonth = patientWithHealings[patient]?.count { it.time >= thisMonth.time } ?: 0
+            val today =
+                patientWithHealings[patient]?.count { it.time >= todayDate.atStartOfDay() } ?: 0
+            val thisMonth =
+                patientWithHealings[patient]?.count { it.time >= thisMonthDate.atStartOfDay() } ?: 0
             patient.copy(healingsToday = today, healingsThisMonth = thisMonth)
         }.sortedByDescending { it.lastModified }
     }
@@ -86,10 +90,6 @@ class DashboardViewModel @Inject constructor(repository: DashboardRepository) : 
                 }
         }.onEmpty { emit(PagingData.empty()) }
         .cachedIn(viewModelScope)
-
-    private val todayDate = today.time.toLocalDateTime().toLocalDate()
-    private val thisMonthDate = thisMonth.time.toLocalDateTime().toLocalDate()
-    private val lastMonthDate = lastMonth.time.toLocalDateTime().toLocalDate()
 
     private val healingsToday = repository.getHealingCountBetween(todayDate, todayDate)
     private val healingsThisMonth = repository.getHealingCountBetween(thisMonthDate, todayDate)
@@ -122,6 +122,9 @@ class DashboardViewModel @Inject constructor(repository: DashboardRepository) : 
 
     private val _requests = MutableStateFlow<Request?>(null)
     val requests: StateFlow<Request?> = _requests
+    private val _shortcuts = MutableSharedFlow<ShortcutData>(2)
+    val shortcuts: SharedFlow<ShortcutData> = _shortcuts
+    
     fun viewPatient(patientId: Long) {
         _requests.value = Request.ViewPatient(patientId)
     }
@@ -163,12 +166,108 @@ class DashboardViewModel @Inject constructor(repository: DashboardRepository) : 
         _requests.value = Request.UpdatePayment(payment.patientId, payment.id)
     }
 
+    fun editActivity(activity: ActivityParent.Activity) {
+        when (activity.type) {
+            ActivityParent.Activity.Type.HEALING -> _requests.value =
+                Request.UpdateHealing(activity.patient.id, activity.id)
+            ActivityParent.Activity.Type.PATIENT -> _requests.value =
+                Request.UpdatePatient(activity.patient.id)
+            ActivityParent.Activity.Type.PAYMENT -> _requests.value =
+                Request.UpdatePayment(activity.patient.id, activity.id)
+        }
+    }
+
+    fun deleteActivity(activity: ActivityParent.Activity) {
+        savedStateHandle["deleted_activity"] = null
+        when (activity.type) {
+            ActivityParent.Activity.Type.HEALING -> deleteHealing(activity)
+            ActivityParent.Activity.Type.PAYMENT -> deletePayment(activity)
+            ActivityParent.Activity.Type.PATIENT ->
+                throw IllegalArgumentException("$activity cannot be of type ${ActivityParent.Activity.Type.PATIENT}")
+        }
+    }
+
+    private fun deleteHealing(activity: ActivityParent.Activity) {
+        if (activity.type != ActivityParent.Activity.Type.HEALING)
+            throw IllegalArgumentException("$activity must be of type ${ActivityParent.Activity.Type.HEALING}")
+        viewModelScope.launch {
+            createRepository.getHealing(activity.id)?.let { healing ->
+                savedStateHandle["deleted_healing"] = healing.toBundle()
+                savedStateHandle["deleted_type"] = "healing"
+                repository.deleteHealing(healing)
+                AnalyticsEvent.Content.Healing(healing.patientId).trackDelete()
+            }
+        }
+    }
+
+
+    fun undoDeleteActivity(): Boolean {
+        val type: String = savedStateHandle.remove("deleted_type") ?: return false
+        return when (type) {
+            "healing" -> undoDeleteHealing()
+            "payment" -> undoDeletePayment()
+            else -> false
+        }
+    }
+
+    private fun undoDeleteHealing(): Boolean {
+        val healing = savedStateHandle.remove<Bundle>("deleted_healing")?.toHealing()
+            ?: return false
+        viewModelScope.launch {
+            createRepository.insertNewHealing(healing)
+            AnalyticsEvent.Content.Healing(healing.patientId).trackUndoDelete()
+        }
+        return true
+    }
+
+    private fun deletePayment(activity: ActivityParent.Activity) {
+        if (activity.type != ActivityParent.Activity.Type.PAYMENT)
+            throw IllegalArgumentException("$activity must be of type ${ActivityParent.Activity.Type.PAYMENT}")
+        viewModelScope.launch {
+            createRepository.getPayment(activity.id)?.let { payment ->
+                savedStateHandle["deleted_payment"] = payment.toBundle()
+                savedStateHandle["deleted_type"] = "payment"
+                repository.deletePayment(payment)
+                AnalyticsEvent.Content.Payment(payment.patientId).trackDelete()
+            }
+        }
+    }
+
+    private fun undoDeletePayment(): Boolean {
+        val payment = savedStateHandle.remove<Bundle>("deleted_payment")?.toPayment()
+            ?: return false
+        viewModelScope.launch {
+            createRepository.insertNewPayment(payment)
+            AnalyticsEvent.Content.Payment(payment.patientId).trackUndoDelete()
+        }
+        return true
+    }
+
+    fun requestShortcuts(maxShortcutCount: Int) {
+        Timber.d("Shortcut count = $maxShortcutCount")
+        viewModelScope.launch {
+            val patients = patientsFlow.first().sortedByDescending { it.lastModified }
+                .take(maxShortcutCount - 2).withIndex()
+            Timber.d("Patients being taken for shortcuts = $patients")
+            for (patient in patients) {
+                _shortcuts.emit(
+                    ShortcutData(
+                        patient.value.id,
+                        patient.value.name,
+                        patient.index
+                    )
+                )
+            }
+        }
+    }
+
+
     init {
         Timber.d(
             """
-                DATES: Today = ${today.time}
-                This month = ${thisMonth.time}
-                Last month = ${lastMonth.time}
+                DATES: Today = $todayDate
+                This month = $thisMonthDate
+                Last month = $lastMonthDate
             """.trimIndent()
         )
     }

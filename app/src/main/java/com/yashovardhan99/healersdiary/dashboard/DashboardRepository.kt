@@ -9,7 +9,6 @@ import com.yashovardhan99.core.database.Healing
 import com.yashovardhan99.core.database.Patient
 import com.yashovardhan99.core.database.Payment
 import java.time.LocalDate
-import java.util.Date
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
@@ -35,8 +34,8 @@ class DashboardRepository @Inject constructor(private val healersDao: HealersDao
      * @param startDate The date after which all healings are needed
      * @return flow of a list of all healings starting startDate
      */
-    fun getHealingsStarting(startDate: Date): Flow<List<Healing>> {
-        return healersDao.getAllHealings(startDate)
+    fun getHealingsStarting(startDate: LocalDate): Flow<List<Healing>> {
+        return healersDao.getAllHealings(startDate.atStartOfDay())
     }
 
     /**
@@ -44,8 +43,8 @@ class DashboardRepository @Inject constructor(private val healersDao: HealersDao
      * @param startDate The date after which all payments are needed
      * @return flow of a list of all payments starting startDate
      */
-    fun getPaymentsStarting(startDate: Date): Flow<List<Payment>> {
-        return healersDao.getAllPayments(startDate)
+    fun getPaymentsStarting(startDate: LocalDate): Flow<List<Payment>> {
+        return healersDao.getAllPayments(startDate.atStartOfDay())
     }
 
     /**
@@ -102,5 +101,13 @@ class DashboardRepository @Inject constructor(private val healersDao: HealersDao
             startDate.atStartOfDay(),
             endDateInclusive.plusDays(1).atStartOfDay().minusNanos(1)
         ).distinctUntilChanged().map { it ?: 0 }
+    }
+
+    suspend fun deleteHealing(healing: Healing) {
+        healersDao.deleteHealing(healing)
+    }
+
+    suspend fun deletePayment(payment: Payment) {
+        healersDao.deletePayment(payment)
     }
 }

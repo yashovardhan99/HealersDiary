@@ -30,6 +30,7 @@ import com.yashovardhan99.core.database.Healing
 import com.yashovardhan99.core.database.OnboardingState
 import com.yashovardhan99.core.database.Patient
 import com.yashovardhan99.core.database.Payment
+import com.yashovardhan99.core.toLocalDateTime
 import com.yashovardhan99.core.utils.NotificationHelpers
 import com.yashovardhan99.core.utils.NotificationHelpers.setForegroundCompat
 import com.yashovardhan99.core.utils.NotificationHelpers.setTypeProgress
@@ -38,7 +39,7 @@ import com.yashovardhan99.healersdiary.online.DaggerOnlineComponent
 import com.yashovardhan99.healersdiary.online.R
 import dagger.hilt.android.EntryPointAccessors
 import java.math.BigDecimal
-import java.util.Date
+import java.util.*
 import javax.inject.Inject
 import kotlin.math.roundToInt
 import kotlinx.coroutines.tasks.await
@@ -130,8 +131,8 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
                 patient.getAmount(Firestore.CHARGE_KEY),
                 patient.getAmount(Firestore.DUE_KEY),
                 patient.getString(Firestore.NOTES_KEY) ?: "",
-                Date(),
-                patient.getDate(Firestore.CREATED_KEY) ?: Date()
+                Date().toLocalDateTime(),
+                (patient.getDate(Firestore.CREATED_KEY) ?: Date()).toLocalDateTime()
             )
             val id = dao.insertPatient(dbPatient)
             Timber.d("Inserted $dbPatient for id = $id")
@@ -177,7 +178,8 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         healings.forEachIndexed { index, healing ->
             val dbHealing = Healing(
                 0,
-                healing.getDate(Firestore.CREATED_KEY) ?: Date(),
+                healing.getDate(Firestore.CREATED_KEY)?.toLocalDateTime()
+                    ?: Date().toLocalDateTime(),
                 charge, "", id
             )
             insertHealing(dbHealing)
@@ -185,13 +187,13 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
                 curIndex,
                 maxPatients,
                 INITIAL_PROGRESS_FLOAT +
-                    (1 - INITIAL_PROGRESS_FLOAT) * (index + 1).toFloat() / total
+                        (1 - INITIAL_PROGRESS_FLOAT) * (index + 1).toFloat() / total
             )
         }
         payments.forEachIndexed { index, payment ->
             val dbPayment = Payment(
                 0,
-                payment.getDate(Firestore.CREATED_KEY) ?: Date(),
+                (payment.getDate(Firestore.CREATED_KEY) ?: Date()).toLocalDateTime(),
                 payment.getAmount(Firestore.AMOUNT_KEY),
                 "", id
             )
@@ -200,7 +202,7 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
                 curIndex,
                 maxPatients,
                 INITIAL_PROGRESS_FLOAT +
-                    (1 - INITIAL_PROGRESS_FLOAT) * (healings.size + (index + 1).toFloat()) / total
+                        (1 - INITIAL_PROGRESS_FLOAT) * (healings.size + (index + 1).toFloat()) / total
             )
         }
     }

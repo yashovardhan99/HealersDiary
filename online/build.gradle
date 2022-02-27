@@ -54,6 +54,7 @@ dependencies {
     kapt(Dependencies.Hilt.compiler)
     implementation(Dependencies.Hilt.view_model)
     implementation(Dependencies.Android.fragment_ktx)
+    implementation(Dependencies.Android.Lifecycle.common_java8)
 
     implementation(Dependencies.Firebase.bom)
     implementation(Dependencies.Firebase.analytics)
@@ -73,4 +74,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     androidTestImplementation 'androidx.annotation:annotation:1.1.0'
 }
+
 apply plugin: "com.google.gms.google-services"

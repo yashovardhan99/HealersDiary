@@ -29,6 +29,7 @@ import com.yashovardhan99.core.database.HealersDataStore
 import com.yashovardhan99.core.database.Healing
 import com.yashovardhan99.core.database.Patient
 import com.yashovardhan99.core.database.Payment
+import com.yashovardhan99.core.toEpochMilli
 import com.yashovardhan99.core.utils.NotificationHelpers
 import com.yashovardhan99.core.utils.NotificationHelpers.setContentDeepLink
 import com.yashovardhan99.core.utils.NotificationHelpers.setForegroundCompat
@@ -136,8 +137,13 @@ class ExportWorker @AssistedInject constructor(
                 dao.getAllPatients().first(),
             ) { patient ->
                 BackupUtils.getCsvRow(
-                    patient.id, patient.name, patient.charge,
-                    patient.due, patient.notes, patient.lastModified.time, patient.created.time
+                    patient.id,
+                    patient.name,
+                    patient.charge,
+                    patient.due,
+                    patient.notes,
+                    patient.lastModified.toEpochMilli(),
+                    patient.created.toEpochMilli()
                 )
             }
         } catch (e: FileNotFoundException) {
@@ -164,7 +170,7 @@ class ExportWorker @AssistedInject constructor(
                 dao.getAllHealings(),
             ) { healing ->
                 BackupUtils.getCsvRow(
-                    healing.id, healing.time.time, healing.charge,
+                    healing.id, healing.time.toEpochMilli(), healing.charge,
                     healing.notes, healing.patientId
                 )
             }
@@ -192,7 +198,7 @@ class ExportWorker @AssistedInject constructor(
                 dao.getAllPayments(),
             ) { payment ->
                 BackupUtils.getCsvRow(
-                    payment.id, payment.time.time, payment.amount,
+                    payment.id, payment.time.toEpochMilli(), payment.amount,
                     payment.notes, payment.patientId
                 )
             }

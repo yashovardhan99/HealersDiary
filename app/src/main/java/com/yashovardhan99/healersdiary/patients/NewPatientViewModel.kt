@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.math.BigDecimal
-import java.util.*
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 /**
@@ -25,7 +25,8 @@ import javax.inject.Inject
  * @property repository The creation repository
  */
 @HiltViewModel
-class NewPatientViewModel @Inject constructor(private val repository: CreateRepository) : ViewModel() {
+class NewPatientViewModel @Inject constructor(private val repository: CreateRepository) :
+    ViewModel() {
     // Sends the result of save/delete to the activity
     private val _result = MutableStateFlow<Result>(Result.Unset)
     val result: StateFlow<Result> = _result
@@ -55,8 +56,10 @@ class NewPatientViewModel @Inject constructor(private val repository: CreateRepo
         }
         try {
             _error.value = false
-            val chargeInLong = if (charge.isBlank()) 0L else BigDecimal(charge).movePointRight(2).longValueExact()
-            val dueInLong = if (due.isBlank()) 0L else BigDecimal(due).movePointRight(2).longValueExact()
+            val chargeInLong =
+                if (charge.isBlank()) 0L else BigDecimal(charge).movePointRight(2).longValueExact()
+            val dueInLong =
+                if (due.isBlank()) 0L else BigDecimal(due).movePointRight(2).longValueExact()
             val patient = _patient.value
             // If patient exists (editing), update it ELSE create a new patient
             if (patient == null) createNew(name, chargeInLong, dueInLong, notes)
@@ -73,13 +76,22 @@ class NewPatientViewModel @Inject constructor(private val repository: CreateRepo
     /**
      * Update the patient details in the database and send [Result.Success]
      */
-    private fun updatePatient(patient: Patient, name: String, chargeInLong: Long, dueInLong: Long, notes: String) {
-        val updatedPatient = patient.copy(name = name, charge = chargeInLong,
-                due = dueInLong, notes = notes, lastModified = Date())
+    private fun updatePatient(
+        patient: Patient,
+        name: String,
+        chargeInLong: Long,
+        dueInLong: Long,
+        notes: String
+    ) {
+        val updatedPatient = patient.copy(
+            name = name, charge = chargeInLong,
+            due = dueInLong, notes = notes, lastModified = LocalDateTime.now()
+        )
         viewModelScope.launch {
             repository.updatePatient(updatedPatient)
             Timber.d("Patient updated; pid = ${patient.id}")
             AnalyticsEvent.Content.Patient(patient.id).trackEdit()
+            _patient.emit(updatedPatient)
             _result.emit(Result.Success(patient.id))
         }
     }
@@ -88,11 +100,14 @@ class NewPatientViewModel @Inject constructor(private val repository: CreateRepo
      * Create a new patient in the database and send [Result.Success]
      */
     private fun createNew(name: String, chargeInLong: Long, dueInLong: Long, notes: String) {
-        val patient = Patient(0, name, chargeInLong, dueInLong, notes, Date(), Date())
+        val dateTime = LocalDateTime.now()
+        val patient =
+            Patient(0, name, chargeInLong, dueInLong, notes, dateTime, dateTime)
         viewModelScope.launch {
             val pid = repository.insertNewPatient(patient)
             Timber.d("New patient inserted; pid = $pid")
             AnalyticsEvent.Content.Patient(pid).trackCreate()
+            _patient.emit(patient.copy(id = pid))
             _result.emit(Result.Success(pid))
         }
     }

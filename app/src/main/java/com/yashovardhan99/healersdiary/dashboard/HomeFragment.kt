@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -14,6 +15,7 @@ import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialFadeThrough
 import com.yashovardhan99.core.analytics.AnalyticsEvent
@@ -41,12 +43,13 @@ import timber.log.Timber
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
     private val viewModel: DashboardViewModel by activityViewModels()
+    private lateinit var binding: FragmentHomeBinding
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentHomeBinding.inflate(inflater, container, false)
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
         // build and attach header
         binding.header = context?.run {
             buildHeader(R.drawable.home, R.string.app_name, Icons.Settings)
@@ -60,7 +63,8 @@ class HomeFragment : Fragment() {
         val statAdapter = StatAdapter()
         val headerAdapter = HeaderAdapter()
         val activityLoadStateAdapter = ActivityLoadStateAdapter()
-        val activityAdapter = ActivityAdapter(false, ::goToPatient)
+        val activityAdapter =
+            ActivityAdapter(false, ::goToPatient, ::editActivity, ::deleteActivity)
         val emptyStateAdapter = EmptyStateAdapter()
         // concatenating all adapters
         val concatAdapterConfig = ConcatAdapter.Config.Builder()
@@ -92,8 +96,8 @@ class HomeFragment : Fragment() {
             activityAdapter.loadStateFlow.collectLatest { loadStates: CombinedLoadStates ->
                 activityLoadStateAdapter.loadState = loadStates.append
                 val showEmpty = loadStates.refresh is LoadState.NotLoading &&
-                    loadStates.append.endOfPaginationReached &&
-                    activityAdapter.itemCount == 0
+                        loadStates.append.endOfPaginationReached &&
+                        activityAdapter.itemCount == 0
                 headerAdapter.submitList(
                     if (showEmpty) emptyList()
                     else listOf(getString(R.string.recent_activity))
@@ -159,6 +163,32 @@ class HomeFragment : Fragment() {
         val direction = HomeFragmentDirections
             .actionHomeToPatientDetailFragment(activity.patient.id)
         findNavController().navigate(direction, extras)
+    }
+
+    /**
+     * Go to edit an activity.
+     * @param activity The activity to be edited
+     */
+    private fun editActivity(activity: ActivityParent.Activity) {
+        //TODO Add analytics
+        viewModel.editActivity(activity)
+    }
+
+    private fun deleteActivity(activity: ActivityParent.Activity) {
+        //TODO("Add Analytics")
+        viewModel.deleteActivity(activity)
+        Snackbar.make(binding.root, R.string.deleted, Snackbar.LENGTH_LONG)
+            .setActionTextColor(
+                ContextCompat.getColor(
+                    binding.root.context,
+                    R.color.colorSecondary
+                )
+            )
+            .setAction(R.string.undo) {
+                val done = viewModel.undoDeleteActivity()
+                Timber.d("Undo = $done")
+            }
+            .show()
     }
 
     override fun onResume() {

@@ -3,13 +3,14 @@ package com.yashovardhan99.core.utils
 import androidx.annotation.StringRes
 import com.yashovardhan99.core.R
 import com.yashovardhan99.core.database.Patient
-import java.util.Date
+import com.yashovardhan99.core.utils.Utils.getDateHeading
+import java.time.LocalDateTime
 
 sealed class ActivityParent {
     data class ActivitySeparator(val heading: String) : ActivityParent()
     data class Activity(
         val id: Long,
-        val time: Date,
+        val time: LocalDateTime,
         val type: Type,
         val amount: Long,
         val patient: Patient
@@ -26,11 +27,12 @@ sealed class ActivityParent {
                 after: Activity?
             ) = when {
                 before == null && after != null -> ActivitySeparator(
-                    Utils.getHeading(after.time)
+                    getDateHeading(after.time.toLocalDate())
                 )
-                before != null && after != null &&
-                    Utils.getHeading(before.time) != Utils.getHeading(after.time) ->
-                    ActivitySeparator(Utils.getHeading(after.time))
+                before != null && after != null && getDateHeading(
+                    before.time.toLocalDate()
+                ) != getDateHeading(after.time.toLocalDate()) ->
+                    ActivitySeparator(getDateHeading(after.time.toLocalDate()))
                 else -> null
             }
         }

@@ -11,7 +11,6 @@ import androidx.room.Update
 import com.yashovardhan99.core.DangerousDatabase
 import com.yashovardhan99.core.InternalDatabase
 import java.time.LocalDateTime
-import java.util.Date
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -77,7 +76,7 @@ abstract class HealersDao {
      * @return A flow of the list of all healings found
      */
     @Query("SELECT * FROM healings WHERE time>=:startDate")
-    abstract fun getAllHealings(startDate: Date): Flow<List<Healing>>
+    abstract fun getAllHealings(startDate: LocalDateTime): Flow<List<Healing>>
 
     /**
      * Get all payments starting after a particular date
@@ -85,7 +84,7 @@ abstract class HealersDao {
      * @return A flow of the list of all payments found
      */
     @Query("SELECT * FROM payments WHERE time>=:startDate")
-    abstract fun getAllPayments(startDate: Date): Flow<List<Payment>>
+    abstract fun getAllPayments(startDate: LocalDateTime): Flow<List<Payment>>
 
     /**
      * Get all healings for a particular patient
@@ -102,24 +101,6 @@ abstract class HealersDao {
      */
     @Query("SELECT * FROM payments WHERE patient_id = :patientId ORDER BY time DESC")
     abstract fun getAllPayments(patientId: Long): PagingSource<Int, Payment>
-
-    /**
-     * Get all healings for a particular patient, starting after a particular date
-     * @param patientId The id of the patient
-     * @param startDate The date after which we want all the healings
-     * @return A flow of the list of all healings found
-     */
-    @Query("SELECT * FROM healings WHERE patient_id = :patientId AND time>=:startDate")
-    abstract fun getRecentHealings(patientId: Long, startDate: Date): Flow<List<Healing>>
-
-    /**
-     * Get all payments for a particular patient, starting after a particular date
-     * @param patientId The id of the patient
-     * @param startDate The date after which we want all the payments
-     * @return A flow of the list of all payments found
-     */
-    @Query("SELECT * FROM payments WHERE patient_id = :patientId AND time>=:startDate")
-    abstract fun getRecentPayments(patientId: Long, startDate: Date): Flow<List<Payment>>
 
     /**
      * Update a patient record
@@ -141,7 +122,7 @@ abstract class HealersDao {
      * Update a payment record. Do not use directly.
      *
      * Use [updatePayment] instead.
-     * @param healing The healing to update
+     * @param payment The payment to update
      */
     @Update(entity = Payment::class, onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun internalUpdatePayment(payment: Payment)
@@ -363,7 +344,7 @@ abstract class HealersDao {
      */
     @Query(
         "SELECT COUNT(*) FROM healings  WHERE time BETWEEN :startDate AND :endDate" +
-            " AND patient_id = :patientId"
+                " AND patient_id = :patientId"
     )
     abstract fun getHealingCountBetween(
         startDate: LocalDateTime,
@@ -380,7 +361,7 @@ abstract class HealersDao {
      */
     @Query(
         "SELECT SUM(charge) FROM healings  WHERE time BETWEEN :startDate AND :endDate " +
-            "AND patient_id = :patientId"
+                "AND patient_id = :patientId"
     )
     abstract fun getHealingAmountBetween(
         startDate: LocalDateTime,

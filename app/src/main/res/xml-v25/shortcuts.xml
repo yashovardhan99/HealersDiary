@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.yashovardhan99.healersdiary">
+    <shortcut
+        android:enabled="true"
+        android:icon="@mipmap/shortcut_new_healing"
+        android:shortcutId="newHealing"
+        android:shortcutShortLabel="@string/new_healing">
+        <capability-binding android:key="actions.intent.CREATE_THING">
+            <parameter-binding
+                android:key="thing.name"
+                android:value="Healing" />
+        </capability-binding>
+        <intent
+            android:action="android.intent.action.INSERT"
+            android:data="healersdiary://com.yashovardhan99.healersdiary/activities/new_healing/"
+            android:targetClass="com.yashovardhan99.healersdiary.dashboard.MainActivity"
+            android:targetPackage="com.yashovardhan99.healersdiary" />
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@mipmap/shortcut_new_payment"
+        android:shortcutId="newPayment"
+        android:shortcutShortLabel="@string/new_payment">
+        <capability-binding android:key="actions.intent.CREATE_THING">
+            <parameter-binding
+                android:key="thing.name"
+                android:value="Payment" />
+        </capability-binding>
+        <intent
+            android:action="android.intent.action.INSERT"
+            android:data="healersdiary://com.yashovardhan99.healersdiary/activities/new_payment"
+            android:targetClass="com.yashovardhan99.healersdiary.dashboard.MainActivity"
+            android:targetPackage="com.yashovardhan99.healersdiary" />
+    </shortcut>
+
+    <capability android:name="actions.intent.CREATE_THING">
+        <shortcut-fulfillment>
+            <parameter android:name="thing.name" />
+        </shortcut-fulfillment>
+        <intent
+            android:action="android.intent.action.INSERT"
+            android:data="healersdiary://com.yashovardhan99.healersdiary/create_new"
+            android:targetClass="com.yashovardhan99.healersdiary.dashboard.MainActivity"
+            android:targetPackage="com.yashovardhan99.healersdiary">
+            <parameter
+                android:name="thing.name"
+                android:key="create_type" />
+        </intent>
+    </capability>
+    <capability android:name="actions.intent.GET_THING">
+        <shortcut-fulfillment>
+            <parameter android:name="thing.name" />
+        </shortcut-fulfillment>
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="healersdiary://com.yashovardhan99.healersdiary/patients"
+            android:targetClass="com.yashovardhan99.healersdiary.dashboard.MainActivity"
+            android:targetPackage="com.yashovardhan99.healersdiary">
+            <parameter
+                android:name="thing.name"
+                android:key="patient_name" />
+        </intent>
+    </capability>
+</shortcuts>
