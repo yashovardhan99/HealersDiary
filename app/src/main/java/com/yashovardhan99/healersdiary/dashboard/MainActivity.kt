@@ -18,14 +18,15 @@ import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import com.yashovardhan99.core.database.OnboardingState
 import com.yashovardhan99.core.utils.PatientProfileDrawable
 import com.yashovardhan99.core.utils.Request
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.RequestContract
 import com.yashovardhan99.healersdiary.databinding.ActivityMainBinding
-import com.yashovardhan99.healersdiary.onboarding.OnboardingViewModel
 import com.yashovardhan99.healersdiary.onboarding.OnboardingActivity
+import com.yashovardhan99.healersdiary.onboarding.OnboardingViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
@@ -46,12 +47,17 @@ import timber.log.Timber
  * @see com.yashovardhan99.healersdiary.patients.HealingListFragment
  * @see com.yashovardhan99.healersdiary.patients.PaymentListFragment
  */
+
+private const val FLAG_ONBOARDING_COMPLETED = 1
+private const val FLAG_PAGE_LOADED = 1 shl 1
+private const val FLAG_HIDE_SPLASH = FLAG_ONBOARDING_COMPLETED or FLAG_PAGE_LOADED
+
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private val viewModel: DashboardViewModel by viewModels()
     private val onboardingViewModel: OnboardingViewModel by viewModels()
     private lateinit var navController: NavController
-    private var showSplash = true
+    private var showSplash = 0
 
     /**
      * The request contract registered for this activity.
@@ -97,11 +103,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
-        splashScreen.setKeepOnScreenCondition { showSplash }
+        splashScreen.setKeepOnScreenCondition { showSplash != FLAG_HIDE_SPLASH }
         lifecycleScope.launchWhenCreated {
             onboardingViewModel.onboardingPrefs.collect { onboardingState ->
                 when (onboardingState) {
-                    OnboardingState.OnboardingCompleted -> showSplash = false
+                    OnboardingState.OnboardingCompleted -> showSplash =
+                        showSplash or FLAG_ONBOARDING_COMPLETED
                     OnboardingState.Fetching -> {}
                     else -> {
                         startActivity(
@@ -175,6 +182,8 @@ class MainActivity : AppCompatActivity() {
                 ShortcutManagerCompat.pushDynamicShortcut(this@MainActivity, shortcutInfo)
             }
         }
+
+        showSplash = showSplash or FLAG_PAGE_LOADED
 
         // Handle intents
         Timber.d("Intent received = $intent; data = ${intent.data}; Extras = ${intent.extras}")

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.google.android.material.snackbar.Snackbar
@@ -49,6 +50,13 @@ class OnboardingActivity : AppCompatActivity() {
             if (intent.getBooleanExtra(CLEAR_ALL, false)) {
                 @OptIn(DangerousDatabase::class)
                 viewModel.clearAll()
+                val shortcutIds =
+                    ShortcutManagerCompat.getDynamicShortcuts(this@OnboardingActivity).map { it.id }
+                ShortcutManagerCompat.disableShortcuts(
+                    this@OnboardingActivity,
+                    shortcutIds,
+                    getString(R.string.patient_deleted)
+                )
                 Snackbar.make(
                     findViewById(R.id.nav_host_fragment_container),
                     R.string.data_cleared,
