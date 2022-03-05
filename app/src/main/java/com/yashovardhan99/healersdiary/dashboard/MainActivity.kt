@@ -10,6 +10,7 @@ import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
@@ -17,18 +18,20 @@ import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupWithNavController
+import com.yashovardhan99.core.database.OnboardingState
 import com.yashovardhan99.core.utils.PatientProfileDrawable
 import com.yashovardhan99.core.utils.Request
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.RequestContract
 import com.yashovardhan99.healersdiary.databinding.ActivityMainBinding
+import com.yashovardhan99.healersdiary.onboarding.OnboardingViewModel
+import com.yashovardhan99.healersdiary.onboarding.OnboardingActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 
 /**
- * The main entry point for the app after SplashActivity
+ * The main entry point for the app after OnboardingActivity
  * Houses the following:-
  * - Dashboard, patients list, analytics and settings
  * - Patient detail page, healing and payment logs
@@ -46,7 +49,9 @@ import timber.log.Timber
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private val viewModel: DashboardViewModel by viewModels()
+    private val onboardingViewModel: OnboardingViewModel by viewModels()
     private lateinit var navController: NavController
+    private var showSplash = true
 
     /**
      * The request contract registered for this activity.
@@ -90,7 +95,24 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
+        splashScreen.setKeepOnScreenCondition { showSplash }
+        lifecycleScope.launchWhenCreated {
+            onboardingViewModel.onboardingPrefs.collect { onboardingState ->
+                when (onboardingState) {
+                    OnboardingState.OnboardingCompleted -> showSplash = false
+                    OnboardingState.Fetching -> {}
+                    else -> {
+                        startActivity(
+                            Intent(this@MainActivity, OnboardingActivity::class.java)
+                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                        )
+                        finish()
+                    }
+                }
+            }
+        }
 
         // If no dynamic shortcuts are there, request some
         if (ShortcutManagerCompat.getDynamicShortcuts(this).isEmpty()) {

@@ -17,7 +17,7 @@ import com.yashovardhan99.core.utils.buildHeader
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.dashboard.DashboardViewModel
 import com.yashovardhan99.healersdiary.databinding.FragmentSettingsBinding
-import com.yashovardhan99.healersdiary.onboarding.SplashActivity
+import com.yashovardhan99.healersdiary.onboarding.OnboardingActivity
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -67,8 +67,8 @@ class SettingsFragment : Fragment() {
                 .setMessage(R.string.overrides_all_data)
                 .setPositiveButton(R.string.confirm) { _, _ ->
                     Timber.d("Confirming override")
-                    val intent = Intent(activity, SplashActivity::class.java).apply {
-                        putExtra(SplashActivity.OPEN_IMPORT, true)
+                    val intent = Intent(activity, OnboardingActivity::class.java).apply {
+                        putExtra(OnboardingActivity.OPEN_IMPORT, true)
                         flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
                     }
                     startActivity(intent)
@@ -84,8 +84,8 @@ class SettingsFragment : Fragment() {
                 .setMessage(R.string.delete_warning_message)
                 .setPositiveButton(R.string.delete) { _, _ ->
                     Timber.d("Confirming delete")
-                    val intent = Intent(activity, SplashActivity::class.java).apply {
-                        putExtra(SplashActivity.CLEAR_ALL, true)
+                    val intent = Intent(activity, OnboardingActivity::class.java).apply {
+                        putExtra(OnboardingActivity.CLEAR_ALL, true)
                         flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
                     }
                     startActivity(intent)

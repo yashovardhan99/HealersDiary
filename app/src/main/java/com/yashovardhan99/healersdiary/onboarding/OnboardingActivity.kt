@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.google.android.material.snackbar.Snackbar
@@ -14,6 +13,7 @@ import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.dashboard.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
+import timber.log.Timber
 
 /**
  * Starting Splash screen Activity with onboarding workflow
@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.collect
  * @see OnboardingViewModel
  */
 @AndroidEntryPoint
-class SplashActivity : AppCompatActivity() {
+class OnboardingActivity : AppCompatActivity() {
     /**
      * The viewmodel common to fragments
      */
@@ -37,14 +37,7 @@ class SplashActivity : AppCompatActivity() {
      * @see CLEAR_ALL
      */
     override fun onCreate(savedInstanceState: Bundle?) {
-        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
-        splashScreen.setKeepOnScreenCondition {
-            viewModel.onboardingPrefs.value in listOf(
-                OnboardingState.Fetching,
-                OnboardingState.OnboardingCompleted
-            )
-        }
         setContentView(R.layout.activity_splash)
         /**
          * Observing onboarding prefs (saved in a datastore)
@@ -71,9 +64,10 @@ class SplashActivity : AppCompatActivity() {
                         }
                     }
                     OnboardingState.OnboardingCompleted -> {
+                        Timber.d("Onboarding completed")
                         // If onboarding complete -> launch MainActivity
                         startActivity(
-                            Intent(this@SplashActivity, MainActivity::class.java)
+                            Intent(this@OnboardingActivity, MainActivity::class.java)
                                 .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                         )
                         finish()

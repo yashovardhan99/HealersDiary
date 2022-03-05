@@ -34,7 +34,7 @@ import com.yashovardhan99.core.toLocalDateTime
 import com.yashovardhan99.core.utils.NotificationHelpers
 import com.yashovardhan99.core.utils.NotificationHelpers.setForegroundCompat
 import com.yashovardhan99.core.utils.NotificationHelpers.setTypeProgress
-import com.yashovardhan99.healersdiary.onboarding.SplashActivity
+import com.yashovardhan99.healersdiary.onboarding.OnboardingActivity
 import com.yashovardhan99.healersdiary.online.DaggerOnlineComponent
 import com.yashovardhan99.healersdiary.online.R
 import dagger.hilt.android.EntryPointAccessors
@@ -274,7 +274,7 @@ class ImportWorker(context: Context, params: WorkerParameters) : CoroutineWorker
     private fun showDoneNotification(isSuccessful: Boolean, willRetry: Boolean) {
         if (isSuccessful) AnalyticsEvent.Import.Completed(isSuccessful, willRetry).trackEvent()
         if (!willRetry) Firebase.auth.signOut()
-        val intent = Intent(applicationContext, SplashActivity::class.java)
+        val intent = Intent(applicationContext, OnboardingActivity::class.java)
         val pendingIntent = TaskStackBuilder.create(applicationContext).run {
             addNextIntentWithParentStack(intent)
             getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
