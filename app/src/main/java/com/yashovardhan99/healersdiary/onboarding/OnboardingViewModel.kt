@@ -7,9 +7,11 @@ import com.yashovardhan99.core.analytics.AnalyticsEvent
 import com.yashovardhan99.core.database.HealersDataStore
 import com.yashovardhan99.core.database.OnboardingState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -20,8 +22,6 @@ class OnboardingViewModel @Inject constructor(
     private val dataStore: HealersDataStore,
     private val repository: OnboardingRepository
 ) : ViewModel() {
-
-
     /**
      * Live data of onboarding preferences fetched from datastore
      */
@@ -29,13 +29,12 @@ class OnboardingViewModel @Inject constructor(
         MutableStateFlow<OnboardingState>(OnboardingState.Fetching)
     val onboardingPrefs: StateFlow<OnboardingState> = _onboardingPrefs
 
-    private val _importRequested: MutableSharedFlow<Boolean> = MutableSharedFlow()
-    val importRequested = _importRequested.asSharedFlow()
+    private val _importRequested = MutableStateFlow(false)
+    val importRequested = _importRequested.asStateFlow()
 
     init {
         viewModelScope.launch {
             dataStore.getOnboardingState().collect { onboardingState ->
-                Timber.d("Onboarding state = $onboardingState")
                 _onboardingPrefs.value = onboardingState
             }
         }
@@ -54,19 +53,28 @@ class OnboardingViewModel @Inject constructor(
     /**
      * Sets preferences to indicate import is requested
      */
-    suspend fun startImport() {
-        _importRequested.emit(true)
-        dataStore.updateOnboardingState(OnboardingState.OnboardingRequired)
+    fun startImport() {
+        viewModelScope.launch {
+            _importRequested.emit(true)
+            dataStore.updateOnboardingState(OnboardingState.OnboardingRequired)
+        }
+    }
+
+    fun resetImport() {
+        viewModelScope.launch {
+            _importRequested.emit(false)
+        }
     }
 
     /**
      * Clear all data from the database
      */
     @DangerousDatabase
-    suspend fun clearAll() {
+    fun clearAll() {
         AnalyticsEvent.Onboarding.ClearAll.trackEvent()
-        dataStore.updateOnboardingState(OnboardingState.OnboardingRequired)
-        Timber.d("Updated onboarding state to Required")
-        repository.deleteAll()
+        viewModelScope.launch {
+            dataStore.updateOnboardingState(OnboardingState.OnboardingRequired)
+            repository.deleteAll()
+        }
     }
 }

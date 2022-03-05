@@ -15,7 +15,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".onboarding.OnboardingActivity"
-            android:theme="@style/AppTheme" />
+            android:launchMode="singleInstance" />
 
         <activity
             android:name=".dashboard.MainActivity"

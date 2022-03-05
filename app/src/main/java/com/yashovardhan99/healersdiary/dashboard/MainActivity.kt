@@ -113,7 +113,7 @@ class MainActivity : AppCompatActivity() {
                     else -> {
                         startActivity(
                             Intent(this@MainActivity, OnboardingActivity::class.java)
-                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                         )
                         finish()
                     }
@@ -183,23 +183,22 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        showSplash = showSplash or FLAG_PAGE_LOADED
-
         // Handle intents
-        Timber.d("Intent received = $intent; data = ${intent.data}; Extras = ${intent.extras}")
         if (intent.action == Intent.ACTION_VIEW) {
             intent.data?.let {
                 val request = Request.fromUri(it, intent.extras)
                 getRequestContract.launch(request)
                 intent = intent.setData(null).setAction(null)
             }
+            showSplash = showSplash or FLAG_PAGE_LOADED
         } else if (intent.action == Intent.ACTION_INSERT) {
             intent.data?.let {
                 val request = Request.fromUri(it, intent.extras)
                 getRequestContract.launch(request)
                 intent = intent.setData(null).setAction(null)
             }
+        } else {
+            showSplash = showSplash or FLAG_PAGE_LOADED
         }
-
     }
 }

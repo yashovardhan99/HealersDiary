@@ -69,7 +69,7 @@ class SettingsFragment : Fragment() {
                     Timber.d("Confirming override")
                     val intent = Intent(activity, OnboardingActivity::class.java).apply {
                         putExtra(OnboardingActivity.OPEN_IMPORT, true)
-                        flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                     }
                     startActivity(intent)
                     activity?.finish()
@@ -86,7 +86,7 @@ class SettingsFragment : Fragment() {
                     Timber.d("Confirming delete")
                     val intent = Intent(activity, OnboardingActivity::class.java).apply {
                         putExtra(OnboardingActivity.CLEAR_ALL, true)
-                        flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                     }
                     startActivity(intent)
                     activity?.finish()

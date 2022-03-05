@@ -3,8 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data />
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -28,7 +26,6 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:text="@string/get_started"
-            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/importOnline"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -40,7 +37,6 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:text="@string/import_from_v1_0"
-            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/disclaimer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -50,7 +46,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:padding="12dp"
-            android:visibility="gone"
             android:text="@string/by_signing_in_you_agree_to_our_s"
             android:textAlignment="center"
             android:textAppearance="@style/subtitle2"

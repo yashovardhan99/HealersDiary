@@ -1,5 +1,6 @@
 package com.yashovardhan99.healersdiary.onboarding
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
@@ -13,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.yashovardhan99.core.analytics.AnalyticsEvent
 import com.yashovardhan99.core.database.OnboardingState
 import com.yashovardhan99.healersdiary.R
+import com.yashovardhan99.healersdiary.dashboard.MainActivity
 import com.yashovardhan99.healersdiary.databinding.FragmentOnboardingBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -26,7 +28,7 @@ class OnboardingFragment : Fragment() {
     /**
      * View model shared across activity
      */
-    val viewModel: OnboardingViewModel by activityViewModels()
+    private val viewModel: OnboardingViewModel by activityViewModels()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -36,30 +38,17 @@ class OnboardingFragment : Fragment() {
         val binding = FragmentOnboardingBinding.inflate(inflater, container, false)
         // Setting link for disclaimer
         binding.disclaimer.movementMethod = LinkMovementMethod.getInstance()
-
         lifecycleScope.launchWhenStarted {
             viewModel.onboardingPrefs.collect { onboardingState ->
                 when (onboardingState) {
                     OnboardingState.ImportCompleted -> {
-                        binding.getStarted.visibility = View.VISIBLE
-                        binding.disclaimer.visibility = View.VISIBLE
                         binding.importOnline.setText(R.string.import_completed)
                         binding.importOnline.isEnabled = false
-                        binding.importOnline.visibility = View.VISIBLE
-                    }
-                    OnboardingState.OnboardingCompleted -> {
-                        binding.getStarted.isEnabled = false
-                        binding.importOnline.isEnabled = false
-                    }
-                    OnboardingState.OnboardingRequired -> {
-                        binding.getStarted.isEnabled = true
-                        binding.importOnline.isEnabled = true
-                        binding.importOnline.visibility = View.VISIBLE
-                        binding.getStarted.visibility = View.VISIBLE
-                        binding.disclaimer.visibility = View.VISIBLE
                     }
                     OnboardingState.Importing -> importOnline()
-                    else -> {}
+                    else -> {
+                        binding.importOnline.isEnabled = true
+                    }
                 }
             }
         }
@@ -73,6 +62,13 @@ class OnboardingFragment : Fragment() {
             NotificationManagerCompat.from(requireContext())
                 .cancel(OnboardingState.IMPORT_COMPLETE_NOTIF_ID)
             viewModel.getStarted()
+            startActivity(
+                Intent(
+                    context,
+                    MainActivity::class.java
+                ).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
+            requireActivity().finish()
         }
         binding.importOnline.setOnClickListener { importOnline() }
         return binding.root
@@ -88,6 +84,7 @@ class OnboardingFragment : Fragment() {
      * @see OnboardingViewModel.startImport
      */
     private fun importOnline() {
+        viewModel.resetImport()
         findNavController().navigate(OnboardingFragmentDirections.actionOnboardingFragmentToImportFirebaseFragment())
     }
 }

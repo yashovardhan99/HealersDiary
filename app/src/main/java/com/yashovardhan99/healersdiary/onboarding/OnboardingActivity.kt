@@ -1,6 +1,5 @@
 package com.yashovardhan99.healersdiary.onboarding
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -11,10 +10,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.yashovardhan99.core.DangerousDatabase
 import com.yashovardhan99.core.database.OnboardingState
 import com.yashovardhan99.healersdiary.R
-import com.yashovardhan99.healersdiary.dashboard.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
-import timber.log.Timber
 
 /**
  * Starting Splash screen Activity with onboarding workflow
@@ -39,48 +36,37 @@ class OnboardingActivity : AppCompatActivity() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_splash)
+        setContentView(R.layout.activity_onboarding)
         /**
          * Observing onboarding prefs (saved in a datastore)
          */
-        lifecycleScope.launchWhenStarted {
-            if (intent.getBooleanExtra(OPEN_IMPORT, false)) {
-                viewModel.startImport()
-            }
-            if (intent.getBooleanExtra(CLEAR_ALL, false)) {
-                @OptIn(DangerousDatabase::class)
-                viewModel.clearAll()
-                val shortcutIds =
-                    ShortcutManagerCompat.getDynamicShortcuts(this@OnboardingActivity).map { it.id }
+        if (intent.getBooleanExtra(OPEN_IMPORT, false)) {
+            viewModel.startImport()
+        }
+        if (intent.getBooleanExtra(CLEAR_ALL, false)) {
+            @OptIn(DangerousDatabase::class)
+            viewModel.clearAll()
+            val shortcutIds =
+                ShortcutManagerCompat.getDynamicShortcuts(this@OnboardingActivity).map { it.id }
+            if (shortcutIds.isNotEmpty()) {
                 ShortcutManagerCompat.disableShortcuts(
                     this@OnboardingActivity,
                     shortcutIds,
                     getString(R.string.patient_deleted)
                 )
-                Snackbar.make(
-                    findViewById(R.id.nav_host_fragment_container),
-                    R.string.data_cleared,
-                    Snackbar.LENGTH_LONG
-                ).show()
             }
+            Snackbar.make(
+                findViewById(R.id.nav_host_fragment_container),
+                R.string.data_cleared,
+                Snackbar.LENGTH_LONG
+            ).show()
+        }
+        lifecycleScope.launchWhenStarted {
             viewModel.onboardingPrefs.collect { onboardingState ->
-                when (onboardingState) {
-                    OnboardingState.ImportCompleted -> {
-                        // if import is completed, navigate back to onboarding fragment
-                        findNavController(R.id.nav_host_fragment_container).apply {
-                            popBackStack(R.id.onboardingFragment, false)
-                        }
-                    }
-                    OnboardingState.OnboardingCompleted -> {
-                        Timber.d("Onboarding completed")
-                        // If onboarding complete -> launch MainActivity
-                        startActivity(
-                            Intent(this@OnboardingActivity, MainActivity::class.java)
-                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                        )
-                        finish()
-                    }
-                    else -> {
+                if (onboardingState == OnboardingState.ImportCompleted) {
+                    // if import is completed, navigate back to onboarding fragment
+                    findNavController(R.id.nav_host_fragment_container).apply {
+                        popBackStack(R.id.onboardingFragment, false)
                     }
                 }
             }
