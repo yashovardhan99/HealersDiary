@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.0.0-beta05] - 2022-02-27
+### Added
+- Context menus on home screen to make it easier to edit and delete activities
+- Added shortcuts and integration with Google Assistant to make it easier to use the app!
+
+### Changed
+- Updated time handling across the app
+
+### Fixed
+- Fixed bug related to invalid time when exporting data
+
 ## [2.0.0-beta04] - 2021-11-27
 ### Added
 - Added unlimited scrolling list on Dashboard!
@@ -188,8 +199,9 @@ See Pull Request #5
 - Add new healing record for patient
 - View healing logs
 
-[Unreleased]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-beta04...HEAD
-[2.0.0-beta03]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-beta03...v2.0.0-beta04
+[Unreleased]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-beta05...HEAD
+[2.0.0-beta05]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-beta04...v2.0.0-beta05
+[2.0.0-beta04]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-beta03...v2.0.0-beta04
 [2.0.0-beta03]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-beta02...v2.0.0-beta03
 [2.0.0-beta02]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-beta01...v2.0.0-beta02
 [2.0.0-beta01]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-alpha06...v2.0.0-beta01
