@@ -29,7 +29,7 @@ class ImportFragment : Fragment() {
     private lateinit var binding: FragmentImportBinding
     private val args by navArgs<ImportFragmentArgs>()
     private val importDocumentContract = object : ActivityResultContracts.OpenDocument() {
-        override fun createIntent(context: Context, input: Array<out String>): Intent {
+         override fun createIntent(context: Context, input: Array<String>): Intent {
             return super.createIntent(context, input).apply {
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                     putExtra(DocumentsContract.EXTRA_INITIAL_URI, viewModel.exportUriCopy)

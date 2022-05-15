@@ -10,6 +10,7 @@ import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
@@ -18,17 +19,20 @@ import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.yashovardhan99.core.database.OnboardingState
 import com.yashovardhan99.core.utils.PatientProfileDrawable
 import com.yashovardhan99.core.utils.Request
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.RequestContract
 import com.yashovardhan99.healersdiary.databinding.ActivityMainBinding
+import com.yashovardhan99.healersdiary.onboarding.OnboardingActivity
+import com.yashovardhan99.healersdiary.onboarding.OnboardingViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 
 /**
- * The main entry point for the app after SplashActivity
+ * The main entry point for the app after OnboardingActivity
  * Houses the following:-
  * - Dashboard, patients list, analytics and settings
  * - Patient detail page, healing and payment logs
@@ -43,10 +47,17 @@ import timber.log.Timber
  * @see com.yashovardhan99.healersdiary.patients.HealingListFragment
  * @see com.yashovardhan99.healersdiary.patients.PaymentListFragment
  */
+
+private const val FLAG_ONBOARDING_COMPLETED = 1
+private const val FLAG_PAGE_LOADED = 1 shl 1
+private const val FLAG_HIDE_SPLASH = FLAG_ONBOARDING_COMPLETED or FLAG_PAGE_LOADED
+
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private val viewModel: DashboardViewModel by viewModels()
+    private val onboardingViewModel: OnboardingViewModel by viewModels()
     private lateinit var navController: NavController
+    private var showSplash = 0
 
     /**
      * The request contract registered for this activity.
@@ -90,7 +101,25 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
+        splashScreen.setKeepOnScreenCondition { showSplash != FLAG_HIDE_SPLASH }
+        lifecycleScope.launchWhenCreated {
+            onboardingViewModel.onboardingPrefs.collect { onboardingState ->
+                when (onboardingState) {
+                    OnboardingState.OnboardingCompleted -> showSplash =
+                        showSplash or FLAG_ONBOARDING_COMPLETED
+                    OnboardingState.Fetching -> {}
+                    else -> {
+                        startActivity(
+                            Intent(this@MainActivity, OnboardingActivity::class.java)
+                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        )
+                        finish()
+                    }
+                }
+            }
+        }
 
         // If no dynamic shortcuts are there, request some
         if (ShortcutManagerCompat.getDynamicShortcuts(this).isEmpty()) {
@@ -155,20 +184,21 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Handle intents
-        Timber.d("Intent received = $intent; data = ${intent.data}; Extras = ${intent.extras}")
         if (intent.action == Intent.ACTION_VIEW) {
             intent.data?.let {
                 val request = Request.fromUri(it, intent.extras)
                 getRequestContract.launch(request)
                 intent = intent.setData(null).setAction(null)
             }
+            showSplash = showSplash or FLAG_PAGE_LOADED
         } else if (intent.action == Intent.ACTION_INSERT) {
             intent.data?.let {
                 val request = Request.fromUri(it, intent.extras)
                 getRequestContract.launch(request)
                 intent = intent.setData(null).setAction(null)
             }
+        } else {
+            showSplash = showSplash or FLAG_PAGE_LOADED
         }
-
     }
 }

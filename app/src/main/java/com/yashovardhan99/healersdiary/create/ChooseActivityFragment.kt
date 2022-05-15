@@ -36,6 +36,7 @@ class ChooseActivityFragment : Fragment() {
                 when (activityType) {
                     ActivityType.HEALING -> newHealing(true)
                     ActivityType.PAYMENT -> newPayment(true)
+                    else -> throw IllegalStateException("ActivityType $activityType must be HEALING or PAYMENT")
                 }
                 viewModel.resetActivityType()
             }
