@@ -25,7 +25,7 @@ class CreateActivityViewModel @Inject constructor(
 ) : ViewModel() {
     private val today = LocalDate.now()
     private val healings = dashboardRepository.getHealingsStarting(today)
-    private val patientsFlow = dashboardRepository.patients
+    private val patientsFlow = dashboardRepository.getPatients()
     private val _selectedPatient = MutableStateFlow<Patient?>(null)
     val selectedPatientFlow: StateFlow<Patient?> = _selectedPatient
     private val _activityTime = MutableStateFlow(LocalDateTime.now())

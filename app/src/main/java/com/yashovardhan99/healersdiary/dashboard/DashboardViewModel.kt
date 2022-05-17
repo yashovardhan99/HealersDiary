@@ -45,7 +45,7 @@ class DashboardViewModel @Inject constructor(
     private val repository: DashboardRepository,
     private val createRepository: CreateRepository
 ) : ViewModel() {
-    private val patientsFlow = repository.patients // just a list of all patients
+    private val patientsFlow = repository.getPatients() // just a list of all patients
     private val patientsMap = patientsFlow.map { list ->
         list.associateBy { patient -> patient.id }
     }
