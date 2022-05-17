@@ -14,11 +14,8 @@ import com.yashovardhan99.core.database.toHealing
 import com.yashovardhan99.core.database.toPayment
 import com.yashovardhan99.core.getStartOfLastMonth
 import com.yashovardhan99.core.getStartOfMonth
-import com.yashovardhan99.core.utils.ActivityParent
+import com.yashovardhan99.core.utils.*
 import com.yashovardhan99.core.utils.ActivityParent.Activity.Companion.getSeparator
-import com.yashovardhan99.core.utils.HealingParent
-import com.yashovardhan99.core.utils.PaymentParent
-import com.yashovardhan99.core.utils.Request
 import com.yashovardhan99.core.utils.Stat.Companion.earnedLastMonth
 import com.yashovardhan99.core.utils.Stat.Companion.earnedThisMonth
 import com.yashovardhan99.core.utils.Stat.Companion.healingsThisMonth
@@ -45,62 +42,61 @@ class DashboardViewModel @Inject constructor(
     private val repository: DashboardRepository,
     private val createRepository: CreateRepository
 ) : ViewModel() {
-    private val patientsFlow = repository.getPatients() // just a list of all patients
-    private val patientsMap = patientsFlow.map { list ->
-        list.associateBy { patient -> patient.id }
-    }
 
     private val todayDate = LocalDate.now()
     private val thisMonthDate = todayDate.getStartOfMonth()
     private val lastMonthDate = todayDate.getStartOfLastMonth()
 
-    // healing and payments flow starting last month (eg. If it's february, include all activity starting January
-    private val healings = repository.getHealingsStarting(lastMonthDate)
-
     // current selected patient (for inner pages)
     private var currentPatientId = -1L
 
-    /**
-     * Patients list sorted by last modified
-     * Includes - associated healings and payments done
-     */
-    val patientsList = healings.combine(patientsMap) { healings, patientsMap ->
-        Timber.d(patientsMap.toString())
-        Timber.d("Healings 1 = $healings")
-        val patientWithHealings = healings.groupBy {
-            patientsMap[it.patientId] ?: Patient.MissingPatient
-        }
-        // setting no. of healings today and this month for patients list page
-        patientsMap.values.map { patient ->
-            val today =
-                patientWithHealings[patient]?.count { it.time >= todayDate.atStartOfDay() } ?: 0
-            val thisMonth =
-                patientWithHealings[patient]?.count { it.time >= thisMonthDate.atStartOfDay() } ?: 0
-            patient.copy(healingsToday = today, healingsThisMonth = thisMonth)
-        }.sortedByDescending { it.lastModified }
+    private val _requests = MutableStateFlow<Request?>(null)
+    val requests: StateFlow<Request?> = _requests
+    private val _shortcuts = MutableSharedFlow<ShortcutData>(2)
+    val shortcuts: SharedFlow<ShortcutData> = _shortcuts
+
+
+    private fun getPatientsMap(): Flow<Map<Long, Patient>> = repository.getPatients().map { list ->
+        list.associateBy(Patient::id)
     }
 
-    val activitiesFlow = repository.getAllActivities()
+    /**
+     * Patients list sorted by last modified
+     * Includes - associated healings data
+     */
+    fun getPatients() = repository.getHealingsStarting(lastMonthDate)
+        // healing flow starting last month (eg. If it's february, include all healings starting January)
+        .combine(getPatientsMap()) { healings, patientsMap ->
+            Timber.d(patientsMap.toString())
+            Timber.d("Healings 1 = $healings")
+            val patientWithHealings = healings.groupBy {
+                patientsMap[it.patientId] ?: Patient.MissingPatient
+            }
+            // setting no. of healings today and this month for patients list page
+            patientsMap.values.map { patient ->
+                val today =
+                    patientWithHealings[patient]?.count { it.time >= todayDate.atStartOfDay() } ?: 0
+                val thisMonth =
+                    patientWithHealings[patient]?.count { it.time >= thisMonthDate.atStartOfDay() }
+                        ?: 0
+                patient.copy(healingsToday = today, healingsThisMonth = thisMonth)
+            }.sortedByDescending { it.lastModified }
+        }
+
+    fun getActivities() = repository.getAllActivities()
         .cachedIn(viewModelScope)
-        .combine(patientsMap) { pagingData, patientsMap ->
+        .combine(getPatientsMap()) { pagingData, patientsMap ->
             pagingData.map { it.toUiActivity(patientsMap) }
-                .insertSeparators { before, after ->
-                    getSeparator(before, after)
-                }
+                .insertSeparators(generator = ::getSeparator)
         }.onEmpty { emit(PagingData.empty()) }
         .cachedIn(viewModelScope)
 
-    private val healingsToday = repository.getHealingCountBetween(todayDate, todayDate)
-    private val healingsThisMonth = repository.getHealingCountBetween(thisMonthDate, todayDate)
-    private val earnedThisMonth = repository.getHealingAmountBetween(thisMonthDate, todayDate)
-    private val earnedLastMonth =
+    fun getStats(): Flow<List<Stat>> = combineTransform(
+        repository.getHealingCountBetween(todayDate, todayDate), //healings today
+        repository.getHealingCountBetween(thisMonthDate, todayDate), //healings this month
+        repository.getHealingAmountBetween(thisMonthDate, todayDate), //Earned this month
+        // Earned last month
         repository.getHealingAmountBetween(lastMonthDate, thisMonthDate.minusDays(1))
-
-    val statsFlow = combineTransform(
-        healingsToday,
-        healingsThisMonth,
-        earnedThisMonth,
-        earnedLastMonth
     ) { todayCount, thisMonthCount, thisMonthAmount, lastMonthAmount ->
         val stats = listOf(
             healingsToday(todayCount),
@@ -118,11 +114,6 @@ class DashboardViewModel @Inject constructor(
         )
         emit(emptyStats)
     }
-
-    private val _requests = MutableStateFlow<Request?>(null)
-    val requests: StateFlow<Request?> = _requests
-    private val _shortcuts = MutableSharedFlow<ShortcutData>(2)
-    val shortcuts: SharedFlow<ShortcutData> = _shortcuts
 
     fun viewPatient(patientId: Long) {
         _requests.value = Request.ViewPatient(patientId)
@@ -245,7 +236,7 @@ class DashboardViewModel @Inject constructor(
     fun requestShortcuts(maxShortcutCount: Int) {
         Timber.d("Shortcut count = $maxShortcutCount")
         viewModelScope.launch {
-            val patients = patientsFlow.first().sortedByDescending { it.lastModified }
+            val patients = repository.getPatients().first().sortedByDescending { it.lastModified }
                 .take(maxShortcutCount - 2).withIndex()
             Timber.d("Patients being taken for shortcuts = $patients")
             for (patient in patients) {
@@ -259,7 +250,6 @@ class DashboardViewModel @Inject constructor(
             }
         }
     }
-
 
     init {
         Timber.d(

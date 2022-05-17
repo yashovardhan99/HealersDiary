@@ -20,14 +20,7 @@ import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialFadeThrough
 import com.yashovardhan99.core.analytics.AnalyticsEvent
 import com.yashovardhan99.core.transitionDurationLarge
-import com.yashovardhan99.core.utils.ActivityLoadStateAdapter
-import com.yashovardhan99.core.utils.ActivityParent
-import com.yashovardhan99.core.utils.EmptyState
-import com.yashovardhan99.core.utils.EmptyStateAdapter
-import com.yashovardhan99.core.utils.HeaderAdapter
-import com.yashovardhan99.core.utils.Icons
-import com.yashovardhan99.core.utils.StatAdapter
-import com.yashovardhan99.core.utils.buildHeader
+import com.yashovardhan99.core.utils.*
 import com.yashovardhan99.healersdiary.R
 import com.yashovardhan99.healersdiary.databinding.FragmentHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -82,13 +75,13 @@ class HomeFragment : Fragment() {
         binding.recycler.recycledViewPool.setMaxRecycledViews(R.layout.activity_card, 20)
         lifecycleScope.launchWhenStarted {
             // collect latest stats and activities
-            viewModel.statsFlow.collectLatest { stats ->
+            viewModel.getStats().collectLatest { stats ->
                 statAdapter.submitList(stats)
             }
         }
         lifecycleScope.launchWhenStarted {
             // collect latest stats and activities
-            viewModel.activitiesFlow.collect { activities ->
+            viewModel.getActivities().collect { activities ->
                 activityAdapter.submitData(activities)
             }
         }

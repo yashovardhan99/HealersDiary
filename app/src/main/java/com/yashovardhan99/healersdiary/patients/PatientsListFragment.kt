@@ -51,7 +51,7 @@ class PatientsListFragment : Fragment() {
         binding.recycler.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         lifecycleScope.launchWhenStarted {
-            viewModel.patientsList.collect { patients ->
+            viewModel.getPatients().collect { patients ->
                 patientListAdapter.submitList(patients)
                 emptyStateAdapter.submitList(
                     if (patients.isEmpty()) listOf(EmptyState.PATIENTS)
