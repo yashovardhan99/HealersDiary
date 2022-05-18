@@ -30,7 +30,7 @@ class PatientProfileDrawable(name: String) : Drawable() {
     private val random = Random(name.hashCode())
     private val background = Color.parseColor(backgrounds.random(random))
 
-    private val letter = name.first().toUpperCase().toString()
+    private val letter = name.first().uppercaseChar().toString()
     override fun draw(canvas: Canvas) {
         Timber.d("Canvas $canvas for letter $letter")
         Timber.d("Background color = $background")

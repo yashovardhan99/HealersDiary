@@ -90,6 +90,7 @@ dependencies {
     implementation(Dependencies.Android.fragment_ktx)
     implementation(Dependencies.Android.multidex)
     implementation(Dependencies.Android.workmanager)
+    implementation(Dependencies.Android.splashscreen)
 
     implementation(Dependencies.Android.Lifecycle.view_model)
     implementation(Dependencies.Android.Lifecycle.view_model_saved_state)
@@ -109,6 +110,7 @@ dependencies {
     kapt(Dependencies.Room.compiler)
     implementation(Dependencies.Room.ktx)
     testImplementation(Dependencies.Room.testing)
+    implementation(Dependencies.Room.paging)
 
     implementation(Dependencies.Navigation.fragment)
     implementation(Dependencies.Navigation.ui)

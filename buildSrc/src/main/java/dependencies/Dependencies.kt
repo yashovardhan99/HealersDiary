@@ -38,6 +38,7 @@ object Dependencies {
         const val fragment_ktx = "androidx.fragment:fragment-ktx:${Versions.Androidx.fragment}"
         const val build_gradle = "com.android.tools.build:gradle:${Versions.gradle}"
         const val workmanager = "androidx.work:work-runtime-ktx:${Versions.Androidx.workmanager}"
+        const val splashscreen = "androidx.core:core-splashscreen:${Versions.Androidx.splashscreen}"
 
         /**
          * Dependencies for lifecycle methods and extensions
@@ -93,6 +94,7 @@ object Dependencies {
         const val compiler = "androidx.room:room-compiler:${Versions.Androidx.room}"
         const val ktx = "androidx.room:room-ktx:${Versions.Androidx.room}"
         const val testing = "androidx.room:room-testing:${Versions.Androidx.room}"
+        const val paging = "androidx.room:room-paging:${Versions.Androidx.room}"
     }
 
     /**
@@ -129,7 +131,7 @@ object Dependencies {
         const val android_compiler =
             "com.google.dagger:hilt-android-compiler:${Versions.hilt_android}"
         const val compiler = "androidx.hilt:hilt-compiler:${Versions.hilt}"
-        const val view_model = "androidx.hilt:hilt-lifecycle-viewmodel:${Versions.hilt}"
+        const val view_model = "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03"
         const val gradle_plugin =
             "com.google.dagger:hilt-android-gradle-plugin:${Versions.hilt_android}"
         const val worker = "androidx.hilt:hilt-work:${Versions.hilt}"

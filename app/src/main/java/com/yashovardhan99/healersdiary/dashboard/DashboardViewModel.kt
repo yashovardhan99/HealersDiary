@@ -1,7 +1,6 @@
 package com.yashovardhan99.healersdiary.dashboard
 
 import android.os.Bundle
-import androidx.core.app.Person
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -124,7 +123,7 @@ class DashboardViewModel @Inject constructor(
     val requests: StateFlow<Request?> = _requests
     private val _shortcuts = MutableSharedFlow<ShortcutData>(2)
     val shortcuts: SharedFlow<ShortcutData> = _shortcuts
-    
+
     fun viewPatient(patientId: Long) {
         _requests.value = Request.ViewPatient(patientId)
     }

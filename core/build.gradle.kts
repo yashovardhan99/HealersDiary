@@ -73,13 +73,14 @@ dependencies {
     implementation(Dependencies.Hilt.worker)
 
     implementation(Dependencies.Android.datastore)
-
     implementation(Dependencies.Android.workmanager)
+    implementation(Dependencies.Android.splashscreen)
 
     implementation(Dependencies.Room.runtime)
     kapt(Dependencies.Room.compiler)
     implementation(Dependencies.Room.ktx)
     testImplementation(Dependencies.Room.testing)
+    implementation(Dependencies.Room.paging)
 
     implementation(Dependencies.Paging.runtime)
     testImplementation(Dependencies.Paging.common_testing)

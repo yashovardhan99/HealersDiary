@@ -1,9 +1,13 @@
 <resources>
 
-    <style name="AppTheme.Splash" parent="AppTheme">
-        <item name="android:windowBackground">@drawable/app_logo_background</item>
-        <item name="android:statusBarColor">@android:color/white</item>
+    <style name="AppTheme.Starting" parent="Theme.SplashScreen.IconBackground">
+        <item name="windowSplashScreenBackground">@android:color/holo_blue_light</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="windowSplashScreenIconBackgroundColor">@android:color/white</item>
+        <item name="windowSplashScreenAnimationDuration">200</item>
+        <item name="postSplashScreenTheme">@style/AppTheme</item>
     </style>
+
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
@@ -46,6 +50,7 @@
     <style name="body1" parent="TextAppearance.MaterialComponents.Body1">
         <item name="fontFamily">@font/lato</item>
     </style>
+
     <style name="body2" parent="TextAppearance.MaterialComponents.Body2">
         <item name="fontFamily">@font/lato</item>
     </style>
