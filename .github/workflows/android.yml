@@ -167,4 +167,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Instrumented test results (${{ matrix.api_level }}-${{ matrix.target }})
-          path: "**/build/reports/androidTests/connected/flavors/debugAndroidTest"
+          path: "**/build/reports/androidTests/connected"
