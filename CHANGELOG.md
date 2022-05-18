@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.0.0-beta06] - 2022-05-18
+### Added
+- Added a brand new splash screen
+
 ## [2.0.0-beta05] - 2022-02-27
 ### Added
 - Context menus on home screen to make it easier to edit and delete activities
@@ -199,7 +203,8 @@ See Pull Request #5
 - Add new healing record for patient
 - View healing logs
 
-[Unreleased]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-beta05...HEAD
+[Unreleased]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-beta06...HEAD
+[2.0.0-beta06]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-beta05...v2.0.0-beta06
 [2.0.0-beta05]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-beta04...v2.0.0-beta05
 [2.0.0-beta04]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-beta03...v2.0.0-beta04
 [2.0.0-beta03]: https://github.com/yashovardhan99/HealersDiary/compare/v2.0.0-beta02...v2.0.0-beta03
