@@ -5,10 +5,13 @@
       <map>
         <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.2135" />
         <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/drawable/shortcut_new_healing_foreground.xml" value="0.1685" />
+        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/layout/activity_error_reporting.xml" value="0.20179563916203505" />
+        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/layout/activity_main.xml" value="0.24583333333333332" />
         <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/layout/activity_splash.xml" value="0.28804347826086957" />
         <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/layout/fragment_onboarding.xml" value="0.16875" />
         <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2135" />
         <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/mipmap-anydpi-v26/shortcut_new_healing.xml" value="0.1" />
+        <entry key="..\:/Users/admin/StudioProjects/HealersDiary/app/src/main/res/xml/filepaths.xml" value="0.20085470085470086" />
         <entry key="..\:/Users/admin/StudioProjects/HealersDiary/core/src/main/res/drawable/app_logo_background.xml" value="0.341" />
         <entry key="..\:/Users/admin/StudioProjects/HealersDiary/core/src/main/res/drawable/app_logo_drawable.xml" value="0.2135" />
         <entry key="..\:/Users/admin/StudioProjects/HealersDiary/core/src/main/res/drawable/ic_full_logo.xml" value="0.2135" />

@@ -153,5 +153,10 @@
     <string name="cant_access_folder">Can\'t access the folder %s. Please select another folder.</string>
     <string name="import_failed_message">Your last import didn\'t complete successfully.</string>
     <string name="patient_deleted">This patient\'s records have been deleted</string>
+    <string name="oops">Oops!</string>
+    <string name="error_message">Looks like something went wrong. We have prepared a bug report for you. Please consider sending the report to the developer so they can fix this bug.</string>
+    <string name="report_disclaimer">Note that this report might include device specific details such as device IDs and app logs which might contain sensitive data</string>
+    <string name="exit">Exit</string>
+    <string name="email_bug_report">Email Bug report</string>
 </resources>
 
