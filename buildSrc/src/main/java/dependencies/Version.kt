@@ -64,7 +64,6 @@ object Version {
      */
     object Dependencies {
         const val play_services_coroutines = "1.6.0"
-        const val kotlin = "1.6.0"
         const val material = "1.5.0"
         const val hilt = "1.0.0"
         const val hilt_android = "2.40.5"

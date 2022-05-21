@@ -17,9 +17,9 @@ class HealersApp : SplitCompatApplication(), Configuration.Provider {
         super.onCreate()
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
-        } else {
-            Timber.plant(FileLoggingTree(applicationContext))
         }
+        Timber.plant(FileLoggingTree(applicationContext))
+
         if (Timber.forest().any { it is FileLoggingTree }) {
             Thread.setDefaultUncaughtExceptionHandler { t, e ->
                 Timber.tag("HealersApp").wtf(e, "Uncaught Exception received in Thread $t")

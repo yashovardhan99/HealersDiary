@@ -12,9 +12,9 @@ buildscript {
         classpath(Dependencies.Firebase.google_services)
         classpath(Dependencies.Firebase.crashlytics_gradle)
         classpath(Dependencies.OssLicenses.oss_gradle)
-        classpath(Dependencies.kotlin_gradle)
         classpath(Dependencies.Hilt.gradle_plugin)
         classpath(Dependencies.Navigation.safe_args_plugin)
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.21'
     }
 }
 allprojects {

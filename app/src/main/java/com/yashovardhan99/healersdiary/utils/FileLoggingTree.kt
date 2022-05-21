@@ -46,11 +46,7 @@ class FileLoggingTree(appContext: Context) : Timber.Tree() {
     init {
         scope.launch {
             // Check all cache log files and only keep the 10 latest files
-            cacheDir.listFiles { _, name ->
-                name.startsWith(LogFilePrefix) && name.endsWith(
-                    LogFileSuffix
-                )
-            }?.sortedByDescending { it.lastModified() }?.drop(10)?.forEach { file -> file.delete() }
+            getLogFiles(cacheDir).drop(10).forEach { file -> file.delete() }
             createLogFile()
         }
     }

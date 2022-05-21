@@ -12,7 +12,6 @@ import dependencies.Version.Dependencies as Versions
 @Suppress("SpellCheckingInspection")
 object Dependencies {
     const val timber = "com.jakewharton.timber:timber:${Versions.timber}"
-    const val kotlin_gradle = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}"
 
     /**
      * Contains common android dependencies

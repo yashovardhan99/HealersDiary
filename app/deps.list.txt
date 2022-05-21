@@ -10,4 +10,4 @@ androidx.databinding:databinding-common:7.2.0
 androidx.databinding:databinding-runtime:7.2.0
 androidx.databinding:databinding-adapters:7.2.0
 androidx.databinding:databinding-ktx:7.2.0
-org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.0
+org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.21

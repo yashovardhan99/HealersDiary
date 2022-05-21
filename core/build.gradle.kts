@@ -9,12 +9,11 @@ plugins {
 }
 
 android {
-    compileSdkVersion(Version.AppVersion.compileSdk)
-//    buildToolsVersion "30.0.3"
+    compileSdk = Version.AppVersion.compileSdk
 
     defaultConfig {
-        minSdkVersion(Version.AppVersion.minSdk)
-        targetSdkVersion(Version.AppVersion.targetSdk)
+        minSdk = Version.AppVersion.minSdk
+        targetSdk = Version.AppVersion.targetSdk
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -29,6 +28,7 @@ android {
 
     buildTypes {
         getByName("release") {
+            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
