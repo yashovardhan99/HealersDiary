@@ -8,7 +8,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath(Dependencies.Android.build_gradle)
+        classpath("com.android.tools.build:gradle:7.2.0")
         classpath(Dependencies.Firebase.google_services)
         classpath(Dependencies.Firebase.crashlytics_gradle)
         classpath(Dependencies.OssLicenses.oss_gradle)

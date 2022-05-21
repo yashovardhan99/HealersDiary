@@ -36,7 +36,6 @@ object Dependencies {
             "androidx.datastore:datastore-preferences:${Versions.Androidx.datastore}"
         const val activity_ktx = "androidx.activity:activity-ktx:${Versions.Androidx.activity}"
         const val fragment_ktx = "androidx.fragment:fragment-ktx:${Versions.Androidx.fragment}"
-        const val build_gradle = "com.android.tools.build:gradle:${Versions.gradle}"
         const val workmanager = "androidx.work:work-runtime-ktx:${Versions.Androidx.workmanager}"
         const val splashscreen = "androidx.core:core-splashscreen:${Versions.Androidx.splashscreen}"
 

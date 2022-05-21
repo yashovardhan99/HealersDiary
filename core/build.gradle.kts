@@ -15,8 +15,6 @@ android {
     defaultConfig {
         minSdkVersion(Version.AppVersion.minSdk)
         targetSdkVersion(Version.AppVersion.targetSdk)
-        versionCode = 1
-        versionName = "1.0"
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -31,7 +29,6 @@ android {
 
     buildTypes {
         getByName("release") {
-            minifyEnabled(true)
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
